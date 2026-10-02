@@ -217,7 +217,7 @@ describe('svgAnimacion.ts', () => {
       '0 0 8 4',
     );
     aplicarPaso(grupos, { visibles: ['a', 'b'], resaltadas: ['a', 'b', 'c'] }, false);
-    const [a, b, c] = ['a', 'b', 'c'].map((id) => raiz.querySelector(`#${id}`) as SVGElement);
+    const [a, b, c] = ['a', 'b', 'c'].map((id) => raiz.querySelector(`#p__${id}`) as SVGElement);
     expect(a!.style.visibility).toBe('visible');
     expect(c!.style.visibility).toBe('hidden');
     expect(c!.getAttribute('data-estado')).toBe('oculta');
@@ -235,7 +235,7 @@ describe('svgAnimacion.ts', () => {
 
   it('aplicarPaso con animar: transición de opacidad; sin animar: ninguna', () => {
     const { raiz, grupos } = prepararSvg(`${CABECERA}><g id="a"/></svg>`, 'p__', '0 0 8 4');
-    const a = raiz.querySelector('#a') as SVGElement;
+    const a = raiz.querySelector('#p__a') as SVGElement;
     aplicarPaso(grupos, { visibles: ['a'], resaltadas: [] }, true);
     expect(a.style.transition).toContain('opacity');
     aplicarPaso(grupos, { visibles: ['a'], resaltadas: [] }, false);

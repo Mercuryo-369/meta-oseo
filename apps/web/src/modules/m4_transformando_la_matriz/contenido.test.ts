@@ -8,6 +8,8 @@ import { auditarContenidoModulo, advertenciasDeModulo } from '@/content/auditori
 import { contarActividadesPorTipo, listarActividades, recorrerCadenas } from '@/content/consultas';
 import { PUNTAJE_MODULO_MAX, PUNTAJE_MODULO_MIN } from '@/content/constantes';
 import { puntajeMaximoModulo } from '@/content/scoring';
+import { HITOS_MATRIZ } from '@/scenes/procedural/matriz/estado';
+import { HITOS_VESICULA } from '@/scenes/procedural/vesicula/estado';
 import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type { ModuloContenido } from '@/content/schema';
 import type { DependenciasAuditoria } from '@/content/svg';
@@ -117,6 +119,31 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
 
 const { secciones: seccionesGuion, actividades: actividadesGuion } = leerGuion();
 
+/**
+ * Exploraciones 3D procedurales con línea de tiempo añadidas fuera del guion (la vesícula de matriz y la matriz ósea por escalas).
+ * Son opcionales y no cuentan en las cifras de la ficha, salvo en el total de puntos del módulo.
+ * Para añadir otra escena basta con una fila más: las pruebas de abajo se derivan de esta lista.
+ */
+const EXTRAS_3D = [
+  {
+    id: 'm4_3_vesicula_3d',
+    seccion: 'm4_3_vesiculas_ppi',
+    escena: 'vesicula_matriz',
+    hitos: HITOS_VESICULA,
+    puntaje: 30,
+  },
+  {
+    id: 'm4_4_matriz_3d',
+    seccion: 'm4_4_hidroxiapatita',
+    escena: 'matriz_osea',
+    hitos: HITOS_MATRIZ,
+    puntaje: 30,
+  },
+] as const;
+const ID_EXTRAS_3D = new Set<string>(EXTRAS_3D.map((e) => e.id));
+/** Puntos que las exploraciones extra suman al total del módulo. */
+const PUNTAJE_EXTRAS_3D = EXTRAS_3D.reduce((s, e) => s + e.puntaje, 0);
+
 /** Cifras de la ficha del guion (verificadas a mano al escribir esta prueba). */
 const FICHA = { secciones: 8, actividades: 20, obligatorias: 15, total: 660, obligatorio: 510 };
 
@@ -166,7 +193,10 @@ describe('módulo 4: esquema, carpeta y recursos', () => {
  * ----------------------------------------------------------------------------------------- */
 
 describe('módulo 4: cobertura del guion', () => {
-  const ubicadas = listarActividades(modulo);
+  /** Todas las actividades del módulo, con las exploraciones 3D añadidas fuera del guion. */
+  const todas = listarActividades(modulo);
+  /** Las del guion: sin las exploraciones 3D extra. */
+  const ubicadas = todas.filter((u) => !ID_EXTRAS_3D.has(u.actividad.id));
 
   it('el guion se parseó como se espera (8 secciones y 20 actividades)', () => {
     expect(seccionesGuion).toHaveLength(FICHA.secciones);
@@ -207,25 +237,44 @@ describe('módulo 4: cobertura del guion', () => {
   });
 
   it('el puntaje total y el obligatorio coinciden con la ficha y respetan el tope del esquema', () => {
-    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total);
+    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total + PUNTAJE_EXTRAS_3D);
     expect(puntajeMaximoModulo(modulo, { soloObligatorias: true })).toBe(FICHA.obligatorio);
     expect(actividadesGuion.reduce((s, a) => s + a.puntaje, 0)).toBe(FICHA.total);
     expect(puntajeMaximoModulo(modulo)).toBeLessThanOrEqual(PUNTAJE_MODULO_MAX);
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 20 actividades: 5 multicapa, 9 quiz, 3 relaciones, 1 video, 1 arrastre y 1 exploración 3D', () => {
+  it('cuenta 20 actividades del guion (5 multicapa, 9 quiz, 3 relaciones, 1 video, 1 arrastre y 1 exploración 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
       multicapa: 5,
       quiz: 9,
       'relacion-columnas': 3,
       'video-texto': 1,
       'arrastre-molecular': 1,
-      'exploracion-3d': 1,
+      'exploracion-3d': 1 + EXTRAS_3D.length,
     });
   });
 
-  it('los quiz conservan los ids de sus preguntas y suman 14 en la evaluación final', () => {
+  it.each(EXTRAS_3D)(
+    'la exploración 3D $id es opcional, procedural y usa los hitos de su escena',
+    ({ id, seccion, escena, hitos, puntaje }) => {
+      const u = todas.find((x) => x.actividad.id === id)!;
+      expect(u, id).toBeDefined();
+      expect(u.seccion.id).toBe(seccion);
+      const a = u.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.obligatoria).toBe(false);
+      expect(a.puntaje_max).toBe(puntaje);
+      expect(a.config.modelo).toBe('procedural');
+      expect(a.config.escena).toBe(escena);
+      const pasos = a.config.linea_de_tiempo!.pasos;
+      // Los `t` del contenido son los hitos canónicos de la escena, en el orden de las fases.
+      expect(pasos.map((p) => p.t)).toEqual(Object.values(hitos));
+      expect(a.config.requeridos).toEqual(pasos.map((p) => p.id));
+    },
+  );
+
+  it('los quiz conservan los ids de sus preguntas y suman 16 en la evaluación final', () => {
     let total = 0;
     for (const g of actividadesGuion.filter((a) => a.tipo === 'quiz')) {
       const a = ubicadas.find((x) => x.actividad.id === g.id)!.actividad;
@@ -237,8 +286,15 @@ describe('módulo 4: cobertura del guion', () => {
       total += a.config.preguntas.length;
     }
     const final = ubicadas.find((u) => u.actividad.id === 'm4_evaluacion_final')!.actividad;
-    expect(final.tipo === 'quiz' && final.config.preguntas.length).toBe(14);
+    expect(final.tipo === 'quiz' && final.config.preguntas.length).toBe(16);
     expect(total).toBe(actividadesGuion.reduce((s, a) => s + a.preguntas.length, 0));
+  });
+
+  it('la evaluación final exige el 70 % de acierto que propone la ficha del guion (D02)', () => {
+    expect(guion).toContain('alcanzar al menos el 70 % en la evaluación final');
+    const final = ubicadas.find((u) => u.actividad.id === 'm4_evaluacion_final')!.actividad;
+    expect(final.obligatoria).toBe(true);
+    expect(final.aprobacion_min).toBe(0.7);
   });
 
   it('las demás actividades conservan sus capas, pares, pasos, moléculas y nodos', () => {

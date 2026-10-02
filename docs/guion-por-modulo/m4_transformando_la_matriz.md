@@ -8,9 +8,9 @@
 - **Densidad:** Alta
 - **Duracion estimada:** aproximadamente 75 a 100 minutos con las actividades obligatorias, mejor repartidos en dos sesiones: secciones 4.1 a 4.4 y secciones 4.5 a 4.8 (el punto de pausa es la actividad de orden de la mineralización); los refuerzos opcionales la alargan [verificar]
 - **Nivel:** pregrado y posgrado, con enfoque en el hueso mandibular
-- **Logro que se otorga:** Mineralizador (id `mineralizador`), al completar todas las actividades obligatorias del módulo
+- **Logro que se otorga:** Mineralizador (id `mineralizador`), al completar todas las actividades obligatorias del módulo y alcanzar al menos el 70 % en la evaluación final (umbral propuesto, por acordar con el docente)
 - **Secciones:** 8
-- **Actividades:** 20 (15 obligatorias y 5 de refuerzo opcionales), incluida la evaluación final de 14 preguntas
+- **Actividades:** 20 (15 obligatorias y 5 de refuerzo opcionales), incluida la evaluación final de 16 preguntas
 - **Puntaje total del modulo:** 660 puntos (510 en actividades obligatorias)
 - **Prerrequisitos:** Módulos 1 a 3 (el osteoblasto y la formación de matriz)
 - **Interaccion:** todas las actividades se resuelven con el dedo (tocar, arrastrar), con mouse (clic, arrastrar, cursor encima) o con teclado (Tab para moverse, Enter o Espacio para elegir, flechas para cambiar de elemento). Nada depende solo del cursor encima: cada información que aparece al pasar el cursor aparece también al tocar o al enfocar con Tab.
@@ -89,6 +89,12 @@ El osteoide es la matriz orgánica recién formada, todavía sin mineralizar. Fo
 | Agua | del orden de 10 a 20 % del peso fresco, según el tejido [verificar] | Transporte de iones; disminuye a medida que aumenta el mineral |
 
 > Dato: el hueso guarda aproximadamente el 99 % del calcio del cuerpo y cerca del 85 % del fósforo.
+
+**El osteoide en la mandíbula**
+
+El proceso alveolar, la parte de la mandíbula que rodea las raíces de los dientes, es una zona de mineralización activa. Es un hueso de recambio alto: la carga de la masticación y el movimiento de los dientes lo remodelan sin descanso, así que en él se forma y se mineraliza matriz nueva con más frecuencia que en la mayor parte del esqueleto.
+
+En animales, el recambio del hueso trabecular alveolar es varias veces mayor que el del fémur [verificar]. Por eso, cuando la mineralización falla, sus efectos aparecen pronto en los dientes y en la radiografía dental (sección 4.8).
 
 **El problema que resuelve la mineralización**
 
@@ -654,6 +660,10 @@ Cuánto mineral hay en cada compartimento es un asunto en revisión: las estimac
 
 [Figura: m4_fibrilla_mineralizada | Cristales dentro de las zonas de hueco y agregados entre fibrillas. Esquema sin escala.]
 
+**Implantes dentales y mineralización**
+
+> Clinico: Un implante dental se fija a la mandíbula por **osteointegración**: una unión directa entre el hueso alveolar y la superficie del titanio. Es la mineralización de este módulo aplicada a la clínica. Los osteoblastos llegan a la superficie del implante, secretan osteoide y este se mineraliza (osteogénesis por contacto) [verificar]. Después el remodelado sigue renovando ese hueso mientras el implante funciona. Si la mineralización o el recambio del hueso alveolar están alterados, la integración puede ser menos favorable.
+
 > Dato: a medida que crece el mineral, el agua de la matriz es desplazada. Por eso el contenido de agua y el de mineral varían en sentido inverso.
 
 > Recuerda: en el modelo clásico, la mineralización tiene dos tiempos. Primero, las vesículas inician el cristal. Después, el colágeno y las proteínas no colágenas guían su crecimiento.
@@ -970,6 +980,14 @@ Como el hueso se renueva por remodelado, el grado promedio de mineralización de
 
 > Atencion: "primaria" y "secundaria" aquí son fases de la *mineralización*. No las confundas con hueso primario (trenzado) y secundario (laminar), que describen la arquitectura de la matriz.
 
+**Regiones de la mandíbula**
+
+En la mandíbula esta relación se ve bien. El borde basal y la cortical del cuerpo son hueso de recambio lento, con una matriz más envejecida y, en promedio, muy mineralizada. El proceso alveolar se renueva más rápido: su matriz es más joven y, en promedio, menos mineralizada. Por eso el hueso alveolar responde antes a los cambios de calcio, fosfato y PTH [verificar]. Estas diferencias por región se conocen con menos firmeza que el principio general.
+
+**La lámina dura en la radiografía**
+
+> Clinico: La lámina dura, la cortical fina y muy mineralizada que reviste el alvéolo, se ve como una línea radiopaca alrededor de la raíz. Se ve blanca porque el haz de rayos X atraviesa de canto una pared de hueso mineralizado y suma mucho espesor. Es un reflejo indirecto de la mineralización y del recambio del hueso alveolar. Su pérdida o su adelgazamiento orientan hacia una enfermedad metabólica ósea, pero no es un signo sensible: en el hiperparatiroidismo secundario la pérdida completa es poco frecuente [verificar].
+
 **Marcadores bioquímicos de formación**
 
 Cuando el osteoblasto forma matriz y la mineraliza, deja huellas medibles en la sangre.
@@ -1165,6 +1183,10 @@ PHEX y DMP1 restringen la producción de FGF23 en el osteocito; si fallan, el FG
 
 > Clinico: así se produce el defecto de mineralización por falta de vitamina D. Se absorbe poco calcio y poco fosfato, la PTH sube (hiperparatiroidismo secundario) y el riñón pierde más fosfato. El producto calcio por fosfato cae y el osteoide no se mineraliza.
 
+**Vitamina D y hueso mandibular**
+
+> Clinico: La deficiencia de vitamina D afecta a todo el esqueleto, también a la mandíbula. Tras una extracción dental, el alvéolo se rellena con hueso nuevo: osteoide que después debe mineralizarse. Con poco calcio y fosfato disponibles, la cicatrización del alvéolo y la formación de hueso alrededor de un implante pueden ser menos favorables [verificar]. Los estudios sobre vitamina D e implantes dan resultados dispares: el efecto es más claro en animales que en personas. Corregir una deficiencia es una decisión clínica.
+
 > Atencion: la vitamina D no "mineraliza" el hueso por sí misma. Lo esencial es que mantenga el suministro de calcio y fosfato.
 
 > Recuerda: PTH sube el calcio y baja el fosfato. FGF23 baja el fosfato y baja el calcitriol. Calcitriol sube ambos iones.
@@ -1355,6 +1377,14 @@ Aquí la mineralización no está bloqueada; lo que falla es el colágeno. Más 
 
 El resultado son huesos frágiles. Curiosamente, la matriz de estos huesos suele tener una densidad mineral mayor que la normal, y aun así se rompe con facilidad [verificar]. Algunos tipos se acompañan de dentinogénesis imperfecta.
 
+**El diente delata el defecto de mineralización**
+
+La dentina y el cemento (el tejido mineralizado que cubre la raíz y ancla el diente al ligamento periodontal) se mineralizan con mecanismos en buena parte compartidos con el hueso. Por eso, cuando la mineralización falla, el diente y el hueso alveolar lo muestran:
+
+- **Hipofosfatasia:** el cemento es hipoplásico o no se forma. El diente temporal se suelta con la raíz intacta y casi sin inflamación, en los primeros años de vida (con frecuencia, los incisivos primero) [verificar].
+- **Raquitismo hipofosfatémico ligado al X:** la dentina se mineraliza mal, con espacios irregulares, y la cámara pulpar es amplia. Las bacterias llegan a la pulpa por microfisuras o por el desgaste del esmalte y aparece un absceso en un diente sin caries ni trauma. En los dientes permanentes puede haber también defectos del esmalte [verificar].
+- **Raquitismo por falta de vitamina D:** según la edad y la duración de la carencia, pueden verse retraso de la erupción, defectos del esmalte y de la dentina, y cámaras pulpares amplias [verificar].
+
 | Enfermedad | Defecto de base | Hallazgo clave |
 |---|---|---|
 | Raquitismo carencial | Falta de vitamina D en el niño, con producto Ca × Pi bajo | Placas de crecimiento y metáfisis ensanchadas |
@@ -1362,7 +1392,9 @@ El resultado son huesos frágiles. Curiosamente, la matriz de estos huesos suele
 | XLH | Pérdida de función de PHEX, con FGF23 alto | Hipofosfatemia por pérdida renal de fosfato |
 | Osteomalacia oncogénica | Tumor que secreta FGF23 | Hipofosfatemia por pérdida renal de fosfato, sin causa genética |
 | Hipofosfatasia | Déficit de TNAP, con pirofosfato acumulado | Fosfatasa alcalina baja, pérdida precoz de dientes temporales |
+| Odontohipofosfatasia | Déficit de TNAP con manifestación solo dental | Pérdida precoz de dientes temporales con la raíz intacta, sin lesión esquelética |
 | Osteogénesis imperfecta | Variantes de COL1A1 o COL1A2 | Huesos frágiles, escleras azuladas, dentinogénesis imperfecta en algunos tipos |
+| XLH en los dientes | Dentina mal mineralizada por la hipofosfatemia | Cámaras pulpares amplias y abscesos dentales sin caries ni trauma |
 
 **Lo que se ve en la mandíbula**
 
@@ -1481,7 +1513,7 @@ requeridos:
 ```yaml
 tipo: quiz
 titulo: "Evaluación final del módulo 4"
-instrucciones: "Responde las 14 preguntas, sin límite de tiempo. Toca una opción (con teclado, Tab y Enter); en la de ordenar, arrastra los pasos. Verás la explicación tras cada respuesta. Al completar las obligatorias obtienes el logro Mineralizador."
+instrucciones: "Responde las 16 preguntas, sin límite de tiempo. Toca una opción (con teclado, Tab y Enter); en la de ordenar, arrastra los pasos. Verás la explicación tras cada respuesta. Al completar las obligatorias obtienes el logro Mineralizador."
 obligatoria: true
 puntaje_max: 100
 concepto: "Integración del módulo 4: mineralización del tejido óseo"
@@ -1708,6 +1740,38 @@ preguntas:
     explicacion: "Es falso: ese es el mecanismo de la hipofosfatasia. La osteogénesis imperfecta es un defecto de la matriz, con variantes en COL1A1 o COL1A2 que producen colágeno tipo I insuficiente o defectuoso."
     dificultad: 2
     concepto: "Osteogénesis imperfecta"
+  - id: m4_f_hipofosfatasia_dientes
+    formato: opcion_multiple
+    enunciado: "Una niña de 2 años pierde varios incisivos temporales sin golpes ni inflamación, con la raíz completa. Su fosfatasa alcalina sérica está baja. ¿Cuál es la explicación más probable?"
+    opciones:
+      - id: a
+        texto: "Un exceso de FGF23: la dentina mal mineralizada deja pasar bacterias a la pulpa y forma un absceso."
+      - id: b
+        texto: "Osteoclastos hiperactivos que resorben la raíz antes de tiempo, como en el recambio dentario normal."
+      - id: c
+        texto: "Un déficit de TNAP: el cemento de la raíz es hipoplásico y el diente pierde su anclaje periodontal."
+      - id: d
+        texto: "Un colágeno tipo I insuficiente en la dentina, con coronas opalescentes y frágiles."
+    correcta: c
+    explicacion: "En la hipofosfatasia falta TNAP: el pirofosfato se acumula y el cemento de la raíz se forma mal o no se forma, así que el diente se suelta con la raíz intacta y sin inflamación. En el XLH el problema es la dentina, con abscesos, y en la osteogénesis imperfecta, el colágeno."
+    dificultad: 2
+    concepto: "Hipofosfatasia en los dientes"
+  - id: m4_f_osteointegracion
+    formato: opcion_multiple
+    enunciado: "En la osteointegración de un implante dental en la mandíbula, ¿qué ocurre sobre la superficie del titanio?"
+    opciones:
+      - id: a
+        texto: "Los osteoblastos depositan osteoide que se mineraliza y queda en contacto directo con el implante."
+      - id: b
+        texto: "Se forma un ligamento periodontal nuevo, con cemento y fibras que anclan el implante al alvéolo."
+      - id: c
+        texto: "El titanio se transforma en hidroxiapatita al captar el calcio y el fosfato de la sangre."
+      - id: d
+        texto: "El hueso alveolar no participa: el implante se sostiene solo por la presión mecánica sobre el hueso."
+    correcta: a
+    explicacion: "La osteointegración es una unión directa entre el hueso y el implante: los osteoblastos secretan osteoide sobre la superficie y este se mineraliza, el mismo proceso de este módulo. El implante no forma ligamento periodontal ni cemento, y el titanio no se convierte en mineral."
+    dificultad: 2
+    concepto: "Osteointegración de implantes"
 ```
 
 ## Glosario
@@ -1883,6 +1947,7 @@ Decisiones que necesitan su acuerdo: (a) nivel de detalle de ENPP1, ANKH y PiT-1
 21. **Deficiencia de ENPP1 (sección 4.3).** Las calcificaciones arteriales (GACI) se atribuyen al PPi bajo; el raquitismo hipofosfatémico (ARHR2) se asocia a FGF23 elevado, y cómo la falta de ENPP1 eleva el FGF23 no está aclarado.
 22. **Mineralización independiente de vesículas (sección 4.4 y actividad `m4_orden_mineralizacion`).** El orden vesícula, cristal, colágeno se presenta como orden del modelo clásico. En la dentina circumpulpar y posiblemente en parte del hueso laminar maduro, el mineral depende menos de vesículas.
 23. **Tiempo de maduración y tiempo de retardo (sección 4.6).** El de maduración es grosor de osteoide dividido entre MAR; el de retardo usa la MAR corregida por MS/OS. Los umbrales de 10 a 50 y más de 100 días corresponden al de retardo; confirmar los valores con el texto que use el docente.
+24. **Refuerzo del contexto mandibular (secciones 4.1, 4.4, 4.6, 4.7 y 4.8, y las preguntas `m4_f_hipofosfatasia_dientes` y `m4_f_osteointegracion`).** Cifras y matices que conviene confirmar: recambio del hueso alveolar frente al fémur (se expresa sin cifra; los datos son de modelos animales); mineralización por región mandibular (véase el punto 19); frecuencia de pérdida de la lámina dura en el hiperparatiroidismo secundario (poco frecuente; una serie clínica cita alrededor de 10 %); efecto de la deficiencia de vitamina D sobre el alvéolo y los implantes (más claro en animales que en personas); edad de la pérdida dental en la hipofosfatasia y hallazgos del esmalte y la erupción en el XLH y en el raquitismo carencial, que varían con la forma y la edad.
 
 Convenciones de este archivo: los títulos estructurales y las etiquetas de los avisos (Clinico, Dato, Atencion, Recuerda) van sin tildes para que agentes posteriores los reconozcan de forma exacta; el texto para el estudiante sí lleva tildes.
 
@@ -1907,3 +1972,4 @@ Segunda ronda: ajuste del guion tras la revisión científica independiente. Los
 | Omisión de osteomalacia oncogénica, enfermedad renal crónica y siglas (menor) | Aceptado | Se añadieron ambas causas a 4.8 y a la tabla, y al glosario RGD, GPI, ACP, BSAP, MS/OS, ANKH y los dos tiempos. |
 | Orden estricto de osteoide y vesículas (menor) | Aceptado | Ambos pasos se fusionaron; el orden queda en seis pasos sin ambigüedad. |
 | Ediciones de las referencias desactualizadas (menor) | Aceptado | No se pudo confirmar cuál es la edición vigente de cada obra, así que se omitió el número de edición y se pide al docente indicar la que usa. |
+| Contexto mandibular insuficiente: solo una mención en el texto (importante) | Aceptado | Refuerzo del 2026-09-24 (pendiente del docente): 6 bloques nuevos (4.1 el osteoide en la mandíbula; 4.4 implantes dentales; 4.6 regiones de la mandíbula y lámina dura; 4.7 vitamina D y hueso mandibular; 4.8 el diente delata el defecto), 2 filas en la tabla de 4.8 y 2 preguntas en la evaluación final (`m4_f_hipofosfatasia_dientes`, `m4_f_osteointegracion`). Fuentes consultadas por dato: recambio alto del hueso alveolar, revisiones sobre remodelado alveolar (datos en modelos animales, sin cifra en el texto); osteointegración y osteogénesis por contacto, Cooper, revisión narrativa en Frontiers of Oral and Maxillofacial Medicine; vitamina D e implantes, revisión sistemática «Vitamin D Supplementation for Prevention of Dental Implant Failure» (PMC8769861: efecto más claro en animales, evidencia humana escasa y contradictoria); lámina dura, texto abierto «DE 115: Dental Radiography» (eCampus Ontario; aspecto radiopaco por el haz tangencial) y caso «Oral manifestations of secondary hyperparathyroidism» (PMC4678558: pérdida completa poco frecuente); hipofosfatasia dental, «Hypophosphatasia: diagnosis and clinical signs – a dental surgeon perspective» (Int J Paediatr Dent), serie de Kiselnikova y col. 2020 (Clin Case Rep) y la página de la ADA (pérdida precoz de dientes temporales con raíz intacta, cemento ausente o hipoplásico); XLH dental, Evaluation of dental manifestations in XLH using orthopantomography (PLOS ONE 2024, PMC11280221) y la página de la ADA (cámaras pulpares amplias, dentina hipomineralizada, abscesos sin caries ni trauma); raquitismo por falta de vitamina D, «Oral manifestations of vitamin D deficiency in children» (Br Dent J). Los datos numéricos se dejaron cualitativos y se anotaron en «pendientes» y en el punto 24 de las notas. |

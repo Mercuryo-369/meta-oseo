@@ -7,6 +7,9 @@ import guionCrudo from '../../../../../docs/guion-por-modulo/m5_renovando_el_hue
 import { auditarContenidoModulo, advertenciasDeModulo } from '@/content/auditoria';
 import { contarActividadesPorTipo, listarActividades, recorrerCadenas } from '@/content/consultas';
 import { PUNTAJE_MODULO_MAX, PUNTAJE_MODULO_MIN } from '@/content/constantes';
+import { HITOS_BMU } from '@/scenes/procedural/bmu/estado';
+import { HITOS_FRACTURA } from '@/scenes/procedural/fractura/estado';
+import { HITOS_ORTODONCIA } from '@/scenes/procedural/ortodoncia/estado';
 import { puntajeMaximoModulo } from '@/content/scoring';
 import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type { ModuloContenido } from '@/content/schema';
@@ -123,6 +126,38 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
 
 const { secciones: seccionesGuion, actividades: actividadesGuion } = leerGuion();
 
+/**
+ * Exploraciones 3D procedurales con línea de tiempo añadidas fuera del guion (el prototipo de la BMU, docs/escena-3d-bmu.md, y las de ortodoncia y fractura).
+ * Son opcionales y no cuentan en las cifras de la ficha, salvo en el total de puntos del módulo.
+ * Para añadir otra escena basta con una fila más: las pruebas de abajo se derivan de esta lista.
+ */
+const EXTRAS_3D = [
+  {
+    id: 'm5_bmu_3d_tiempo',
+    seccion: 'm5_1_bmu_ciclo',
+    escena: 'bmu_remodelado',
+    hitos: HITOS_BMU,
+    puntaje: 40,
+  },
+  {
+    id: 'm5_5_ortodoncia_3d',
+    seccion: 'm5_5_alveolar_ortodoncia',
+    escena: 'movimiento_ortodontico',
+    hitos: HITOS_ORTODONCIA,
+    puntaje: 30,
+  },
+  {
+    id: 'm5_6_fractura_3d',
+    seccion: 'm5_6_reparacion_fractura_alveolo',
+    escena: 'reparacion_fractura',
+    hitos: HITOS_FRACTURA,
+    puntaje: 30,
+  },
+] as const;
+const ID_EXTRAS_3D = new Set<string>(EXTRAS_3D.map((e) => e.id));
+/** Puntos que las exploraciones extra suman al total del módulo. */
+const PUNTAJE_EXTRAS_3D = EXTRAS_3D.reduce((s, e) => s + e.puntaje, 0);
+
 /** Cifras de la ficha del guion (verificadas a mano al escribir esta prueba). */
 const FICHA = {
   secciones: 8,
@@ -184,7 +219,10 @@ describe('módulo 5: esquema, carpeta y recursos', () => {
  * ----------------------------------------------------------------------------------------- */
 
 describe('módulo 5: cobertura del guion', () => {
-  const ubicadas = listarActividades(modulo);
+  /** Todas las actividades del módulo, con las exploraciones 3D añadidas fuera del guion. */
+  const todas = listarActividades(modulo);
+  /** Las del guion: sin las exploraciones 3D extra. */
+  const ubicadas = todas.filter((u) => !ID_EXTRAS_3D.has(u.actividad.id));
 
   it('el guion se parseó como se espera (8 secciones y 26 actividades)', () => {
     expect(seccionesGuion).toHaveLength(FICHA.secciones);
@@ -225,7 +263,7 @@ describe('módulo 5: cobertura del guion', () => {
   });
 
   it('el puntaje total y el obligatorio coinciden con la ficha y respetan el tope del esquema', () => {
-    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total);
+    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total + PUNTAJE_EXTRAS_3D);
     expect(puntajeMaximoModulo(modulo, { soloObligatorias: true })).toBe(FICHA.obligatorio);
     expect(actividadesGuion.reduce((s, a) => s + a.puntaje, 0)).toBe(FICHA.total);
     expect(actividadesGuion.filter((a) => a.obligatoria).reduce((s, a) => s + a.puntaje, 0)).toBe(
@@ -235,16 +273,35 @@ describe('módulo 5: cobertura del guion', () => {
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 26 actividades: 7 multicapa, 10 quiz, 3 relaciones, 3 videos, 2 arrastres y 1 exploración 3D', () => {
+  it('cuenta 26 actividades del guion (7 multicapa, 10 quiz, 3 relaciones, 3 videos, 2 arrastres y 1 exploración 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
       multicapa: 7,
       quiz: 10,
       'relacion-columnas': 3,
       'video-texto': 3,
       'arrastre-molecular': 2,
-      'exploracion-3d': 1,
+      'exploracion-3d': 1 + EXTRAS_3D.length,
     });
   });
+
+  it.each(EXTRAS_3D)(
+    'la exploración 3D $id es opcional, procedural y usa los hitos de su escena',
+    ({ id, seccion, escena, hitos, puntaje }) => {
+      const u = todas.find((x) => x.actividad.id === id)!;
+      expect(u, id).toBeDefined();
+      expect(u.seccion.id).toBe(seccion);
+      const a = u.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.obligatoria).toBe(false);
+      expect(a.puntaje_max).toBe(puntaje);
+      expect(a.config.modelo).toBe('procedural');
+      expect(a.config.escena).toBe(escena);
+      const pasos = a.config.linea_de_tiempo!.pasos;
+      // Los `t` del contenido son los hitos canónicos de la escena, en el orden de las fases.
+      expect(pasos.map((p) => p.t)).toEqual(Object.values(hitos));
+      expect(a.config.requeridos).toEqual(pasos.map((p) => p.id));
+    },
+  );
 
   it('los quiz conservan los ids de sus preguntas y suman 39 (14 en la evaluación final)', () => {
     let total = 0;
@@ -290,6 +347,23 @@ describe('módulo 5: cobertura del guion', () => {
         expect(a.config.requeridos.length, `${g.id} requeridos`).toBe(l.requeridos);
       }
     }
+  });
+
+  it('en la mandíbula, los puntos opcionales apretados llevan su propia vista de cámara con zoom', () => {
+    const a = ubicadas.find((x) => x.actividad.id === 'm5_explora_mandibula_ortodoncia')!.actividad;
+    if (a.tipo !== 'exploracion-3d') throw new Error('se esperaba una exploración 3D');
+    // Nueve puntos de los cuales siete son requeridos: el septo y el agujero mentoniano son opcionales.
+    expect(a.config.nodos).toHaveLength(9);
+    expect(a.config.requeridos).toHaveLength(7);
+    const opcionales = a.config.nodos.filter((n) => !a.config.requeridos.includes(n.id));
+    expect(opcionales.map((n) => n.id).sort()).toEqual(['agujero_mentoniano', 'septo_interdental']);
+    // Sin zoom propio los nueve números se rozan en la vista de conjunto: al enfocarlos se separan.
+    for (const n of opcionales) {
+      expect(n.camara, n.id).toBeDefined();
+      expect(n.camara!.zoom, n.id).toBeGreaterThanOrEqual(2);
+    }
+    // Los requeridos son los de los guiones: ninguno queda fuera por el ajuste de cámara.
+    expect(a.puntaje_max).toBe(30);
   });
 
   it('cada actividad con dibujo usa el SVG que cita el guion', () => {
@@ -446,7 +520,8 @@ describe('módulo 5: textos visibles', () => {
     const conAlt = listarActividades(modulo).filter(({ actividad }) =>
       ['multicapa', 'video-texto', 'exploracion-3d'].includes(actividad.tipo),
     );
-    expect(conAlt.length).toBe(11);
+    // Once del guion más las exploraciones 3D extra (que también llevan `alt`).
+    expect(conAlt.length).toBe(11 + EXTRAS_3D.length);
     for (const { actividad } of conAlt) {
       const alt = (actividad.config as { alt?: string }).alt;
       expect(alt?.trim().length ?? 0, actividad.id).toBeGreaterThanOrEqual(10);

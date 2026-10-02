@@ -12,7 +12,7 @@
 - Nivel: pregrado y posgrado de ciencias de la salud, con enfoque en el hueso mandibular.
 - Conocimientos previos: módulos 1 a 5. En especial la mecanotransducción y el osteocito (módulo 3), la mineralización (módulo 4) y el remodelado con el eje RANKL/OPG (módulo 5).
 - Logro que se otorga al completarlo: cronista ("Cronista").
-- Requisito para el logro (propuesta, por acordar con el docente): completar todas las actividades con `obligatoria: true`, incluida la evaluación final `m6_5_evaluacion_final`.
+- Requisito para el logro (propuesta, por acordar con el docente): completar todas las actividades con `obligatoria: true`, incluida la evaluación final `m6_5_evaluacion_final`, y alcanzar al menos el 70 % en ella.
 - Numero de secciones: 5
 - Puntaje maximo del modulo: 440 puntos en total (suma de los `puntaje_max`): 330 en actividades obligatorias y 110 en opcionales.
 

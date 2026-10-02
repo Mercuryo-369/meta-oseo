@@ -4,9 +4,10 @@ Flujo de una petición a `POST /api/chat`:
 
     Anthropic (stream) --> MentorChat.run --> cola --> stream_chat --> cliente (SSE)
 
-- `MentorChat.run` corre en una tarea propia (la "bomba"). Lee los eventos del SDK, reenvía SOLO
-  el texto (el pensamiento llega omitido y no se transmite) y termina siempre con EXACTAMENTE un
-  evento terminal: `done` o `error`.
+- `MentorChat.run` corre en una tarea propia (la "bomba"). Abre con `sesion`, lee los eventos del
+  SDK, reenvía SOLO el texto (el pensamiento llega omitido y no se transmite) y termina siempre con
+  EXACTAMENTE un evento terminal: `done` o `error`. Si la respuesta fue completa, la guarda y emite
+  `citas` (las fuentes recuperadas) y `mensaje` (su id) justo antes de `usage` y `done`.
 - `stream_chat` vacía la cola hacia el cliente y, si el modelo tarda, intercala `: ping` cada 15 s.
   Si el cliente se desconecta, cancela la bomba: el SDK cierra la respuesta y se libera la conexión
   con Anthropic (deja de generar y de cobrar tokens).
@@ -23,7 +24,7 @@ from typing import Any
 import anthropic
 from sqlalchemy.engine import Engine
 
-from app.ai import errors, sse
+from app.ai import errors, sse, store
 from app.ai.usage import Usage, record_usage
 
 logger = logging.getLogger("ova.mentor")
@@ -45,11 +46,17 @@ class MentorChat:
         request: dict[str, Any],
         engine: Engine,
         user_id: int,
+        session_id: int | None = None,
+        citas: list[dict[str, Any]] | None = None,
     ) -> None:
         self._client = client
         self._request = request
         self._engine = engine
         self._user_id = user_id
+        # Conversación en la que se guarda la respuesta (`None`: no se guarda ni se anuncia).
+        self._session_id = session_id
+        self._citas = citas or []
+        self._text: list[str] = []
         # Mensaje que el SDK va acumulando (se modifica en su sitio): da el uso y el modelo que
         # sirvió la respuesta aunque el stream se corte a la mitad.
         self._snapshot: Any = None
@@ -61,11 +68,15 @@ class MentorChat:
         No lanza excepciones (salvo la cancelación por desconexión del cliente): todo fallo se
         traduce a un evento `error` del contrato.
         """
+        if self._session_id is not None:
+            emit(sse.session_event(self._session_id))
         try:
             message = await self._stream_text(emit)
             terminal = self._terminal_event(message)
             # Se guarda el consumo ANTES de avisar al cliente: al ver `usage`/`done` la fila existe.
             await self.persist_usage()
+            if terminal.name == "done":
+                await self._announce_reply(message, emit)
             if message.stop_reason is not None:
                 emit(sse.usage_event(Usage.from_message(message)))
         except asyncio.CancelledError:
@@ -74,6 +85,31 @@ class MentorChat:
             terminal = self._failure_event(exc)
             await self.persist_usage()  # si ya hubo uso, se registra aunque el stream falle
         emit(terminal)
+
+    async def _announce_reply(self, message: Any, emit: Callable[[sse.SSEEvent], None]) -> None:
+        """Guarda la respuesta completa y avisa de sus fuentes y de su id (antes de `usage`)."""
+        if self._citas:
+            emit(sse.citations_event(self._citas))
+        text = "".join(self._text)
+        if self._session_id is None or not text.strip():
+            return
+        try:
+            message_id = await asyncio.shield(
+                asyncio.to_thread(
+                    store.save_reply,
+                    self._engine,
+                    self._session_id,
+                    text,
+                    model=str(message.model or self._request["model"]),
+                    usage=Usage.from_message(message),
+                    citas=self._citas,
+                )
+            )
+        except Exception:
+            # No guardar el historial no debe tumbar la respuesta que el estudiante ya leyó.
+            logger.exception("No se pudo guardar la respuesta del mentor en chat_messages")
+            return
+        emit(sse.message_event(message_id))
 
     async def persist_usage(self) -> None:
         """Registra el consumo conocido en `usage_events` (una vez; no hace nada si no hubo uso)."""
@@ -102,6 +138,7 @@ class MentorChat:
                 elif event.type == "content_block_delta":
                     # Solo texto: los bloques de pensamiento (vacíos por defecto) no se reenvían.
                     if event.delta.type == "text_delta" and event.delta.text:
+                        self._text.append(event.delta.text)
                         emit(sse.text_event(event.delta.text))
                 elif event.type == "content_block_start" and event.content_block.type == "fallback":
                     logger.info(

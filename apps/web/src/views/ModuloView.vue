@@ -8,7 +8,13 @@
  *    (contrato de `activities/types.ts`).
  *  - Con `BLOQUEO_SECUENCIAL`, las actividades obligatorias condicionan el avance: la sección
  *    siguiente se abre al superarlas y el módulo siguiente al completar este. Un módulo o una
- *    sección ya completados nunca se vuelven a cerrar. Lo bloqueado se explica, no rebota.
+ *    sección ya completados nunca se vuelven a cerrar. Lo bloqueado se explica EN SU SITIO, sin
+ *    redirigir: un módulo bloqueado muestra su presentación y lo que falta (`ModuloBloqueado`); una
+ *    sección bloqueada, un panel con el botón a la sección pendiente.
+ *  - Rol docente (`useAccesoModulos`): sin bloqueo de módulos ni de secciones y en SOLO LECTURA: no
+ *    se envía progreso, tiempo, resultados ni la finalización del módulo, y las actividades se abren
+ *    en modo `revisar` (ver `BloqueActividad`). Así el docente revisa los seis módulos completos
+ *    sin ensuciar las estadísticas de los estudiantes.
  *  - Persistencia y envíos a la API: `stores/actividades.ts`. Tiempo y sección actual:
  *    `useTiempoModulo`. Contexto del mentor: `stores/contextoPedagogico.ts`.
  *  - La sección abierta vive en la URL (`?s=id_seccion`): el botón «atrás» funciona y se puede
@@ -27,21 +33,22 @@ import BloqueTexto from '@/components/modulo/BloqueTexto.vue';
 import CabeceraModulo from '@/components/modulo/CabeceraModulo.vue';
 import GlosarioHoja from '@/components/modulo/GlosarioHoja.vue';
 import GlosarioYReferencias from '@/components/modulo/GlosarioYReferencias.vue';
+import ModuloBloqueado from '@/components/modulo/ModuloBloqueado.vue';
 import ModuloCompletado from '@/components/modulo/ModuloCompletado.vue';
 import NavegacionSecciones from '@/components/modulo/NavegacionSecciones.vue';
 import PieSeccion from '@/components/modulo/PieSeccion.vue';
 import TextoRico from '@/components/modulo/TextoRico.vue';
 import {
   decidirAccesoModulo,
-  mensajeModuloBloqueado,
   pendientesDeSeccion,
   textoPendientes,
   titulosDeActividades,
 } from '@/components/modulo/acceso';
 import { EVENTO_GLOSARIO } from '@/components/modulo/glosario';
+import { estiloAcento } from '@/components/modulo/identidad';
+import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
 import { useTiempoModulo } from '@/components/modulo/useTiempoModulo';
 import { Button } from '@/components/ui/button';
-import { BLOQUEO_SECUENCIAL } from '@/config';
 import { idDeBloque, visibleParaNivel } from '@/content/consultas';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
 import { cargarModulo } from '@/content/registry';
@@ -68,6 +75,7 @@ const router = useRouter();
 const store = useActividadesStore();
 const progreso = useProgresoStore();
 const contexto = useContextoStore();
+const { esDocente, bloqueoSecuencial } = useAccesoModulos();
 
 /* -------------------------------------------------------------------------------------------
  * Carga
@@ -149,31 +157,16 @@ watch(
 
 const acceso = computed(() =>
   decidirAccesoModulo(props.n, progreso.modulosCompletados, {
-    bloqueoSecuencial: BLOQUEO_SECUENCIAL,
+    bloqueoSecuencial: bloqueoSecuencial.value,
     progresoConocido: progreso.loaded,
   }),
 );
 const moduloAbierto = computed(() => acceso.value.permitido);
 const moduloYaCompletado = computed(() => progreso.estaCompletado(props.n));
-
-/** Aviso al llegar redirigido por el guard de ruta (`?bloqueado=n`). */
-const redirigidoDesde = computed(() => {
-  const q = route.query.bloqueado;
-  const n = Number(Array.isArray(q) ? q[0] : q);
-  return Number.isInteger(n) && n !== props.n && moduloPorNumero(n) ? n : null;
-});
-const textoRedirigido = computed(() => {
-  const n = redirigidoDesde.value;
-  const requerido = n === null ? undefined : moduloPorNumero(n - 1);
-  return n !== null && requerido ? mensajeModuloBloqueado(n, requerido) : '';
-});
-const textoModuloBloqueado = computed(() => {
+/** Módulo que falta completar y a dónde llevar al estudiante; solo con el módulo bloqueado. */
+const bloqueo = computed(() => {
   const a = acceso.value;
-  return a.permitido ? '' : mensajeModuloBloqueado(props.n, a.requerido);
-});
-const destinoBloqueo = computed(() => {
-  const a = acceso.value;
-  return a.permitido ? props.n : a.destino;
+  return a.permitido ? null : { requerido: a.requerido, destino: a.destino };
 });
 
 /* -------------------------------------------------------------------------------------------
@@ -184,7 +177,7 @@ const superadas = computed(() =>
   modulo.value ? idsSuperadas(modulo.value, store.conocidos) : new Set<string>(),
 );
 /** Un módulo ya completado nunca se vuelve a cerrar. */
-const bloqueoActivo = computed(() => BLOQUEO_SECUENCIAL && !moduloYaCompletado.value);
+const bloqueoActivo = computed(() => bloqueoSecuencial.value && !moduloYaCompletado.value);
 
 const estados = computed(() =>
   modulo.value
@@ -316,7 +309,8 @@ watch(
 useTiempoModulo({
   modulo: computed(() => props.n),
   seccion: idSeccionMostrada,
-  activo: mostrando,
+  // El docente solo lee: no se cuenta ni se envía su tiempo.
+  activo: computed(() => mostrando.value && !esDocente.value),
 });
 
 /* -------------------------------------------------------------------------------------------
@@ -332,7 +326,10 @@ useTiempoModulo({
 watch(
   () =>
     [
-      fase.value === 'listo' && completoLocal.value && !moduloYaCompletado.value,
+      fase.value === 'listo' &&
+        !esDocente.value &&
+        completoLocal.value &&
+        !moduloYaCompletado.value,
       store.pendientes,
     ] as const,
   ([debeEnviar]) => {
@@ -349,7 +346,7 @@ const titulosFaltantes = computed(() =>
 const mostrarCompletado = computed(
   () => mostrando.value && completoLocal.value && indice.value === secciones.value.length - 1,
 );
-const siguienteModuloAbierto = computed(() => !BLOQUEO_SECUENCIAL || moduloYaCompletado.value);
+const siguienteModuloAbierto = computed(() => !bloqueoSecuencial.value || moduloYaCompletado.value);
 
 /* ----- Anuncios para lectores de pantalla (aria-live moderado) ----- */
 
@@ -363,7 +360,7 @@ watch(
   () => estados.value.filter((e) => e === 'completada').length,
   (ahora, antes) => {
     if (fase.value !== 'listo' || ahora <= antes || completoLocal.value) return;
-    mensajeVivo.value = BLOQUEO_SECUENCIAL
+    mensajeVivo.value = bloqueoSecuencial.value
       ? 'Sección completada. Ya puedes abrir la siguiente.'
       : 'Sección completada.';
   },
@@ -404,9 +401,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- El padding inferior deja el final del contenido por encima de los botones flotantes del menú
+       circular y del mentor en móvil (el <main> del shell reserva otro tanto). -->
   <div
-    class="mx-auto w-full max-w-6xl px-4 py-6 md:py-10"
+    class="mx-auto w-full max-w-6xl px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:pt-10 md:pb-10"
+    :style="estiloAcento(n)"
     :aria-busy="fase === 'cargando' ? 'true' : undefined"
+    :data-modulo="n"
     data-testid="modulo-view"
   >
     <!-- Cargando -->
@@ -467,37 +468,22 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- Módulo bloqueado (el guard de ruta falló abierto y el progreso llegó después) -->
-    <div
-      v-else-if="fase === 'listo' && !moduloAbierto"
-      class="bg-card mx-auto flex max-w-3xl items-start gap-4 rounded-xl border p-5"
-      data-testid="modulo-bloqueado"
-    >
-      <Lock class="text-muted-foreground mt-0.5 size-6 shrink-0" aria-hidden="true" />
-      <div class="space-y-3">
-        <h1 class="text-xl font-semibold">Este módulo todavía está bloqueado</h1>
-        <p>{{ textoModuloBloqueado }}</p>
-        <Button as-child>
-          <RouterLink :to="{ name: 'modulo', params: { n: destinoBloqueo } }">
-            Ir al módulo {{ destinoBloqueo }}
-          </RouterLink>
-        </Button>
-      </div>
-    </div>
+    <!-- Módulo bloqueado: se explica en su sitio, con la identidad del módulo y sin secciones -->
+    <ModuloBloqueado
+      v-else-if="bloqueo && modulo"
+      :modulo="modulo"
+      :requerido="bloqueo.requerido"
+      :destino="bloqueo.destino"
+    />
 
     <!-- Módulo -->
     <template v-else-if="modulo && avance">
-      <p
-        v-if="textoRedirigido"
-        class="bg-accent text-accent-foreground mb-6 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-        role="status"
-        data-testid="aviso-redirigido"
-      >
-        <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-        <span>{{ textoRedirigido }}</span>
-      </p>
-
-      <CabeceraModulo :modulo="modulo" :avance="avance" :puntaje-obtenido="puntajeObtenido" />
+      <CabeceraModulo
+        :modulo="modulo"
+        :avance="avance"
+        :puntaje-obtenido="puntajeObtenido"
+        :revision="esDocente"
+      />
 
       <p
         v-if="store.errorEnvio"
@@ -533,7 +519,7 @@ onBeforeUnmount(() => {
           <!-- Sección bloqueada: se explica qué falta -->
           <section
             v-if="seccion && seccionBloqueada"
-            class="bg-card space-y-3 rounded-xl border p-5"
+            class="bg-card space-y-3 rounded-xl border border-dashed p-5"
             aria-labelledby="titulo-seccion"
             data-testid="seccion-bloqueada"
           >
@@ -543,7 +529,7 @@ onBeforeUnmount(() => {
               tabindex="-1"
               class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
             >
-              <Lock class="text-muted-foreground size-5" aria-hidden="true" />
+              <Lock class="text-acento size-5" aria-hidden="true" />
               Esta sección todavía está bloqueada
             </h2>
             <p>
@@ -568,7 +554,7 @@ onBeforeUnmount(() => {
             data-testid="seccion"
             :data-seccion="seccion.id"
           >
-            <header class="space-y-1">
+            <header class="border-l-acento space-y-1 border-l-4 pl-3">
               <h2
                 id="titulo-seccion"
                 ref="tituloSeccion"
@@ -591,6 +577,7 @@ onBeforeUnmount(() => {
                 v-else-if="bloque.tipo === 'actividad'"
                 :actividad="bloque.actividad"
                 :modulo="n as NumeroModulo"
+                :solo-lectura="esDocente"
               />
             </template>
 

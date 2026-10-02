@@ -1,5 +1,6 @@
 """Petición saliente a Anthropic: cuerpo exacto, cabeceras y parámetros prohibidos (F1-07)."""
 
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -14,8 +15,16 @@ from app.ai.client import (
     to_upstream_messages,
     uses_server_side_fallback,
 )
-from app.ai.prompt import MENTOR_PROMPT_FILE, MENTOR_SYSTEM_PROMPT, load_mentor_prompt
+from app.ai.prompt import (
+    MENTOR_PROMPT_FILE,
+    MENTOR_SYSTEM_PROMPT,
+    citas_de,
+    etiquetar,
+    load_mentor_prompt,
+    titulo_de_cita,
+)
 from app.core.settings import Settings
+from app.rag.corpus import Fragmento
 from app.schemas.chat import ChatMessage
 from tests import test_mentor_fakes as fakes
 from tests.test_mentor_fakes import API_KEY, chat_body, post_chat
@@ -36,25 +45,47 @@ def _keys(value) -> set[str]:
     return set()
 
 
+def _ultimo_turno(body: dict) -> list[dict]:
+    """Bloques del último mensaje del estudiante: [datos del curso, pregunta]."""
+    contenido = body["messages"][-1]["content"]
+    assert isinstance(contenido, list)
+    return contenido
+
+
 def test_cuerpo_exacto_de_la_peticion_a_anthropic(mentor_client: TestClient, fake, auth):
     history = ["Hola", "Hola, ¿en qué te ayudo?", "¿Qué hacen los osteoclastos?"]
     response = post_chat(mentor_client, auth["headers"], chat_body(*history))
     assert response.status_code == 200
 
+    datos = _ultimo_turno(fake.last_body)[0]["text"]
     assert fake.last_body == {
         "model": "claude-opus-5",
         "max_tokens": 16000,
         "stream": True,
-        "system": MENTOR_SYSTEM_PROMPT,
+        # Bloque estable con su punto de caché; lo variable NO va aquí.
+        "system": [
+            {
+                "type": "text",
+                "text": MENTOR_SYSTEM_PROMPT,
+                "cache_control": {"type": "ephemeral"},
+            }
+        ],
         "messages": [
             {"role": "user", "content": "Hola"},
             {"role": "assistant", "content": "Hola, ¿en qué te ayudo?"},
-            {"role": "user", "content": "¿Qué hacen los osteoclastos?"},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": datos},
+                    {"type": "text", "text": "¿Qué hacen los osteoclastos?"},
+                ],
+            },
         ],
         "thinking": {"type": "adaptive"},
         "output_config": {"effort": "medium"},
         "fallbacks": "default",
     }
+    assert datos.startswith("<datos_del_curso>") and datos.endswith("</datos_del_curso>")
 
 
 def test_la_peticion_va_al_endpoint_beta_de_mensajes_con_la_clave_del_servidor(
@@ -145,12 +176,20 @@ def test_otro_modelo_no_activa_el_fallback_del_servidor(make_app, fake, auth):
     assert uses_server_side_fallback("claude-opus-5")
 
 
-def test_el_contexto_pedagogico_se_valida_pero_no_se_inyecta_en_esta_fase(
+def test_el_contexto_pedagogico_va_como_datos_en_el_ultimo_turno(
     mentor_client: TestClient, fake, auth
 ):
     contexto = {
         "modulo": 2,
         "seccion": "SECCION-CANARIO",
+        "actividadActual": {
+            "id": "m2_quiz_origen",
+            "tipo": "quiz",
+            "intentos": 3,
+            "completada": False,
+        },
+        "estructuraSeleccionada": "histo_osteoclasto",
+        "moleculaSeleccionada": "mol_rankl",
         "nivel": "posgrado",
         "tiempoEnSeccionSeg": 7,
         "interaccionesRecientes": ["INTERACCION-CANARIO"],
@@ -158,10 +197,32 @@ def test_el_contexto_pedagogico_se_valida_pero_no_se_inyecta_en_esta_fase(
     }
     response = post_chat(mentor_client, auth["headers"], chat_body(contexto=contexto))
     assert response.status_code == 200
-    saliente = fake.last_request.content.decode()
-    assert "SECCION-CANARIO" not in saliente
-    assert "INTERACCION-CANARIO" not in saliente
-    assert "contexto" not in fake.last_body
+
+    body = fake.last_body
+    datos = _ultimo_turno(body)[0]["text"]
+    for esperado in (
+        "nivel: posgrado",
+        "módulo actual: 2 (Descubriendo sus células)",
+        "sección actual: SECCION-CANARIO",
+        "actividad actual: m2_quiz_origen (tipo quiz), intentos: 3, completada: no",
+        "estructura seleccionada: histo_osteoclasto",
+        "molécula seleccionada: mol_rankl",
+        "interacciones recientes (de la más antigua a la más nueva): INTERACCION-CANARIO",
+        "módulos completados: 1",
+        "puntaje total: 50",
+        "logros: primer_hueso",
+    ):
+        assert esperado in datos
+    # Lo variable NUNCA va en el bloque estable ni en el historial anterior.
+    assert "SECCION-CANARIO" not in json.dumps(body["system"])
+    assert "contexto" not in body  # no se reenvía el objeto del cliente
+    assert _ultimo_turno(body)[1] == {"type": "text", "text": "¿Qué hacen los osteoclastos?"}
+
+
+def test_sin_contexto_el_bloque_de_datos_lo_dice(mentor_client: TestClient, fake, auth):
+    post_chat(mentor_client, auth["headers"])
+    datos = _ultimo_turno(fake.last_body)[0]["text"]
+    assert "<contexto_del_estudiante>\nNo disponible." in datos
 
 
 def test_un_saludo_inicial_del_asistente_no_llega_a_anthropic():
@@ -261,3 +322,40 @@ def test_el_cliente_se_cierra_al_apagar_la_api(make_app, fake):
     with TestClient(app):
         assert not client.is_closed()
     assert client.is_closed()
+
+
+# --- Citas ---------------------------------------------------------------------------------------
+
+
+def _fragmento(**cambios) -> Fragmento:
+    base = {
+        "id": "m5:m5_2_eje:t_x",
+        "modulo": 5,
+        "seccion_id": "m5_2_eje",
+        "seccion_titulo": "El eje RANKL",
+        "tipo": "contenido",
+        "texto": "texto",
+        "url": "/modulo/5?s=m5_2_eje",
+    }
+    return Fragmento(**{**base, **cambios})
+
+
+def test_el_titulo_de_una_cita_distingue_el_tema_dentro_de_la_seccion():
+    assert titulo_de_cita(_fragmento()) == "Módulo 5 · El eje RANKL"
+    assert (
+        titulo_de_cita(_fragmento(subtitulo="La balanza RANKL/OPG"))
+        == "Módulo 5 · El eje RANKL — La balanza RANKL/OPG"
+    )
+    assert titulo_de_cita(_fragmento(subtitulo="El eje RANKL")) == "Módulo 5 · El eje RANKL"
+    glosario = _fragmento(tipo="glosario", texto="Osteoide: matriz sin mineral.", seccion_id=None)
+    assert titulo_de_cita(glosario) == "Módulo 5 · Glosario: Osteoide"
+    objetivos = _fragmento(tipo="objetivos", seccion_id=None)
+    assert titulo_de_cita(objetivos) == "Módulo 5 · Objetivos del módulo"
+
+
+def test_etiquetar_numera_lo_citable_y_deja_el_apoyo_al_final_sin_numero():
+    apoyo = _fragmento(id="m5:banco:1", tipo="banco", seccion_id=None)
+    citables = [_fragmento(id=f"m5:x:{i}") for i in range(2)]
+    etiquetados = etiquetar([apoyo, *citables])
+    assert [e.etiqueta for e in etiquetados] == ["1", "2", "apoyo"]
+    assert [c["id"] for c in citas_de(etiquetados)] == ["m5:x:0", "m5:x:1"]

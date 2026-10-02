@@ -41,7 +41,15 @@ import {
   recorrerCadenas,
   rutaLegible,
 } from './consultas';
-import { CATALOGO_NODOS, MODELOS_3D, MODELOS_CON_ANCLA, VISTAS_CAMARA } from './nodos3d';
+import {
+  CATALOGO_NODOS,
+  ESCENAS_PROCEDURALES,
+  MODELO_PROCEDURAL,
+  MODELOS_3D,
+  MODELOS_CON_ANCLA,
+  VISTAS_CAMARA,
+  vistasDeEscenaProcedural,
+} from './nodos3d';
 import {
   idsGlosarioEnTexto,
   problemasMarkdownBloque,
@@ -878,17 +886,63 @@ export const NodoEscenaSchema = z.strictObject({
   camara: CamaraNodoSchema.optional(),
 });
 
+/**
+ * Paso de la línea de tiempo de una escena procedural: un hito en el tiempo `t` (0 a 1) con su
+ * título, su texto y la vista de cámara con nombre de esa escena (`VISTAS_ESCENA_PROCEDURAL`).
+ * Visitar un paso es detener la línea de tiempo en él o pasar por él.
+ */
+export const PasoLineaTiempoSchema = z.strictObject({
+  id: IdSchema,
+  t: z.number().min(0).max(1),
+  titulo: textoPlano(2, 60),
+  texto: markdownLinea(10, 500),
+  /** Vista de cámara con nombre de la escena; por defecto `general`. */
+  vista: IdSchema.default('general'),
+});
+
+export const LineaTiempoSchema = z.strictObject({
+  pasos: z.array(PasoLineaTiempoSchema).min(2).max(12),
+});
+
 export const ConfigExploracion3dSchema = z
   .strictObject({
-    modelo: z.enum(MODELOS_3D),
+    /** `mandibula` o `celulas` (GLB con nodos) o `procedural` (escena hecha por código). */
+    modelo: z.enum([...MODELOS_3D, MODELO_PROCEDURAL]),
     /** Descripción del modelo para lectores de pantalla. */
     alt: textoPlano(10, 300),
-    nodos: z.array(NodoEscenaSchema).min(2).max(12),
+    /**
+     * Partes del modelo (2 a 12). Solo en los modelos con GLB: una escena `procedural` no lleva
+     * `nodos` (sus partes son los pasos de `linea_de_tiempo`).
+     */
+    nodos: z.array(NodoEscenaSchema).max(12).default([]),
+    /** Ids de nodos (o de pasos, en `procedural`) que hay que visitar para completar. */
     requeridos: z.array(IdSchema).min(1).max(12),
+    /** Solo `procedural`: la escena del registro `scenes/procedural/registro.ts`. */
+    escena: z.enum(ESCENAS_PROCEDURALES).optional(),
+    /** Solo `procedural`: los pasos de la línea de tiempo. */
+    linea_de_tiempo: LineaTiempoSchema.optional(),
   })
   .superRefine((config, ctx) => {
-    const catalogo = new Set(CATALOGO_NODOS[config.modelo].map((n) => n.id));
-    const admiteAncla = MODELOS_CON_ANCLA.includes(config.modelo);
+    if (config.modelo === MODELO_PROCEDURAL) {
+      validarProcedural(config, ctx);
+      return;
+    }
+    if (config.escena !== undefined) {
+      agregar(ctx, ['escena'], '"escena" solo se usa con el modelo "procedural".');
+    }
+    if (config.linea_de_tiempo !== undefined) {
+      agregar(
+        ctx,
+        ['linea_de_tiempo'],
+        '"linea_de_tiempo" solo se usa con el modelo "procedural".',
+      );
+    }
+    if (config.nodos.length < 2) {
+      agregar(ctx, ['nodos'], 'Debe haber entre 2 y 12 nodos.');
+    }
+    const modelo = config.modelo;
+    const catalogo = new Set(CATALOGO_NODOS[modelo].map((n) => n.id));
+    const admiteAncla = MODELOS_CON_ANCLA.includes(modelo);
     config.nodos.forEach((nodo, i) => {
       if (nodo.ancla !== undefined) {
         if (!admiteAncla) {
@@ -918,6 +972,64 @@ export const ConfigExploracion3dSchema = z
       }
     });
   });
+
+/** Reglas propias del modelo `procedural`: escena registrada, pasos únicos y vistas válidas. */
+function validarProcedural(
+  config: {
+    nodos: unknown[];
+    requeridos: string[];
+    escena?: (typeof ESCENAS_PROCEDURALES)[number] | undefined;
+    linea_de_tiempo?: { pasos: { id: string; t: number; vista: string }[] } | undefined;
+  },
+  ctx: ContextoRefinamiento,
+): void {
+  if (config.nodos.length > 0) {
+    agregar(ctx, ['nodos'], 'Una escena "procedural" no lleva "nodos": usa "linea_de_tiempo".');
+  }
+  if (config.escena === undefined) {
+    agregar(
+      ctx,
+      ['escena'],
+      `Falta "escena". Escenas procedurales: ${ESCENAS_PROCEDURALES.join(', ')}.`,
+    );
+  }
+  if (config.linea_de_tiempo === undefined) {
+    agregar(ctx, ['linea_de_tiempo'], 'Falta "linea_de_tiempo" con los pasos de la escena.');
+    return;
+  }
+  const pasos = config.linea_de_tiempo.pasos;
+  const vistas = config.escena === undefined ? [] : vistasDeEscenaProcedural(config.escena);
+  for (const repetido of duplicados(pasos.map((p) => p.id))) {
+    agregar(ctx, ['linea_de_tiempo', 'pasos'], `El paso "${repetido}" está repetido.`);
+  }
+  let anterior = -1;
+  pasos.forEach((paso, i) => {
+    if (paso.t <= anterior) {
+      agregar(
+        ctx,
+        ['linea_de_tiempo', 'pasos', i, 't'],
+        'Los pasos deben ir en orden cronológico estricto (t creciente).',
+      );
+    }
+    anterior = paso.t;
+    if (config.escena !== undefined && !vistas.includes(paso.vista)) {
+      agregar(
+        ctx,
+        ['linea_de_tiempo', 'pasos', i, 'vista'],
+        `La vista "${paso.vista}" no existe en la escena "${config.escena}". Vistas válidas: ${vistas.join(', ')}.`,
+      );
+    }
+  });
+  const ids = new Set(pasos.map((p) => p.id));
+  for (const repetido of duplicados(config.requeridos)) {
+    agregar(ctx, ['requeridos'], `El paso requerido "${repetido}" está repetido.`);
+  }
+  config.requeridos.forEach((id, i) => {
+    if (!ids.has(id)) {
+      agregar(ctx, ['requeridos', i], `El paso requerido "${id}" no existe en "linea_de_tiempo".`);
+    }
+  });
+}
 
 export const ActividadExploracion3dSchema = z
   .strictObject({
@@ -1045,7 +1157,7 @@ export const SeccionSchema = z
     titulo: textoPlano(3, 100),
     /** Una frase que resume la sección (menú, mentor, vista previa). */
     resumen: markdownLinea(10, 300).optional(),
-    bloques: z.array(BloqueSchema).min(1).max(15),
+    bloques: z.array(BloqueSchema).min(1).max(16),
   })
   .superRefine((seccion, ctx) => {
     if (seccion.id === ID_SECCION_RESERVADO) {
@@ -1344,6 +1456,8 @@ export type PreguntaVerdaderoFalso = z.infer<typeof PreguntaVerdaderoFalsoSchema
 export type PreguntaOrdenar = z.infer<typeof PreguntaOrdenarSchema>;
 export type PasoAnimacion = z.infer<typeof PasoAnimacionSchema>;
 export type NodoEscena = z.infer<typeof NodoEscenaSchema>;
+export type PasoLineaTiempo = z.infer<typeof PasoLineaTiempoSchema>;
+export type LineaTiempo = z.infer<typeof LineaTiempoSchema>;
 export type TerminoGlosario = z.infer<typeof TerminoGlosarioSchema>;
 export type Referencia = z.infer<typeof ReferenciaSchema>;
 export type EstadoRevisionModulo = z.infer<typeof EstadoRevisionSchema>;

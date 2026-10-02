@@ -315,7 +315,7 @@
   ],
   "estado_revision": {
     "estado": "borrador",
-    "notas": "Borrador generado desde m4_transformando_la_matriz.md (pendiente de validación del docente). Las 48 marcas de cifras dudosas del guion se quitaron del texto y están en «pendientes»; el detalle está en la sección 12 del guion. No se transcribieron el banco de preguntas ni los ganchos del mentor (RAG). A mano tras el convertidor (regenerar lo borra): 7 figuras «[Figura: …]» pasadas a bloques de imagen y 40 términos del glosario enlazados; los receptores del arrastre se alinearon con los sitios del SVG.",
+    "notas": "Borrador generado desde m4_transformando_la_matriz.md (pendiente de validación del docente). Las marcas de cifras dudosas del guion se quitaron del texto y están en «pendientes»; detalle en la sección 12 del guion. Sin banco de preguntas ni ganchos del mentor. A mano tras el convertidor (regenerar lo borra): figuras, glosario enlazado y receptores del arrastre. Refuerzo mandibular: 6 bloques, 2 filas de tabla y 2 preguntas (implantes, lámina dura, vitamina D, hipofosfatasia, XLH); fuentes en el Registro de revisión.",
     "pendientes": [
       {
         "id": "m4",
@@ -508,6 +508,30 @@
       {
         "id": "acp_fosfato_de_calcio_amorfo",
         "nota": "Confirmar: «fosfato de calcio sin estructura cristalina; se propone como precursor que luego se ordena como apatita»"
+      },
+      {
+        "id": "t_el_osteoide_en_la_mandibula",
+        "nota": "Confirmar: «En animales, el recambio del hueso trabecular alveolar es varias veces mayor que el del fémur». Se expresa sin cifra; los datos proceden de modelos animales (perro)."
+      },
+      {
+        "id": "c_clinico_los_implantes_dentales_se",
+        "nota": "Confirmar la descripción de la osteointegración como osteogénesis por contacto («los osteoblastos secretan osteoide sobre la superficie y este se mineraliza») con el texto de referencia del docente."
+      },
+      {
+        "id": "t_regiones_de_la_mandibula",
+        "nota": "Confirmar: «el proceso alveolar tiene en promedio una matriz más joven y menos mineralizada que el borde basal». Deducido del recambio; el dato por región es menos firme (nota 19 del guion)."
+      },
+      {
+        "id": "c_clinico_la_lamina_dura_en",
+        "nota": "Confirmar: «en el hiperparatiroidismo secundario la pérdida completa de la lámina dura es poco frecuente». Se omite la cifra (una serie clínica cita alrededor de 10 % de los casos)."
+      },
+      {
+        "id": "c_clinico_la_deficiencia_de_vitamina",
+        "nota": "Confirmar: vitamina D y cicatrización del alvéolo o éxito del implante. Las revisiones muestran efecto más claro en animales y resultados dispares en personas; se redactó con cautela y sin cifras."
+      },
+      {
+        "id": "t_el_diente_delata_el_defecto",
+        "nota": "Confirmar edad de pérdida dental en hipofosfatasia («primeros años de vida») y hallazgos dentales del raquitismo por falta de vitamina D y del XLH (esmalte, erupción): varían con la forma y la edad."
       }
     ]
   },
@@ -578,6 +602,12 @@
           "tipo": "callout",
           "variante": "dato",
           "markdown": "El hueso guarda aproximadamente el 99 % del calcio del cuerpo y cerca del 85 % del fósforo."
+        },
+        {
+          "id": "t_el_osteoide_en_la_mandibula",
+          "tipo": "texto",
+          "titulo": "El osteoide en la mandíbula",
+          "markdown": "El proceso alveolar, la parte de la mandíbula que rodea las raíces de los dientes, es una zona de mineralización activa. Es un hueso de recambio alto: la carga de la masticación y el movimiento de los dientes lo remodelan sin descanso, así que en él se forma y se mineraliza matriz nueva con más frecuencia que en la mayor parte del esqueleto.\n\nEn animales, el recambio del hueso trabecular alveolar es varias veces mayor que el del fémur. Por eso, cuando la mineralización falla, sus efectos aparecen pronto en los dientes y en la radiografía dental (sección 4.8)."
         },
         {
           "id": "t_el_problema_que_resuelve_la",
@@ -1132,6 +1162,88 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m4_3_vesicula_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "La vesícula de matriz en 3D: así nace el primer cristal",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para seguir la vida de una vesícula de matriz, desde que brota del osteoblasto hasta que el pirofosfato frena el mineral. Gira la escena con un dedo y acércala con dos; con la lista de vistas puedes mirar dentro de la vesícula o de cerca los cristales. Visita los siete pasos: detente en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste la vida completa de una vesícula de matriz: brota del osteoblasto, concentra calcio y fosfato con sus anexinas, PiT-1, PHOSPHO1 y TNAP, forma el primer cristal en su cara interna, lo deja salir al osteoide, el mineral se propaga por las fibrillas y el pirofosfato lo frena hasta que la TNAP lo corta. Ese es el mismo orden de la animación y del arrastre de esta sección."
+            },
+            "concepto": "Vesículas de matriz: gemación, entrada de calcio y fosfato, nucleación, ruptura, propagación y freno del PPi",
+            "config": {
+              "modelo": "procedural",
+              "escena": "vesicula_matriz",
+              "alt": "Escena 3D: bajo la membrana ondulada de un osteoblasto, con sus enzimas, hay fibrillas de colágeno con bandeo. Una vesícula brota de la membrana, cae junto a una fibrilla, se llena de calcio y fosfato, forma un cristal que la rompe, el mineral cubre las fibrillas y el pirofosfato lo frena.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_osteoblasto",
+                    "t": 0,
+                    "titulo": "Los actores en la membrana",
+                    "vista": "general",
+                    "texto": "Arriba, la membrana basal de un **osteoblasto**; abajo, el [osteoide](glosario:osteoide): fibrillas de colágeno con su bandeo. En la cara externa de la membrana cuelgan las enzimas: la [TNAP](glosario:tnap) (naranja, anclada por [GPI](glosario:gpi_glicosilfosfatidilinositol)), [ENPP1](glosario:enpp1) (lila) y [ANKH](glosario:ankh) (verde agua), que producen y exportan pirofosfato. Faltan por aparecer las anexinas, PiT-1 y PHOSPHO1: viajarán con la vesícula. Todo está a escala esquemática."
+                  },
+                  {
+                    "id": "paso_gemacion",
+                    "t": 0.17,
+                    "titulo": "Brota una vesícula de matriz",
+                    "vista": "general",
+                    "texto": "La membrana forma un abultamiento que se estrangula y se desprende: es una [vesícula de matriz](glosario:vesicula_de_matriz), de unos 100 nm. Cae al osteoide y queda pegada a una fibrilla de colágeno. Lleva en su membrana **canales de anexina** (violeta), el **transportador de fosfato PiT-1** (verde agua) y **TNAP** por fuera; dentro va **PHOSPHO1** (marrón). Es un compartimento cerrado, protegido de los inhibidores del líquido extracelular."
+                  },
+                  {
+                    "id": "paso_acumulacion",
+                    "t": 0.34,
+                    "titulo": "Entran el calcio y el fosfato",
+                    "vista": "vesicula",
+                    "texto": "Por las [anexinas](glosario:anexinas_a2_a5_a6) entra **Ca2+** (amarillo) y se une a la fosfatidilserina de la hoja interna. El **fosfato** (verde) llega por PiT-1 desde fuera, lo libera la TNAP en la cara externa y lo genera dentro [PHOSPHO1](glosario:phospho1) a partir de fosfocolina y fosfoetanolamina. Mira cómo los iones cruzan la membrana y se acumulan sobre su cara interna: la vesícula concentra lo que fuera estaría diluido."
+                  },
+                  {
+                    "id": "paso_nucleacion",
+                    "t": 0.5,
+                    "titulo": "Nucleación: del ion al cristal",
+                    "vista": "interior",
+                    "texto": "La vesícula está cortada para mirar dentro. Cuando el producto de calcio y fosfato supera un umbral, los iones se juntan en un cúmulo de [fosfato de calcio amorfo](glosario:acp_fosfato_de_calcio_amorfo) sobre la cara interna de la membrana. Ese cúmulo se ordena y empieza a asomar el primer cristal de [hidroxiapatita](glosario:hidroxiapatita), una placa fina de unos 50 nm. Es la [nucleación](glosario:nucleacion): el paso más difícil, y por eso ocurre en un espacio protegido."
+                  },
+                  {
+                    "id": "paso_ruptura",
+                    "t": 0.66,
+                    "titulo": "El cristal rompe la membrana",
+                    "vista": "vesicula",
+                    "texto": "Los cristales crecen en abanico desde el sitio de nucleación, atraviesan la membrana y la rompen (gira la escena para verlos salir por detrás): la vesícula se aclara y se hunde, y las placas quedan expuestas al líquido extracelular, donde siguen creciendo. Lo que era un compartimento cerrado se convierte en un **foco de mineral** en el osteoide."
+                  },
+                  {
+                    "id": "paso_propagacion",
+                    "t": 0.83,
+                    "titulo": "El mineral se propaga por el colágeno",
+                    "vista": "general",
+                    "texto": "Las placas de hidroxiapatita se depositan en las **zonas de hueco** del bandeo de las fibrillas vecinas y crecen a lo largo de ellas: la mineralización avanza desde la vesícula hacia fuera. Alrededor, otras vesículas hacen lo mismo. Así arranca la **mineralización primaria** del osteoide; en el hueso laminar maduro, el peso de las vesículas frente a otros mecanismos aún se discute."
+                  },
+                  {
+                    "id": "paso_regulacion",
+                    "t": 1,
+                    "titulo": "El freno: pirofosfato y TNAP",
+                    "vista": "cristal",
+                    "texto": "Moléculas de [pirofosfato](glosario:pirofosfato_inorganico_ppi) (rojas, dos fosfatos unidos) se pegan a las caras de los cristales y detienen su crecimiento. Arriba, bajo la membrana del osteoblasto, la [TNAP](glosario:tnap) corta PPi en dos Pi (verdes) y lo libera; ENPP1 repone el PPi. La relación Pi/PPi decide si hay mineral: en la [hipofosfatasia](glosario:hipofosfatasia) falla la TNAP y el osteoide no mineraliza; sin ENPP1 el PPi baja y se calcifican tejidos blandos."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_osteoblasto",
+                "paso_gemacion",
+                "paso_acumulacion",
+                "paso_nucleacion",
+                "paso_ruptura",
+                "paso_propagacion",
+                "paso_regulacion"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m4_arrastre_mineralizacion",
             "tipo": "arrastre-molecular",
             "titulo": "Lleva cada molécula a su sitio en la vesícula",
@@ -1454,6 +1566,13 @@
           "alto": 600
         },
         {
+          "id": "c_clinico_los_implantes_dentales_se",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "Implantes dentales y mineralización",
+          "markdown": "Un implante dental se fija a la mandíbula por **osteointegración**: una unión directa entre el hueso alveolar y la superficie del titanio. Es la mineralización de este módulo aplicada a la clínica. Los osteoblastos llegan a la superficie del implante, secretan osteoide y este se mineraliza (osteogénesis por contacto). Después el remodelado sigue renovando ese hueso mientras el implante funciona. Si la mineralización o el recambio del hueso alveolar están alterados, la integración puede ser menos favorable."
+        },
+        {
           "id": "c_dato_a_medida_que_crece_el",
           "tipo": "callout",
           "variante": "dato",
@@ -1527,6 +1646,88 @@
                 "cristales_intrafibrilares",
                 "cristales_extrafibrilares",
                 "eje_c_cristales"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m4_4_matriz_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Del fragmento al cristal, en 3D",
+            "instrucciones": "Mueve el deslizador para acercarte por escalas hasta la fibrilla de colágeno y ver dónde crece el mineral: dentro de la fibrilla, en sus huecos, y sobre su superficie. Gira la escena con un dedo y acércala con dos. Visita los siete pasos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste la matriz hasta el cristal. Recuerda: el mineral intrafibrilar ocupa los huecos y el espacio entre moléculas; el extrafibrilar envuelve la fibrilla; y las proteínas no colágenas deciden dónde y cuánto crece."
+            },
+            "concepto": "Mineral intrafibrilar y extrafibrilar en la fibrilla de colágeno, y su efecto mecánico",
+            "config": {
+              "modelo": "procedural",
+              "escena": "matriz_osea",
+              "alt": "Escena 3D que se acerca por escalas a la matriz ósea: fragmento laminar, fibras de colágeno, fibrilla con moléculas escalonadas y huecos, cristales de hidroxiapatita dentro y fuera de la fibrilla, proteínas no colágenas y flechas de carga. Se gira, se acerca y se recorre con el deslizador.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_fragmento",
+                    "t": 0,
+                    "titulo": "Hueso laminar",
+                    "vista": "general",
+                    "texto": "Un fragmento de hueso laminar maduro. Ya sabes de qué está hecho; ahora la pregunta es **dónde** está el mineral y cómo llegó ahí. Los tamaños son esquemáticos."
+                  },
+                  {
+                    "id": "paso_fibras",
+                    "t": 0.17,
+                    "titulo": "Fibras de colágeno mineralizadas",
+                    "vista": "fibra",
+                    "texto": "Cada laminilla es un haz de fibras de colágeno tipo I ya mineralizadas. La orientación cambia de una laminilla a otra: por eso el hueso laminar resiste cargas en varias direcciones."
+                  },
+                  {
+                    "id": "paso_fibrilla",
+                    "t": 0.34,
+                    "titulo": "La fibrilla: la plantilla",
+                    "vista": "fibrilla",
+                    "texto": "Dentro de la fibra, las moléculas de colágeno se escalonan un cuarto de su longitud y dejan un patrón periódico de **67 nm**. Ese orden es la plantilla que decide dónde puede nacer el cristal."
+                  },
+                  {
+                    "id": "paso_huecos",
+                    "t": 0.5,
+                    "titulo": "Los huecos: el sitio de nucleación",
+                    "vista": "detalle",
+                    "texto": "Entre el final de una molécula y el inicio de la siguiente queda un **hueco** de unos 40 nm. Ahí nacerán los primeros cristales (siguiente paso): es el sitio del mineral **intrafibrilar**."
+                  },
+                  {
+                    "id": "paso_mineral",
+                    "t": 0.64,
+                    "titulo": "Placas de hidroxiapatita",
+                    "vista": "detalle",
+                    "texto": "Los cristales son **placas** finísimas (2 a 4 nm de grosor) alineadas con el eje de la fibrilla. Crecen desde los huecos a lo largo de la fibrilla y también sobre la superficie de la fibrilla, hacia las vecinas: el mineral **extrafibrilar**, que en el hueso maduro es la mayor parte (aquí se dibujan pocas placas)."
+                  },
+                  {
+                    "id": "paso_proteinas",
+                    "t": 0.78,
+                    "titulo": "Quién regula el cristal",
+                    "vista": "detalle",
+                    "texto": "Proteínas no colágenas como la **osteopontina** y la **osteocalcina** se pegan a las caras de los cristales y frenan o dirigen su crecimiento; la **fosfatasa alcalina** y el **pirofosfato** deciden si hay fosfato disponible para seguir."
+                  },
+                  {
+                    "id": "paso_carga",
+                    "t": 1,
+                    "titulo": "Un material compuesto",
+                    "vista": "carga",
+                    "texto": "Colágeno y mineral trabajan juntos: el colágeno aguanta la **tracción** y el mineral la **compresión**. Un hueso poco mineralizado (osteomalacia) se dobla; uno con colágeno defectuoso (osteogénesis imperfecta) se rompe."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_fragmento",
+                "paso_fibras",
+                "paso_fibrilla",
+                "paso_huecos",
+                "paso_mineral",
+                "paso_proteinas",
+                "paso_carga"
               ]
             }
           }
@@ -1991,6 +2192,19 @@
           "markdown": "\"primaria\" y \"secundaria\" aquí son fases de la *mineralización*. No las confundas con hueso primario (trenzado) y secundario (laminar), que describen la arquitectura de la matriz."
         },
         {
+          "id": "t_regiones_de_la_mandibula",
+          "tipo": "texto",
+          "titulo": "Regiones de la mandíbula",
+          "markdown": "En la mandíbula esta relación se ve bien. El borde basal y la cortical del cuerpo son hueso de recambio lento, con una matriz más envejecida y, en promedio, muy mineralizada. El proceso alveolar se renueva más rápido: su matriz es más joven y, en promedio, menos mineralizada. Por eso el hueso alveolar responde antes a los cambios de calcio, fosfato y PTH. Estas diferencias por región se conocen con menos firmeza que el principio general."
+        },
+        {
+          "id": "c_clinico_la_lamina_dura_en",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "La lámina dura en la radiografía",
+          "markdown": "La [lámina dura](glosario:lamina_dura), la cortical fina y muy mineralizada que reviste el alvéolo, se ve como una línea radiopaca alrededor de la raíz. Se ve blanca porque el haz de rayos X atraviesa de canto una pared de hueso mineralizado y suma mucho espesor. Es un reflejo indirecto de la mineralización y del recambio del hueso alveolar. Su pérdida o su adelgazamiento orientan hacia una enfermedad metabólica ósea, pero no es un signo sensible: en el hiperparatiroidismo secundario la pérdida completa es poco frecuente."
+        },
+        {
           "id": "t_marcadores_bioquimicos_de_formacion",
           "tipo": "texto",
           "titulo": "Marcadores bioquímicos de formación",
@@ -2321,6 +2535,13 @@
           "markdown": "Así se produce el defecto de mineralización por falta de vitamina D. Se absorbe poco calcio y poco fosfato, la PTH sube (hiperparatiroidismo secundario) y el riñón pierde más fosfato. El producto calcio por fosfato cae y el osteoide no se mineraliza."
         },
         {
+          "id": "c_clinico_la_deficiencia_de_vitamina",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "Vitamina D y hueso mandibular",
+          "markdown": "La deficiencia de vitamina D afecta a todo el esqueleto, también a la mandíbula. Tras una extracción dental, el alvéolo se rellena con hueso nuevo: osteoide que después debe mineralizarse. Con poco calcio y fosfato disponibles, la cicatrización del alvéolo y la formación de hueso alrededor de un implante pueden ser menos favorables. Los estudios sobre vitamina D e implantes dan resultados dispares: el efecto es más claro en animales que en personas. Corregir una deficiencia es una decisión clínica."
+        },
+        {
           "id": "c_atencion_la_vitamina_d_no",
           "tipo": "callout",
           "variante": "atencion",
@@ -2611,6 +2832,12 @@
           "markdown": "Aquí la mineralización no está bloqueada; lo que falla es el colágeno. Más del 80 % de los casos se deben a variantes en *COL1A1* o *COL1A2*.\n\n- **Tipo I (Sillence):** cantidad insuficiente de colágeno normal (por ejemplo, una copia inactiva de *COL1A1*). Forma leve, con escleras azuladas.\n- **Tipos II a IV:** colágeno estructuralmente anómalo, sobre todo por sustituciones de glicina que desestabilizan la triple hélice. Las formas van de letal en el período perinatal a deformante progresiva y variable.\n\nEl resultado son huesos frágiles. Curiosamente, la matriz de estos huesos suele tener una densidad mineral mayor que la normal, y aun así se rompe con facilidad. Algunos tipos se acompañan de dentinogénesis imperfecta."
         },
         {
+          "id": "t_el_diente_delata_el_defecto",
+          "tipo": "texto",
+          "titulo": "El diente delata el defecto de mineralización",
+          "markdown": "La dentina y el cemento (el tejido mineralizado que cubre la raíz y ancla el diente al ligamento periodontal) se mineralizan con mecanismos en buena parte compartidos con el hueso. Por eso, cuando la mineralización falla, el diente y el hueso alveolar lo muestran:\n\n- **Hipofosfatasia:** el cemento es hipoplásico o no se forma. El diente temporal se suelta con la raíz intacta y casi sin inflamación, en los primeros años de vida (con frecuencia, los incisivos primero).\n- **Raquitismo hipofosfatémico ligado al X:** la dentina se mineraliza mal, con espacios irregulares, y la cámara pulpar es amplia. Las bacterias llegan a la pulpa por microfisuras o por el desgaste del esmalte y aparece un absceso en un diente sin caries ni trauma. En los dientes permanentes puede haber también defectos del esmalte.\n- **Raquitismo por falta de vitamina D:** según la edad y la duración de la carencia, pueden verse retraso de la erupción, defectos del esmalte y de la dentina, y cámaras pulpares amplias."
+        },
+        {
           "id": "tb_tabla_enfermedad_defecto_de_base",
           "tipo": "tabla",
           "titulo": "Tabla: Enfermedad, Defecto de base, Hallazgo clave",
@@ -2653,10 +2880,24 @@
               ]
             },
             {
+              "criterio": "Odontohipofosfatasia",
+              "celdas": [
+                "Déficit de TNAP con manifestación solo dental",
+                "Pérdida precoz de dientes temporales con la raíz intacta, sin lesión esquelética"
+              ]
+            },
+            {
               "criterio": "Osteogénesis imperfecta",
               "celdas": [
                 "Variantes de COL1A1 o COL1A2",
                 "Huesos frágiles, escleras azuladas, dentinogénesis imperfecta en algunos tipos"
+              ]
+            },
+            {
+              "criterio": "XLH en los dientes",
+              "celdas": [
+                "Dentina mal mineralizada por la hipofosfatemia",
+                "Cámaras pulpares amplias y abscesos dentales sin caries ni trauma"
               ]
             }
           ]
@@ -2814,9 +3055,9 @@
                   "etiqueta": "Cortical del borde basal",
                   "descripcion": "Cortical gruesa y densa del borde inferior del cuerpo de la mandíbula. Su recambio es lento y su matriz tiene, en promedio, un grado alto de mineralización. Es la zona que se mide en la radiografía panorámica.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.05,
-                    "z": 0.55
+                    "x": 0.434,
+                    "y": 0.06,
+                    "z": 0.898
                   }
                 },
                 {
@@ -2824,9 +3065,9 @@
                   "etiqueta": "Proceso alveolar",
                   "descripcion": "Hueso que aloja las raíces dentarias. Tiene un recambio elevado por la carga oclusal y ortodóncica, así que su matriz es, en promedio, más joven y menos mineralizada. Suele reflejar antes que el borde basal los cambios de calcio, fosfato y PTH.",
                   "ancla": {
-                    "x": 0.22,
-                    "y": 0.5,
-                    "z": 0.6
+                    "x": 0.796,
+                    "y": 0.282,
+                    "z": 0.665
                   }
                 },
                 {
@@ -2834,9 +3075,9 @@
                   "etiqueta": "Lámina dura",
                   "descripcion": "Cortical fina que reviste el alvéolo (hueso alveolar propiamente dicho). En la radiografía es una línea radiopaca alrededor de la raíz. Puede desaparecer en el hiperparatiroidismo y adelgazarse en la osteomalacia.",
                   "ancla": {
-                    "x": 0.24,
-                    "y": 0.5,
-                    "z": 0.55
+                    "x": 0.211,
+                    "y": 0.325,
+                    "z": 0.661
                   }
                 },
                 {
@@ -2844,9 +3085,9 @@
                   "etiqueta": "Hueso trabecular del cuerpo",
                   "descripcion": "Hueso esponjoso entre las corticales. Su gran superficie lo hace muy sensible a los cambios de recambio y de mineralización. En los defectos de mineralización su trama puede verse difusa en la radiografía.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.3,
-                    "z": 0.5
+                    "x": 0.739,
+                    "y": 0.144,
+                    "z": 0.731
                   }
                 },
                 {
@@ -2854,9 +3095,9 @@
                   "etiqueta": "Cóndilo",
                   "descripcion": "La cabeza del cóndilo tiene una capa articular fibrosa y, debajo, un cartílago secundario que participa en el crecimiento por osificación endocondral hasta el adulto joven. Su cartílago hipertrófico se calcifica con un mecanismo de vesículas de matriz análogo al del cartílago de crecimiento.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.98,
-                    "z": 0.05
+                    "x": 0.915,
+                    "y": 1,
+                    "z": 0.052
                   }
                 },
                 {
@@ -2864,9 +3105,9 @@
                   "etiqueta": "Foramen mentoniano",
                   "descripcion": "Referencia para medir el espesor de la cortical en la radiografía panorámica (índice mentoniano), que se ha propuesto como cribado de baja densidad ósea.",
                   "ancla": {
-                    "x": 0.28,
-                    "y": 0.35,
-                    "z": 0.8
+                    "x": 0.292,
+                    "y": 0.176,
+                    "z": 0.768
                   }
                 }
               ],
@@ -2886,8 +3127,9 @@
             "id": "m4_evaluacion_final",
             "tipo": "quiz",
             "titulo": "Evaluación final del módulo 4",
-            "instrucciones": "Responde las 14 preguntas, sin límite de tiempo. Toca una opción (con teclado, Tab y Enter); en la de ordenar, arrastra los pasos. Verás la explicación tras cada respuesta. Al completar las obligatorias obtienes el logro Mineralizador.",
+            "instrucciones": "Responde las 16 preguntas, sin límite de tiempo. Toca una opción (con teclado, Tab y Enter); en la de ordenar, arrastra los pasos. Verás la explicación tras cada respuesta. Al completar las obligatorias obtienes el logro Mineralizador.",
             "obligatoria": true,
+            "aprobacion_min": 0.7,
             "puntaje_max": 100,
             "retroalimentacion": {
               "correcta": "Excelente: integras el osteoide, el colágeno, las vesículas, el pirofosfato, las proteínas no colágenas, el frente, la regulación hormonal y las patologías.",
@@ -3253,6 +3495,60 @@
                   "correcta": false,
                   "explicacion": "Es falso: ese es el mecanismo de la hipofosfatasia. La osteogénesis imperfecta es un defecto de la matriz, con variantes en COL1A1 o COL1A2 que producen colágeno tipo I insuficiente o defectuoso.",
                   "concepto": "Osteogénesis imperfecta",
+                  "dificultad": 2
+                },
+                {
+                  "id": "m4_f_hipofosfatasia_dientes",
+                  "formato": "opcion_multiple",
+                  "enunciado": "Una niña de 2 años pierde varios incisivos temporales sin golpes ni inflamación, con la raíz completa. Su fosfatasa alcalina sérica está baja. ¿Cuál es la explicación más probable?",
+                  "opciones": [
+                    {
+                      "id": "m4_f_hipofosfatasia_dientes_a",
+                      "texto": "Un exceso de FGF23: la dentina mal mineralizada deja pasar bacterias a la pulpa y forma un absceso."
+                    },
+                    {
+                      "id": "m4_f_hipofosfatasia_dientes_b",
+                      "texto": "Osteoclastos hiperactivos que resorben la raíz antes de tiempo, como en el recambio dentario normal."
+                    },
+                    {
+                      "id": "m4_f_hipofosfatasia_dientes_c",
+                      "texto": "Un déficit de TNAP: el cemento de la raíz es hipoplásico y el diente pierde su anclaje periodontal."
+                    },
+                    {
+                      "id": "m4_f_hipofosfatasia_dientes_d",
+                      "texto": "Un colágeno tipo I insuficiente en la dentina, con coronas opalescentes y frágiles."
+                    }
+                  ],
+                  "correctas": ["m4_f_hipofosfatasia_dientes_c"],
+                  "explicacion": "En la hipofosfatasia falta TNAP: el pirofosfato se acumula y el cemento de la raíz se forma mal o no se forma, así que el diente se suelta con la raíz intacta y sin inflamación. En el XLH el problema es la dentina, con abscesos, y en la osteogénesis imperfecta, el colágeno.",
+                  "concepto": "Hipofosfatasia en los dientes",
+                  "dificultad": 2
+                },
+                {
+                  "id": "m4_f_osteointegracion",
+                  "formato": "opcion_multiple",
+                  "enunciado": "En la osteointegración de un implante dental en la mandíbula, ¿qué ocurre sobre la superficie del titanio?",
+                  "opciones": [
+                    {
+                      "id": "m4_f_osteointegracion_a",
+                      "texto": "Los osteoblastos depositan osteoide que se mineraliza y queda en contacto directo con el implante."
+                    },
+                    {
+                      "id": "m4_f_osteointegracion_b",
+                      "texto": "Se forma un ligamento periodontal nuevo, con cemento y fibras que anclan el implante al alvéolo."
+                    },
+                    {
+                      "id": "m4_f_osteointegracion_c",
+                      "texto": "El titanio se transforma en hidroxiapatita al captar el calcio y el fosfato de la sangre."
+                    },
+                    {
+                      "id": "m4_f_osteointegracion_d",
+                      "texto": "El hueso alveolar no participa: el implante se sostiene solo por la presión mecánica sobre el hueso."
+                    }
+                  ],
+                  "correctas": ["m4_f_osteointegracion_a"],
+                  "explicacion": "La osteointegración es una unión directa entre el hueso y el implante: los osteoblastos secretan osteoide sobre la superficie y este se mineraliza, el mismo proceso de este módulo. El implante no forma ligamento periodontal ni cemento, y el titanio no se convierte en mineral.",
+                  "concepto": "Osteointegración de implantes",
                   "dificultad": 2
                 }
               ]

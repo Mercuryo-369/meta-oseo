@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" stroke-linejoin="round" stroke-linecap="round" font-family="ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+<!-- m6_prevencion_mapa. Esquema conceptual, no anatómico (se muestra como imagen). Arriba, las cinco medidas de prevención (verde), cada una con una flecha al mecanismo que aprovecha; en el centro, el hueso como blanco; abajo y aparte, los dos grupos de fármacos (ámbar), con etiquetas neutras y sin dosis. -->
+<title>Mapa de prevención y de fármacos</title>
+<desc>Esquema conceptual. En el centro está el hueso como blanco. Arriba, cinco medidas de prevención y el mecanismo sobre el que actúa cada una: la carga mecánica, sobre el osteocito y la esclerostina; el calcio, sobre el mineral de la matriz; la vitamina D, sobre la absorción de calcio; los hábitos saludables, sobre la formación ósea; y la prevención de caídas, que reduce los impactos sobre el hueso. Abajo y aparte, dos grupos de fármacos: los antirreabsortivos, que actúan sobre el osteoclasto y RANKL, y los anabólicos, que actúan sobre la vía Wnt y el osteoblasto.</desc>
+<g id="fondo_lamina">
+<rect x="4" y="4" width="792" height="592" rx="14" fill="#f1edfa" stroke="#2b2350" stroke-width="4"/>
+<text x="16" y="34" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Prevención</text>
+</g>
+<g id="hueso_diana">
+<g stroke="#2b2350" stroke-width="12">
+<rect x="72" y="296" width="656" height="60" rx="0" fill="#2b2350"/>
+<circle cx="68" cy="288" r="34" fill="#2b2350"/>
+<circle cx="68" cy="364" r="34" fill="#2b2350"/>
+<circle cx="732" cy="288" r="34" fill="#2b2350"/>
+<circle cx="732" cy="364" r="34" fill="#2b2350"/>
+</g>
+<g fill="#d98aa2" stroke="none">
+<rect x="72" y="296" width="656" height="60" rx="0"/>
+<circle cx="68" cy="288" r="34"/>
+<circle cx="68" cy="364" r="34"/>
+<circle cx="732" cy="288" r="34"/>
+<circle cx="732" cy="364" r="34"/>
+</g>
+<path d="M130 312Q180 322 230 312M560 312Q610 322 670 312M130 342Q190 332 250 342M550 342Q620 332 670 342" stroke="#b0607d" stroke-width="3"/>
+<text x="400" y="338" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Hueso</text>
+</g>
+<g id="pilar_carga_mecanica">
+<rect x="12" y="46" width="140" height="84" rx="14" fill="#b9cf8f" stroke="#2b2350" stroke-width="4"/>
+<text x="82" y="82" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Carga</text>
+<text x="82" y="114" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">mecánica</text>
+<path d="M82 130V148" stroke="#2b2350" stroke-width="5"/>
+<path d="M82 164L72 148H92Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="8" y="164" width="148" height="52" rx="14" fill="#cfe2f8" stroke="#2b2350" stroke-width="3"/>
+<text x="82" y="199" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Osteocito</text>
+<path d="M82 216V236" stroke="#2b2350" stroke-width="5"/>
+<path d="M82 252L72 236H92Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="pilar_calcio">
+<rect x="171" y="46" width="140" height="84" rx="14" fill="#b9cf8f" stroke="#2b2350" stroke-width="4"/>
+<text x="241" y="98" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Calcio</text>
+<path d="M241 130V148" stroke="#2b2350" stroke-width="5"/>
+<path d="M241 164L231 148H251Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="167" y="164" width="148" height="52" rx="14" fill="#cfe2f8" stroke="#2b2350" stroke-width="3"/>
+<text x="241" y="199" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Mineral</text>
+<path d="M241 216V274" stroke="#2b2350" stroke-width="5"/>
+<path d="M241 290L231 274H251Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="pilar_vitamina_d">
+<rect x="330" y="46" width="140" height="84" rx="14" fill="#b9cf8f" stroke="#2b2350" stroke-width="4"/>
+<text x="400" y="82" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Vitamina</text>
+<text x="400" y="114" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">D</text>
+<path d="M400 130V148" stroke="#2b2350" stroke-width="5"/>
+<path d="M400 164L390 148H410Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="326" y="164" width="148" height="52" rx="14" fill="#cfe2f8" stroke="#2b2350" stroke-width="3"/>
+<text x="400" y="199" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Absorción</text>
+<path d="M400 216V274" stroke="#2b2350" stroke-width="5"/>
+<path d="M400 290L390 274H410Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="pilar_habitos">
+<rect x="489" y="46" width="140" height="84" rx="14" fill="#b9cf8f" stroke="#2b2350" stroke-width="4"/>
+<text x="559" y="98" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Hábitos</text>
+<path d="M559 130V148" stroke="#2b2350" stroke-width="5"/>
+<path d="M559 164L549 148H569Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="485" y="164" width="148" height="52" rx="14" fill="#cfe2f8" stroke="#2b2350" stroke-width="3"/>
+<text x="559" y="199" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Formación</text>
+<path d="M559 216V274" stroke="#2b2350" stroke-width="5"/>
+<path d="M559 290L549 274H569Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="pilar_caidas">
+<rect x="648" y="46" width="140" height="84" rx="14" fill="#b9cf8f" stroke="#2b2350" stroke-width="4"/>
+<text x="718" y="98" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Caídas</text>
+<path d="M718 130V148" stroke="#2b2350" stroke-width="5"/>
+<path d="M718 164L708 148H728Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="644" y="164" width="148" height="52" rx="14" fill="#cfe2f8" stroke="#2b2350" stroke-width="3"/>
+<text x="718" y="199" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Impacto</text>
+<path d="M718 216V236" stroke="#2b2350" stroke-width="5"/>
+<path d="M718 252L708 236H728Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="palanca_antirreabsortivos">
+<rect x="30" y="512" width="360" height="78" rx="14" fill="#e2a12e" stroke="#2b2350" stroke-width="4"/>
+<text x="210" y="546" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Fármacos</text>
+<text x="210" y="578" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">antirreabsortivos</text>
+<path d="M210 512V498" stroke="#2b2350" stroke-width="5"/>
+<path d="M210 482L200 498H220Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="40" y="424" width="340" height="56" rx="14" fill="#f8e3ea" stroke="#2b2350" stroke-width="3"/>
+<text x="210" y="460" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Osteoclasto y RANKL</text>
+<path d="M210 424V382" stroke="#2b2350" stroke-width="5"/>
+<path d="M210 366L200 382H220Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+<g id="palanca_anabolicos">
+<rect x="410" y="512" width="360" height="78" rx="14" fill="#e2a12e" stroke="#2b2350" stroke-width="4"/>
+<text x="590" y="546" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Fármacos</text>
+<text x="590" y="578" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">anabólicos</text>
+<path d="M590 512V498" stroke="#2b2350" stroke-width="5"/>
+<path d="M590 482L580 498H600Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+<rect x="420" y="424" width="340" height="56" rx="14" fill="#f8e3ea" stroke="#2b2350" stroke-width="3"/>
+<text x="590" y="460" font-size="30" text-anchor="middle" fill="#2b2350" stroke="none">Wnt y osteoblasto</text>
+<path d="M590 424V382" stroke="#2b2350" stroke-width="5"/>
+<path d="M590 366L580 382H600Z" fill="#2b2350" stroke="#2b2350" stroke-width="2"/>
+</g>
+</svg>

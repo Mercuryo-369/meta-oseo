@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" stroke-linejoin="round" stroke-linecap="round" font-family="ui-sans-serif, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+<!-- m6_atm_cambios_degenerativos. Figura (se muestra como imagen): corte sagital de la ATM con la boca cerrada, anterior a la izquierda. Panel superior normal, panel inferior con cambios degenerativos. Las superficies articulares llevan fibrocartílago (línea fina), no cartílago hialino. Esquema sin escala. Cada panel usa coordenadas locales (0 a 776 por 0 a 276) desplazadas con translate. -->
+<title>Articulación temporomandibular: normal y degenerativa</title>
+<desc>Corte sagital esquemático de la articulación temporomandibular con la boca cerrada, con la parte anterior a la izquierda. Panel superior, normal: fosa mandibular y eminencia articular del hueso temporal, cóndilo mandibular convexo con una lámina fina de hueso subcondral, fibrocartílago fino sobre las superficies articulares y disco articular bicóncavo, más grueso en sus bandas anterior y posterior. Panel inferior, con cambios degenerativos: cóndilo aplanado, osteofito en el borde anterior, esclerosis subcondral y disco adelgazado y desplazado hacia delante.</desc>
+<g id="fondo_lamina">
+<rect x="4" y="4" width="792" height="592" rx="14" fill="#f1edfa" stroke="#2b2350" stroke-width="4"/>
+<rect x="12" y="10" width="776" height="276" rx="12" fill="#fbfaff" stroke="#2b2350" stroke-width="2.5"/>
+<rect x="12" y="314" width="776" height="276" rx="12" fill="#fbfaff" stroke="#2b2350" stroke-width="2.5"/>
+<text x="776" y="272" font-size="30" text-anchor="end" font-weight="600" fill="#2b2350" stroke="none">Normal</text>
+<text x="776" y="576" font-size="30" text-anchor="end" font-weight="600" fill="#2b2350" stroke="none">Degenerativa</text>
+</g>
+<g id="fosa_mandibular">
+<g transform="translate(12 10)">
+<path d="M0 0H776V72Q640 70 560 74Q540 76 528 96Q516 108 500 90Q470 62 440 60Q400 56 370 62Q340 70 318 92Q296 112 270 106Q248 100 228 82Q200 70 150 70Q60 72 0 74Z" fill="#d98aa2" stroke="#2b2350" stroke-width="4"/>
+<path d="M60 40Q100 46 130 36M560 30Q600 40 650 28M330 24Q380 30 430 22M690 50Q730 56 770 46" stroke="#c87a97" stroke-width="3"/>
+<text x="404" y="42" font-size="30" text-anchor="middle" font-weight="600" fill="#2b2350" stroke="none">Fosa</text>
+</g>
+<g transform="translate(12 314)">
+<path d="M0 0H776V72Q640 70 560 74Q540 76 528 96Q516 108 500 90Q470 62 440 60Q400 56 370 62Q340 70 318 92Q296 112 270 106Q248 100 228 82Q200 70 150 70Q60 72 0 74Z" fill="#d98aa2" stroke="#2b2350" stroke-width="4"/>
+<path d="M60 40Q100 46 130 36M560 30Q600 40 650 28M330 24Q380 30 430 22M690 50Q730 56 770 46" stroke="#c87a97" stroke-width="3"/>
+</g>
+</g>
+<g id="eminencia_articular">
+<g transform="translate(12 10)">
+<path d="M176 70Q205 70 228 82Q248 100 270 106Q296 112 318 92Q326 82 336 72Z" fill="#b0607d" stroke="#2b2350" stroke-width="3"/>
+<text x="20" y="48" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Eminencia</text>
+</g>
+<g transform="translate(12 314)">
+<path d="M176 70Q205 70 228 82Q248 100 270 106Q296 112 318 92Q326 82 336 72Z" fill="#b0607d" stroke="#2b2350" stroke-width="3"/>
+</g>
+</g>
+<g id="condilo_mandibular">
+<g transform="translate(12 10)">
+<path d="M314 142Q314 98 390 98Q466 98 466 142Q466 170 440 188L430 232L436 276H344L350 232L340 188Q314 170 314 142Z" fill="#d98aa2" stroke="#2b2350" stroke-width="4"/>
+<path d="M326 142Q326 112 390 110Q454 112 454 142Q454 168 434 182L424 232L428 270H352L356 232L346 182Q326 168 326 142Z" fill="#ecb8c8"/>
+<path d="M366 156Q380 176 372 200M410 150Q420 176 412 204M386 226Q392 246 388 262" stroke="#c87a97" stroke-width="3"/>
+<text x="304" y="184" font-size="30" text-anchor="end" font-weight="600" fill="#2b2350" stroke="none">Cóndilo</text>
+</g>
+<g transform="translate(12 314)">
+<path d="M306 156Q306 134 328 126L452 124Q474 134 474 156Q474 180 446 198L432 232L438 276H342L348 232L334 198Q306 180 306 156Z" fill="#d98aa2" stroke="#2b2350" stroke-width="4"/>
+<path d="M318 158Q318 140 336 134L444 132Q462 140 462 158Q462 174 440 188L426 232L430 270H350L354 232L340 188Q318 174 318 158Z" fill="#ecb8c8"/>
+<path d="M366 170Q380 188 372 206M410 166Q420 188 412 208M386 230Q392 248 388 262" stroke="#c87a97" stroke-width="3"/>
+</g>
+</g>
+<g id="hueso_subcondral">
+<g transform="translate(12 10)">
+<path d="M334 140Q342 118 390 114Q438 118 446 140" stroke="#b0607d" stroke-width="7"/>
+<text x="292" y="226" font-size="30" text-anchor="end" font-weight="600" fill="#2b2350" stroke="none">Hueso subcondral</text>
+<path d="M298 218L340 124" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="340" cy="124" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+<g id="esclerosis_subcondral">
+<g transform="translate(12 314)">
+<path d="M332 144L448 142" stroke="#a8506f" stroke-width="16"/>
+<path d="M340 150L440 148" stroke="#2b2350" stroke-width="3" stroke-dasharray="3 6"/>
+<text x="500" y="204" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Esclerosis</text>
+<path d="M496 198L436 146" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="436" cy="146" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+<g id="fibrocartilago_articular">
+<g transform="translate(12 10)">
+<path d="M150 74Q200 72 228 84Q248 102 270 108Q296 114 318 94Q340 72 370 64Q400 58 440 62Q470 64 500 92Q516 110 528 98" stroke="#5d8fbf" stroke-width="4"/>
+<path d="M318 140Q318 100 390 100Q462 100 462 140" stroke="#5d8fbf" stroke-width="4"/>
+<text x="500" y="218" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Fibrocartílago</text>
+<path d="M496 208L462 130" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="462" cy="130" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+<g transform="translate(12 314)">
+<path d="M150 74Q200 72 228 84Q248 102 270 108Q296 114 318 94Q340 72 370 64Q400 58 440 62Q470 64 500 92Q516 110 528 98" stroke="#5d8fbf" stroke-width="4" stroke-dasharray="14 8"/>
+<path d="M328 128L452 126" stroke="#5d8fbf" stroke-width="4" stroke-dasharray="14 8"/>
+</g>
+</g>
+<g id="disco_articular">
+<g transform="translate(12 10)">
+<path d="M294 116Q294 94 320 90Q346 88 364 76Q388 64 412 70Q438 76 452 74Q486 68 494 96Q498 124 476 130Q456 134 440 112Q420 92 392 92Q364 92 348 116Q334 134 314 132Q294 132 294 116Z" fill="#86b3da" stroke="#2b2350" stroke-width="4"/>
+<text x="560" y="176" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Disco</text>
+<path d="M556 168L494 116" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="494" cy="116" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+<g id="disco_desplazado">
+<g transform="translate(12 314)">
+<path d="M240 118Q252 110 280 114Q312 118 336 112Q348 120 334 130Q300 134 268 128Q244 128 240 118Z" fill="#86b3da" stroke="#2b2350" stroke-width="4"/>
+<text x="8" y="136" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Disco</text>
+<text x="8" y="168" font-size="30" font-weight="600" fill="#2b2350" stroke="none">desplazado</text>
+<path d="M100 122L238 118" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="240" cy="118" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+<g id="osteofito_condilar">
+<g transform="translate(12 314)">
+<path d="M309 140L282 124Q276 128 282 138L294 160L309 168Z" fill="#d98aa2" stroke="#2b2350" stroke-width="4"/>
+<text x="8" y="228" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Osteofito</text>
+<path d="M160 220L286 138" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="286" cy="138" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+<g id="aplanamiento_condilar">
+<g transform="translate(12 314)">
+<path d="M314 142Q314 98 390 98Q466 98 466 142" stroke="#2b2350" stroke-width="3" stroke-dasharray="9 7" opacity="0.7"/>
+<path d="M330 124L452 122" stroke="#e58c3c" stroke-width="6"/>
+<text x="500" y="148" font-size="30" font-weight="600" fill="#2b2350" stroke="none">Aplanamiento</text>
+<path d="M496 140L456 124" stroke="#2b2350" stroke-width="2.5"/>
+<circle cx="456" cy="124" r="4.5" fill="#2b2350" stroke="none"/>
+</g>
+</g>
+</svg>

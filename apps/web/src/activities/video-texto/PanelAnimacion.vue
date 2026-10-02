@@ -22,6 +22,7 @@ import { textoPlanoDeMarkdown } from '@/content/markdown';
 import type { ConfigAnimacion } from '@/content/schema';
 import type { DetalleVideoTexto, InteraccionActividad, JsonObjeto } from '@/activities/types';
 import { leerInstantaneaAnimacion } from './instantanea';
+import { prefijoDeIds } from '@/activities/idsUnicos';
 import { aplicarPaso, cargarSvg } from './svgAnimacion';
 import type { SvgListo } from './svgAnimacion';
 import TextoMarkdown from './TextoMarkdown.vue';
@@ -210,7 +211,7 @@ async function cargar(): Promise<void> {
   try {
     const listo = await cargarSvg(
       props.config.svg,
-      `${props.actividadId}__`,
+      prefijoDeIds(props.actividadId),
       props.config.viewBox,
       propio.signal,
     );

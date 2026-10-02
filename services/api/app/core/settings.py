@@ -5,10 +5,12 @@ calcula respecto a `services/api`, así funciona desde cualquier directorio de t
 Las variables de entorno tienen prioridad sobre el `.env`. Ver `.env.example`.
 """
 
+import ipaddress
 import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Literal
+from urllib.parse import urlsplit
 
 from fastapi import Depends, Request
 from pydantic import Field, field_validator, model_validator
@@ -21,12 +23,34 @@ REPO_ROOT = API_DIR.parents[1]
 # Manifiesto de actividades por defecto (lo genera `python -m app.scripts.build_manifest`).
 DEFAULT_MANIFEST_PATH = API_DIR / "app" / "data" / "actividades_manifest.json"
 
+# Corpus del mentor (lo genera `python -m app.scripts.build_corpus`, F3-01).
+DEFAULT_CORPUS_PATH = API_DIR / "app" / "data" / "corpus.jsonl"
+
 # Valor por defecto de SECRET_KEY: solo sirve en desarrollo. Mide más de 32 bytes para que
 # PyJWT no avise de clave HMAC corta (RFC 7518 §3.2).
 DEFAULT_SECRET_KEY = "cambiar-en-produccion-clave-solo-para-desarrollo"
 # Valores de ejemplo conocidos que nunca deben usarse en producción.
 INSECURE_SECRET_KEYS = frozenset({DEFAULT_SECRET_KEY, "cambiar-en-produccion"})
 MIN_PROD_SECRET_LENGTH = 32
+
+
+def is_local_url(value: str) -> bool:
+    """`True` si la URL apunta a esta misma máquina: `localhost` (y `*.localhost`), 127.0.0.0/8,
+    `::1` o `0.0.0.0`. Tolera una URL sin esquema (`localhost:8080`)."""
+    text = value.strip()
+    try:
+        host = urlsplit(text if "://" in text else f"//{text}").hostname
+    except ValueError:
+        return False
+    if not host:
+        return False
+    if host == "localhost" or host.endswith(".localhost"):
+        return True
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    return address.is_loopback or address.is_unspecified
 
 
 class Settings(BaseSettings):
@@ -60,6 +84,20 @@ class Settings(BaseSettings):
     # clasificador de seguridad rechaza la consulta. Activo por defecto con `claude-opus-5`. Si la
     # organización no tiene habilitada esa beta, cada consulta da error: ponerlo en `false`.
     mentor_server_fallback: bool = True
+    # Límite diario de mensajes del estudiante al mentor (F3-10), además del límite por minuto.
+    # El día es el calendario de Colombia (UTC-5). 0 desactiva el límite.
+    mentor_max_mensajes_dia: int = Field(default=60, ge=0)
+    # Cuota diaria propia de los quizzes de práctica del mentor (F4-03), por estudiante y además del
+    # límite por minuto. Mismo día que el límite de mensajes. 0 la desactiva.
+    mentor_max_quiz_dia: int = Field(default=20, ge=0)
+
+    # Recuperación del material del curso (RAG, F3-01/F3-02). `RAG_BACKEND=bm25` es la única
+    # implementación hoy; `pgvector` queda reservada para cuando se monte Docker (F6-10).
+    # `RAG_CORPUS_PATH` vacía desactiva la recuperación (el mentor responde sin material del
+    # curso); una ruta explícita que no existe es un error de arranque.
+    rag_backend: Literal["bm25", "pgvector"] = "bm25"
+    rag_corpus_path: Path | None = DEFAULT_CORPUS_PATH
+    mentor_rag_top_k: int = Field(default=5, ge=1, le=10)
 
     # Precios para ESTIMAR el costo del mentor en el panel docente (F6-03), en USD por millón de
     # tokens. Por defecto, las tarifas de `claude-opus-5` (5 USD entrada, 25 USD salida). Son una
@@ -87,6 +125,13 @@ class Settings(BaseSettings):
             return None
         return value
 
+    @field_validator("rag_corpus_path", mode="before")
+    @classmethod
+    def _empty_corpus_path_disables(cls, value: object) -> object:
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
     @field_validator("public_base_url")
     @classmethod
     def _clean_public_base_url(cls, value: str) -> str:
@@ -99,6 +144,11 @@ class Settings(BaseSettings):
             self.activities_manifest_path is not None
             and self.activities_manifest_path != DEFAULT_MANIFEST_PATH
         )
+
+    @property
+    def corpus_is_explicit(self) -> bool:
+        """`True` si la ruta del corpus no es la de por defecto (entonces debe existir)."""
+        return self.rag_corpus_path is not None and self.rag_corpus_path != DEFAULT_CORPUS_PATH
 
     @field_validator("database_url")
     @classmethod
@@ -131,6 +181,12 @@ class Settings(BaseSettings):
                 raise ValueError(
                     f"SECRET_KEY debe tener al menos {MIN_PROD_SECRET_LENGTH} caracteres "
                     "cuando ENV=prod."
+                )
+            if is_local_url(self.public_base_url):
+                raise ValueError(
+                    "PUBLIC_BASE_URL apunta a localhost o 127.0.0.1: el certificado saldría con "
+                    "un enlace de verificación falso. Define la dirección pública del sitio para "
+                    "ENV=prod (por ejemplo: https://ova.midominio.edu)."
                 )
         return self
 

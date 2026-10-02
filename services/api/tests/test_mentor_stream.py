@@ -27,6 +27,7 @@ from tests.test_mentor_fakes import (
     parse_sse,
     post_chat,
     text_block,
+    without_informative,
 )
 
 fake = fakes.fake_fixture
@@ -84,7 +85,7 @@ def test_refusal_emite_usage_y_error_refusal_con_mensaje_amable(
     )
     response = post_chat(mentor_client, auth["headers"])
     assert response.status_code == 200  # el rechazo llega como evento, no como HTTP de error
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
 
     assert event_names(events) == ["text", "usage", "error"]
     assert_single_terminal(events, "error")
@@ -105,7 +106,7 @@ def test_refusal_antes_de_generar_texto(mentor_client: TestClient, fake, auth):
             *message_end("refusal", output_tokens=0, stop_details={"type": "refusal"}),
         ]
     )
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert event_names(events) == ["usage", "error"]
     assert events[-1][1]["code"] == "refusal"
 
@@ -113,7 +114,7 @@ def test_refusal_antes_de_generar_texto(mentor_client: TestClient, fake, auth):
 def test_refusal_sin_stop_details_tambien_se_reconoce(mentor_client: TestClient, fake, auth):
     # `stop_details` puede ser null incluso en un rechazo: manda `stop_reason`.
     fake.respond_with([message_start(), *message_end("refusal", output_tokens=0)])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert events[-1][1]["code"] == "refusal"
 
 
@@ -147,7 +148,7 @@ def test_el_fallback_del_servidor_a_mitad_de_respuesta_es_transparente(
         ]
     )
     response = post_chat(mentor_client, auth["headers"])
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
     assert [d["delta"] for n, d in events if n == "text"] == ["Primera parte. ", "Segunda parte."]
     assert_single_terminal(events, "done")
     assert "fallback" not in response.text
@@ -167,7 +168,7 @@ def test_max_tokens_conserva_el_texto_y_termina_con_error_max_tokens(
             *message_end("max_tokens", output_tokens=16000),
         ]
     )
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert event_names(events) == ["text", "usage", "error"]
     assert_single_terminal(events, "error")
     assert events[-1][1] == {"code": "max_tokens", "message": errors.MESSAGE_MAX_TOKENS}
@@ -180,14 +181,14 @@ def test_stop_reason_inesperado_es_upstream_error(
     mentor_client: TestClient, fake, auth, stop_reason
 ):
     fake.respond_with([message_start(), *text_block(0, "x"), *message_end(stop_reason)])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert_single_terminal(events, "error")
     assert events[-1][1]["code"] == "upstream_error"
 
 
 def test_stop_sequence_cuenta_como_fin_normal(mentor_client: TestClient, fake, auth):
     fake.respond_with([message_start(), *text_block(0, "x"), *message_end("stop_sequence")])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert events[-1] == ("done", {"stop_reason": "stop_sequence"})
 
 
@@ -220,7 +221,7 @@ def test_error_http_del_proveedor_se_traduce_al_codigo_del_contrato(
     response = post_chat(mentor_client, auth["headers"])
 
     assert response.status_code == 200  # ya se abrió el stream: el fallo viaja como evento
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
     assert event_names(events) == ["error"]  # sin texto ni usage
     assert events[0][1] == {"code": code, "message": message}
     assert_no_leak(response.text)
@@ -250,7 +251,7 @@ NETWORK_FAILURES = [
 def test_fallo_de_red_al_abrir_la_conexion(mentor_client: TestClient, fake, auth, failure, message):
     fake.raise_on_request(failure)
     response = post_chat(mentor_client, auth["headers"])
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
     assert event_names(events) == ["error"]
     assert events[0][1] == {"code": "upstream_error", "message": message}
     assert_no_leak(response.text)
@@ -270,7 +271,7 @@ def test_un_error_inesperado_dentro_del_generador_no_filtra_detalles(
     fake.respond_raw(fakes.streamed_response(stream))
     with caplog.at_level(logging.WARNING, logger="ova.mentor"):
         response = post_chat(mentor_client, auth["headers"])
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
     assert events == [("error", {"code": "upstream_error", "message": errors.MESSAGE_UPSTREAM})]
     assert_no_leak(response.text)
     # Un error nuestro se registra como ERROR (con traza) en el servidor.
@@ -310,7 +311,7 @@ def test_evento_error_del_proveedor_a_mitad_del_stream(
         ]
     )
     response = post_chat(mentor_client, auth["headers"])
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
 
     assert event_names(events) == ["text", "error"]  # sin `usage`: el proveedor no informó el final
     assert_single_terminal(events, "error")
@@ -328,7 +329,7 @@ def test_corte_de_red_a_mitad_del_stream(mentor_client: TestClient, fake, auth, 
     )
     fake.respond_raw(fakes.streamed_response(stream))
     response = post_chat(mentor_client, auth["headers"])
-    parsed = parse_sse(response.text)
+    parsed = without_informative(parse_sse(response.text))
 
     assert event_names(parsed) == ["text", "error"]
     assert parsed[-1][1] == {"code": "upstream_error", "message": errors.MESSAGE_CONNECTION}
@@ -343,7 +344,7 @@ def test_timeout_de_lectura_a_mitad_del_stream(mentor_client: TestClient, fake, 
         fail_with=httpx2.ReadTimeout("lectura"),
     )
     fake.respond_raw(fakes.streamed_response(stream))
-    parsed = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    parsed = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert parsed[-1][1] == {"code": "upstream_error", "message": errors.MESSAGE_TIMEOUT}
 
 
@@ -352,7 +353,7 @@ def test_stream_cortado_sin_mensaje_final_es_upstream_error(
 ):
     # Anthropic cerró la conexión sin `message_delta` ni `message_stop`.
     fake.respond_with([message_start(input_tokens=12), *text_block(0, "Se corta")])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert event_names(events) == ["text", "error"]  # sin `usage`: no hubo cifra final
     assert events[-1][1] == {"code": "upstream_error", "message": errors.MESSAGE_INCOMPLETE}
     assert usage_rows(db_session)[0].input_tokens == 12
@@ -362,7 +363,7 @@ def test_respuesta_vacia_del_proveedor_es_upstream_error(
     mentor_client: TestClient, fake, auth, db_session
 ):
     fake.respond_with([])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert events == [("error", {"code": "upstream_error", "message": errors.MESSAGE_INCOMPLETE})]
     assert usage_rows(db_session) == []
 

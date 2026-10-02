@@ -324,8 +324,22 @@ def parse_sse(raw: str) -> list[tuple[str, Any]]:
     return parsed
 
 
-def event_names(events: list[tuple[str, Any]]) -> list[str]:
+# Eventos informativos que abren o preceden al cierre (F3-05, F3-09, F3-11): no forman parte de la
+# secuencia de texto y cierre que prueban los tests de streaming; se prueban en
+# `test_mentor_sesion.py`. `event_names` los omite y `event_names_all` los conserva.
+INFORMATIVE_EVENTS = frozenset({"sesion", "citas", "mensaje"})
+
+
+def event_names_all(events: list[tuple[str, Any]]) -> list[str]:
     return [name for name, _ in events if name != "comment"]
+
+
+def event_names(events: list[tuple[str, Any]]) -> list[str]:
+    return [name for name in event_names_all(events) if name not in INFORMATIVE_EVENTS]
+
+
+def without_informative(events: list[tuple[str, Any]]) -> list[tuple[str, Any]]:
+    return [(name, data) for name, data in events if name not in INFORMATIVE_EVENTS]
 
 
 def chat_body(*contents: str, **extra: Any) -> dict[str, Any]:

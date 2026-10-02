@@ -803,6 +803,88 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m3_1_dos_rutas_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Dos rutas en 3D: intramembranosa y endocondral, lado a lado",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir: a la izquierda se forma un hueso plano sin cartílago y a la derecha un hueso largo sobre un molde de cartílago, a la vez. Gira la escena con un dedo y acércala con dos. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste las dos rutas de principio a fin. Fíjate en el final: el hueso laminar de la izquierda y el de la derecha son el mismo tejido; lo que cambió fue el andamio sobre el que los osteoblastos depositaron el osteoide."
+            },
+            "concepto": "Osificación intramembranosa y endocondral en paralelo: del mesénquima al hueso laminar",
+            "config": {
+              "modelo": "procedural",
+              "escena": "dos_rutas_osificacion",
+              "alt": "Escena 3D esquemática con dos paneles. Izquierda: un hueso plano se forma por osificación intramembranosa (mesénquima, osteoblastos, espículas, vasos, tablas, osteonas). Derecha: un hueso largo por osificación endocondral (molde de cartílago, collar, centro primario, placas de crecimiento).",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_mesenquima",
+                    "t": 0,
+                    "titulo": "Mesénquima: el punto de partida común",
+                    "vista": "general",
+                    "texto": "Las dos rutas empiezan igual: células mesenquimales fusiformes, dispersas en una matriz translúcida (los vasos que la irrigan aún no se dibujan). Todavía nada indica si de aquí saldrá un hueso plano (izquierda) o un hueso largo (derecha). La escala de tiempo es didáctica, no proporcional."
+                  },
+                  {
+                    "id": "paso_condensacion",
+                    "t": 0.15,
+                    "titulo": "Condensación mesenquimatosa",
+                    "vista": "general",
+                    "texto": "Las células se agrupan en una masa densa con la forma del futuro hueso: aplanada a la izquierda, alargada a la derecha. Esta [condensación](glosario:condensacion_mesenquimatosa) es la primera decisión: qué tan grande y con qué forma será el hueso."
+                  },
+                  {
+                    "id": "paso_diferenciacion",
+                    "t": 0.3,
+                    "titulo": "Osteoblastos o condrocitos",
+                    "vista": "intramembranosa",
+                    "texto": "Aquí se separan los caminos. A la izquierda, [RUNX2](glosario:runx2) vuelve cúbicas a las células: son [**osteoblastos**](glosario:osteoblasto) y ya secretan un islote de [**osteoide**](glosario:osteoide). A la derecha, SOX9 las convierte en condrocitos redondos, cada uno en su laguna, dentro de un molde de cartílago hialino con la forma de un hueso largo y rodeado de pericondrio."
+                  },
+                  {
+                    "id": "paso_crecimiento",
+                    "t": 0.45,
+                    "titulo": "Espículas y molde que crece",
+                    "vista": "endocondral",
+                    "texto": "Izquierda: el osteoide se mineraliza y forma espículas de [hueso inmaduro](glosario:hueso_inmaduro_fibrilar) que se ramifican, con osteoblastos en sus bordes y algunos atrapados dentro como [osteocitos](glosario:osteocito). Derecha: los condrocitos del centro se hipertrofian, su matriz se calcifica (gris) y el pericondrio, ya periostio, deposita el [**collar óseo**](glosario:collar_oseo) alrededor de la diáfisis, sin cartílago intermedio."
+                  },
+                  {
+                    "id": "paso_vascularizacion",
+                    "t": 0.6,
+                    "titulo": "Vasos y centro primario",
+                    "vista": "detalle",
+                    "texto": "Derecha: una yema vascular perfora el collar y entra al cartílago calcificado; trae osteoclastos, que retiran el cartílago, y osteoprogenitores, que depositan osteoide sobre sus restos. Es el **centro primario de osificación**. A la izquierda (gira o aleja la escena), los vasos entran entre las trabéculas y entre ellas aparece médula."
+                  },
+                  {
+                    "id": "paso_hueso_primario",
+                    "t": 0.8,
+                    "titulo": "Hueso primario",
+                    "vista": "general",
+                    "texto": "Izquierda: las trabéculas se engruesan; las de la periferia se funden en dos tablas compactas y las del centro quedan esponjosas. Derecha: el hueso ha sustituido casi todo el cartílago de la diáfisis; quedan las [**placas de crecimiento**](glosario:placa_de_crecimiento) en cada extremo y en las epífisis aparecen los centros secundarios."
+                  },
+                  {
+                    "id": "paso_remodelado",
+                    "t": 1,
+                    "titulo": "El mismo hueso laminar",
+                    "vista": "general",
+                    "texto": "Con el tiempo, el hueso inmaduro de los dos lados se [remodela](glosario:remodelado) a [**hueso laminar**](glosario:hueso_laminar): osteonas y laminillas en las tablas del hueso plano; cortical gruesa, cavidad medular, placa de crecimiento fina y cartílago articular en el hueso largo. Dos rutas, un solo tejido."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_mesenquima",
+                "paso_condensacion",
+                "paso_diferenciacion",
+                "paso_crecimiento",
+                "paso_vascularizacion",
+                "paso_hueso_primario",
+                "paso_remodelado"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m3_quiz_rutas",
             "tipo": "quiz",
             "titulo": "Comprueba las dos rutas",
@@ -3021,9 +3103,9 @@
                   "etiqueta": "Cóndilo (cabeza)",
                   "descripcion": "Articula con el hueso temporal a través del disco articular y recibe carga articular durante la masticación. Contiene el cartílago condilar, sitio de crecimiento de la mandíbula, que responde a la carga funcional mientras dura el crecimiento. Su hueso subcondral se remodela con el uso.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.98,
-                    "z": 0.05
+                    "x": 0.915,
+                    "y": 1,
+                    "z": 0.052
                   }
                 },
                 {
@@ -3031,9 +3113,9 @@
                   "etiqueta": "Cuello del cóndilo",
                   "descripcion": "Estrechamiento bajo la cabeza donde se concentran las tensiones que se transmiten entre la rama y el cóndilo. Es un sitio frecuente de fractura mandibular; en niños, una lesión aquí puede afectar el crecimiento.",
                   "ancla": {
-                    "x": 0.07,
-                    "y": 0.88,
-                    "z": 0.07
+                    "x": 0.967,
+                    "y": 0.782,
+                    "z": 0.081
                   }
                 },
                 {
@@ -3041,9 +3123,9 @@
                   "etiqueta": "Apófisis coronoides",
                   "descripcion": "Proyección anterior de la rama donde se inserta el músculo temporal. Recibe tracción muscular más que carga oclusal directa, y su desarrollo se relaciona con esa tracción.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.95,
-                    "z": 0.3
+                    "x": 0.086,
+                    "y": 0.868,
+                    "z": 0.508
                   }
                 },
                 {
@@ -3051,9 +3133,9 @@
                   "etiqueta": "Rama",
                   "descripcion": "Lámina ósea vertical entre el ángulo y el cóndilo. Recibe la tracción de los músculos masticadores y transmite las cargas hacia el cóndilo. Es una lámina relativamente delgada.",
                   "ancla": {
-                    "x": 0.06,
-                    "y": 0.55,
-                    "z": 0.15
+                    "x": 0.902,
+                    "y": 0.37,
+                    "z": 0.278
                   }
                 },
                 {
@@ -3061,9 +3143,9 @@
                   "etiqueta": "Ángulo",
                   "descripcion": "Región donde se insertan el masetero, en la cara lateral, y el pterigoideo medial, en la cara medial, que forman un cabestrillo muscular. Recibe tracción y flexión. Es un sitio frecuente de fractura, sobre todo si hay un tercer molar incluido que debilita la zona.",
                   "ancla": {
-                    "x": 0.06,
-                    "y": 0.1,
-                    "z": 0.03
+                    "x": 0.135,
+                    "y": 0.334,
+                    "z": 0.138
                   }
                 },
                 {
@@ -3071,9 +3153,9 @@
                   "etiqueta": "Cuerpo (región molar)",
                   "descripcion": "Parte del cuerpo bajo los molares, por donde se transmiten las fuerzas de masticación desde los dientes. Se flexiona y se tuerce durante la masticación. El conducto del nervio alveolar inferior discurre por esta región.",
                   "ancla": {
-                    "x": 0.13,
-                    "y": 0.3,
-                    "z": 0.35
+                    "x": 0.163,
+                    "y": 0.211,
+                    "z": 0.576
                   }
                 },
                 {
@@ -3081,9 +3163,9 @@
                   "etiqueta": "Proceso alveolar",
                   "descripcion": "Hueso que aloja los alvéolos dentales. Las fuerzas oclusales llegan como tensión a través del ligamento periodontal. Es la zona más dependiente de la carga: se forma con el diente, se reabsorbe si el diente se pierde y es donde actúa la ortodoncia.",
                   "ancla": {
-                    "x": 0.22,
-                    "y": 0.5,
-                    "z": 0.6
+                    "x": 0.796,
+                    "y": 0.282,
+                    "z": 0.665
                   }
                 },
                 {
@@ -3091,9 +3173,9 @@
                   "etiqueta": "Borde basal",
                   "descripcion": "Borde inferior del cuerpo, con cortical gruesa. Actúa como una viga: soporta tensión y compresión por la flexión del cuerpo durante la masticación.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.02,
-                    "z": 0.55
+                    "x": 0.317,
+                    "y": 0.065,
+                    "z": 0.778
                   }
                 },
                 {
@@ -3102,8 +3184,8 @@
                   "descripcion": "Zona de unión de las dos mitades de la mandíbula. En la masticación soporta cizallamiento y flexión transversal, descritos sobre todo en primates. Es un sitio frecuente de fractura parasinfisaria.",
                   "ancla": {
                     "x": 0.5,
-                    "y": 0.35,
-                    "z": 1.0
+                    "y": 0.083,
+                    "z": 0.938
                   }
                 }
               ],

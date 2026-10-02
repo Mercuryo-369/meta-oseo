@@ -4,14 +4,22 @@
  * Markdown, que se renderiza con `renderizarMarkdown` (markdown-it sin HTML crudo + DOMPurify).
  * Ese resultado es lo único que se pasa a `v-html` en toda la interfaz del mentor.
  *
+ * Cuando la respuesta termina y trae `citas`, debajo se listan las "Fuentes" del curso como
+ * enlaces internos (`MentorFuentes`). Si además ya está guardada en el servidor (`idServidor`), se
+ * ofrecen los pulgares para valorarla (`MentorValoracion`, F3-11).
+ *
  * Accesibilidad: el mensaje en curso lleva `aria-busy` y NO es una región viva (leerlo token a
  * token sería ruidoso); el anuncio de la respuesta completa lo hace el panel.
  */
 import { computed } from 'vue';
 import { renderizarMarkdown } from '@/ai/markdown';
-import type { MensajeMentor } from '@/ai/useMentor';
+import type { CitaMentor, MensajeMentor } from '@/ai/useMentor';
+import type { Valoracion } from '@/ai/mentorApi';
+import MentorFuentes from './MentorFuentes.vue';
+import MentorValoracion from './MentorValoracion.vue';
 
 const props = defineProps<{ mensaje: MensajeMentor }>();
+defineEmits<{ navegar: [cita: CitaMentor]; valorar: [valor: Valoracion] }>();
 
 const esEstudiante = computed(() => props.mensaje.role === 'user');
 const html = computed(() => (esEstudiante.value ? '' : renderizarMarkdown(props.mensaje.content)));
@@ -21,6 +29,17 @@ const pensando = computed(
     !esEstudiante.value && props.mensaje.status === 'transmitiendo' && props.mensaje.content === '',
 );
 const interrumpido = computed(() => !esEstudiante.value && props.mensaje.status === 'interrumpido');
+/** Las fuentes se muestran solo con la respuesta completa (mientras llega el texto, no). */
+const fuentes = computed(() =>
+  !esEstudiante.value && props.mensaje.status === 'completo' ? (props.mensaje.citas ?? []) : [],
+);
+/** Solo se valora una respuesta completa que el servidor ya guardó (sin `id` no hay a qué votar). */
+const valorable = computed(
+  () =>
+    !esEstudiante.value &&
+    props.mensaje.status === 'completo' &&
+    props.mensaje.idServidor !== undefined,
+);
 </script>
 
 <template>
@@ -48,6 +67,20 @@ const interrumpido = computed(() => !esEstudiante.value && props.mensaje.status 
         <!-- Seguro: el HTML pasó por markdown-it (html: false) y por DOMPurify. -->
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-if="html" class="mentor-md" data-testid="mentor-markdown" v-html="html" />
+
+        <MentorFuentes
+          v-if="fuentes.length > 0"
+          :citas="fuentes"
+          @navegar="(cita) => $emit('navegar', cita)"
+        />
+
+        <MentorValoracion
+          v-if="valorable"
+          :valoracion="mensaje.valoracion"
+          :ocupado="mensaje.valorando"
+          :error="mensaje.errorValoracion"
+          @votar="(valor) => $emit('valorar', valor)"
+        />
 
         <p v-if="pensando" class="text-muted-foreground flex items-center gap-2 text-sm">
           <span class="flex gap-1" aria-hidden="true">

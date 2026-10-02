@@ -46,13 +46,16 @@ describe('estadoDelModulo', () => {
       expect(estados).toEqual([false, false, true, true, true, true]);
     });
 
-    it('un módulo activo o ya completado no se muestra bloqueado', () => {
-      // El backend no exige orden: se puede llegar por URL o tener el 4 completo sin el 3.
+    it('un módulo bloqueado que está abierto por URL se muestra activo Y bloqueado (la página lo explica en su sitio)', () => {
       expect(estadoDelModulo(5, con([], 5))).toEqual({
         activo: true,
         completado: false,
-        bloqueado: false,
+        bloqueado: true,
       });
+    });
+
+    it('un módulo ya completado no se muestra bloqueado', () => {
+      // El backend no exige orden: se puede tener el 4 completo sin el 3.
       expect(estadoDelModulo(4, con([4]))).toEqual({
         activo: false,
         completado: true,

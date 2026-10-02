@@ -21,6 +21,10 @@ export const sseUso = (entrada = 10, salida = 5, lectura = 0, creacion = 0) =>
     cache_read_input_tokens: lectura,
     cache_creation_input_tokens: creacion,
   });
+/** Eventos de F3-05, F3-09 y F3-11: conversación guardada, fuentes del curso e id de la respuesta. */
+export const sseSesion = (sessionId: number) => eventoSse('sesion', { session_id: sessionId });
+export const sseCitas = (citas: unknown[]) => eventoSse('citas', { citas });
+export const sseMensaje = (messageId: number) => eventoSse('mensaje', { message_id: messageId });
 export const PING = ': ping\n\n';
 
 const CABECERAS_SSE = { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' };

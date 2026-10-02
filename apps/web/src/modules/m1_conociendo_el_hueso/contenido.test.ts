@@ -19,6 +19,9 @@ import { PUNTAJE_MODULO_MAX } from '@/content/constantes';
 import { puntajeMaximoModulo } from '@/content/scoring';
 import type { Actividad, ModuloContenido } from '@/content/schema';
 import type { DependenciasAuditoria } from '@/content/svg';
+import { HITOS_ALVEOLAR } from '@/scenes/procedural/alveolar/estado';
+import { HITOS_HUESO } from '@/scenes/procedural/hueso/estado';
+import { HITOS_MATRIZ } from '@/scenes/procedural/matriz/estado';
 import contenidoCrudo from './content.json';
 
 /* -------------------------------------------------------------------------------------------
@@ -41,7 +44,31 @@ const dependencias: DependenciasAuditoria = {
 
 const auditoria = auditarContenidoModulo(CARPETA, contenidoCrudo, dependencias);
 const modulo = auditoria.modulo as ModuloContenido;
-const actividades = listarActividades(modulo).map((u) => u.actividad);
+/**
+ * Exploraciones 3D con línea de tiempo añadidas fuera del guion (como la de la BMU en el módulo 5): la matriz
+ * ósea por escalas (1.3), del hueso largo a la osteona (1.4) y el hueso alveolar por dentro (1.5). Son opcionales
+ * y no cuentan en las cifras de la ficha, salvo en el total de puntos del módulo.
+ */
+const EXTRAS_3D = [
+  { id: 'm1_3_matriz_3d', seccion: 'm1_3_matriz', escena: 'matriz_osea', hitos: HITOS_MATRIZ },
+  {
+    id: 'm1_4_viaje_3d',
+    seccion: 'm1_4_organizacion',
+    escena: 'hueso_largo_a_osteona',
+    hitos: HITOS_HUESO,
+  },
+  {
+    id: 'm1_5_alveolar_3d',
+    seccion: 'm1_5_mandibula',
+    escena: 'hueso_alveolar',
+    hitos: HITOS_ALVEOLAR,
+  },
+] as const;
+const PUNTAJE_EXTRA_3D = 30;
+const idsExtra = new Set<string>(EXTRAS_3D.map((e) => e.id));
+const todasLasActividades = listarActividades(modulo).map((u) => u.actividad);
+/** Las del guion: sin las actividades 3D añadidas fuera de él. */
+const actividades = todasLasActividades.filter((a) => !idsExtra.has(a.id));
 
 /* -------------------------------------------------------------------------------------------
  * Lectura del guion (sin librería de YAML: solo lo que hace falta para contar y comparar)
@@ -203,8 +230,8 @@ describe('módulo 1: esquema y recursos', () => {
   });
 
   it('no supera el tope de puntos del módulo y suma lo que declara el guion', () => {
-    const total = puntajeMaximoModulo(modulo);
-    expect(total).toBeLessThanOrEqual(PUNTAJE_MODULO_MAX);
+    const total = puntajeMaximoModulo(modulo) - EXTRAS_3D.length * PUNTAJE_EXTRA_3D;
+    expect(puntajeMaximoModulo(modulo)).toBeLessThanOrEqual(PUNTAJE_MODULO_MAX);
     const declarado =
       /Puntaje maximo del modulo: (\d+) puntos \((\d+) en las actividades obligatorias y (\d+) en las opcionales\)/.exec(
         guionCrudo,
@@ -221,6 +248,24 @@ describe('módulo 1: esquema y recursos', () => {
     // Cifras verificadas al cerrar el módulo (guion 2026-09-23).
     expect([total, obligatorias, opcionales]).toEqual([440, 370, 70]);
   });
+
+  it.each(EXTRAS_3D)(
+    'la exploración 3D $id es opcional, procedural y usa los hitos de su escena',
+    ({ id, seccion, escena, hitos }) => {
+      const u = listarActividades(modulo).find((x) => x.actividad.id === id)!;
+      expect(u.seccion.id).toBe(seccion);
+      const a = u.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.obligatoria).toBe(false);
+      expect(a.puntaje_max).toBe(PUNTAJE_EXTRA_3D);
+      expect(a.config.modelo).toBe('procedural');
+      expect(a.config.escena).toBe(escena);
+      const pasos = a.config.linea_de_tiempo!.pasos;
+      // Los `t` del contenido son los hitos canónicos de la escena, en el orden de las fases.
+      expect(pasos.map((p) => p.t)).toEqual(Object.values(hitos));
+      expect(a.config.requeridos).toEqual(pasos.map((p) => p.id));
+    },
+  );
 
   it('los SVG del módulo no repiten ids ni traen scripts, manejadores ni recursos externos', () => {
     const problemas: string[] = [];

@@ -44,7 +44,7 @@ Backend, desde `services/api` (con `uv` en el PATH, ver "Entorno de desarrollo")
 ```bash
 uv run alembic upgrade head                 # crea el esquema; la API exige que exista
 uv run uvicorn app.main:app --reload        # http://localhost:8000, docs en /api/docs (solo ENV=dev)
-uv run pytest                               # 289+ pruebas sobre SQLite temporal
+uv run pytest                               # 860+ pruebas sobre SQLite temporal (unos 3 min)
 uv run ruff check . && uv run ruff format --check .
 # Contra PostgreSQL real (crear antes ova_test y borrarla después; solo bases ova_*):
 TEST_DATABASE_URL=postgresql://postgres@localhost:5432/ova_test uv run pytest
@@ -62,4 +62,24 @@ pnpm --filter @ova/web test
 VITE_DEV_BYPASS_AUTH=true pnpm --filter @ova/web exec vite --port 5180 --strictPort
 ```
 
-Pendiente de documentar cuando exista: la ingesta del RAG (F3-01).
+Contenido, datos derivados y documentación (verificados el 2026-09-25):
+
+```bash
+# Desde services/api (con uv en el PATH). Regenerar y versionar cada vez que cambie un content.json o un guion:
+uv run python -m app.scripts.build_manifest [--comprobar]   # actividades_manifest.json (validación del servidor)
+uv run python -m app.scripts.build_corpus [--comprobar]     # corpus.jsonl del mentor (sustituye a "ingest": BM25, sin embeddings)
+uv run python -m app.scripts.promote_docente CC 1023456789  # asigna el rol docente a un usuario ya registrado
+
+# Desde la raíz del repo:
+pnpm --filter @ova/web exec node scripts/validar-modulo.mjs 3          # valida un módulo (esquema, SVG); --advertencias
+pnpm --filter @ova/web format:check && pnpm --filter @ova/web build     # formato y compilación de producción
+uv run --no-project --with pyyaml python tools/guiones/convertir.py todos --comprobar   # guion frente a content.json (NO sobrescribe sin --forzar)
+python tools/guiones/pendientes.py [--comprobar]            # regenera docs/revision-docente.md (lista de revisión del docente)
+python tools/guiones/comprobar_docs.py                      # enlaces internos, cifras y ortografía básica de los documentos
+uv run --no-project --with pyyaml --with pytest python -m pytest tools/guiones/tests -q   # pruebas de tools/guiones
+uvx ruff check tools/guiones --config tools/guiones/ruff.toml && uvx ruff format --check tools/guiones --config tools/guiones/ruff.toml
+
+# Docker (nunca construido; ver docs/guia-instalacion.md). Validar la configuración no exige el motor, pero sí
+# SECRET_KEY y POSTGRES_PASSWORD definidas en el .env:
+docker compose config
+```

@@ -19,6 +19,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useContextoStore } from '@/stores/contextoPedagogico';
 import { useProgresoStore } from '@/stores/progreso';
 import { respuestaJson, usuarioDePrueba } from '@/test/utils';
+import type { Rol } from '@/types/api';
 import ModuloView from './ModuloView.vue';
 
 /* -------------------------------------------------------------------------------------------
@@ -163,6 +164,8 @@ interface OpcionesMontaje extends OpcionesApi {
   conCertificado?: boolean;
   /** Registra el guard de módulo del router real. */
   conGuard?: boolean;
+  /** Rol de la sesión (por defecto, estudiante). */
+  rol?: Rol;
   /** Sustituye lo que devuelve `cargarModulo`. */
   carga?: ResultadoCarga;
   api?: ApiSimulada;
@@ -185,7 +188,7 @@ async function montar(opciones: OpcionesMontaje = {}): Promise<Montaje> {
   setActivePinia(pinia);
   const auth = useAuthStore();
   auth.token = 'jwt-de-prueba';
-  auth.establecerUsuario(usuarioDePrueba());
+  auth.establecerUsuario(usuarioDePrueba({ rol: opciones.rol ?? 'estudiante' }));
 
   const api = opciones.api ?? simularApi(opciones);
   cargarModuloMock.mockResolvedValue(
@@ -902,57 +905,201 @@ describe('ModuloView: módulo completado', () => {
  * ----------------------------------------------------------------------------------------- */
 
 describe('ModuloView: bloqueo de módulos', () => {
-  it('el guard redirige un módulo bloqueado al primero pendiente y la página lo explica', async () => {
-    const { wrapper, router } = await montar({ n: 1, ruta: '/modulo/1', conGuard: true });
-    await router.push('/modulo/3');
-    await flushPromises();
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/1?bloqueado=3');
-    await wrapper.setProps({ n: 1 });
-    const aviso = wrapper.get('[data-testid="aviso-redirigido"]');
-    expect(aviso.text()).toContain('Todavía no puedes abrir el módulo 3');
-    expect(aviso.text()).toContain('Antes completa el módulo 2');
-  });
-
-  it('con el módulo anterior completado el guard deja pasar', async () => {
-    const { router } = await montar({ conGuard: true, completados: [1, 2] });
+  it('el guard ya no redirige: un módulo bloqueado se queda en su dirección', async () => {
+    const { router } = await montar({ n: 1, ruta: '/modulo/1', conGuard: true });
     await router.push('/modulo/3');
     await flushPromises();
     expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
   });
 
-  it('un módulo ya completado nunca se cierra', async () => {
-    const { router } = await montar({ conGuard: true, completados: [4] });
-    await router.push('/modulo/4');
-    await flushPromises();
-    expect(router.currentRoute.value.name).toBe('modulo');
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/4');
-  });
-
-  it('con el bloqueo desactivado el guard deja pasar', async () => {
-    cfg.bloqueo = false;
-    const { router } = await montar({ conGuard: true });
-    await router.push('/modulo/5');
-    await flushPromises();
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/5');
-  });
-
-  it('si el progreso no se pudo cargar el guard falla abierto', async () => {
-    const { router } = await montar({
+  it('un módulo bloqueado se muestra EN SU SITIO con su identidad y sin secciones ni actividades', async () => {
+    const { wrapper, router } = await montar({
+      n: 3,
+      ruta: '/modulo/3',
       conGuard: true,
+      modulo: moduloConNumero(3),
+    });
+    // Sin redirigir ni avisos de rebote.
+    expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
+    expect(wrapper.find('[data-testid="aviso-redirigido"]').exists()).toBe(false);
+
+    // Presentación del módulo: título, subtítulo, duración y objetivos (la cabecera bloqueada).
+    const cabecera = wrapper.get('[data-testid="cabecera-modulo"]');
+    expect(cabecera.attributes('data-bloqueado')).toBe('true');
+    expect(cabecera.attributes('data-modulo')).toBe('3');
+    expect(wrapper.findAll('h1')).toHaveLength(1);
+    expect(wrapper.get('[data-testid="titulo-modulo"]').text()).toBe(moduloDePrueba().titulo);
+    expect(cabecera.text()).toContain(moduloDePrueba().subtitulo);
+    expect(wrapper.find('[data-testid="duracion"]').exists()).toBe(true);
+    expect(wrapper.findAll('[data-testid="objetivos"] li').length).toBeGreaterThan(0);
+    expect(wrapper.get('[data-testid="etiqueta-bloqueado"]').text()).toContain('Bloqueado');
+
+    // Identidad del módulo 3 (rótulo, portada y acento propios).
+    expect(wrapper.get('[data-testid="rotulo-modulo"]').text()).toContain('Formación');
+    expect(wrapper.get('[data-testid="portada-modulo"]').attributes('data-modulo')).toBe('3');
+    expect(wrapper.get('[data-testid="portada-modulo"] img').attributes('src')).toBe(
+      '/images/m3/m3_sensores_mecanicos.svg',
+    );
+    expect(cabecera.attributes('style')).toContain('--acento: var(--acento-m3)');
+    // Sin avance ni puntaje del módulo: aún no se puede estudiar.
+    expect(wrapper.find('[data-testid="avance-obligatorias"]').exists()).toBe(false);
+
+    // Panel «Todavía bloqueado» con lo que falta y el botón al módulo que sí se puede estudiar.
+    const panel = wrapper.get('[data-testid="modulo-bloqueado"]');
+    expect(panel.text()).toContain('Todavía bloqueado');
+    expect(panel.text()).toContain('Antes completa el módulo 2');
+    expect(panel.get('[data-testid="falta-modulo"]').text()).toContain('Completar el módulo 2');
+    // El módulo 2 tampoco está abierto: el botón lleva al primero que sí lo está.
+    expect(panel.text()).toContain('tampoco está abierto');
+    expect(panel.get('a').attributes('href')).toBe('/modulo/1');
+    expect(panel.get('a').text()).toContain('Ir al módulo 1');
+
+    // No se monta nada de estudio.
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="seccion-bloqueada"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="indice-secciones"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="bloque-actividad"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="actividad-falsa"]').exists()).toBe(false);
+  });
+
+  it('el panel muestra el avance del módulo anterior cuando se conoce', async () => {
+    const { wrapper } = await montar({
+      n: 2,
+      ruta: '/modulo/2',
+      modulo: moduloConNumero(2),
+      filas: filasCompletas(1, ['m1_quiz_repaso', 'm1_identifica_celulas']),
+    });
+    await flushPromises();
+    const avance = wrapper.get('[data-testid="avance-previo"]');
+    expect(avance.text()).toContain('5 de 7 actividades obligatorias');
+    expect(wrapper.get('[role="progressbar"]').attributes('aria-valuenow')).toBe('71');
+    // El botón lleva al módulo anterior, que es el que falta.
+    expect(wrapper.get('[data-testid="ir-al-modulo"]').attributes('href')).toBe('/modulo/1');
+  });
+
+  it('con el módulo anterior completado el módulo se abre con normalidad', async () => {
+    const { wrapper, router } = await montar({
+      n: 3,
+      ruta: '/modulo/3',
+      conGuard: true,
+      completados: [1, 2],
+      modulo: moduloConNumero(3),
+    });
+    expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
+    expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="cabecera-modulo"]').attributes('data-bloqueado')).toBe(
+      undefined,
+    );
+  });
+
+  it('un módulo ya completado nunca se cierra', async () => {
+    const { wrapper } = await montar({
+      n: 4,
+      ruta: '/modulo/4',
+      completados: [4],
+      modulo: moduloConNumero(4),
+    });
+    expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true);
+  });
+
+  it('con el bloqueo desactivado ningún módulo queda bloqueado', async () => {
+    cfg.bloqueo = false;
+    const { wrapper } = await montar({ n: 5, ruta: '/modulo/5', modulo: moduloConNumero(5) });
+    expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true);
+  });
+
+  it('si el progreso no se pudo cargar la página falla abierta', async () => {
+    const { wrapper } = await montar({
+      n: 5,
+      ruta: '/modulo/5',
+      modulo: moduloConNumero(5),
       responder: (l) => (l.ruta === '/progress' ? new Response('x', { status: 500 }) : undefined),
     });
-    await router.push('/modulo/5');
-    await flushPromises();
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/5');
+    expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true);
   });
 
-  it('si el progreso llega después de abrir la página, la propia página muestra el bloqueo', async () => {
-    const { wrapper } = await montar({ n: 3 });
-    const panel = wrapper.get('[data-testid="modulo-bloqueado"]');
-    expect(panel.text()).toContain('Antes completa el módulo 2');
-    expect(panel.get('a').attributes('href')).toBe('/modulo/1');
-    expect(wrapper.find('[data-testid="cabecera-modulo"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="actividad-falsa"]').exists()).toBe(false);
+  it('un estudiante no puede abrir los módulos 2 a 6 con una cuenta nueva (cada uno con su identidad)', async () => {
+    const acentos = new Set<string>();
+    for (const n of [2, 3, 4, 5, 6]) {
+      const { wrapper } = await montar({ n, ruta: `/modulo/${n}`, modulo: moduloConNumero(n) });
+      expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists(), `módulo ${n}`).toBe(true);
+      expect(wrapper.find('[data-testid="seccion"]').exists(), `módulo ${n}`).toBe(false);
+      expect(wrapper.find('[data-testid="bloque-actividad"]').exists(), `módulo ${n}`).toBe(false);
+      const cabecera = wrapper.get('[data-testid="cabecera-modulo"]');
+      expect(cabecera.attributes('data-modulo')).toBe(String(n));
+      acentos.add(cabecera.attributes('style') ?? '');
+      wrapper.unmount();
+      montados.pop();
+    }
+    // Cinco módulos bloqueados, cinco acentos distintos (el 1 siempre está abierto).
+    expect(acentos.size).toBe(5);
+  });
+
+  it('el docente ve todo abierto y en solo lectura, con su etiqueta, aunque no haya completado nada', async () => {
+    const { wrapper } = await montar({
+      n: 4,
+      ruta: '/modulo/4',
+      rol: 'docente',
+      modulo: moduloConNumero(4),
+    });
+    expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="etiqueta-docente"]').text()).toContain('Vista de docente');
+    expect(wrapper.get('[data-testid="aviso-docente"]').text()).toContain('no se guarda');
+    expect(wrapper.find('[data-testid="avance-obligatorias"]').exists()).toBe(false);
+    // Ninguna sección queda bloqueada.
+    const estados = wrapper
+      .findAll('[data-testid="indice-secciones"] button')
+      .map((b) => b.attributes('data-estado'));
+    expect(estados.length).toBeGreaterThan(1);
+    expect(estados).not.toContain('bloqueada');
+    // Las actividades se abren en modo `revisar` (respuestas correctas, solo lectura).
+    expect(wrapper.get('[data-testid="actividad-falsa"]').attributes('data-modo')).toBe('revisar');
+    expect(wrapper.get('[data-testid="modo-docente"]').text()).toContain('no se guarda nada');
+  });
+
+  it('el docente puede abrir una sección que a un estudiante le aparece bloqueada', async () => {
+    const { wrapper } = await montar({ rol: 'docente', ruta: '/modulo/1?s=repaso' });
+    expect(wrapper.find('[data-testid="seccion-bloqueada"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="seccion"]').attributes('data-seccion')).toBe('repaso');
+
+    const estudiante = await montar({ ruta: '/modulo/1?s=repaso' });
+    expect(estudiante.wrapper.find('[data-testid="seccion-bloqueada"]').exists()).toBe(true);
+    expect(estudiante.wrapper.find('[data-testid="etiqueta-docente"]').exists()).toBe(false);
+  });
+
+  it('el docente no envía nada al servidor: ni progreso, ni tiempo, ni resultados', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'] });
+    const { wrapper, api, store } = await montar({ rol: 'docente' });
+
+    // Prueba la actividad: el botón la abre en modo jugar, pero lo que haga no se registra.
+    await wrapper.get('[data-testid="modo-revisar"] button').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('[data-testid="actividad-falsa"]').attributes('data-modo')).toBe('jugar');
+    await wrapper.get('[data-testid="progreso"]').trigger('click');
+    await completar(wrapper, 'm1_capas_hueso');
+    await vi.advanceTimersByTimeAsync(120_000);
+
+    expect(api.llamadas.filter((l) => l.metodo === 'POST')).toEqual([]);
+    expect(api.llamadas.filter((l) => l.metodo === 'PUT')).toEqual([]);
+    // Solo se lee: el progreso y los resultados ya guardados.
+    expect(api.llamadas.every((l) => l.metodo === 'GET')).toBe(true);
+    // Tampoco quedan resultados, cola ni instantáneas locales.
+    expect(store.resultados).toEqual({});
+    expect(store.pendientes).toBe(0);
+    expect(store.leerInstantanea('m1_capas_hueso')).toBeUndefined();
+  });
+
+  it('el estudiante SÍ registra su progreso (la vista de docente no se filtra al estudiante)', async () => {
+    const { wrapper, api } = await montar();
+    expect(wrapper.find('[data-testid="etiqueta-docente"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="actividad-falsa"]').attributes('data-modo')).toBe('jugar');
+    await completar(wrapper, 'm1_capas_hueso');
+    expect(api.filtrar('POST', '/activities/m1_capas_hueso/result')).toHaveLength(1);
+    expect(api.filtrar('PUT', '/progress/1').length).toBeGreaterThan(0);
   });
 });
 

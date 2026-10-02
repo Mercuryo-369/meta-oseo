@@ -44,6 +44,26 @@ export default defineConfig({
   build: {
     // Three.js pesa bastante; solo se carga en la ruta /demo-mandibula (carga perezosa).
     chunkSizeWarningLimit: 1200,
+    rolldownOptions: {
+      output: {
+        // Cada icono de lucide salía como un chunk de ~1 KB que la página pedía en cascada.
+        // Juntos son una sola petición y se cachean a la vez.
+        advancedChunks: {
+          groups: [
+            {
+              name: 'vue',
+              test: /node_modules\/(?:\.pnpm\/[^/]+\/node_modules\/)?(?:vue|@vue)\//,
+              priority: 2,
+            },
+            {
+              name: 'iconos',
+              test: /node_modules\/(?:\.pnpm\/[^/]+\/node_modules\/)?@lucide\//,
+              priority: 1,
+            },
+          ],
+        },
+      },
+    },
   },
   test: {
     environment: 'happy-dom',

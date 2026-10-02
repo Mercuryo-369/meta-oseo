@@ -340,7 +340,7 @@
   ],
   "estado_revision": {
     "estado": "borrador",
-    "notas": "Borrador generado desde m5_renovando_el_hueso.md (pendiente de validación del docente). Las 68 marcas de cifras dudosas del guion se quitaron del texto y están en «pendientes»; el detalle, en la sección 12 del guion. No se transcribieron el banco del mentor ni sus ganchos. Ajustes manuales (regenerar los borra): 39 términos del glosario enlazados en su primera mención; alt de las escenas de arrastre sin ids; receptores sobre el dibujo; títulos de columnas propios; capas visibles de los pasos de las tres animaciones.",
+    "notas": "Borrador generado desde m5_renovando_el_hueso.md (pendiente de validación del docente). Las 68 marcas de cifras dudosas del guion se quitaron del texto y están en «pendientes»; el detalle, en la sección 12 del guion. No se transcribieron el banco del mentor ni sus ganchos. Ajustes manuales (regenerar los borra): 39 términos del glosario enlazados en su primera mención; alt de las escenas de arrastre sin ids; receptores sobre el dibujo; títulos de columnas propios; capas visibles de los pasos de las tres animaciones; y m5_bmu_3d_tiempo (opcional, fuera del guion).",
     "pendientes": [
       {
         "id": "m5",
@@ -822,6 +822,88 @@
                   ],
                   "resaltadas": ["osteona_nueva"]
                 }
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m5_bmu_3d_tiempo",
+            "tipo": "exploracion-3d",
+            "titulo": "Una BMU en 3D, a lo largo del tiempo",
+            "instrucciones": "Reproduce la línea de tiempo o muévela con el deslizador para ver un ciclo de remodelado de principio a fin. Gira la escena con un dedo y acércala con dos. Visita las siete fases: detén la línea de tiempo en ellas o pasa por ellas.",
+            "obligatoria": false,
+            "puntaje_max": 40,
+            "retroalimentacion": {
+              "correcta": "Recorriste las siete fases de la BMU. Recuerda el orden: resorción con osteoclastos, inversión con la línea de cemento, formación de osteoide en capas concéntricas y mineralización con osteocitos."
+            },
+            "concepto": "Ciclo de remodelado de una BMU cortical a lo largo del tiempo",
+            "config": {
+              "modelo": "procedural",
+              "escena": "bmu_remodelado",
+              "alt": "Escena 3D de un fragmento de hueso cortical: una BMU excava un túnel con osteoclastos y luego lo rellena con capas de osteoide, osteocitos y un conducto de Havers estrecho. Se puede girar, acercar y recorrer en el tiempo.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_quiescencia",
+                    "t": 0,
+                    "titulo": "Quiescencia: el hueso en reposo",
+                    "vista": "general",
+                    "texto": "Una osteona cortical en reposo: un conducto central con su capilar, tapizado por células de revestimiento aplanadas. Dentro de la matriz (aquí no dibujados) los osteocitos vigilan la carga y el daño. Así está casi todo el hueso casi todo el tiempo. Pulsa Reproducir para ver una BMU en acción."
+                  },
+                  {
+                    "id": "paso_activacion",
+                    "t": 0.14,
+                    "titulo": "Activación",
+                    "vista": "general",
+                    "texto": "Un microdaño o una señal hormonal activa el sitio. Las células de revestimiento se retraen y llegan por el capilar los precursores de osteoclastos, que se fusionan bajo la influencia de M-CSF y RANKL y forman osteoclastos multinucleados."
+                  },
+                  {
+                    "id": "paso_resorcion",
+                    "t": 0.32,
+                    "titulo": "Resorción: el cono de corte",
+                    "vista": "perfil",
+                    "texto": "Los osteoclastos, células grandes con varios núcleos y un borde festoneado pegado al hueso, disuelven mineral y colágeno y excavan un túnel de unos 200 µm de diámetro. Esa punta de la BMU es el cono de corte. Esta fase dura entre 2 y 4 semanas."
+                  },
+                  {
+                    "id": "paso_inversion",
+                    "t": 0.5,
+                    "titulo": "Inversión",
+                    "vista": "detalle",
+                    "texto": "Los osteoclastos mueren por apoptosis. Células mononucleares limpian la pared festoneada y depositan la línea de cemento, el límite entre el hueso viejo y el nuevo, y atraen a los precursores de osteoblastos. Esta fase dura entre 1 y 2 semanas."
+                  },
+                  {
+                    "id": "paso_formacion",
+                    "t": 0.66,
+                    "titulo": "Formación: el cono de cierre",
+                    "vista": "extremo",
+                    "texto": "Los osteoblastos tapizan la pared y depositan osteoide en capas concéntricas, de fuera hacia dentro, siguiendo a la BMU: es el cono de cierre. El conducto se estrecha alrededor del capilar. Es la fase más larga: unos 3 a 4 meses."
+                  },
+                  {
+                    "id": "paso_mineralizacion",
+                    "t": 0.84,
+                    "titulo": "Mineralización",
+                    "vista": "perfil",
+                    "texto": "El osteoide se mineraliza, primero en las capas más externas. Algunos osteoblastos quedan atrapados en la matriz y se convierten en osteocitos, con sus prolongaciones en canalículos; otros mueren o pasan a ser células de revestimiento."
+                  },
+                  {
+                    "id": "paso_reposo",
+                    "t": 1,
+                    "titulo": "Reposo: una osteona nueva",
+                    "vista": "general",
+                    "texto": "Queda una osteona nueva: láminas concéntricas mineralizadas, un conducto de Havers otra vez estrecho (el túnel se rellenó casi por completo) con su capilar, osteocitos en sus lagunas y la línea de cemento en el límite con el hueso viejo. La superficie vuelve a la quiescencia."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_quiescencia",
+                "paso_activacion",
+                "paso_resorcion",
+                "paso_inversion",
+                "paso_formacion",
+                "paso_mineralizacion",
+                "paso_reposo"
               ]
             }
           }
@@ -2574,9 +2656,9 @@
                   "etiqueta": "Proceso alveolar",
                   "descripcion": "Parte del cuerpo mandibular que aloja las raíces de los dientes. Se forma con la erupción y se atrofia si se pierden los dientes. Es la zona de la mandíbula con mayor recambio óseo.",
                   "ancla": {
-                    "x": 0.22,
-                    "y": 0.5,
-                    "z": 0.6
+                    "x": 0.796,
+                    "y": 0.282,
+                    "z": 0.665
                   }
                 },
                 {
@@ -2584,9 +2666,9 @@
                   "etiqueta": "Cresta alveolar",
                   "descripcion": "Margen coronal del proceso alveolar. En un periodonto sano se sitúa aproximadamente 1 a 2 mm apical a la unión amelocementaria. Es el primer sitio donde se ve la pérdida ósea de la periodontitis.",
                   "ancla": {
-                    "x": 0.25,
-                    "y": 0.55,
-                    "z": 0.6
+                    "x": 0.36,
+                    "y": 0.325,
+                    "z": 0.821
                   }
                 },
                 {
@@ -2594,9 +2676,9 @@
                   "etiqueta": "Tabla cortical vestibular",
                   "descripcion": "Lámina de hueso compacto en la cara vestibular del proceso alveolar. Suele ser delgada, sobre todo en la región anterior. Es la pared que más se resorbe tras una extracción y la barrera del movimiento hacia vestibular.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.4,
-                    "z": 0.65
+                    "x": 0.525,
+                    "y": 0.284,
+                    "z": 0.944
                   }
                 },
                 {
@@ -2604,9 +2686,9 @@
                   "etiqueta": "Tabla cortical lingual",
                   "descripcion": "Lámina de hueso compacto en la cara lingual del proceso alveolar. Su espesor varía según la región. Hay que girar el modelo para verla.",
                   "ancla": {
-                    "x": 0.3,
-                    "y": 0.4,
-                    "z": 0.65
+                    "x": 0.675,
+                    "y": 0.339,
+                    "z": 0.615
                   }
                 },
                 {
@@ -2614,9 +2696,9 @@
                   "etiqueta": "Hueso basal del cuerpo",
                   "descripcion": "Porción inferior del cuerpo mandibular, con cortical gruesa. No depende de los dientes: permanece cuando el proceso alveolar se atrofia tras perderlos.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.12,
-                    "z": 0.55
+                    "x": 0.614,
+                    "y": 0.061,
+                    "z": 0.86
                   }
                 },
                 {
@@ -2624,9 +2706,13 @@
                   "etiqueta": "Septo interdental",
                   "descripcion": "Tabique de hueso entre dos alvéolos vecinos. Contiene vasos que nutren el ligamento periodontal. En la periodontitis su altura se pierde de forma característica.",
                   "ancla": {
-                    "x": 0.25,
-                    "y": 0.52,
-                    "z": 0.6
+                    "x": 0.237,
+                    "y": 0.32,
+                    "z": 0.709
+                  },
+                  "camara": {
+                    "vista": "frontal",
+                    "zoom": 2.5
                   }
                 },
                 {
@@ -2634,9 +2720,9 @@
                   "etiqueta": "Zona de compresión del canino",
                   "descripcion": "Pared alveolar distal del canino cuando una fuerza lo retrae hacia el espacio de una extracción de premolar. El ligamento periodontal se comprime, sube RANKL y los osteoclastos resorben la pared. Si la fuerza es excesiva, la hialinización es más extensa y el movimiento se retrasa.",
                   "ancla": {
-                    "x": 0.36,
-                    "y": 0.55,
-                    "z": 0.96
+                    "x": 0.663,
+                    "y": 0.226,
+                    "z": 0.859
                   }
                 },
                 {
@@ -2644,9 +2730,9 @@
                   "etiqueta": "Zona de tensión del canino",
                   "descripcion": "Pared alveolar mesial del mismo alvéolo. El ligamento se estira, predomina OPG y los osteoblastos depositan osteoide sobre la pared. El diente avanza porque el hueso se remodela: se resorbe por delante y se forma por detrás.",
                   "ancla": {
-                    "x": 0.38,
-                    "y": 0.55,
-                    "z": 0.88
+                    "x": 0.403,
+                    "y": 0.21,
+                    "z": 0.898
                   }
                 },
                 {
@@ -2654,9 +2740,13 @@
                   "etiqueta": "Agujero mentoniano",
                   "descripcion": "Orificio por el que salen el nervio y los vasos mentonianos, a la altura de los premolares. No forma parte del remodelado, pero es una referencia para ubicar la región premolar y un límite en cirugías de la zona.",
                   "ancla": {
-                    "x": 0.28,
-                    "y": 0.35,
-                    "z": 0.8
+                    "x": 0.292,
+                    "y": 0.176,
+                    "z": 0.768
+                  },
+                  "camara": {
+                    "vista": "frontal",
+                    "zoom": 2.5
                   }
                 }
               ],
@@ -2757,6 +2847,88 @@
                 "tension_osteoblastos",
                 "senales_compresion",
                 "senales_tension"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m5_5_ortodoncia_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Un movimiento ortodóntico en 3D",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir: verás un corte del proceso alveolar con un canino, desde que recibe la fuerza hasta la retención. Gira la escena con un dedo y acércala con dos. Visita los siete pasos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste el movimiento completo. La regla que viste: el hueso no se dobla; se resorbe donde el ligamento se comprime y se forma donde se estira, y el alvéolo entero acompaña al diente."
+            },
+            "concepto": "Movimiento ortodóntico: compresión y resorción de un lado, tensión y aposición del otro; el alvéolo migra con el diente",
+            "config": {
+              "modelo": "procedural",
+              "escena": "movimiento_ortodontico",
+              "alt": "Escena 3D esquemática: corte del proceso alveolar con un canino empujado hacia la derecha. El ligamento se comprime a la derecha y se estira a la izquierda; osteoclastos reabsorben la pared derecha, osteoblastos forman hueso en la izquierda y el diente con su alvéolo se desplaza.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_reposo",
+                    "t": 0,
+                    "titulo": "Reposo: el canino en su alvéolo",
+                    "vista": "general",
+                    "texto": "Corte a lo largo de la arcada (mesiodistal) del proceso alveolar. La raíz del canino está separada del hueso por el **ligamento periodontal** (verde), de grosor uniforme, con sus fibras oblicuas y sus vasos. La lámina que reviste el alvéolo es el [hueso alveolar propio](glosario:hueso_alveolar_propio); alrededor, el hueso esponjoso de soporte. Todo va exagerado en grosor para que se vea en el teléfono."
+                  },
+                  {
+                    "id": "paso_fuerza",
+                    "t": 0.16,
+                    "titulo": "Se aplica una fuerza ligera",
+                    "vista": "general",
+                    "texto": "Un bracket transmite a la corona una fuerza continua hacia la derecha (distal). El diente apenas se mueve todavía: el hueso no se dobla. El diente apenas se mueve todavía: lo primero que ocurrirá es que la raíz se corra dentro del alvéolo y el ligamento la amortigüe (siguiente paso)."
+                  },
+                  {
+                    "id": "paso_ligamento",
+                    "t": 0.32,
+                    "titulo": "Compresión de un lado, tensión del otro",
+                    "vista": "corte",
+                    "texto": "A la derecha, hacia donde va el diente, el ligamento se **estrecha**: las fibras se arrugan, los vasos se aplastan y hay hipoxia; en el foco más apretado aparece una pequeña zona sin células, la [hialinización](glosario:hialinizacion), casi inevitable al inicio. A la izquierda el ligamento se **ensancha** y sus fibras quedan tensas. Esta deformación es la señal que leen las células."
+                  },
+                  {
+                    "id": "paso_resorcion",
+                    "t": 0.5,
+                    "titulo": "Lado de compresión: resorción",
+                    "vista": "compresion",
+                    "texto": "En el lado comprimido sube [RANKL](glosario:rank_y_rankl), baja la OPG y se liberan prostaglandina E2 e interleucinas. Llegan **osteoclastos** (lila) y excavan la pared alveolar en [lagunas de Howship](glosario:laguna_de_howship): la pared se festonea y adelgaza. Con fuerza ligera actúan desde el propio ligamento (resorción frontal) y retiran también la zona hialinizada."
+                  },
+                  {
+                    "id": "paso_aposicion",
+                    "t": 0.66,
+                    "titulo": "Lado de tensión: aposición",
+                    "vista": "tension",
+                    "texto": "En el lado estirado sube la OPG y bajan las señales de resorción. Progenitores del ligamento se diferencian en **osteoblastos** (azules), que se alinean sobre la pared y depositan un ribete de [osteoide](glosario:osteoide) que se mineraliza como hueso fascicular, atravesado por las fibras del ligamento. Así, aunque ahora esté estirado, el ligamento recuperará su grosor cuando la pared avance."
+                  },
+                  {
+                    "id": "paso_desplazamiento",
+                    "t": 0.83,
+                    "titulo": "El diente y su alvéolo se han movido",
+                    "vista": "general",
+                    "texto": "Compara con la línea punteada, que marca la posición inicial: el diente se ha desplazado y el **alvéolo entero** se ha movido con él, porque se resorbió hueso delante y se formó detrás (la banda clara del lado izquierdo es el hueso nuevo). El desplazamiento está exagerado; en la realidad son cerca de un milímetro al mes."
+                  },
+                  {
+                    "id": "paso_retencion",
+                    "t": 1,
+                    "titulo": "Retención: el hueso madura",
+                    "vista": "corte",
+                    "texto": "Sin fuerza, la pared reabsorbida se alisa, el hueso nuevo madura y toma el aspecto del hueso vecino, y el ligamento recupera su grosor uniforme con los osteoblastos aplanados como células de revestimiento. Las fibras del ligamento y de la encía tardan meses en reorganizarse: por eso, sin **retención**, el diente tiende a volver a su sitio (recidiva)."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_reposo",
+                "paso_fuerza",
+                "paso_ligamento",
+                "paso_resorcion",
+                "paso_aposicion",
+                "paso_desplazamiento",
+                "paso_retencion"
               ]
             }
           }
@@ -3026,6 +3198,88 @@
                   ],
                   "resaltadas": ["remodelado_callo"]
                 }
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m5_6_fractura_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Una fractura en 3D: del hematoma al hueso consolidado",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para ver cómo cicatriza una fractura de la diáfisis (horas a meses, en escala didáctica). Gira la escena con un dedo y acércala con dos; en los pasos de corte la diáfisis se abre para ver dentro. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste toda la reparación: hematoma, inflamación, callo blando, callo duro y remodelado. Fíjate en que el callo blando cartilaginoso es propio de la cicatrización secundaria, con algo de movimiento: con fijación rígida, como en muchas fracturas mandibulares, el callo es escaso."
+            },
+            "concepto": "Cicatrización secundaria de una fractura: hematoma, inflamación, callo blando, callo duro y remodelado",
+            "config": {
+              "modelo": "procedural",
+              "escena": "reparacion_fractura",
+              "alt": "Escena 3D esquemática de una diáfisis fracturada, rosa, con periostio y médula. La brecha se llena de un coágulo rojo, llegan células y vasos, un manguito celeste de cartílago rodea la fractura, se vuelve hueso rosado, encoge con osteoclastos y al final la cortical queda continua.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_fractura",
+                    "t": 0,
+                    "titulo": "Fractura: se rompen hueso, periostio y vasos",
+                    "vista": "general",
+                    "texto": "Una fractura transversal parte la diáfisis en dos fragmentos algo desplazados. Con el hueso se rompen el **periostio** y los vasos de la cortical, del periostio y de la médula: hay sangrado en la brecha. Las formas son esquemáticas y las células, muy aumentadas."
+                  },
+                  {
+                    "id": "paso_hematoma",
+                    "t": 0.15,
+                    "titulo": "Hematoma: el primer molde",
+                    "vista": "corte",
+                    "texto": "En horas la sangre coagula: un **hematoma** con plaquetas y fibrina llena la brecha, entra en el canal medular y rodea los extremos. El hueso de los bordes, sin riego, se oscurece: muere. El coágulo no es hueso, pero es el primer andamio de la reparación."
+                  },
+                  {
+                    "id": "paso_inflamacion",
+                    "t": 0.3,
+                    "titulo": "Inflamación y reclutamiento",
+                    "vista": "detalle",
+                    "texto": "Días después llegan neutrófilos y macrófagos, que limpian los restos y liberan **IL-1, IL-6 y TNF**. Estas señales, la hipoxia y factores como PDGF, TGF-β y VEGF reclutan células madre del periostio y de la médula, despegan y engruesan el periostio y hacen brotar vasos nuevos hacia el coágulo, que se organiza en tejido de granulación."
+                  },
+                  {
+                    "id": "paso_callo_blando",
+                    "t": 0.45,
+                    "titulo": "Callo blando: cartílago y tejido fibroso",
+                    "vista": "callo",
+                    "texto": "Hacia la 1.ª a 3.ª semana las células madre se vuelven condrocitos y fibroblastos. Forman un [callo blando](glosario:callo_blando): un manguito fusiforme de fibrocartílago (celeste) y tejido fibroso que rodea la fractura por fuera (callo externo) y tapa la brecha y el canal por dentro (callo interno). Estabiliza, pero es débil y no se ve en la radiografía."
+                  },
+                  {
+                    "id": "paso_callo_duro",
+                    "t": 0.6,
+                    "titulo": "Callo duro: dos rutas de osificación",
+                    "vista": "corte",
+                    "texto": "De la 3.ª a la 12.ª semana el manguito se vuelve rosado y rígido: [callo duro](glosario:callo_duro) de hueso reticular. En el centro el cartílago se calcifica (gris), lo invaden vasos y se sustituye por hueso: **osificación endocondral**. En la periferia, bajo el periostio, los osteoblastos forman hueso directamente: **osificación intramembranosa**. Este callo sí se ve en la radiografía."
+                  },
+                  {
+                    "id": "paso_remodelado",
+                    "t": 0.8,
+                    "titulo": "Remodelado: sobra callo",
+                    "vista": "corte",
+                    "texto": "Durante meses los **osteoclastos** (lila) reabsorben el exceso del callo externo y, guiadas por la carga, las [BMU](glosario:bmu_unidad_multicelular_basica) sustituyen el hueso reticular por [hueso laminar](glosario:hueso_laminar_y_hueso_reticular). El canal medular se va reabriendo a través de la brecha y el hueso muerto de los bordes ya fue reemplazado."
+                  },
+                  {
+                    "id": "paso_consolidado",
+                    "t": 1,
+                    "titulo": "Consolidado: forma casi original",
+                    "vista": "general",
+                    "texto": "Meses a años después la cortical es continua, apenas queda un engrosamiento y la médula es continua: el hueso se regenera sin cicatriz. Retrasan este proceso la inestabilidad, la infección, la mala irrigación, el tabaquismo y la diabetes. Con fijación rígida y fragmentos en contacto no hay callo: es la [cicatrización primaria](glosario:cicatrizacion_primaria_directa), en la que las osteonas nuevas cruzan la línea de fractura."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_fractura",
+                "paso_hematoma",
+                "paso_inflamacion",
+                "paso_callo_blando",
+                "paso_callo_duro",
+                "paso_remodelado",
+                "paso_consolidado"
               ]
             }
           }

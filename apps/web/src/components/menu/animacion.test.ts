@@ -31,10 +31,13 @@ describe('animación del menú circular', () => {
 
   it('la entrada parte de un desplazamiento, avisa al terminar y deja el estilo limpio', async () => {
     const el = nodo();
+    // Un retardo largo deja una ventana amplia en la que el nodo espera en su punto de partida.
+    el.dataset.indice = '25';
     const hecho = vi.fn();
     entrarNodo(el, hecho, false);
-    // Mientras dura el retardo del escalonado el nodo ya está en su punto de partida.
-    expect(el.style.opacity).toBe('0');
+    // GSAP dibuja el primer fotograma en el siguiente ciclo de su reloj (no de forma síncrona):
+    // se espera a verlo en lugar de suponer que ya ocurrió (dependía de la carga de la máquina).
+    await vi.waitFor(() => expect(el.style.opacity).toBe('0'), { timeout: 5000 });
     await vi.waitFor(() => expect(hecho).toHaveBeenCalledTimes(1), { timeout: 10_000 });
     // Solo queda lo que pone la plantilla: la posición final no depende de GSAP.
     expect(el.getAttribute('style')).toBe('left: 98px;');

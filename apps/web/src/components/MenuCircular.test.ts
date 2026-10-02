@@ -14,8 +14,9 @@ import {
   simularMovimientoReducido,
 } from '@/components/menu/testing';
 import { MODULOS } from '@/data/modulos';
+import { useAuthStore } from '@/stores/auth';
 import { useProgresoStore } from '@/stores/progreso';
-import { progresoDePrueba } from '@/test/utils';
+import { progresoDePrueba, usuarioDePrueba } from '@/test/utils';
 
 // BLOQUEO_SECUENCIAL es una constante de config.ts (false hoy). Para probar el estado
 // "bloqueado" se sustituye por un getter que lee este objeto; cada prueba lo fija antes de montar.
@@ -270,19 +271,13 @@ describe('MenuCircular: estados de cada módulo', () => {
       config.bloqueo = true;
     });
 
-    it('bloquea desde el primer módulo cuyo anterior no está completado', async () => {
+    it('marca como bloqueados los módulos cuyo anterior no está completado, sin dejar de ser enlaces', async () => {
       const { wrapper } = await montar({ completados: [1] });
       await abrir(wrapper);
       const items = nodos(wrapper);
-      expect(items.map((n) => n.element.tagName)).toEqual([
-        'A',
-        'A',
-        'SPAN',
-        'SPAN',
-        'SPAN',
-        'SPAN',
-      ]);
-      expect(items.map((n) => n.attributes('aria-disabled'))).toEqual([
+      // Todos son enlaces: un módulo bloqueado lleva a su página, que explica el bloqueo.
+      expect(items.map((n) => n.element.tagName)).toEqual(['A', 'A', 'A', 'A', 'A', 'A']);
+      expect(items.map((n) => n.attributes('data-bloqueado'))).toEqual([
         undefined,
         undefined,
         'true',
@@ -290,25 +285,26 @@ describe('MenuCircular: estados de cada módulo', () => {
         'true',
         'true',
       ]);
+      expect(wrapper.findAll('[aria-disabled="true"]')).toHaveLength(0);
     });
 
-    it('un módulo bloqueado no es un enlace, sigue enfocable y explica por qué', async () => {
+    it('un módulo bloqueado es un enlace a su página y explica por qué está bloqueado', async () => {
       const { wrapper } = await montar({ completados: [1] });
       await abrir(wrapper);
       const bloqueado = nodos(wrapper)[2]!;
-      expect(bloqueado.attributes('role')).toBe('link');
-      expect(bloqueado.attributes('tabindex')).toBe('0');
-      expect(bloqueado.attributes('href')).toBeUndefined();
+      expect(bloqueado.attributes('href')).toBe('/modulo/3');
       expect(bloqueado.text()).toContain('bloqueado: completa antes el módulo 2');
+      // Insignia de candado: rectángulo del cuerpo del candado y arco de la argolla.
+      expect(bloqueado.findAll('svg rect')).toHaveLength(1);
     });
 
-    it('tocar un módulo bloqueado no navega ni cierra el menú', async () => {
+    it('tocar un módulo bloqueado navega a su página (no es un callejón sin salida) y cierra el menú', async () => {
       const { wrapper, router } = await montar({ completados: [1] });
       await abrir(wrapper);
       await nodos(wrapper)[3]!.trigger('click');
       await flushPromises();
-      expect(router.currentRoute.value.fullPath).toBe('/');
-      expect(control(wrapper).attributes('aria-expanded')).toBe('true');
+      expect(router.currentRoute.value.fullPath).toBe('/modulo/4');
+      expect(control(wrapper).attributes('aria-expanded')).toBe('false');
     });
 
     it('el teclado también llega a los bloqueados', async () => {
@@ -320,16 +316,58 @@ describe('MenuCircular: estados de cada módulo', () => {
       expect(document.activeElement).toBe(items[2]!.element);
     });
 
-    it('el módulo abierto por URL directa o ya completado no se muestra bloqueado', async () => {
+    it('un módulo ya completado no se muestra bloqueado y el abierto por URL sí lo está si le falta el anterior', async () => {
       const { wrapper } = await montar({ ruta: '/modulo/5', completados: [4] });
       await abrir(wrapper);
       const items = nodos(wrapper);
-      // 4 completado sin que el 3 lo esté; 5 abierto sin que el 4... sí lo está, pero da igual.
-      expect(items[3]!.element.tagName).toBe('A');
-      expect(items[4]!.element.tagName).toBe('A');
+      // 4 completado sin que el 3 lo esté: sin candado.
+      expect(items[3]!.attributes('data-bloqueado')).toBeUndefined();
+      // 5 abierto y desbloqueado (el 4 está completado).
       expect(items[4]!.attributes('aria-current')).toBe('page');
-      // El 6 sí queda bloqueado: el 5 no está completado.
-      expect(items[5]!.element.tagName).toBe('SPAN');
+      expect(items[4]!.attributes('data-bloqueado')).toBeUndefined();
+      // El 6 queda bloqueado: el 5 no está completado.
+      expect(items[5]!.attributes('data-bloqueado')).toBe('true');
+
+      const bloqueadoAbierto = await montar({ ruta: '/modulo/3', completados: [] });
+      await abrir(bloqueadoAbierto.wrapper);
+      const nodo = nodos(bloqueadoAbierto.wrapper)[2]!;
+      expect(nodo.attributes('aria-current')).toBe('page');
+      expect(nodo.attributes('data-bloqueado')).toBe('true');
+    });
+
+    it('para el rol docente ningún módulo aparece bloqueado, y para el estudiante sí', async () => {
+      const estudiante = await montar({ completados: [] });
+      await abrir(estudiante.wrapper);
+      expect(nodos(estudiante.wrapper).filter((n) => n.attributes('data-bloqueado'))).toHaveLength(
+        5,
+      );
+
+      const docente = await montar({ completados: [] });
+      useAuthStore().establecerUsuario(usuarioDePrueba({ rol: 'docente' }));
+      await abrir(docente.wrapper);
+      expect(nodos(docente.wrapper).filter((n) => n.attributes('data-bloqueado'))).toHaveLength(0);
+    });
+
+    it('coincide con las reglas de acceso de la página para las 64 combinaciones de completados', async () => {
+      const { decidirAccesoModulo } = await import('@/components/modulo/acceso');
+      const { estadoDelModulo } = await import('@/components/menu/estados');
+      for (let mascara = 0; mascara < 64; mascara++) {
+        const completados = [1, 2, 3, 4, 5, 6].filter((n) => (mascara >> (n - 1)) & 1);
+        for (let n = 1; n <= 6; n++) {
+          const menu = estadoDelModulo(n, {
+            moduloActual: null,
+            completados,
+            bloqueoSecuencial: true,
+          });
+          const pagina = decidirAccesoModulo(n, completados, {
+            bloqueoSecuencial: true,
+            progresoConocido: true,
+          });
+          expect(menu.bloqueado, `módulo ${n}, completados ${completados.join(',')}`).toBe(
+            !pagina.permitido,
+          );
+        }
+      }
     });
   });
 });

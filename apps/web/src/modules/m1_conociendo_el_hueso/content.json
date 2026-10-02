@@ -1293,7 +1293,7 @@
         {
           "id": "t_matriz_3",
           "tipo": "texto",
-          "markdown": "Ahora verás la composición de la matriz en una explicación animada, y después la practicarás con dos actividades."
+          "markdown": "Ahora verás la composición de la matriz en una explicación animada y en 3D, y después la practicarás con dos actividades."
         },
         {
           "tipo": "actividad",
@@ -1367,6 +1367,88 @@
                   ],
                   "resaltadas": []
                 }
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m1_3_matriz_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "La matriz ósea en 3D, del fragmento al cristal",
+            "instrucciones": "Mueve el deslizador para acercarte cada vez más: de un fragmento de hueso a sus fibras, a una fibrilla de colágeno, a los cristales de mineral y a las proteínas que los regulan; al final, mira cómo responde a la carga. Gira la escena con un dedo y acércala con dos. Visita los siete pasos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Bajaste hasta la escala del cristal. Recuerda: el colágeno tipo I da flexibilidad y resiste la tracción; la hidroxiapatita, que crece en los huecos de la fibrilla, da dureza y resiste la compresión; las proteínas no colágenas regulan la mineralización."
+            },
+            "concepto": "Composición de la matriz ósea por escalas: fibras, fibrilla de colágeno, huecos, hidroxiapatita y proteínas no colágenas",
+            "config": {
+              "modelo": "procedural",
+              "escena": "matriz_osea",
+              "alt": "Escena 3D que se acerca por escalas a la matriz ósea: un fragmento de hueso laminar, sus fibras de colágeno, una fibrilla con moléculas escalonadas y huecos, cristales de hidroxiapatita, proteínas no colágenas y flechas de tracción y compresión. Se gira, se acerca y se recorre con el deslizador.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_fragmento",
+                    "t": 0,
+                    "titulo": "Un fragmento de hueso",
+                    "vista": "general",
+                    "texto": "Un fragmento de hueso laminar, con sus laminillas paralelas. A esta escala parece un material uniforme. Vamos a acercarnos hasta ver de qué está hecho. Los tamaños son esquemáticos: cada paso amplía miles de veces."
+                  },
+                  {
+                    "id": "paso_fibras",
+                    "t": 0.17,
+                    "titulo": "Las fibras de colágeno",
+                    "vista": "fibra",
+                    "texto": "Cada laminilla está hecha de **fibras de colágeno** paralelas entre sí, y de una laminilla a la siguiente cambian de dirección. Es la fase **orgánica**, que da flexibilidad al hueso."
+                  },
+                  {
+                    "id": "paso_fibrilla",
+                    "t": 0.34,
+                    "titulo": "Una fibrilla, por dentro",
+                    "vista": "fibrilla",
+                    "texto": "Una fibra está formada por **fibrillas**, y cada fibrilla por moléculas de **colágeno tipo I** en forma de bastón, alineadas y escalonadas. El escalonado produce el bandeo regular de unos 67 nm."
+                  },
+                  {
+                    "id": "paso_huecos",
+                    "t": 0.5,
+                    "titulo": "Los huecos",
+                    "vista": "detalle",
+                    "texto": "Entre el final de una molécula y el principio de la siguiente quedan espacios ordenados: los **huecos**. En ellos empieza a depositarse el mineral."
+                  },
+                  {
+                    "id": "paso_mineral",
+                    "t": 0.64,
+                    "titulo": "La hidroxiapatita",
+                    "vista": "detalle",
+                    "texto": "Cristales diminutos de **hidroxiapatita**, un fosfato de calcio, crecen en los huecos y a lo largo de la fibrilla. Es la fase **mineral**, que da dureza al hueso."
+                  },
+                  {
+                    "id": "paso_proteinas",
+                    "t": 0.78,
+                    "titulo": "Las proteínas no colágenas",
+                    "vista": "detalle",
+                    "texto": "Sobre las fibrillas y los cristales hay **proteínas no colágenas** (osteocalcina, osteopontina, osteonectina). Se unen al calcio y al colágeno y regulan cuándo y cuánto se mineraliza."
+                  },
+                  {
+                    "id": "paso_carga",
+                    "t": 1,
+                    "titulo": "Dos materiales, una propiedad nueva",
+                    "vista": "carga",
+                    "texto": "Al **estirar** el hueso trabaja sobre todo el colágeno; al **comprimirlo**, sobre todo el mineral. Juntos dan un material a la vez duro y resistente: sin mineral el hueso se dobla; sin colágeno, se rompe."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_fragmento",
+                "paso_fibras",
+                "paso_fibrilla",
+                "paso_huecos",
+                "paso_mineral",
+                "paso_proteinas",
+                "paso_carga"
               ]
             }
           }
@@ -1750,7 +1832,89 @@
         {
           "id": "t_organizacion_2",
           "tipo": "texto",
-          "markdown": "Ahora trabajarás sobre las imágenes: primero el corte completo y después la osteona."
+          "markdown": "Ahora trabajarás sobre imágenes. Primero baja de escala en 3D, del hueso entero hasta el osteocito; después, sobre el corte completo y sobre la osteona, ubicarás cada estructura."
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m1_4_viaje_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Del hueso entero al osteocito, en 3D",
+            "instrucciones": "Mueve el deslizador para bajar de escala: del hueso largo entero, al corte de la diáfisis, a una osteona y a sus osteocitos. También puedes pulsar Reproducir. Gira la escena con un dedo y acércala con dos. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Bajaste por las escalas del hueso: órgano, tejido, osteona y célula. Recuerda el orden: hueso largo con su cortical, médula y trabéculas; corte con periostio, cortical, endostio y médula; osteona con conducto de Havers y laminillas; y osteocitos en lagunas conectados por canalículos."
+            },
+            "concepto": "Organización del hueso por escalas: hueso largo, corte de la diáfisis, osteona y osteocitos",
+            "config": {
+              "modelo": "procedural",
+              "escena": "hueso_largo_a_osteona",
+              "alt": "Escena 3D que baja de escala: un hueso largo con su diáfisis y sus epífisis, un corte de la diáfisis con sus capas y osteonas, y una osteona ampliada con laminillas, conducto de Havers y osteocitos. Se gira, se acerca y se recorre con el deslizador.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_hueso_entero",
+                    "t": 0,
+                    "titulo": "El hueso largo entero",
+                    "vista": "general",
+                    "texto": "Un hueso largo, como el fémur: la **diáfisis** (el cuerpo), dos **epífisis** (los extremos) cubiertas de **cartílago articular** y, envolviendo la diáfisis, el **periostio**. Es la escala del órgano. Gira el hueso con un dedo y acércalo con dos."
+                  },
+                  {
+                    "id": "paso_hueso_abierto",
+                    "t": 0.2,
+                    "titulo": "Abierto por dentro",
+                    "vista": "interior",
+                    "texto": "La pared de la diáfisis es **cortical**, hueso denso. En el centro queda la **cavidad medular**, con **médula ósea** (amarilla en el adulto). En las epífisis la cortical es delgada y por dentro hay **hueso trabecular**: barras orientadas según las cargas (en el hueso real también hay láminas)."
+                  },
+                  {
+                    "id": "paso_corte_transversal",
+                    "t": 0.42,
+                    "titulo": "Un corte de la diáfisis",
+                    "vista": "corte",
+                    "texto": "Si cortas la diáfisis a lo ancho, el tejido se ordena en capas, de fuera hacia dentro: periostio, cortical, endostio y cavidad medular. Los tamaños son esquemáticos, no están a escala."
+                  },
+                  {
+                    "id": "paso_capas",
+                    "t": 0.58,
+                    "titulo": "Las capas, separadas",
+                    "vista": "capas",
+                    "texto": "El **periostio** cubre por fuera (tiene una capa fibrosa y otra celular, que hace crecer y reparar el hueso; aquí no se separan). La **cortical** es la masa densa. El **endostio**, una capa muy delgada, tapiza su cara interna. La **médula ósea** llena la cavidad."
+                  },
+                  {
+                    "id": "paso_osteonas",
+                    "t": 0.74,
+                    "titulo": "Las osteonas de la cortical",
+                    "vista": "corte",
+                    "texto": "La cortical está hecha de miles de cilindros, las **osteonas** o sistemas de Havers, orientados a lo largo del hueso. En corte se ven como círculos concéntricos con un punto rojo en el centro: el **conducto de Havers**. Entre ellas queda hueso **intersticial**: restos de osteonas antiguas (aquí, un fondo liso)."
+                  },
+                  {
+                    "id": "paso_una_osteona",
+                    "t": 0.88,
+                    "titulo": "Una osteona por dentro",
+                    "vista": "osteona",
+                    "texto": "Cortada en escalera se ven las **laminillas concéntricas** alrededor del **conducto de Havers**, con su capilar y una vénula. Las fibras de colágeno cambian de dirección de una laminilla a la siguiente. Una **línea cementante** la rodea y un **conducto de Volkmann** sale de lado para conectarla con otras."
+                  },
+                  {
+                    "id": "paso_osteocitos",
+                    "t": 1,
+                    "titulo": "Los osteocitos",
+                    "vista": "detalle",
+                    "texto": "Entre las laminillas viven los **osteocitos**, dentro de cavidades llamadas **lagunas**. Cada uno emite prolongaciones por **canalículos** hacia sus vecinos (y, en el hueso real, también hacia el conducto central): la red que reparte nutrientes y transmite las señales de carga."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_hueso_entero",
+                "paso_hueso_abierto",
+                "paso_corte_transversal",
+                "paso_capas",
+                "paso_osteonas",
+                "paso_una_osteona",
+                "paso_osteocitos"
+              ]
+            }
+          }
         },
         {
           "tipo": "actividad",
@@ -2182,7 +2346,7 @@
         {
           "id": "t_mandibula_3",
           "tipo": "texto",
-          "markdown": "Cierra el módulo explorando la mandíbula en 3D, viendo el hueso alveolar por dentro, aplicando la ley de Wolff a casos reales y, al final, con la evaluación final."
+          "markdown": "Cierra el módulo explorando la mandíbula en 3D, viendo el hueso alveolar por dentro (en imagen y en 3D), aplicando la ley de Wolff a casos reales y, al final, con la evaluación final."
         },
         {
           "tipo": "actividad",
@@ -2207,9 +2371,9 @@
                   "etiqueta": "Cuerpo",
                   "descripcion": "Porción horizontal, en forma de arco de herradura. En su borde superior está la apófisis alveolar y en su cara externa se abre el foramen mentoniano. Tiene una cortical gruesa, sobre todo hacia el borde inferior, que rodea un núcleo de hueso trabecular.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.3,
-                    "z": 0.6
+                    "x": 0.159,
+                    "y": 0.242,
+                    "z": 0.576
                   }
                 },
                 {
@@ -2217,9 +2381,9 @@
                   "etiqueta": "Rama",
                   "descripcion": "Porción vertical a cada lado. Da inserción al masetero en su cara lateral y al pterigoideo medial en su cara medial, y sostiene la apófisis coronoides y el cóndilo. En su cara medial está el foramen mandibular.",
                   "ancla": {
-                    "x": 0.06,
-                    "y": 0.55,
-                    "z": 0.15
+                    "x": 0.902,
+                    "y": 0.37,
+                    "z": 0.278
                   }
                 },
                 {
@@ -2227,9 +2391,9 @@
                   "etiqueta": "Ángulo",
                   "descripcion": "Unión del borde inferior del cuerpo con el borde posterior de la rama. Ahí se insertan el masetero por fuera y el pterigoideo medial por dentro. Es un sitio frecuente de fractura.",
                   "ancla": {
-                    "x": 0.06,
-                    "y": 0.1,
-                    "z": 0.03
+                    "x": 0.135,
+                    "y": 0.334,
+                    "z": 0.138
                   }
                 },
                 {
@@ -2237,9 +2401,9 @@
                   "etiqueta": "Cóndilo (proceso condilar)",
                   "descripcion": "Tiene una cabeza convexa que se articula con la fosa mandibular del hueso temporal, formando la articulación temporomandibular, y un cuello estrecho donde se inserta el pterigoideo lateral. Es el punto de apoyo de la palanca mandibular.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.98,
-                    "z": 0.05
+                    "x": 0.915,
+                    "y": 1,
+                    "z": 0.052
                   }
                 },
                 {
@@ -2247,9 +2411,9 @@
                   "etiqueta": "Apófisis coronoides",
                   "descripcion": "Proyección triangular anterior de la rama. Recibe la inserción del músculo temporal, un potente elevador de la mandíbula.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.95,
-                    "z": 0.3
+                    "x": 0.086,
+                    "y": 0.868,
+                    "z": 0.508
                   }
                 },
                 {
@@ -2257,9 +2421,9 @@
                   "etiqueta": "Escotadura mandibular",
                   "descripcion": "Concavidad entre la apófisis coronoides y el cóndilo. Por ella pasan los vasos y el nervio del masetero hacia el músculo.",
                   "ancla": {
-                    "x": 0.07,
-                    "y": 0.82,
-                    "z": 0.17
+                    "x": 0.916,
+                    "y": 0.756,
+                    "z": 0.37
                   }
                 },
                 {
@@ -2268,8 +2432,8 @@
                   "descripcion": "Línea media anterior donde se unen las dos mitades de la mandíbula. Al nacer es una unión fibrosa que se osifica durante el primer año de vida. Concentra esfuerzos de flexión y torsión al morder. En su cara externa se forma la protuberancia mentoniana.",
                   "ancla": {
                     "x": 0.5,
-                    "y": 0.35,
-                    "z": 1.0
+                    "y": 0.083,
+                    "z": 0.938
                   }
                 },
                 {
@@ -2277,9 +2441,9 @@
                   "etiqueta": "Foramen mentoniano",
                   "descripcion": "Abertura en la cara externa del cuerpo, por lo general bajo el segundo premolar o entre los premolares. Por aquí sale el nervio mentoniano con sus vasos, que dan sensibilidad al labio inferior y al mentón.",
                   "ancla": {
-                    "x": 0.28,
-                    "y": 0.35,
-                    "z": 0.8
+                    "x": 0.292,
+                    "y": 0.176,
+                    "z": 0.768
                   }
                 },
                 {
@@ -2287,9 +2451,9 @@
                   "etiqueta": "Foramen mandibular",
                   "descripcion": "El foramen mandibular está en la cara medial de la rama, protegido por la língula. Da entrada al conducto mandibular, que recorre por dentro la rama y el cuerpo y contiene el nervio alveolar inferior con sus vasos. A la altura de los premolares emite una rama que sale por el foramen mentoniano. El marcador está en el foramen; el trayecto del conducto es interno.",
                   "ancla": {
-                    "x": 0.14,
-                    "y": 0.6,
-                    "z": 0.17
+                    "x": 0.136,
+                    "y": 0.586,
+                    "z": 0.207
                   }
                 },
                 {
@@ -2297,9 +2461,9 @@
                   "etiqueta": "Proceso alveolar (apófisis alveolar)",
                   "descripcion": "Borde superior del cuerpo, con los alvéolos donde se alojan las raíces dentarias. Está formada por hueso alveolar propio (la lámina cribiforme que reviste el alvéolo y recibe las fibras del ligamento periodontal) y por hueso alveolar de soporte (tablas corticales y hueso trabecular). Depende de los dientes: se forma con ellos y se reabsorbe si se pierden.",
                   "ancla": {
-                    "x": 0.22,
-                    "y": 0.5,
-                    "z": 0.6
+                    "x": 0.796,
+                    "y": 0.282,
+                    "z": 0.665
                   }
                 }
               ],
@@ -2377,6 +2541,88 @@
                 "tablas_corticales",
                 "hueso_trabecular_alveolar",
                 "ligamento_periodontal"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m1_5_alveolar_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "El hueso alveolar en 3D",
+            "instrucciones": "Mueve el deslizador para cortar el cuerpo de la mandíbula a la altura de una raíz y recorrer sus partes: las tablas corticales, el hueso trabecular, el hueso alveolar propio, el ligamento periodontal y el conducto mandibular. Gira la escena con un dedo y acércala con dos. Visita los siete pasos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste el cuerpo mandibular por dentro. Recuerda: dos tablas corticales, hueso trabecular de soporte entre ellas, el hueso alveolar propio como lámina delgada que reviste el alvéolo, el ligamento periodontal que une la raíz con ese hueso y, abajo, el conducto mandibular con el nervio y los vasos alveolares inferiores."
+            },
+            "concepto": "Cuerpo mandibular por dentro: tablas corticales, trabecular, hueso alveolar propio, ligamento y conducto",
+            "config": {
+              "modelo": "procedural",
+              "escena": "hueso_alveolar",
+              "alt": "Escena 3D de un segmento del cuerpo de la mandíbula con un diente: se corta a la altura de la raíz y se ven las tablas corticales, el hueso trabecular, el hueso alveolar propio, el ligamento periodontal y el conducto mandibular. Se gira, se acerca y se recorre con el deslizador.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_cuerpo",
+                    "t": 0,
+                    "titulo": "Un segmento del cuerpo mandibular",
+                    "vista": "general",
+                    "texto": "Un tramo del cuerpo de la mandíbula, del lado de los premolares, con un diente en su alvéolo. Por fuera solo se ve la cortical (en la vida real la cubren el periostio y la encía, que aquí no se dibujan). Las formas son esquemáticas."
+                  },
+                  {
+                    "id": "paso_corte",
+                    "t": 0.18,
+                    "titulo": "El corte vestibulolingual",
+                    "vista": "corte",
+                    "texto": "Cortamos de fuera (vestibular) hacia dentro (lingual), justo por el eje de la raíz. Así se ve la sección completa: hueso denso en las paredes y hueso poroso en el centro."
+                  },
+                  {
+                    "id": "paso_tablas",
+                    "t": 0.34,
+                    "titulo": "Las tablas corticales",
+                    "vista": "corte",
+                    "texto": "Las dos paredes son las **tablas corticales**, vestibular y lingual: hueso compacto y grueso, más grueso en la lingual y en la parte baja del cuerpo. Dan rigidez y anclan los músculos."
+                  },
+                  {
+                    "id": "paso_trabecular",
+                    "t": 0.5,
+                    "titulo": "El hueso trabecular de soporte",
+                    "vista": "corte",
+                    "texto": "Entre las tablas hay **hueso trabecular**: una red de barras (trabéculas) con médula en sus espacios. Sostiene el alvéolo y reparte hacia las corticales las fuerzas de la masticación."
+                  },
+                  {
+                    "id": "paso_alveolar_propio",
+                    "t": 0.66,
+                    "titulo": "El hueso alveolar propio",
+                    "vista": "raiz",
+                    "texto": "Alrededor de la raíz, una lámina delgada y densa reviste el alvéolo: el **hueso alveolar propio** o lámina cribiforme, perforada por vasos y nervios. Es hueso fasciculado: en él se insertan las fibras del ligamento."
+                  },
+                  {
+                    "id": "paso_ligamento",
+                    "t": 0.82,
+                    "titulo": "El ligamento periodontal",
+                    "vista": "raiz",
+                    "texto": "Entre la raíz y el hueso alveolar propio hay un espacio de unos 0,2 mm ocupado por el **ligamento periodontal**: fibras de colágeno que van del cemento de la raíz al hueso y amortiguan cada mordida. Cuando el diente se pierde, este hueso se reabsorbe."
+                  },
+                  {
+                    "id": "paso_conducto",
+                    "t": 1,
+                    "titulo": "El conducto mandibular",
+                    "vista": "conducto",
+                    "texto": "Más abajo, dentro del hueso trabecular, corre el **conducto mandibular**, con el nervio y los vasos alveolares inferiores. Su posición importa al colocar un implante o extraer un molar."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_cuerpo",
+                "paso_corte",
+                "paso_tablas",
+                "paso_trabecular",
+                "paso_alveolar_propio",
+                "paso_ligamento",
+                "paso_conducto"
               ]
             }
           }

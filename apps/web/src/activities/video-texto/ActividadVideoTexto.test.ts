@@ -402,7 +402,10 @@ describe('animación: el SVG', () => {
   function estados(wrapper: VueWrapper): Record<string, string | null> {
     const grupos = wrapper.element.querySelectorAll('[data-testid="svg-animacion"] svg > g');
     return Object.fromEntries(
-      Array.from(grupos, (g: Element) => [g.id, g.getAttribute('data-estado')]),
+      Array.from(grupos, (g: Element) => [
+        g.id.replace(/^.*?__/, ''),
+        g.getAttribute('data-estado'),
+      ]),
     );
   }
 
@@ -435,14 +438,14 @@ describe('animación: el SVG', () => {
       osteoblasto_activo: 'oculta',
       matriz_nueva: 'oculta',
     });
-    const osteoclasto = wrapper.element.querySelector('#osteoclasto_activo') as SVGElement;
+    const osteoclasto = wrapper.element.querySelector('[id$="__osteoclasto_activo"]') as SVGElement;
     // Resaltado sin depender del color: contorno más grueso (3 -> 6).
     expect(osteoclasto.getAttribute('data-resaltada')).toBe('true');
     expect(osteoclasto.querySelector('ellipse')!.getAttribute('stroke-width')).toBe('6');
-    const cavidad = wrapper.element.querySelector('#cavidad_reabsorcion') as SVGElement;
+    const cavidad = wrapper.element.querySelector('[id$="__cavidad_reabsorcion"]') as SVGElement;
     expect(cavidad.hasAttribute('data-resaltada')).toBe(false);
     expect(osteoclasto.style.visibility).toBe('visible');
-    const oculto = wrapper.element.querySelector('#matriz_nueva') as SVGElement;
+    const oculto = wrapper.element.querySelector('[id$="__matriz_nueva"]') as SVGElement;
     expect(oculto.style.visibility).toBe('hidden');
     // Al pasar de paso, el resaltado anterior se restaura al grosor original.
     await siguiente(wrapper);
@@ -453,7 +456,7 @@ describe('animación: el SVG', () => {
     const wrapper = await montarListo(animacion);
     await siguiente(wrapper);
     await clic(wrapper, 'anterior');
-    const elipse = wrapper.element.querySelector('#osteoclasto_activo ellipse')!;
+    const elipse = wrapper.element.querySelector('[id$="__osteoclasto_activo"] ellipse')!;
     expect(elipse.getAttribute('stroke-width')).toBe('3');
   });
 
@@ -474,14 +477,14 @@ describe('animación: el SVG', () => {
     simularMovimientoReducido(true);
     const wrapper = await montarListo(animacion);
     await siguiente(wrapper);
-    const grupo = wrapper.element.querySelector('#osteoclasto_activo') as SVGElement;
+    const grupo = wrapper.element.querySelector('[id$="__osteoclasto_activo"]') as SVGElement;
     expect(grupo.style.transition).toBe('none');
   });
 
   it('sin reduced-motion los grupos cambian con un fundido de opacidad', async () => {
     const wrapper = await montarListo(animacion);
     await siguiente(wrapper);
-    const grupo = wrapper.element.querySelector('#osteoclasto_activo') as SVGElement;
+    const grupo = wrapper.element.querySelector('[id$="__osteoclasto_activo"]') as SVGElement;
     expect(grupo.style.transition).toContain('opacity');
   });
 
@@ -509,8 +512,11 @@ describe('animación: el SVG', () => {
     expect(svg.querySelector('rect')!.getAttribute('fill')).toBe(
       'url(#m1_animacion_remodelado__degradado)',
     );
-    // El grupo controlable se sigue encontrando por su id original.
-    expect(svg.querySelector('#fondo_hueso')!.getAttribute('data-estado')).toBe('visible');
+    // El grupo controlable se sigue encontrando por su id original (el mapa de grupos) y su id del DOM lleva el prefijo.
+    expect(
+      svg.querySelector('#m1_animacion_remodelado__fondo_hueso')!.getAttribute('data-estado'),
+    ).toBe('visible');
+    expect(svg.querySelector('#fondo_hueso')).toBeNull();
     expect(svg.querySelector('svg')!.hasAttribute('width')).toBe(false);
   });
 
@@ -523,6 +529,40 @@ describe('animación: el SVG', () => {
     const b = await montarListo(conActividad(animacion, { id: 'm1_b' }), {}, true);
     const ids = Array.from(document.querySelectorAll('linearGradient'), (n) => n.id);
     expect(ids.sort()).toEqual(['m1_a__grad', 'm1_b__grad']);
+    a.unmount();
+    b.unmount();
+  });
+});
+
+describe('animación: ids únicos en el DOM', () => {
+  it('dos dibujos con el mismo <g id="fondo_escena"> en la página no repiten ningún id', async () => {
+    // Seis SVG del módulo 5 comparten `fondo_escena`; nadie lo referencia, así que antes se repetía.
+    const comun = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+      <title id="titulo_dibujo">Dibujo</title>
+      <g id="fondo_escena" aria-labelledby="titulo_dibujo"><rect width="9" height="9"/></g>
+      <g id="fondo_hueso"><rect width="4" height="4"/></g></svg>`;
+    simularFetch(() => new Response(comun, { status: 200 }));
+    const a = await montarListo(conActividad(animacion, { id: 'm5_a' }), {}, true);
+    const b = await montarListo(conActividad(animacion, { id: 'm5_b' }), {}, true);
+    const ids = Array.from(document.querySelectorAll('[id]'), (n) => n.id).filter((id) =>
+      /fondo_|titulo_dibujo/.test(id),
+    );
+    expect(ids.sort()).toEqual([
+      'm5_a__fondo_escena',
+      'm5_a__fondo_hueso',
+      'm5_a__titulo_dibujo',
+      'm5_b__fondo_escena',
+      'm5_b__fondo_hueso',
+      'm5_b__titulo_dibujo',
+    ]);
+    // La referencia por lista de ids sigue apuntando al de su propio dibujo.
+    expect(document.querySelector('#m5_a__fondo_escena')!.getAttribute('aria-labelledby')).toBe(
+      'm5_a__titulo_dibujo',
+    );
+    // Los grupos se siguen controlando por su id original: el paso 1 deja visible `fondo_hueso`.
+    expect(document.querySelector('#m5_a__fondo_hueso')!.getAttribute('data-estado')).toBe(
+      'visible',
+    );
     a.unmount();
     b.unmount();
   });

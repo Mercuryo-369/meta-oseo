@@ -100,6 +100,7 @@ const ESQUEMAS: Record<string, ZodType> = {
   actividad_video_texto_animacion: ActividadSchema,
   actividad_video_texto_video: ActividadSchema,
   actividad_exploracion_3d: ActividadSchema,
+  actividad_exploracion_3d_procedural: ActividadSchema,
   estado_revision: EstadoRevisionSchema,
 };
 
@@ -156,6 +157,10 @@ describe('ejemplos de docs/content-schema.md', () => {
     expect(tipoDe('actividad_exploracion_3d')).toMatchObject({
       tipo: 'exploracion-3d',
       config: { modelo: 'mandibula' },
+    });
+    expect(tipoDe('actividad_exploracion_3d_procedural')).toMatchObject({
+      tipo: 'exploracion-3d',
+      config: { modelo: 'procedural' },
     });
   });
 

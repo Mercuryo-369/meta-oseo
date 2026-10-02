@@ -23,7 +23,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } fro
 import { useRoute } from 'vue-router';
 import { usePreferredReducedMotion, useWindowSize } from '@vueuse/core';
 import { Bone, X } from '@lucide/vue';
-import { BLOQUEO_SECUENCIAL } from '@/config';
+import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
 import { MODULOS } from '@/data/modulos';
 import { useProgresoStore } from '@/stores/progreso';
 import { detenerNodo, entrarNodo, salirNodo } from '@/components/menu/animacion';
@@ -40,6 +40,8 @@ import NodoModulo from '@/components/menu/NodoModulo.vue';
 
 const progreso = useProgresoStore();
 const route = useRoute();
+// Mismo bloqueo que la página del módulo y la portada; el rol docente no tiene bloqueo.
+const { bloqueoSecuencial } = useAccesoModulos();
 const { width, height } = useWindowSize({ initialWidth: 1024, initialHeight: 768 });
 const movimiento = usePreferredReducedMotion();
 const reducido = computed(() => movimiento.value === 'reduce');
@@ -62,7 +64,7 @@ const nodos = computed(() =>
     estado: estadoDelModulo(modulo.numero, {
       moduloActual: moduloActual.value,
       completados: progreso.modulosCompletados,
-      bloqueoSecuencial: BLOQUEO_SECUENCIAL,
+      bloqueoSecuencial: bloqueoSecuencial.value,
     }),
   })),
 );

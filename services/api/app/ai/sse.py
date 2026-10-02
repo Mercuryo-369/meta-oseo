@@ -35,6 +35,21 @@ class SSEEvent:
         return f"event: {self.name}\ndata: {payload}\n\n".encode(errors="replace")
 
 
+def session_event(session_id: int) -> SSEEvent:
+    """Primer evento de la respuesta: la conversación a la que pertenece el mensaje (F3-09)."""
+    return SSEEvent("sesion", {"session_id": session_id})
+
+
+def citations_event(citas: list[dict[str, Any]]) -> SSEEvent:
+    """Fuentes del curso que se consultaron para responder (F3-05). Antes de `usage` y `done`."""
+    return SSEEvent("citas", {"citas": citas})
+
+
+def message_event(message_id: int) -> SSEEvent:
+    """Id de la respuesta guardada, para valorarla con `POST /api/chat/feedback` (F3-11)."""
+    return SSEEvent("mensaje", {"message_id": message_id})
+
+
 def text_event(delta: str) -> SSEEvent:
     return SSEEvent("text", {"delta": delta})
 

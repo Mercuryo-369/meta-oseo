@@ -9,6 +9,7 @@
  * Son funciones sobre el DOM, sin estado propio: el componente decide cuándo llamarlas.
  */
 import { SVG_MAX_BYTES } from '@/content/constantes';
+import { prefijarIdsRestantes } from '@/activities/idsUnicos';
 
 export type MotivoErrorSvg = 'red' | 'tamano' | 'formato';
 
@@ -159,6 +160,9 @@ export function prepararSvg(texto: string, prefijo: string, viewBox: string): Sv
   }
 
   sanearSvg(raiz, prefijo);
+  // Los ids que nadie referencia también se prefijan: dos dibujos con el mismo `fondo_escena` no repiten ids.
+  // Los grupos ya están guardados por elemento (arriba), con su id original como clave.
+  prefijarIdsRestantes(raiz, prefijo);
 
   // El dibujo escala al ancho de la pantalla: sin tamaño fijo y con el viewBox del contenido.
   raiz.removeAttribute('width');

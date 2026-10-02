@@ -1,7 +1,9 @@
 # Perfil de producción del OVA: PostgreSQL (con pgvector) + API (FastAPI) + nginx (SPA y proxy).
 #
-#   cp .env.example .env     # y completar SECRET_KEY (obligatoria) y, si se quiere el mentor,
-#                            # ANTHROPIC_API_KEY. Sin SECRET_KEY, compose se niega a arrancar.
+#   cp .env.example .env     # y cambiar SECRET_KEY, POSTGRES_PASSWORD, PUBLIC_BASE_URL y
+#                            # ALLOWED_ORIGINS (sección «CAMBIAR OBLIGATORIAMENTE», ver .env.example)
+#                            # y, si se quiere el mentor, ANTHROPIC_API_KEY. Sin SECRET_KEY,
+#                            # POSTGRES_PASSWORD o PUBLIC_BASE_URL, compose se niega a arrancar.
 #   docker compose up --build
 #   -> http://localhost:8080
 #
@@ -63,12 +65,18 @@ services:
       MENTOR_EFFORT: ${MENTOR_EFFORT:-medium}
       MENTOR_MAX_TOKENS: ${MENTOR_MAX_TOKENS:-16000}
       MENTOR_SERVER_FALLBACK: ${MENTOR_SERVER_FALLBACK:-true}
+      MENTOR_MAX_MENSAJES_DIA: ${MENTOR_MAX_MENSAJES_DIA:-60}
+      MENTOR_MAX_QUIZ_DIA: ${MENTOR_MAX_QUIZ_DIA:-20}
+      MENTOR_RAG_TOP_K: ${MENTOR_RAG_TOP_K:-5}
+      RAG_BACKEND: ${RAG_BACKEND:-bm25}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-10080}
       # Certificado (F5-05). El manifiesto de actividades viaja en la imagen (app/data) y se
       # carga solo si existe; no hace falta configurar su ruta.
       CERT_MIN_PORCENTAJE: ${CERT_MIN_PORCENTAJE:-70}
-      # URL con la que el navegador llega al sitio (nginx): va impresa en el PDF del certificado.
-      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      # URL con la que el navegador llega al sitio (nginx): va impresa en el PDF del certificado
+      # como enlace de verificación. Obligatoria: con localhost el certificado saldría con un
+      # enlace falso, y la API se niega a arrancar en ENV=prod si apunta a localhost o 127.0.0.1.
+      PUBLIC_BASE_URL: "${PUBLIC_BASE_URL:?Define PUBLIC_BASE_URL en el .env (la dirección pública del sitio, https://..., ver .env.example)}"
     # SIN `ports`: solo `web` (nginx) la alcanza, por el nombre `api` dentro de la red.
     expose:
       - "8000"
@@ -92,6 +100,10 @@ services:
       # Qué se envía lo decide el .dockerignore de la raíz.
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        # Se incrusta al compilar la SPA (no se puede cambiar sin reconstruir la imagen):
+        # `false` deja todos los módulos abiertos. Cualquier otro valor mantiene el bloqueo.
+        VITE_BLOQUEO_SECUENCIAL: ${VITE_BLOQUEO_SECUENCIAL:-true}
     restart: unless-stopped
     depends_on:
       api:

@@ -110,7 +110,7 @@ const ubicaciones = computed(() => {
 const puntosProyectables = computed(() =>
   props.nodos.flatMap((nodo) => {
     const ubicacion = ubicaciones.value.get(nodo.id);
-    return ubicacion ? [{ id: nodo.id, punto: ubicacion.punto }] : [];
+    return ubicacion ? [{ id: nodo.id, punto: ubicacion.punto, normal: ubicacion.normal }] : [];
   }),
 );
 

@@ -12,7 +12,7 @@ ignore = [
 ]
 
 [lint.isort]
-known-first-party = ["conversor", "guion_sintetico", "conftest"]
+known-first-party = ["conversor", "guion_sintetico", "conftest", "pendientes", "comprobar_docs"]
 
 [format]
 line-ending = "lf"

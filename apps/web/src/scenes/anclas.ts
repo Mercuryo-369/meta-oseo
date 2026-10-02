@@ -12,6 +12,7 @@
  * Si un id no se puede ubicar el resultado es `null`: la ficha se muestra igual y la cámara vuelve
  * al encuadre general, sin bloquear la actividad.
  */
+import { ANCLAS_PIEZAS_DERECHA, estructuraDeNodo } from '@/content/nodos3d';
 import type { AnclaNodo, VistaCamara } from '@/content/nodos3d';
 import { RADIO_ZONA_ANCLA } from './vistas';
 import type { Vec3 } from './vistas';
@@ -35,23 +36,39 @@ export interface UbicacionNodo {
   /** Radio de la zona a encuadrar, en unidades del modelo (radio del modelo entero = 1). */
   radio: number;
   origen: 'ancla' | 'provisional' | 'modelo_completo' | 'nodo_glb';
+  /**
+   * Normal de la superficie en el punto (hacia fuera del hueso), si se conoce: con ella la escena sabe si el
+   * punto mira a la cámara. Solo la traen los nodos cuyo ancla es la calculada para su estructura.
+   */
+  normal?: Vec3;
 }
 
 /**
- * Posiciones aproximadas de las piezas de la mandíbula sobre la malla PROVISIONAL, en coordenadas
- * de ancla del lado DERECHO del sujeto (`x` bajo). Se midieron sobre la propia malla
- * (BodyParts3D FJ6399; la prueba `anclas.test.ts` comprueba que cada punto está sobre el hueso).
- * `radio` es el tamaño de la zona en unidades del modelo.
+ * Tamaño de la zona (en unidades del modelo) que se encuadra al enfocar cada pieza del catálogo. Las
+ * posiciones vienen de `ANCLAS_PIEZAS_DERECHA` (nodos3d.ts), que `tools/anclas/calcular_anclas.mjs` calcula
+ * sobre la propia malla BodyParts3D: cada punto está sobre el hueso (lo comprueba `anclas.test.ts`).
  */
-export const ANCLAS_PROVISIONALES: Readonly<Record<string, { ancla: AnclaNodo; radio: number }>> = {
-  condilo: { ancla: { x: 0.1, y: 0.95, z: 0.07 }, radio: 0.3 },
-  apofisis_coronoides: { ancla: { x: 0.09, y: 0.87, z: 0.5 }, radio: 0.3 },
-  rama: { ancla: { x: 0.08, y: 0.62, z: 0.14 }, radio: 0.55 },
-  angulo: { ancla: { x: 0.1, y: 0.3, z: 0.2 }, radio: 0.35 },
-  cuerpo: { ancla: { x: 0.2, y: 0.3, z: 0.62 }, radio: 0.55 },
-  sinfisis: { ancla: { x: 0.5, y: 0.3, z: 0.99 }, radio: 0.35 },
-  foramen_mentoniano: { ancla: { x: 0.3, y: 0.36, z: 0.8 }, radio: 0.2 },
+const RADIO_PIEZA: Readonly<Record<string, number>> = {
+  condilo: 0.3,
+  apofisis_coronoides: 0.3,
+  rama: 0.55,
+  angulo: 0.35,
+  cuerpo: 0.55,
+  sinfisis: 0.35,
+  foramen_mentoniano: 0.2,
 };
+
+/**
+ * Posiciones de las piezas de la mandíbula sobre la malla PROVISIONAL, en coordenadas de ancla del lado
+ * DERECHO del sujeto (`x` bajo), para los nodos que no llevan `ancla` propia.
+ */
+export const ANCLAS_PROVISIONALES: Readonly<Record<string, { ancla: AnclaNodo; radio: number }>> =
+  Object.fromEntries(
+    Object.entries(RADIO_PIEZA).flatMap(([id, radio]) => {
+      const ancla = ANCLAS_PIEZAS_DERECHA[id];
+      return ancla ? [[id, { ancla, radio }]] : [];
+    }),
+  );
 
 /** Punto del modelo que corresponde a un ancla: las fracciones recorren la caja envolvente. */
 export function puntoDeAncla(ancla: AnclaNodo, caja: CajaModelo): Vec3 {
@@ -73,14 +90,16 @@ export function centroDeCaja(caja: CajaModelo): Vec3 {
 
 /**
  * Ubica un nodo sobre la mandíbula provisional, o `null` si no se puede. Las piezas de los dos lados
- * (cóndilo, rama, ángulo...) se toman del lado que ve la cámara: con `lateral_izquierda` se refleja `x`.
+ * (cóndilo, rama, ángulo...) se toman del lado que ve la cámara: con `lateral_izquierda` o `medial_izquierda` se refleja `x`.
  */
 export function ubicarNodoMandibula(nodo: NodoUbicable, caja: CajaModelo): UbicacionNodo | null {
   if (nodo.ancla) {
+    const normal = estructuraDeNodo(nodo.id, nodo.ancla)?.normal;
     return {
       punto: puntoDeAncla(nodo.ancla, caja),
       radio: RADIO_ZONA_ANCLA,
       origen: 'ancla',
+      ...(normal ? { normal } : {}),
     };
   }
   if (nodo.id === 'mandibula') {
@@ -90,7 +109,8 @@ export function ubicarNodoMandibula(nodo: NodoUbicable, caja: CajaModelo): Ubica
     ? ANCLAS_PROVISIONALES[nodo.id]
     : undefined;
   if (!pieza) return null;
-  const espejo = nodo.camara.vista === 'lateral_izquierda';
+  const espejo =
+    nodo.camara.vista === 'lateral_izquierda' || nodo.camara.vista === 'medial_izquierda';
   const ancla = espejo ? { ...pieza.ancla, x: 1 - pieza.ancla.x } : pieza.ancla;
   return { punto: puntoDeAncla(ancla, caja), radio: pieza.radio, origen: 'provisional' };
 }

@@ -11,9 +11,13 @@
  * Una actividad ya superada al abrir la página se muestra en modo `revisar` (respuestas
  * correctas, sin puntuar) con un botón para practicarla de nuevo. El componente se monta solo
  * cuando la página ya tiene el estado del servidor (o agotó la espera): ver `ModuloView.vue`.
+ *
+ * Con `soloLectura` (vista de docente) la actividad se abre en modo `revisar` y NADA se guarda: ni
+ * la instantánea del intento, ni el resultado, ni el `POST` a la API. El docente puede probarla
+ * («Probar la actividad»), pero lo que haga no llega al servidor ni a sus estadísticas.
  */
 import { computed, ref } from 'vue';
-import { CircleCheck, CircleDot, RotateCcw } from '@lucide/vue';
+import { CircleCheck, CircleDot, Eye, RotateCcw } from '@lucide/vue';
 import { componenteDeActividad } from '@/activities/registro';
 import { describirInteraccion, intentoInicial, seleccionDeInteraccion } from '@/activities/types';
 import type {
@@ -31,7 +35,15 @@ import type { NumeroModulo } from '@/data/modulos';
 import { useActividadesStore } from '@/stores/actividades';
 import { useContextoStore } from '@/stores/contextoPedagogico';
 
-const props = defineProps<{ actividad: Actividad; modulo: NumeroModulo }>();
+const props = withDefaults(
+  defineProps<{
+    actividad: Actividad;
+    modulo: NumeroModulo;
+    /** Vista de docente: solo lectura, sin registrar nada en el servidor. */
+    soloLectura?: boolean;
+  }>(),
+  { soloLectura: false },
+);
 
 const store = useActividadesStore();
 const contexto = useContextoStore();
@@ -52,7 +64,7 @@ const completada = computed(() => resultado.value?.completada === true);
 const progresoInicial = ref<ProgresoActividad | undefined>(
   store.leerInstantanea(props.actividad.id),
 );
-const modo = ref<ModoActividad>(superada.value ? 'revisar' : 'jugar');
+const modo = ref<ModoActividad>(props.soloLectura || superada.value ? 'revisar' : 'jugar');
 const montaje = ref(0);
 
 const estadoPrevio = computed<EstadoPrevioActividad>(() => ({
@@ -74,7 +86,7 @@ function marcarActual(intentos: number = intentosEnCurso.value): void {
 }
 
 function alProgreso(progreso: ProgresoActividad): void {
-  if (modo.value !== 'jugar') return;
+  if (modo.value !== 'jugar' || props.soloLectura) return;
   store.guardarProgreso(props.actividad.id, progreso);
   intentosEnCurso.value = progreso.intentos;
 }
@@ -89,7 +101,7 @@ function alInteraccion(interaccion: InteraccionActividad): void {
 }
 
 function alCompletar(resultadoActividad: ResultadoActividad): void {
-  if (modo.value !== 'jugar') return;
+  if (modo.value !== 'jugar' || props.soloLectura) return;
   progresoInicial.value = undefined;
   void store.registrarCompletada(props.actividad, props.modulo, resultadoActividad);
   intentosEnCurso.value = resultadoActividad.intentos;
@@ -102,7 +114,7 @@ function alCompletar(resultadoActividad: ResultadoActividad): void {
 }
 
 function practicarDeNuevo(): void {
-  progresoInicial.value = undefined;
+  if (!props.soloLectura) progresoInicial.value = undefined;
   intentosEnCurso.value = intentoInicial(estadoPrevio.value);
   modo.value = 'jugar';
   montaje.value++;
@@ -129,7 +141,11 @@ function practicarDeNuevo(): void {
       <span class="bg-secondary text-secondary-foreground rounded-full px-2.5 py-0.5 font-medium">
         {{ actividad.obligatoria ? 'Obligatoria' : 'Opcional' }}
       </span>
-      <span v-if="superada" class="text-success inline-flex items-center gap-1 font-medium">
+      <span v-if="soloLectura" class="inline-flex items-center gap-1" data-testid="estado-docente">
+        <Eye class="size-4" aria-hidden="true" />
+        Vale {{ actividad.puntaje_max }} puntos
+      </span>
+      <span v-else-if="superada" class="text-success inline-flex items-center gap-1 font-medium">
         <CircleCheck class="size-4" aria-hidden="true" />
         Completada · {{ resultado?.puntaje ?? 0 }} de {{ actividad.puntaje_max }} puntos
       </span>
@@ -166,13 +182,24 @@ function practicarDeNuevo(): void {
       class="flex flex-wrap items-center justify-between gap-3 border-t pt-3"
       data-testid="modo-revisar"
     >
-      <p class="text-muted-foreground text-sm">
+      <p v-if="soloLectura" class="text-muted-foreground text-sm" data-testid="modo-docente">
+        Vista de docente: aquí ves las respuestas correctas. Puedes probar la actividad; no se
+        guarda nada.
+      </p>
+      <p v-else class="text-muted-foreground text-sm">
         Ya la completaste: aquí ves las respuestas correctas. Practicar de nuevo no baja tu puntaje.
       </p>
       <Button variant="outline" @click="practicarDeNuevo">
         <RotateCcw aria-hidden="true" />
-        Practicar de nuevo
+        {{ soloLectura ? 'Probar la actividad' : 'Practicar de nuevo' }}
       </Button>
     </div>
+    <p
+      v-else-if="soloLectura"
+      class="text-muted-foreground border-t pt-3 text-sm"
+      data-testid="modo-docente-probando"
+    >
+      Estás probando la actividad como docente: lo que hagas no se guarda.
+    </p>
   </section>
 </template>

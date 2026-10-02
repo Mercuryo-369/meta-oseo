@@ -9,6 +9,7 @@ import { contarActividadesPorTipo, listarActividades, recorrerCadenas } from '@/
 import { PUNTAJE_MODULO_MAX, PUNTAJE_MODULO_MIN } from '@/content/constantes';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
 import { puntajeMaximoModulo } from '@/content/scoring';
+import { HITOS_DOS_RUTAS } from '@/scenes/procedural/dos_rutas/estado';
 import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type { ModuloContenido } from '@/content/schema';
 import type { DependenciasAuditoria } from '@/content/svg';
@@ -153,6 +154,24 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
 
 const { secciones: seccionesGuion, actividades: actividadesGuion } = leerGuion();
 
+/**
+ * Exploraciones 3D procedurales con línea de tiempo añadidas fuera del guion (las dos rutas de osificación).
+ * Son opcionales y no cuentan en las cifras de la ficha, salvo en el total de puntos del módulo.
+ * Para añadir otra escena basta con una fila más: las pruebas de abajo se derivan de esta lista.
+ */
+const EXTRAS_3D = [
+  {
+    id: 'm3_1_dos_rutas_3d',
+    seccion: 'm3_1_dos_rutas',
+    escena: 'dos_rutas_osificacion',
+    hitos: HITOS_DOS_RUTAS,
+    puntaje: 30,
+  },
+] as const;
+const ID_EXTRAS_3D = new Set<string>(EXTRAS_3D.map((e) => e.id));
+/** Puntos que las exploraciones extra suman al total del módulo. */
+const PUNTAJE_EXTRAS_3D = EXTRAS_3D.reduce((s, e) => s + e.puntaje, 0);
+
 /** Cifras del guion (verificadas a mano y con este mismo parseo al escribir la prueba). */
 const FICHA = {
   secciones: 8,
@@ -238,7 +257,10 @@ describe('módulo 3: esquema, carpeta y recursos', () => {
  * ----------------------------------------------------------------------------------------- */
 
 describe('módulo 3: cobertura del guion', () => {
-  const ubicadas = listarActividades(modulo);
+  /** Todas las actividades del módulo, con las exploraciones 3D añadidas fuera del guion. */
+  const todas = listarActividades(modulo);
+  /** Las del guion: sin las exploraciones 3D extra. */
+  const ubicadas = todas.filter((u) => !ID_EXTRAS_3D.has(u.actividad.id));
 
   it('el guion se parseó como se espera (8 secciones y 21 actividades)', () => {
     expect(seccionesGuion).toHaveLength(FICHA.secciones);
@@ -279,23 +301,42 @@ describe('módulo 3: cobertura del guion', () => {
   });
 
   it('el puntaje total y el obligatorio coinciden con el guion y respetan el tope del esquema', () => {
-    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total);
+    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total + PUNTAJE_EXTRAS_3D);
     expect(puntajeMaximoModulo(modulo, { soloObligatorias: true })).toBe(FICHA.obligatorio);
     expect(actividadesGuion.reduce((s, a) => s + a.puntaje, 0)).toBe(FICHA.total);
     expect(puntajeMaximoModulo(modulo)).toBeLessThanOrEqual(PUNTAJE_MODULO_MAX);
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 21 actividades: 6 multicapa, 8 quiz, 3 relaciones, 1 video, 2 arrastres y 1 exploración 3D', () => {
+  it('cuenta 21 actividades del guion (6 multicapa, 8 quiz, 3 relaciones, 1 video, 2 arrastres y 1 exploración 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
       multicapa: 6,
       quiz: 8,
       'relacion-columnas': 3,
       'video-texto': 1,
       'arrastre-molecular': 2,
-      'exploracion-3d': 1,
+      'exploracion-3d': 1 + EXTRAS_3D.length,
     });
   });
+
+  it.each(EXTRAS_3D)(
+    'la exploración 3D $id es opcional, procedural y usa los hitos de su escena',
+    ({ id, seccion, escena, hitos, puntaje }) => {
+      const u = todas.find((x) => x.actividad.id === id)!;
+      expect(u, id).toBeDefined();
+      expect(u.seccion.id).toBe(seccion);
+      const a = u.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.obligatoria).toBe(false);
+      expect(a.puntaje_max).toBe(puntaje);
+      expect(a.config.modelo).toBe('procedural');
+      expect(a.config.escena).toBe(escena);
+      const pasos = a.config.linea_de_tiempo!.pasos;
+      // Los `t` del contenido son los hitos canónicos de la escena, en el orden de las fases.
+      expect(pasos.map((p) => p.t)).toEqual(Object.values(hitos));
+      expect(a.config.requeridos).toEqual(pasos.map((p) => p.id));
+    },
+  );
 
   it('los quiz conservan sus preguntas (ids, formato, respuesta correcta) y suman 34, 12 en la evaluación final', () => {
     let total = 0;
@@ -445,7 +486,8 @@ describe('módulo 3: textos visibles', () => {
     const actividadesConAlt = listarActividades(modulo).filter(({ actividad }) =>
       ['multicapa', 'video-texto', 'exploracion-3d'].includes(actividad.tipo),
     );
-    expect(actividadesConAlt.length).toBe(8);
+    // Ocho del guion más las exploraciones 3D extra (que también llevan `alt`).
+    expect(actividadesConAlt.length).toBe(8 + EXTRAS_3D.length);
     for (const { actividad } of actividadesConAlt) {
       const alt = (actividad.config as { alt?: string }).alt;
       expect(alt?.trim().length ?? 0, actividad.id).toBeGreaterThanOrEqual(10);

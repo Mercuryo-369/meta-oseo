@@ -68,6 +68,33 @@ describe('miraALaCamara', () => {
   });
 });
 
+describe('miraALaCamara con la normal de la superficie', () => {
+  const centro = [0, 0, 0] as const;
+  const camara = [0, 0, 4] as const;
+
+  it('la normal que apunta a la cámara mira; la que le da la espalda, no', () => {
+    expect(miraALaCamara([0, 0, 0.5], centro, camara, undefined, [0, 0, 1])).toBe(true);
+    // El mismo punto, con la superficie mirando hacia atrás (una cara interna del hueso).
+    expect(miraALaCamara([0, 0, 0.5], centro, camara, undefined, [0, 0, -1])).toBe(false);
+  });
+
+  it('manda la normal y no el lado del centro: un punto de la cara trasera con normal hacia delante se ve', () => {
+    expect(miraALaCamara([0, 0, -0.6], centro, camara, undefined, [0, 0, 1])).toBe(true);
+    expect(miraALaCamara([0, 0, 0.6], centro, camara, undefined, [0, 0, -1])).toBe(false);
+  });
+
+  it('un punto de canto (normal casi perpendicular a la cámara) sigue viéndose con la tolerancia', () => {
+    // Coseno -0,1: la normal mira apenas de espaldas, como la punta del cóndilo vista de frente.
+    expect(miraALaCamara([0, 0, 0], centro, camara, undefined, [0, -0.1, 0.0])).toBe(true);
+    expect(miraALaCamara([0, 0, 0], centro, camara, undefined, [0.1, 0, -0.995])).toBe(false);
+  });
+
+  it('una normal no finita o una cámara sobre el punto vuelven al criterio del lado del centro', () => {
+    expect(miraALaCamara([0, 0, -0.6], centro, camara, undefined, [NaN, 0, 0])).toBe(false);
+    expect(miraALaCamara([0, 0, 0.6], centro, [0, 0, 0.6], undefined, [0, 0, -1])).toBe(true);
+  });
+});
+
 describe('cambioSignificativo', () => {
   it('sin cambios o con cambios de menos del umbral no hay que reescribir la interfaz', () => {
     expect(cambioSignificativo([punto()], [punto()])).toBe(false);

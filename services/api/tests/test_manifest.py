@@ -47,6 +47,8 @@ def test_el_generador_lee_el_modulo_de_muestra(tmp_path, capsys):
         "puntaje_max": 30,
         "obligatoria": True,
         "seccion": "tejido_dinamico",
+        "seccion_titulo": "El hueso, un tejido dinámico",
+        "concepto": "Estructura en capas del hueso largo",
     }
     assert data["actividades"]["m1_explora_celulas"]["obligatoria"] is False
     assert data["modulos"]["1"]["slug"] == "conociendo_el_hueso"
@@ -73,7 +75,10 @@ def test_la_salida_es_determinista_y_comprobar_detecta_cambios(tmp_path, capsys)
     assert b"\r\n" not in primero and primero.endswith(b"\n")
 
     assert script.main([*args, "--comprobar"]) == 0
-    salida.write_text(primero.decode("utf-8").replace('"puntaje_max": 30', '"puntaje_max": 31'))
+    salida.write_text(
+        primero.decode("utf-8").replace('"puntaje_max": 30', '"puntaje_max": 31'),
+        encoding="utf-8",
+    )
     assert script.main([*args, "--comprobar"]) == 1
     assert "no está al día" in capsys.readouterr().out
     salida.unlink()

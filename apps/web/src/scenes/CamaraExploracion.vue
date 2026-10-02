@@ -36,7 +36,7 @@ const props = defineProps<{
   limites: LimitesZoom;
   reducirMovimiento: boolean;
   /** Puntos de interés a proyectar (coordenadas del modelo). */
-  puntos: readonly { id: string; punto: Vec3 }[];
+  puntos: readonly { id: string; punto: Vec3; normal?: Vec3 }[];
   /** Centro del modelo: sirve para saber qué puntos miran a la cámara. */
   centro: Vec3;
   /** Tamaño del lienzo en píxeles CSS. */
@@ -120,7 +120,7 @@ function aplicarPendiente(cam: Camera, ctl: ControlesOrbita): void {
 
 function proyectar(cam: Camera): void {
   cam.updateMatrixWorld(true);
-  const posiciones: PosicionPunto[] = props.puntos.map(({ id, punto }) => {
+  const posiciones: PosicionPunto[] = props.puntos.map(({ id, punto, normal }) => {
     auxiliar.set(punto[0], punto[1], punto[2]).project(cam);
     const { x, y } = ndcAPixeles(auxiliar.x, auxiliar.y, props.ancho, props.alto);
     return {
@@ -128,7 +128,13 @@ function proyectar(cam: Camera): void {
       x,
       y,
       enPantalla: enPantalla([auxiliar.x, auxiliar.y, auxiliar.z]),
-      detras: !miraALaCamara(punto, props.centro, [cam.position.x, cam.position.y, cam.position.z]),
+      detras: !miraALaCamara(
+        punto,
+        props.centro,
+        [cam.position.x, cam.position.y, cam.position.z],
+        undefined,
+        normal,
+      ),
     };
   });
   if (cambioSignificativo(ultimas, posiciones)) {

@@ -99,6 +99,9 @@ export interface AnclaNodo {
  *    DEL SUJETO y mira hacia el modelo (en `lateral_derecha` se ve la cara externa del lado derecho).
  *  - `superior` e `inferior`: desde arriba y desde abajo.
  *  - `oblicua`: tres cuartos, ligeramente elevada; es la que mejor muestra el volumen.
+ *  - `medial_derecha` y `medial_izquierda`: la cámara entra en el arco de la mandíbula y mira hacia fuera la cara
+ *    MEDIAL (interna) de la rama de ese lado: `medial_derecha` muestra la cara interna de la rama derecha del
+ *    sujeto, donde están el foramen mandibular y la língula. Solo tiene sentido al enfocar un nodo de la rama.
  */
 export const VISTAS_CAMARA = [
   'frontal',
@@ -108,5 +111,270 @@ export const VISTAS_CAMARA = [
   'superior',
   'inferior',
   'oblicua',
+  'medial_derecha',
+  'medial_izquierda',
 ] as const;
 export type VistaCamara = (typeof VISTAS_CAMARA)[number];
+
+// <anclas-mandibula:inicio>
+// GENERADO por tools/anclas/calcular_anclas.mjs a partir de la malla real. No editar a mano: se vuelve a
+// generar con `node tools/anclas/calcular_anclas.mjs --escribir` (método en docs/anclas-mandibula.md).
+
+/**
+ * Cada estructura de la mandíbula que el contenido pide por ancla, con su punto SOBRE la superficie del hueso
+ * (unos 0,6 mm por fuera), en coordenadas de ancla (ver `AnclaNodo`).
+ *  - `lado`: en qué hemimandíbula está el punto. Las estructuras pares se reparten entre las dos para que los
+ *    números no se amontonen en la vista inicial; `medio` es la línea media.
+ *  - `normal`: la normal de la superficie en el punto (hacia fuera del hueso), para saber si mira a la cámara.
+ *  - `vista`: la vista con nombre desde la que se ve el punto sin que otra parte del hueso o un diente lo tape.
+ *    La escena la usa al enfocar el nodo cuando el contenido no fija una `camara`.
+ */
+export interface EstructuraMandibula {
+  ancla: AnclaNodo;
+  lado: 'derecha' | 'izquierda' | 'medio';
+  normal: readonly [number, number, number];
+  vista: VistaCamara;
+}
+
+export const ESTRUCTURAS_MANDIBULA: Readonly<Record<string, EstructuraMandibula>> = {
+  agujero_mentoniano: {
+    ancla: { x: 0.292, y: 0.176, z: 0.768 },
+    lado: 'derecha',
+    normal: [-0.68, 0.1, 0.73],
+    vista: 'frontal',
+  },
+  angulo: {
+    ancla: { x: 0.135, y: 0.334, z: 0.138 },
+    lado: 'derecha',
+    normal: [0.2, -0.72, -0.66],
+    vista: 'posterior',
+  },
+  apofisis_alveolar: {
+    ancla: { x: 0.796, y: 0.282, z: 0.665 },
+    lado: 'izquierda',
+    normal: [0.79, 0.07, 0.61],
+    vista: 'frontal',
+  },
+  apofisis_coronoides: {
+    ancla: { x: 0.086, y: 0.868, z: 0.508 },
+    lado: 'derecha',
+    normal: [0.08, 0.99, 0.12],
+    vista: 'frontal',
+  },
+  borde_basal: {
+    ancla: { x: 0.317, y: 0.065, z: 0.778 },
+    lado: 'derecha',
+    normal: [-0.71, -0.37, 0.6],
+    vista: 'frontal',
+  },
+  canino_zona_compresion: {
+    ancla: { x: 0.663, y: 0.226, z: 0.859 },
+    lado: 'izquierda',
+    normal: [0.6, -0.3, 0.74],
+    vista: 'frontal',
+  },
+  canino_zona_tension: {
+    ancla: { x: 0.403, y: 0.21, z: 0.898 },
+    lado: 'derecha',
+    normal: [-0.05, -0.55, 0.83],
+    vista: 'frontal',
+  },
+  condilo: {
+    ancla: { x: 0.915, y: 1, z: 0.052 },
+    lado: 'izquierda',
+    normal: [-0.02, 0.99, -0.13],
+    vista: 'frontal',
+  },
+  cortical_basal: {
+    ancla: { x: 0.434, y: 0.06, z: 0.898 },
+    lado: 'derecha',
+    normal: [-0.51, -0.07, 0.86],
+    vista: 'frontal',
+  },
+  cresta_alveolar: {
+    ancla: { x: 0.36, y: 0.325, z: 0.821 },
+    lado: 'derecha',
+    normal: [-0.24, 0.97, 0.06],
+    vista: 'medial_derecha',
+  },
+  cuello_condilo: {
+    ancla: { x: 0.967, y: 0.782, z: 0.081 },
+    lado: 'izquierda',
+    normal: [0.9, -0.41, -0.17],
+    vista: 'lateral_izquierda',
+  },
+  cuerpo: {
+    ancla: { x: 0.159, y: 0.242, z: 0.576 },
+    lado: 'derecha',
+    normal: [-0.9, -0.15, 0.41],
+    vista: 'oblicua',
+  },
+  cuerpo_mandibular_basal: {
+    ancla: { x: 0.614, y: 0.061, z: 0.86 },
+    lado: 'izquierda',
+    normal: [0.64, -0.06, 0.77],
+    vista: 'frontal',
+  },
+  cuerpo_molares: {
+    ancla: { x: 0.163, y: 0.211, z: 0.576 },
+    lado: 'derecha',
+    normal: [-0.89, -0.19, 0.41],
+    vista: 'oblicua',
+  },
+  escotadura_mandibular: {
+    ancla: { x: 0.916, y: 0.756, z: 0.37 },
+    lado: 'izquierda',
+    normal: [-0.33, 0.93, -0.15],
+    vista: 'oblicua',
+  },
+  foramen_mandibular: {
+    ancla: { x: 0.136, y: 0.586, z: 0.207 },
+    lado: 'derecha',
+    normal: [0.92, 0.33, 0.23],
+    vista: 'medial_derecha',
+  },
+  foramen_mentoniano: {
+    ancla: { x: 0.292, y: 0.176, z: 0.768 },
+    lado: 'derecha',
+    normal: [-0.68, 0.1, 0.73],
+    vista: 'frontal',
+  },
+  hueso_trabecular_cuerpo: {
+    ancla: { x: 0.739, y: 0.144, z: 0.731 },
+    lado: 'izquierda',
+    normal: [0.78, -0.35, 0.51],
+    vista: 'frontal',
+  },
+  lamina_dura: {
+    ancla: { x: 0.211, y: 0.325, z: 0.661 },
+    lado: 'derecha',
+    normal: [-0.74, 0.42, 0.53],
+    vista: 'frontal',
+  },
+  linea_milohioidea: {
+    ancla: { x: 0.628, y: 0.21, z: 0.677 },
+    lado: 'izquierda',
+    normal: [-0.86, -0.02, -0.51],
+    vista: 'posterior',
+  },
+  proceso_alveolar: {
+    ancla: { x: 0.796, y: 0.282, z: 0.665 },
+    lado: 'izquierda',
+    normal: [0.79, 0.07, 0.61],
+    vista: 'frontal',
+  },
+  rama: {
+    ancla: { x: 0.902, y: 0.37, z: 0.278 },
+    lado: 'izquierda',
+    normal: [1, 0.06, 0.03],
+    vista: 'lateral_izquierda',
+  },
+  septo_interdental: {
+    ancla: { x: 0.237, y: 0.32, z: 0.709 },
+    lado: 'derecha',
+    normal: [-0.71, 0.16, 0.68],
+    vista: 'frontal',
+  },
+  sinfisis: {
+    ancla: { x: 0.5, y: 0.083, z: 0.938 },
+    lado: 'medio',
+    normal: [-0.05, 0.05, 1],
+    vista: 'frontal',
+  },
+  tabla_cortical_lingual: {
+    ancla: { x: 0.675, y: 0.339, z: 0.615 },
+    lado: 'izquierda',
+    normal: [-0.86, 0.5, -0.11],
+    vista: 'oblicua',
+  },
+  tabla_cortical_vestibular: {
+    ancla: { x: 0.525, y: 0.284, z: 0.944 },
+    lado: 'izquierda',
+    normal: [0.19, 0.47, 0.86],
+    vista: 'frontal',
+  },
+};
+
+/** Ancla del lado DERECHO de las piezas del catálogo (las usa la escena si el nodo del contenido no lleva ancla). */
+export const ANCLAS_PIEZAS_DERECHA: Readonly<Record<string, AnclaNodo>> = {
+  condilo: { x: 0.092, y: 1, z: 0.053 },
+  apofisis_coronoides: { x: 0.086, y: 0.868, z: 0.508 },
+  rama: { x: 0.072, y: 0.547, z: 0.28 },
+  angulo: { x: 0.135, y: 0.334, z: 0.138 },
+  cuerpo: { x: 0.19, y: 0.209, z: 0.636 },
+  sinfisis: { x: 0.5, y: 0.083, z: 0.938 },
+  foramen_mentoniano: { x: 0.292, y: 0.176, z: 0.768 },
+};
+// <anclas-mandibula:fin>
+
+/**
+ * La estructura calculada de un nodo, si es la que dice su id: un nodo cuyo ancla coincide con la de
+ * `ESTRUCTURAS_MANDIBULA` (el contenido la copia de ahí) hereda su normal y su vista recomendada. Un nodo
+ * con un ancla distinta (puesta a mano por quien escribe el contenido) no hereda nada: sus datos ya no
+ * describen ese punto.
+ */
+export function estructuraDeNodo(
+  id: string,
+  ancla: AnclaNodo | undefined,
+): EstructuraMandibula | null {
+  if (!ancla || !Object.hasOwn(ESTRUCTURAS_MANDIBULA, id)) return null;
+  const estructura = ESTRUCTURAS_MANDIBULA[id];
+  if (!estructura) return null;
+  const { x, y, z } = estructura.ancla;
+  const coincide =
+    Math.abs(ancla.x - x) < 1e-3 && Math.abs(ancla.y - y) < 1e-3 && Math.abs(ancla.z - z) < 1e-3;
+  return coincide ? estructura : null;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Escenas PROCEDURALES con línea de tiempo (prototipo BMU, docs/escena-3d-bmu.md)
+ * ----------------------------------------------------------------------------------------- */
+
+/**
+ * Valor de `config.modelo` para una escena hecha por código (no hay GLB): sus formas son
+ * esquemáticas y su estado es una función pura del tiempo `t` (0 a 1). No entra en `MODELOS_3D`
+ * porque no tiene catálogo de nodos, ni ruta de GLB, ni anclas: en su lugar lleva una
+ * `linea_de_tiempo` de pasos.
+ */
+export const MODELO_PROCEDURAL = 'procedural';
+
+/** Escenas procedurales disponibles y las vistas de cámara con nombre de cada una. */
+export const VISTAS_ESCENA_PROCEDURAL = {
+  bmu_remodelado: ['general', 'perfil', 'extremo', 'detalle'],
+  hueso_largo_a_osteona: ['general', 'interior', 'corte', 'capas', 'osteona', 'detalle'],
+  matriz_osea: ['general', 'fibra', 'fibrilla', 'detalle', 'carga'],
+  hueso_alveolar: ['general', 'corte', 'raiz', 'conducto'],
+  alveolo_postextraccion: ['general', 'corte', 'alveolo', 'reborde'],
+  hueso_trabecular_tiempo: ['general', 'detalle', 'corte', 'comparacion'],
+  reparacion_fractura: ['general', 'corte', 'callo', 'detalle'],
+  movimiento_ortodontico: ['general', 'corte', 'compresion', 'tension'],
+  vesicula_matriz: ['general', 'vesicula', 'interior', 'cristal'],
+  dos_rutas_osificacion: ['general', 'intramembranosa', 'endocondral', 'detalle'],
+  mandibula_fetal: ['general', 'lateral', 'corte', 'detalle'],
+  osteoclasto_resorcion: ['general', 'celula', 'borde', 'laguna'],
+  osteocito_red: ['general', 'laguna', 'canaliculos', 'red', 'superficie'],
+  osteoblasto_celula: ['general', 'celula', 'organulos', 'matriz', 'detalle'],
+} as const;
+
+export const ESCENAS_PROCEDURALES = [
+  'bmu_remodelado',
+  'hueso_largo_a_osteona',
+  'matriz_osea',
+  'hueso_alveolar',
+  'osteoblasto_celula',
+  'osteocito_red',
+  'osteoclasto_resorcion',
+  'mandibula_fetal',
+  'dos_rutas_osificacion',
+  'vesicula_matriz',
+  'movimiento_ortodontico',
+  'reparacion_fractura',
+  'hueso_trabecular_tiempo',
+  'alveolo_postextraccion',
+] as const;
+export type EscenaProcedural = (typeof ESCENAS_PROCEDURALES)[number];
+
+/** Vistas de cámara con nombre de una escena procedural (la primera es la general). */
+export function vistasDeEscenaProcedural(escena: EscenaProcedural): readonly string[] {
+  return VISTAS_ESCENA_PROCEDURAL[escena];
+}

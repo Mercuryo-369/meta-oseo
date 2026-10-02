@@ -15,12 +15,15 @@
  *          con relleno, `pointer-events="all"`; solo con contorno, `stroke="transparent"`,
  *          `pointer-events="stroke"` y `stroke-width` de al menos `44 / escala` unidades.
  *  5. Los ids que aparecen en `url(#..)` o `href="#.."` (y esas referencias) reciben el prefijo
- *     `{actividad.id}__`, así el mismo dibujo puede estar dos veces en la página.
+ *     `{actividad.id}__`, así el mismo dibujo puede estar dos veces en la página. Los demás ids también
+ *     (`idsUnicos.ts`): ningún id del dibujo se repite con otro de la página. Las capas conservan su id
+ *     original en `data-capa`.
  *
  * Todo es manipulación de DOM estándar: no se usa `innerHTML` con texto del archivo.
  */
 import { TAMANO_TACTIL_MIN_PX } from '@/activities/types';
 import { ANCHO_REFERENCIA_PX, SVG_MAX_BYTES } from '@/content/constantes';
+import { prefijarIdsRestantes, prefijoDeIds } from '@/activities/idsUnicos';
 
 const NS_SVG = 'http://www.w3.org/2000/svg';
 
@@ -463,10 +466,7 @@ export function prefijarIdsReferenciados(raiz: Element, prefijo: string): Map<st
   return nuevos;
 }
 
-/** Prefijo válido para ids del DOM: `{id de la actividad}__` con los caracteres raros cambiados. */
-export function prefijoDeIds(idActividad: string): string {
-  return `${idActividad.replace(/[^A-Za-z0-9_-]/g, '_')}__`;
-}
+export { prefijoDeIds };
 
 /* -------------------------------------------------------------------------------------------
  * Todo junto
@@ -524,6 +524,9 @@ export function prepararSvg(texto: string, opciones: OpcionesPreparacion): SvgPr
   const capas = marcarCapas(raiz, opciones.idsCapas);
   construirZonasTactiles(capas, escala);
   prefijarIdsReferenciados(raiz, opciones.prefijoId);
+  // Y el resto de ids (los no referenciados): dos dibujos con el mismo `fondo_escena` en una página no repiten ids.
+  // Las capas siguen ubicadas por su elemento y por `data-capa`, que conserva el id original.
+  prefijarIdsRestantes(raiz, opciones.prefijoId);
 
   // El tamaño lo da el CSS (ancho completo); nada del archivo debe posicionarlo ni fijarle medidas.
   for (const nombre of ['width', 'height', 'style', 'class', 'role', 'tabindex']) {

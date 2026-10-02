@@ -26,11 +26,13 @@ export interface OpcionesEstado {
 /**
  * Estado de un módulo.
  *
- * Bloqueado solo si hay bloqueo secuencial, el módulo no es el primero y el anterior no está
- * completado. Un módulo activo o ya completado nunca se muestra bloqueado: el estudiante ya
- * está dentro (por ejemplo, entró por una URL directa) o ya lo terminó, y ocultarlo tras un
- * candado sería mentirle. El backend no exige orden (docs/api-contract.md), así que puede
- * haber módulos completados sin que el anterior lo esté.
+ * Bloqueado solo si hay bloqueo secuencial, el módulo no es el primero, el anterior no está
+ * completado y él mismo tampoco. Un módulo ya completado nunca se muestra bloqueado (ocultarlo tras
+ * un candado sería mentirle; el backend no exige orden, docs/api-contract.md, así que puede haber
+ * módulos completados sin que el anterior lo esté). Un módulo bloqueado que está abierto (se
+ * llegó por URL) SÍ se muestra bloqueado y activo a la vez: la página lo explica en su sitio, sin
+ * redirigir (F2-08), y el menú debe decir lo mismo que la página y que las tarjetas de la portada.
+ * La regla es la de `decidirAccesoModulo` (components/modulo/acceso.ts).
  */
 export function estadoDelModulo(numero: number, opciones: OpcionesEstado): EstadoModulo {
   const activo = opciones.moduloActual === numero;
@@ -39,7 +41,6 @@ export function estadoDelModulo(numero: number, opciones: OpcionesEstado): Estad
     opciones.bloqueoSecuencial &&
     numero > 1 &&
     !opciones.completados.includes(numero - 1) &&
-    !activo &&
     !completado;
   return { activo, completado, bloqueado };
 }

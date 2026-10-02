@@ -17,7 +17,7 @@
  */
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
-import { LogOut } from '@lucide/vue';
+import { LayoutDashboard, LogOut } from '@lucide/vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
 import MenuCircular from '@/components/MenuCircular.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
@@ -84,6 +84,20 @@ async function salir(): Promise<void> {
         <div class="min-w-0 flex-1">
           <HudPuntaje />
         </div>
+
+        <!-- Entrada al panel de seguimiento: solo para el rol docente. -->
+        <Button
+          v-if="auth.usuario?.rol === 'docente'"
+          as-child
+          variant="ghost"
+          class="shrink-0 px-2 sm:px-3"
+          title="Panel del docente"
+        >
+          <RouterLink :to="{ name: 'docente' }" data-testid="enlace-docente">
+            <LayoutDashboard aria-hidden="true" />
+            <span class="sr-only sm:not-sr-only">Panel docente</span>
+          </RouterLink>
+        </Button>
 
         <Button
           variant="ghost"

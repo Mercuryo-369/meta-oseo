@@ -16,12 +16,29 @@ import { sanitizarHtml } from '@/ai/sanitizar';
 import type { FlujoControlable } from '@/ai/pruebas';
 import { flujoControlable, respuestaSse, sseError, sseFin, sseTexto } from '@/ai/pruebas';
 import { useAuthStore } from '@/stores/auth';
-import { respuestaError, usuarioDePrueba } from '@/test/utils';
+import { respuestaError, respuestaJson, usuarioDePrueba } from '@/test/utils';
 import MentorPanel from './MentorPanel.vue';
 
 vi.mock('@/ai/sanitizar', () => ({ sanitizarHtml: vi.fn((html: string) => html) }));
 
+/** Solo el chat (POST /api/chat) llega a este mock; las demás llamadas del panel se responden abajo. */
 const fetchMock = vi.fn<typeof fetch>();
+
+/**
+ * Enrutador de `fetch`: el panel también pide el historial guardado y las sugerencias de refuerzo
+ * al abrirse. Aquí devuelven "nada" para que estas pruebas (que tratan del chat) sigan viendo en
+ * `fetchMock` solo las llamadas al chat. Las pruebas de esas funciones están en
+ * `MentorPanel.funciones.test.ts`.
+ */
+const fetchEnrutado: typeof fetch = (entrada, init) => {
+  const url = String(entrada);
+  if (url.includes('/chat/history')) {
+    return Promise.resolve(respuestaJson(200, { session_id: null, messages: [] }));
+  }
+  if (url.includes('/mentor/refuerzo'))
+    return Promise.resolve(respuestaJson(200, { sugerencias: [] }));
+  return fetchMock(entrada, init);
+};
 let wrapper: VueWrapper | undefined;
 
 type Pantalla = 'movil' | 'escritorio';
@@ -115,7 +132,7 @@ beforeEach(() => {
   document.body.innerHTML = '';
   localStorage.clear();
   fetchMock.mockReset();
-  vi.stubGlobal('fetch', fetchMock);
+  vi.stubGlobal('fetch', fetchEnrutado);
   vi.mocked(sanitizarHtml).mockClear();
 });
 
@@ -642,6 +659,11 @@ describe('MentorPanel: foco, cierre y estado', () => {
     expect(mensajes()).toHaveLength(2);
 
     (porId('mentor-nueva') as HTMLButtonElement).click();
+    await flushPromises();
+    // Pide confirmación antes de borrar nada.
+    expect(porId('mentor-confirmar-nueva')).not.toBeNull();
+    expect(mensajes()).toHaveLength(2);
+    (porId('mentor-nueva-confirmar') as HTMLButtonElement).click();
     await flushPromises();
     expect(mensajes()).toHaveLength(0);
     expect(porId('mentor-vacio')).not.toBeNull();

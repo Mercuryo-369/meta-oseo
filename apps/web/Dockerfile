@@ -30,10 +30,17 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/package.json
 RUN pnpm install --frozen-lockfile --filter "@ova/web..."
 
-# Código fuente y compilación de producción (vue-tsc + vite build). No se pasa ninguna variable
-# VITE_*: el modo de desarrollo sin backend (VITE_DEV_BYPASS_AUTH) no debe entrar al build.
+# Bloqueo por secuencia de módulos (apps/web/src/config.ts). Vite lo incrusta al COMPILAR, así que
+# se elige aquí y no al arrancar el contenedor: `true` (por defecto) exige completar cada módulo
+# para abrir el siguiente; `false` deja todos abiertos. Cualquier otro valor equivale a `true`.
+# docker-compose.yml lo toma del .env; a mano: --build-arg VITE_BLOQUEO_SECUENCIAL=false
+ARG VITE_BLOQUEO_SECUENCIAL=true
+
+# Código fuente y compilación de producción (vue-tsc + vite build). De las variables VITE_* solo
+# se pasa VITE_BLOQUEO_SECUENCIAL: el modo de desarrollo sin backend (VITE_DEV_BYPASS_AUTH) no debe
+# entrar al build.
 COPY apps/web ./apps/web
-RUN pnpm --filter @ova/web build
+RUN VITE_BLOQUEO_SECUENCIAL="$VITE_BLOQUEO_SECUENCIAL" pnpm --filter @ova/web build
 
 
 # ---- Etapa 2: nginx ------------------------------------------------------------------------

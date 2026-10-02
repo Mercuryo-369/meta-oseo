@@ -21,6 +21,12 @@ AUTH_RATE_LIMIT_WINDOW_SECONDS = 60
 CHAT_RATE_LIMIT_REQUESTS = 20
 CHAT_RATE_LIMIT_WINDOW_SECONDS = 60
 
+# Mentor (F3-09/F3-10): cuántos mensajes recientes devuelve el historial (por defecto y máximo).
+CHAT_HISTORY_DEFAULT_LIMIT = 50
+CHAT_HISTORY_MAX_LIMIT = 100
+# El «día» del límite diario es el calendario de Colombia (UTC-5), como el certificado.
+CHAT_DAY_UTC_OFFSET_HOURS = -5
+
 # Límite de la verificación pública de certificados (`GET /api/verify/{codigo}`): por IP.
 VERIFY_RATE_LIMIT_ATTEMPTS = 20
 VERIFY_RATE_LIMIT_WINDOW_SECONDS = 60

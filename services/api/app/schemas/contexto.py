@@ -4,8 +4,9 @@ Es el tipo `ContextoPedagogico` de PLAN §3 y de docs/api-contract.md, congelado
 mismo tipo vive en `apps/web/src/stores/contextoPedagogico.ts`: cambiarlo exige actualizar
 PLAN.md, la store Pinia y este esquema a la vez.
 
-Viaja en `camelCase` (única excepción a `snake_case` de la API). En Fase 1 solo se VALIDA y se
-ignora: su inyección en el prompt llega con F3-04.
+Viaja en `camelCase` (única excepción a `snake_case` de la API). Se valida aquí y desde F3-04 se
+SERIALIZA: orienta la recuperación del material del curso (`app/rag/consulta.py`) y entra al prompt
+como DATOS no fiables (`app/ai/prompt.py`), con las cadenas escapadas.
 """
 
 from typing import Annotated

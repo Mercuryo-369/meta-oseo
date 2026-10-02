@@ -353,7 +353,8 @@ describe('módulo 4 integrado: cabecera y bloqueo inicial', () => {
     expect(wrapper.get('[data-testid="titulo-modulo"]').text()).toBe('Transformando la matriz');
     expect(wrapper.findAll('[data-testid="objetivos"] li')).toHaveLength(modulo.objetivos.length);
     expect(wrapper.get('[data-testid="avance-obligatorias"]').text()).toContain('0 de 15');
-    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('660');
+    // 660 del guion más 2 exploraciones 3D extra de 30 puntos.
+    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('720');
   });
 
   it('arranca en la sección 4.1 y las demás están bloqueadas hasta terminarla', async () => {
@@ -507,7 +508,9 @@ describe('módulo 4 integrado: cierre y API', () => {
 
   it('(d) cada actividad se reportó una sola vez con el cuerpo del contrato', () => {
     const posts = api.filtrar('POST', '/activities/');
-    expect(posts).toHaveLength(20);
+    // 20 del guion y 2 exploraciones 3D extra.
+    expect(posts).toHaveLength(22);
+    expect(posts).toHaveLength(actividades().length);
     for (const a of actividades()) {
       const llamadas = api.filtrar('POST', `/activities/${a.id}/result`);
       expect(llamadas, a.id).toHaveLength(1);
@@ -570,9 +573,9 @@ describe('módulo 4 integrado: cierre y API', () => {
     }
   });
 
-  it('el módulo queda al 100 %: 15 obligatorias y 660 puntos', () => {
+  it('el módulo queda al 100 %: 15 obligatorias y 720 puntos', () => {
     expect(wrapper.get('[data-testid="avance-obligatorias"]').text()).toContain('15 de 15');
-    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('660');
+    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('720');
   });
 
   it('(a) en todo el recorrido no hubo ningún aviso ni error en la consola', () => {

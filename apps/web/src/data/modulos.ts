@@ -18,6 +18,32 @@ export interface Modulo {
   densidad: 'media' | 'alta';
   /** Código del logro que se otorga al completar el módulo (docs/api-contract.md, "Logros"). */
   logro: string;
+  /** Identidad visual del módulo: rótulo, frase corta, icono e ilustración de portada. */
+  identidad: IdentidadModulo;
+}
+
+/** Nombre de icono de `components/modulo/IconoModulo.vue` (un icono de Lucide por módulo). */
+export type IconoModulo = 'hueso' | 'celula' | 'construccion' | 'mineral' | 'renovacion' | 'tiempo';
+
+export interface IdentidadModulo {
+  /** Rótulo temático de una o dos palabras (la «píldora» de la tarjeta y de la cabecera). */
+  rotulo: string;
+  /** Frase corta que acompaña al rótulo. */
+  frase: string;
+  icono: IconoModulo;
+  portada: {
+    /** SVG ya producido para el módulo, en `public/images/m{n}/` (ruta pública). */
+    src: string;
+    /** Cómo encaja en el recuadro: `cubrir` recorta a los bordes, `contener` muestra todo. */
+    ajuste: 'cubrir' | 'contener';
+    /** `object-position` cuando se recorta (por ejemplo `center top`). */
+    posicion: string;
+    /**
+     * `papel`: fondo claro (el de los dibujos, `#f1edfa`) detrás de un SVG sin fondo propio, cuyos rótulos son
+     * oscuros y en el tema oscuro no se leerían sobre el acento del módulo.
+     */
+    fondo?: 'papel';
+  };
 }
 
 export const MODULOS: readonly Modulo[] = [
@@ -28,6 +54,12 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Generalidades, funciones biomecánicas y metabólicas esenciales',
     densidad: 'media',
     logro: 'primer_hueso',
+    identidad: {
+      rotulo: 'Un tejido vivo',
+      frase: 'El hueso, órgano y tejido a la vez',
+      icono: 'hueso',
+      portada: { src: '/images/m1/m1_osteona_detalle.svg', ajuste: 'cubrir', posicion: 'center' },
+    },
   },
   {
     numero: 2,
@@ -36,6 +68,18 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Origen y procesos de diferenciación celular',
     densidad: 'media',
     logro: 'celula_por_celula',
+    identidad: {
+      rotulo: 'Las células',
+      frase: 'De la célula madre al osteoclasto',
+      icono: 'celula',
+      // El árbol de linajes (viewBox 1000 x 1540) es una figura vertical: en un marco apaisado queda diminuto y
+      // recortarlo parte sus rótulos. La osteoclasto (sin rótulos) llena el marco y es la meta de la frase.
+      portada: {
+        src: '/images/m2/m2_osteoclasto_resorcion.svg',
+        ajuste: 'cubrir',
+        posicion: 'center',
+      },
+    },
   },
   {
     numero: 3,
@@ -44,6 +88,18 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Mecanotransducción y formación ósea',
     densidad: 'alta',
     logro: 'constructor',
+    identidad: {
+      rotulo: 'Formación',
+      frase: 'Cuando la fuerza se vuelve señal',
+      icono: 'construccion',
+      // Con rótulos (nota del recuadro en la parte baja): se muestra entera, sobre fondo claro.
+      portada: {
+        src: '/images/m3/m3_sensores_mecanicos.svg',
+        ajuste: 'contener',
+        posicion: 'center',
+        fondo: 'papel',
+      },
+    },
   },
   {
     numero: 4,
@@ -52,6 +108,17 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Mineralización del tejido óseo',
     densidad: 'alta',
     logro: 'mineralizador',
+    identidad: {
+      rotulo: 'Mineralización',
+      frase: 'Del osteoide al mineral',
+      icono: 'mineral',
+      // Lleva «Eje c» y «Esquema: no está a escala» al pie: se muestra entera (su fondo oscuro es propio).
+      portada: {
+        src: '/images/m4/m4_fibrilla_mineralizada.svg',
+        ajuste: 'contener',
+        posicion: 'center',
+      },
+    },
   },
   {
     numero: 5,
@@ -60,6 +127,18 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Remodelado, reparación y equilibrio óseo',
     densidad: 'alta',
     logro: 'remodelador',
+    identidad: {
+      rotulo: 'Remodelado',
+      frase: 'Un ciclo que nunca se detiene',
+      icono: 'renovacion',
+      // Rótulos arriba y abajo (Inversión, Cono de corte...): entera y sobre fondo claro.
+      portada: {
+        src: '/images/m5/m5_bmu_cortical_longitudinal.svg',
+        ajuste: 'contener',
+        posicion: 'center',
+        fondo: 'papel',
+      },
+    },
   },
   {
     numero: 6,
@@ -68,6 +147,18 @@ export const MODULOS: readonly Modulo[] = [
     foco: 'Envejecimiento y cambios degenerativos',
     densidad: 'media',
     logro: 'cronista',
+    identidad: {
+      rotulo: 'Envejecimiento',
+      frase: 'Lo que cambia con los años',
+      icono: 'tiempo',
+      // Gráfico con rótulos en todos los bordes («Pico de masa ósea», «Edad (años)»): entero.
+      portada: {
+        src: '/images/m6/m6_curva_masa_osea.svg',
+        ajuste: 'contener',
+        posicion: 'center',
+        fondo: 'papel',
+      },
+    },
   },
 ];
 

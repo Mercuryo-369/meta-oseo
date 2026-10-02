@@ -592,6 +592,88 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m2_1_mandibula_fetal_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "La mandíbula fetal en 3D: de Meckel al nacimiento",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para ir de la sexta semana al nacimiento. Gira la escena con un dedo y acércala con dos. Visita los siete pasos: la vista cambia sola con cada fase.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste el desarrollo de la mandíbula: el cartílago de Meckel guía, el hueso aparece por osificación intramembranosa junto al nervio, los cartílagos secundarios llegan después y, al nacer, quedan dos mitades unidas por la sínfisis."
+            },
+            "concepto": "Osificación intramembranosa junto al cartílago de Meckel; cartílagos secundarios después; dos mitades al nacer",
+            "config": {
+              "modelo": "procedural",
+              "escena": "mandibula_fetal",
+              "alt": "Escena 3D esquemática del desarrollo de la mandíbula: una herradura de ectomesénquima con el cartílago de Meckel y el nervio alveolar inferior, en la que aparece y se extiende el hueso, surgen los cartílagos secundarios, el cartílago de Meckel regresa y quedan dos mitades unidas por la sínfisis.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_mesenquima",
+                    "t": 0,
+                    "titulo": "El arco mandibular (semana 6)",
+                    "vista": "general",
+                    "texto": "Hacia la sexta semana, el primer arco faríngeo está lleno de **[ectomesénquima](glosario:ectomesenquima)** (masa violeta), células llegadas de la [cresta neural craneal](glosario:cresta_neural_craneal). Dentro, a cada lado, ya hay una varilla azul: el [cartílago de Meckel](glosario:cartilago_de_meckel). Por fuera de él corre el nervio alveolar inferior (amarillo), que se divide en sus ramas mentoniana e incisiva."
+                  },
+                  {
+                    "id": "paso_condensacion",
+                    "t": 0.17,
+                    "titulo": "La condensación",
+                    "vista": "detalle",
+                    "texto": "Lateral al cartílago de Meckel, en el ángulo que forman el nervio alveolar inferior y su rama mentoniana, el ectomesénquima se **condensa** (manchas moradas): las células se apretan y empiezan a diferenciarse en [osteoblastos](glosario:osteoblasto). No hay cartílago de por medio: el hueso se formará de forma directa."
+                  },
+                  {
+                    "id": "paso_centro",
+                    "t": 0.34,
+                    "titulo": "Primer centro de osificación (semanas 6-7)",
+                    "vista": "detalle",
+                    "texto": "En esa condensación aparece el **primer centro de [osificación intramembranosa](glosario:osificacion_intramembranosa)**: una placa fina de hueso (rosa) al lado del cartílago de Meckel, cerca del futuro foramen mentoniano. El cartílago no se osifica: es una guía junto a la que crece el hueso."
+                  },
+                  {
+                    "id": "paso_extension",
+                    "t": 0.5,
+                    "titulo": "El hueso se extiende",
+                    "vista": "corte",
+                    "texto": "Desde el centro, el hueso crece **hacia atrás y hacia delante** siguiendo al nervio. Primero forma una canaleta por la que corre el nervio alveolar inferior (el futuro conducto mandibular) y después levanta dos láminas que rodean a los gérmenes dentarios (crema, con una campana azulada). Por detrás empieza a levantarse la rama. En la ventana de corte se ve la sección en U."
+                  },
+                  {
+                    "id": "paso_cartilagos_secundarios",
+                    "t": 0.66,
+                    "titulo": "Cartílagos secundarios (semanas 10-14)",
+                    "vista": "lateral",
+                    "texto": "Cuando ya hay hueso membranoso aparecen los **[cartílagos secundarios](glosario:cartilago_secundario)**: el condilar sobre la rama (el más importante), el coronoideo (transitorio) y el sinfisario entre las dos mitades. El condilar crecerá y se convertirá en hueso por [osificación endocondral](glosario:osificacion_endocondral)."
+                  },
+                  {
+                    "id": "paso_meckel_regresion",
+                    "t": 0.83,
+                    "titulo": "El cartílago de Meckel se retira",
+                    "vista": "lateral",
+                    "texto": "La porción del cartílago de Meckel que corría junto al cuerpo **desaparece**. Su extremo posterior queda en el oído medio como **martillo y yunque**, y el tramo intermedio persiste como tejido fibroso: el ligamento esfenomandibular (el hilo fino). El hueso ya no lo necesita."
+                  },
+                  {
+                    "id": "paso_nacimiento",
+                    "t": 1,
+                    "titulo": "Al nacer",
+                    "vista": "general",
+                    "texto": "Al nacimiento la mandíbula son **dos mitades** unidas en la línea media por la sínfisis, que se osificará durante el primer año. La rama es corta y el ángulo, abierto; sobre el cóndilo queda una capa de cartílago que seguirá creciendo, y los gérmenes de los dientes temporales están dentro del hueso."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_mesenquima",
+                "paso_condensacion",
+                "paso_centro",
+                "paso_extension",
+                "paso_cartilagos_secundarios",
+                "paso_meckel_regresion",
+                "paso_nacimiento"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m2_3d_origen_mandibula",
             "tipo": "exploracion-3d",
             "titulo": "Tu mandíbula, zona por zona",
@@ -612,9 +694,9 @@
                   "etiqueta": "Cuerpo mandibular",
                   "descripcion": "Se formó por osificación intramembranosa junto al cartílago de Meckel, que actuó como guía. Sus osteoblastos derivan del ectomesénquima de la cresta neural.",
                   "ancla": {
-                    "x": 0.2,
-                    "y": 0.3,
-                    "z": 0.6
+                    "x": 0.159,
+                    "y": 0.242,
+                    "z": 0.576
                   }
                 },
                 {
@@ -622,9 +704,9 @@
                   "etiqueta": "Foramen mentoniano",
                   "descripcion": "Hacia esta región apareció el primer centro de osificación, donde el nervio alveolar inferior se divide en sus ramas mentoniana e incisiva.",
                   "ancla": {
-                    "x": 0.28,
-                    "y": 0.35,
-                    "z": 0.8
+                    "x": 0.292,
+                    "y": 0.176,
+                    "z": 0.768
                   }
                 },
                 {
@@ -633,8 +715,8 @@
                   "descripcion": "Las dos hemimandíbulas se unen aquí por una articulación fibrosa con pequeños cartílagos secundarios. Se osifica y las dos mitades se fusionan durante el primer año de vida.",
                   "ancla": {
                     "x": 0.5,
-                    "y": 0.35,
-                    "z": 1.0
+                    "y": 0.083,
+                    "z": 0.938
                   }
                 },
                 {
@@ -642,9 +724,9 @@
                   "etiqueta": "Rama mandibular",
                   "descripcion": "Se formó por osificación intramembranosa. En su extremo superior se desarrollan los cartílagos secundarios del cóndilo y de la apófisis coronoides.",
                   "ancla": {
-                    "x": 0.06,
-                    "y": 0.55,
-                    "z": 0.15
+                    "x": 0.902,
+                    "y": 0.37,
+                    "z": 0.278
                   }
                 },
                 {
@@ -652,9 +734,9 @@
                   "etiqueta": "Cóndilo mandibular",
                   "descripcion": "Su cabeza crece a partir del cartílago condilar, un cartílago secundario que se osifica por vía endocondral. Es un centro de crecimiento de la mandíbula.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.98,
-                    "z": 0.05
+                    "x": 0.915,
+                    "y": 1,
+                    "z": 0.052
                   }
                 },
                 {
@@ -662,9 +744,9 @@
                   "etiqueta": "Apófisis coronoides",
                   "descripcion": "También tuvo un cartílago secundario, más pequeño y transitorio que el condilar. Recibe la inserción del músculo temporal.",
                   "ancla": {
-                    "x": 0.08,
-                    "y": 0.95,
-                    "z": 0.3
+                    "x": 0.086,
+                    "y": 0.868,
+                    "z": 0.508
                   }
                 },
                 {
@@ -672,9 +754,9 @@
                   "etiqueta": "Proceso alveolar",
                   "descripcion": "Se forma junto con los dientes: las células del folículo dental originan el ligamento periodontal y contribuyen al hueso alveolar. Sin dientes, este hueso se reabsorbe.",
                   "ancla": {
-                    "x": 0.22,
-                    "y": 0.5,
-                    "z": 0.6
+                    "x": 0.796,
+                    "y": 0.282,
+                    "z": 0.665
                   }
                 }
               ],
@@ -1020,6 +1102,88 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m2_2_osteoblasto_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Un osteoblasto en 3D, de precursor a osteocito",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para seguir la vida de la célula del centro. Gira la escena con un dedo y acércala con dos; con la lista de vistas puedes entrar en la célula o mirar la matriz de frente. Visita los siete pasos: detente en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste la vida completa de un osteoblasto: de célula osteoprogenitora fusiforme a osteoblasto cúbico que secreta osteoide, mineralización del osteoide profundo y los tres destinos (osteocito, célula de revestimiento o apoptosis). Ese mismo orden es el de la tabla de etapas y el del árbol de linajes."
+            },
+            "concepto": "Osteoblasto activo: diferenciación por RUNX2 y osterix, orgánulos, osteoide, mineralización y tres destinos",
+            "config": {
+              "modelo": "procedural",
+              "escena": "osteoblasto_celula",
+              "alt": "Escena 3D: sobre un bloque de hueso cortado, una célula fusiforme se vuelve cúbica y forma fila con otras cuatro; se ven sus orgánulos, secreta osteoide que se mineraliza desde abajo y, al final, una queda atrapada como osteocito, otra se aplana y otra se fragmenta.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_precursor",
+                    "t": 0,
+                    "titulo": "Precursor sobre el hueso",
+                    "vista": "general",
+                    "texto": "Sobre la superficie de un hueso ya mineralizado, junto a un **capilar**, hay una [célula osteoprogenitora](glosario:celula_osteoprogenitora): fusiforme, pálida, con poco citoplasma y núcleo alargado. Ya eligió el linaje óseo y todavía puede dividirse. Gira la escena: el bloque rosado es hueso viejo, cortado para que veas sus laminillas."
+                  },
+                  {
+                    "id": "paso_diferenciacion",
+                    "t": 0.16,
+                    "titulo": "Diferenciación: RUNX2 y osterix",
+                    "vista": "celula",
+                    "texto": "Con [RUNX2](glosario:runx2) primero y [osterix](glosario:osterix_sp7) después, la célula cambia de forma: pasa de fusiforme a **cúbica**, su citoplasma se vuelve basófilo y otras células hacen lo mismo a su lado. Juntas forman una fila epitelioide, una sola capa de [osteoblastos](glosario:osteoblasto) pegados a la superficie que van a cubrir de hueso nuevo."
+                  },
+                  {
+                    "id": "paso_organulos",
+                    "t": 0.32,
+                    "titulo": "Los orgánulos de una fábrica de proteínas",
+                    "vista": "organulos",
+                    "texto": "Miramos dentro de la célula del centro. El **núcleo** queda excéntrico, en el polo alejado del hueso. Debajo, pilas de **retículo endoplasmático rugoso** (azul), muy abundante: por eso el citoplasma es basófilo. Junto al núcleo, el **aparato de Golgi** (amarillo) empaqueta lo que el retículo produce. Las **mitocondrias** (naranja) dan la energía. Es una célula organizada para secretar en una sola dirección: hacia el hueso."
+                  },
+                  {
+                    "id": "paso_secrecion",
+                    "t": 0.48,
+                    "titulo": "Secreción del osteoide",
+                    "vista": "celula",
+                    "texto": "Del Golgi salen **vesículas** que bajan al polo que mira al hueso y vierten su contenido. Así se deposita el [osteoide](glosario:osteoide), la capa clara que crece bajo la fila: matriz orgánica todavía sin mineral, hecha sobre todo de colágeno tipo I, con proteínas como la [osteocalcina](glosario:osteocalcina). Aquí solo se ve una célula secretando; en la vida real todas las de la fila lo hacen a la vez."
+                  },
+                  {
+                    "id": "paso_mineralizacion",
+                    "t": 0.64,
+                    "titulo": "Mineralización: el frente avanza",
+                    "vista": "matriz",
+                    "texto": "Mira la cara de corte. El osteoide más profundo, el primero que se depositó, se está mineralizando: el **frente de mineralización** (la línea oscura) avanza hacia las células y deja debajo hueso nuevo. Encima queda siempre una franja de osteoide fresco. La [fosfatasa alcalina](glosario:fosfatasa_alcalina) de la membrana y de las vesículas de la matriz elimina el pirofosfato que frena el depósito de mineral."
+                  },
+                  {
+                    "id": "paso_destino",
+                    "t": 0.8,
+                    "titulo": "Tres destinos",
+                    "vista": "detalle",
+                    "texto": "Terminada la formación, cada osteoblasto sigue un camino. A la izquierda, uno quedó rodeado por la matriz que secretó y ahora es un [osteocito](glosario:osteocito) en su [laguna](glosario:laguna), con prolongaciones en [canalículos](glosario:canaliculo). En el centro, otro se aplana y se convierte en [célula de revestimiento](glosario:celula_de_revestimiento_oseo). A la derecha, otro se encoge y se fragmenta: [apoptosis](glosario:apoptosis), el destino de la mayoría."
+                  },
+                  {
+                    "id": "paso_reposo",
+                    "t": 1,
+                    "titulo": "Superficie en reposo",
+                    "vista": "general",
+                    "texto": "La superficie queda cubierta por **células de revestimiento**: planas, con poco citoplasma y núcleo alargado, son osteoblastos en reposo que pueden reactivarse. Dentro del hueso nuevo, el osteocito vigila desde su laguna. El capilar sigue al lado: de él llegarán los precursores del siguiente ciclo de formación."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_precursor",
+                "paso_diferenciacion",
+                "paso_organulos",
+                "paso_secrecion",
+                "paso_mineralizacion",
+                "paso_destino",
+                "paso_reposo"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m2_multicapa_osteoblasto",
             "tipo": "multicapa",
             "titulo": "Dentro de un osteoblasto activo",
@@ -1282,6 +1446,88 @@
                 "osteocito_lagunar_uniones_comunicantes",
                 "esclerostina",
                 "celulas_superficie"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m2_3_osteocito_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "El osteocito en 3D: la red que siente la carga",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para ver cómo se construye la red del osteocito y cómo responde a la carga. Gira la escena con un dedo y acércala con dos. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste la red completa: el osteocito en su laguna, las dendritas dentro de los canalículos, el flujo del líquido con la carga, la baja de esclerostina y la activación de los osteoblastos de la superficie."
+            },
+            "concepto": "Osteocito: red lacuno-canalicular, flujo del líquido con la carga, esclerostina y señal a la superficie",
+            "config": {
+              "modelo": "procedural",
+              "escena": "osteocito_red",
+              "alt": "Escena 3D esquemática: un bloque de matriz ósea con un osteocito en su laguna, ocho vecinos unidos por dendritas dentro de canalículos, un conducto con capilar a la izquierda y células sobre la superficie. Con la carga el bloque se comprime, el líquido fluye y los osteoblastos se activan.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_laguna",
+                    "t": 0,
+                    "titulo": "El osteocito en su laguna",
+                    "vista": "laguna",
+                    "texto": "Un [osteocito](glosario:osteocito) vive dentro de una [laguna](glosario:laguna): una cavidad de la matriz mineralizada con la forma de su cuerpo. Es un osteoblasto que quedó atrapado en el osteoide que él mismo secretó. El núcleo ocupa gran parte del cuerpo y de la membrana asoma el cilio primario (amarillo), uno de sus sensores."
+                  },
+                  {
+                    "id": "paso_dendritas",
+                    "t": 0.17,
+                    "titulo": "Dendritas por los canalículos",
+                    "vista": "canaliculos",
+                    "texto": "La célula extiende [dendritas](glosario:dendrita), prolongaciones largas y delgadas, por conductos finos de la matriz: los [canalículos](glosario:canaliculo). Entre la dendrita y la pared del canalículo queda un líquido. Los puntos naranjas son [esclerostina](glosario:esclerostina), que el osteocito maduro secreta en reposo. Los grosores están exagerados: un canalículo real mide unos 0,3 µm."
+                  },
+                  {
+                    "id": "paso_red",
+                    "t": 0.34,
+                    "titulo": "La red lacuno-canalicular",
+                    "vista": "red",
+                    "texto": "Las dendritas de células vecinas se encuentran y forman [uniones comunicantes](glosario:union_comunicante) (puntos verdes): canales de conexina 43 que dejan pasar iones y moléculas pequeñas. Lagunas, canalículos y dendritas forman la **red lacuno-canalicular**, que llega hasta el vaso del conducto (izquierda) y hasta las células de la superficie (arriba)."
+                  },
+                  {
+                    "id": "paso_carga",
+                    "t": 0.5,
+                    "titulo": "Carga: el líquido fluye",
+                    "vista": "canaliculos",
+                    "texto": "Al masticar o al mover un diente, el hueso se comprime (aquí, muy exagerado). La deformación empuja el líquido de los canalículos, que fluye alrededor de las dendritas (puntos azules). Se propone que este flujo es la señal principal que informa al osteocito de cuánta fuerza recibe el hueso."
+                  },
+                  {
+                    "id": "paso_senal",
+                    "t": 0.66,
+                    "titulo": "Sensores y menos esclerostina",
+                    "vista": "canaliculos",
+                    "texto": "El flujo tira del cilio primario y de las dendritas; las integrinas que anclan la dendrita a la pared del canalículo (puntos amarillos) transmiten esa tensión al interior de la célula. La respuesta: el osteocito reduce la producción de [esclerostina](glosario:esclerostina), el freno de la vía Wnt en los osteoblastos."
+                  },
+                  {
+                    "id": "paso_mensaje",
+                    "t": 0.83,
+                    "titulo": "Mensaje a la superficie",
+                    "vista": "superficie",
+                    "texto": "La señal viaja por las dendritas y las uniones comunicantes hasta la superficie del hueso. Con menos esclerostina, las [células de revestimiento](glosario:celula_de_revestimiento_oseo) aplanadas se activan como [osteoblastos](glosario:osteoblasto) cúbicos y empiezan a formar hueso donde hay carga. Así el hueso responde al uso."
+                  },
+                  {
+                    "id": "paso_reposo",
+                    "t": 1,
+                    "titulo": "Reposo y el otro mensaje",
+                    "vista": "general",
+                    "texto": "Sin carga, el flujo se detiene, la esclerostina vuelve y los osteoblastos se aplanan. El osteocito también regula la resorción: produce [RANKL](glosario:rank_y_rankl) y, cuando muere por [apoptosis](glosario:apoptosis), su entorno atrae [osteoclastos](glosario:osteoclasto) que retiran ese hueso. Eso no se dibuja aquí; el módulo 3 lo desarrolla."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_laguna",
+                "paso_dendritas",
+                "paso_red",
+                "paso_carga",
+                "paso_senal",
+                "paso_mensaje",
+                "paso_reposo"
               ]
             }
           }
@@ -1563,6 +1809,88 @@
                 "trap",
                 "laguna_howship",
                 "receptores_rank_cfms"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m2_4_osteoclasto_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "Un osteoclasto en 3D, de la fusión a la resorción",
+            "instrucciones": "Mueve el deslizador o pulsa Reproducir para seguir la vida de un osteoclasto: llegada de los precursores, fusión, sellado, resorción, liberación y muerte. Gira la escena con un dedo y acércala con dos; desde el borde festoneado la escena se corta por la mitad para ver la célula por dentro. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Recorriste la vida completa del osteoclasto: precursores que se fusionan, zona de sellado, borde festoneado con bomba de protones y catepsina K, laguna de Howship, liberación de calcio y CTX hacia la sangre y apoptosis. Esa laguna vacía es donde empieza la formación del módulo 5."
+            },
+            "concepto": "Osteoclasto: fusión de precursores, zona de sellado, borde festoneado, laguna de Howship y apoptosis",
+            "config": {
+              "modelo": "procedural",
+              "escena": "osteoclasto_resorcion",
+              "alt": "Escena 3D: un bloque de hueso rosado con un capilar rojo encima. Precursores morados bajan del capilar y se fusionan en una célula gigante que se aplana sobre el hueso con un anillo claro; la escena se corta y se ven los pliegues, las partículas y la laguna excavada; al final la célula se fragmenta.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_precursores",
+                    "t": 0,
+                    "titulo": "Precursores salen del capilar",
+                    "vista": "general",
+                    "texto": "Desde un capilar cercano salen **precursores mononucleares** del linaje monocito-macrófago. [M-CSF](glosario:m_csf) los mantiene vivos y les induce el receptor RANK; con [RANKL](glosario:rank_y_rankl) de osteoblastos, células del estroma y osteocitos se comprometen a ser osteoclastos. Se posan sobre la superficie ósea que van a reabsorber."
+                  },
+                  {
+                    "id": "paso_fusion",
+                    "t": 0.16,
+                    "titulo": "Fusión en una célula gigante",
+                    "vista": "celula",
+                    "texto": "RANKL activa NFATc1 y los precursores se **fusionan** entre sí. Cada uno aporta su núcleo, por eso el [osteoclasto](glosario:osteoclasto) es una célula gigante **multinucleada**: aquí acabará con seis núcleos (los bultos que aún se ven son los últimos precursores absorbiéndose); en la realidad suelen ser de 4 a 20. Todavía es redonda y solo se apoya en el hueso: aún no ha formado la zona de sellado."
+                  },
+                  {
+                    "id": "paso_adhesion",
+                    "t": 0.32,
+                    "titulo": "Adhesión: la zona de sellado",
+                    "vista": "celula",
+                    "texto": "La célula se aplana sobre el hueso y forma un anillo de citoplasma sin orgánulos, la [zona clara](glosario:zona_clara): filamentos de actina e **integrinas αvβ3** que se unen a la matriz y **sellan** el espacio que queda debajo. Ese cierre permite que el ácido no se escape."
+                  },
+                  {
+                    "id": "paso_borde_rugoso",
+                    "t": 0.48,
+                    "titulo": "Borde festoneado y bombeo de ácido",
+                    "vista": "borde",
+                    "texto": "La escena se corta por la mitad para ver la célula por dentro. Dentro del anillo, la membrana se pliega en el [borde festoneado](glosario:borde_festoneado). Allí la [bomba de protones](glosario:v_atpasa_bomba_de_protones) saca H+ (naranja) y el canal ClC-7 los acompaña con Cl- (verde); el pH baja a unos 4,5. También se secreta [catepsina K](glosario:catepsina_k) (ámbar). La [TRAP](glosario:trap) marca a estas células en el laboratorio."
+                  },
+                  {
+                    "id": "paso_resorcion",
+                    "t": 0.64,
+                    "titulo": "Resorción: la laguna de Howship",
+                    "vista": "laguna",
+                    "texto": "El ácido disuelve la hidroxiapatita y la catepsina K corta el colágeno tipo I que queda expuesto. La superficie se hunde bajo la célula y se forma la [laguna de Howship](glosario:laguna_de_howship), con el fondo más oscuro y el borde ondulado. Primero se va el mineral, después la parte orgánica."
+                  },
+                  {
+                    "id": "paso_liberacion",
+                    "t": 0.8,
+                    "titulo": "Liberación de los productos",
+                    "vista": "celula",
+                    "texto": "Lo que se libera no se pierde: calcio (claro), fosfato (azul) y fragmentos de colágeno como el CTX (rosa) entran por el borde festoneado, cruzan la célula en vesículas (**transcitosis**) y salen por arriba hacia el capilar. Por eso el CTX en sangre sirve como marcador de resorción."
+                  },
+                  {
+                    "id": "paso_apoptosis",
+                    "t": 1,
+                    "titulo": "Apoptosis y llegada de la inversión",
+                    "vista": "laguna",
+                    "texto": "Terminada su tarea, el osteoclasto muere por [apoptosis](glosario:apoptosis): se encoge, se fragmenta en cuerpos apoptóticos y el sellado se deshace. Queda la laguna festoneada con los restos de la célula, y por los bordes llegan células mononucleares de inversión que la limpiarán y la preparan para que los osteoblastos formen hueso nuevo (módulo 5)."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_precursores",
+                "paso_fusion",
+                "paso_adhesion",
+                "paso_borde_rugoso",
+                "paso_resorcion",
+                "paso_liberacion",
+                "paso_apoptosis"
               ]
             }
           }
@@ -2169,6 +2497,88 @@
                 "restos_epiteliales_malassez",
                 "lado_presion",
                 "lado_tension"
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m2_5_alveolar_3d",
+            "tipo": "exploracion-3d",
+            "titulo": "El ligamento y su hueso, en 3D",
+            "instrucciones": "Mueve el deslizador para cortar el cuerpo de la mandíbula por una raíz y llegar hasta el ligamento periodontal y el hueso que lo recibe. Gira la escena con un dedo y acércala con dos. Visita los siete pasos.",
+            "obligatoria": false,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Llegaste hasta el ligamento. Recuerda: sus fibras van del cemento de la raíz al hueso alveolar propio, y ese hueso (fasciculado, cribiforme) existe porque existe el diente: sin él, se reabsorbe."
+            },
+            "concepto": "Ligamento periodontal y hueso alveolar propio en su contexto: tablas, trabecular y conducto",
+            "config": {
+              "modelo": "procedural",
+              "escena": "hueso_alveolar",
+              "alt": "Escena 3D de un segmento del cuerpo de la mandíbula con un diente, cortado por la raíz: tablas corticales, hueso trabecular, hueso alveolar propio, ligamento periodontal con sus fibras y conducto mandibular. Se gira, se acerca y se recorre con el deslizador.",
+              "linea_de_tiempo": {
+                "pasos": [
+                  {
+                    "id": "paso_cuerpo",
+                    "t": 0,
+                    "titulo": "El diente en su hueso",
+                    "vista": "general",
+                    "texto": "Un tramo del cuerpo mandibular con un premolar. Todo lo que sostiene a ese diente (hueso, ligamento y cemento) es el **periodonto de inserción**, y en esta sección lo veremos desde dentro. Formas esquemáticas."
+                  },
+                  {
+                    "id": "paso_corte",
+                    "t": 0.18,
+                    "titulo": "Cortamos por la raíz",
+                    "vista": "corte",
+                    "texto": "Un corte vestibulolingual por el eje de la raíz deja a la vista dónde está cada tejido: las paredes densas, el relleno poroso y, alrededor del diente, una franja fina que es el ligamento."
+                  },
+                  {
+                    "id": "paso_tablas",
+                    "t": 0.34,
+                    "titulo": "Las tablas corticales",
+                    "vista": "corte",
+                    "texto": "Las paredes vestibular y lingual son hueso cortical. Reciben, a través del trabecular, las fuerzas que el ligamento transmite al morder, y en ellas se insertan músculos y encía."
+                  },
+                  {
+                    "id": "paso_trabecular",
+                    "t": 0.5,
+                    "titulo": "El hueso de soporte",
+                    "vista": "corte",
+                    "texto": "Entre las tablas, **hueso trabecular** con médula. Sostiene al alvéolo y amortigua: cuando un diente se carga más, sus trabéculas se orientan y engruesan según la carga (ley de Wolff)."
+                  },
+                  {
+                    "id": "paso_alveolar_propio",
+                    "t": 0.66,
+                    "titulo": "Hueso alveolar propio: hueso fasciculado",
+                    "vista": "raiz",
+                    "texto": "La lámina delgada que reviste el alvéolo es **hueso fasciculado**: en él se insertarán, como en el cemento, las **fibras de Sharpey** del ligamento (las verás en el paso siguiente). Está perforada por vasos y nervios que lo comunican con el trabecular (lámina cribiforme)."
+                  },
+                  {
+                    "id": "paso_ligamento",
+                    "t": 0.82,
+                    "titulo": "El ligamento periodontal",
+                    "vista": "raiz",
+                    "texto": "Entre cemento y hueso, un espacio de unos 0,2 mm lleno de **fibras de colágeno** orientadas (aquí, oblicuas y apicales; también hay crestales y horizontales), además de fibroblastos, vasos, nervios y células madre que no se dibujan. Amortigua la mordida, nutre el cemento y le dice al hueso cuánta carga recibe."
+                  },
+                  {
+                    "id": "paso_conducto",
+                    "t": 1,
+                    "titulo": "Un vecino a tener en cuenta",
+                    "vista": "conducto",
+                    "texto": "Más abajo corre el **conducto mandibular** con el nervio alveolar inferior. Cuando el diente se pierde, el hueso fasciculado se reabsorbe primero y el reborde baja: el conducto queda cada vez más cerca de la superficie."
+                  }
+                ]
+              },
+              "requeridos": [
+                "paso_cuerpo",
+                "paso_corte",
+                "paso_tablas",
+                "paso_trabecular",
+                "paso_alveolar_propio",
+                "paso_ligamento",
+                "paso_conducto"
               ]
             }
           }

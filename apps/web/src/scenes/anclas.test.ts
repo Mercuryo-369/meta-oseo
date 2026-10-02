@@ -3,7 +3,7 @@
  * casos que no se pueden ubicar.
  */
 import { describe, expect, it } from 'vitest';
-import { CATALOGO_NODOS } from '@/content/nodos3d';
+import { CATALOGO_NODOS, ESTRUCTURAS_MANDIBULA } from '@/content/nodos3d';
 import { ANCLAS_PROVISIONALES, centroDeCaja, puntoDeAncla, ubicarNodoMandibula } from './anclas';
 import type { CajaModelo } from './anclas';
 import { RADIO_ZONA_ANCLA } from './vistas';
@@ -40,6 +40,21 @@ describe('ubicarNodoMandibula', () => {
     expect(u.punto).toEqual([-1, -0.5, -2]);
   });
 
+  it('con el ancla calculada de su estructura, el nodo trae la normal de la superficie', () => {
+    const condilo = ESTRUCTURAS_MANDIBULA.condilo!;
+    const u = ubicarNodoMandibula({ id: 'condilo', ancla: condilo.ancla, camara }, CAJA)!;
+    expect(u.origen).toBe('ancla');
+    expect(u.normal).toEqual(condilo.normal);
+  });
+
+  it('con otra ancla (puesta a mano) no hereda la normal', () => {
+    const u = ubicarNodoMandibula(
+      { id: 'condilo', ancla: { x: 0.5, y: 0.5, z: 0.5 }, camara },
+      CAJA,
+    )!;
+    expect(u.normal).toBeUndefined();
+  });
+
   it('"mandibula" es el hueso completo: su centro y radio 1', () => {
     const u = ubicarNodoMandibula({ id: 'mandibula', camara }, CAJA)!;
     expect(u).toEqual({ punto: centroDeCaja(CAJA), radio: 1, origen: 'modelo_completo' });
@@ -64,6 +79,13 @@ describe('ubicarNodoMandibula', () => {
     expect(izq.punto[0]).toBeCloseTo(-der.punto[0], 10);
     expect(izq.punto[1]).toBeCloseTo(der.punto[1], 10);
     expect(izq.punto[2]).toBeCloseTo(der.punto[2], 10);
+  });
+
+  it('con la vista medial izquierda también se toma la pieza del lado izquierdo', () => {
+    const der = ubicarNodoMandibula({ id: 'rama', camara: { vista: 'medial_derecha' } }, CAJA)!;
+    const izq = ubicarNodoMandibula({ id: 'rama', camara: { vista: 'medial_izquierda' } }, CAJA)!;
+    expect(izq.punto[0]).toBeCloseTo(-der.punto[0], 10);
+    expect(izq.punto[1]).toBeCloseTo(der.punto[1], 10);
   });
 
   it('un id desconocido no se puede ubicar (null), tampoco los que coinciden con propiedades de Object', () => {

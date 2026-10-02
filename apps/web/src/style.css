@@ -170,6 +170,62 @@
   --sidebar-ring: #b9adff;
 }
 
+/*
+ * Acentos por módulo (identidad de cada uno de los seis módulos, sin salir de la paleta H&E).
+ *
+ * Por módulo hay tres tokens: `--acento-mN` (texto, iconos, bordes y barras), `--acento-mN-suave`
+ * (fondo teñido) y, común a todos, `--acento-sobre` (texto sobre un fondo relleno con el acento).
+ * Cada acento cumple WCAG AA (≥ 4.5:1) sobre la lámina, la tarjeta y su propio fondo suave, y el
+ * texto sobre el acento relleno; la prueba `src/style.contraste.test.ts` lo calcula y falla si un
+ * valor se aleja de su referencia. La página de un módulo elige su acento con
+ * `estiloAcento(n)` (components/modulo/identidad.ts), que fija `--acento`, `--acento-suave` y
+ * `--acento-sobre`; fuera de un módulo esos tres valen lo mismo que `--primary`.
+ *
+ *   1 hematoxilina (índigo)   2 eosina (rosa)   3 verde oliva   4 ámbar (mineral)
+ *   5 verde azulado           6 sepia (tiempo)
+ */
+@theme inline {
+  --color-acento: var(--acento);
+  --color-acento-suave: var(--acento-suave);
+  --color-acento-sobre: var(--acento-sobre);
+}
+
+:root {
+  --acento-m1: #3b2f86;
+  --acento-m1-suave: #ebe7f5;
+  --acento-m2: #a8325e;
+  --acento-m2-suave: #fbe6ec;
+  --acento-m3: #3f6d1a;
+  --acento-m3-suave: #e8f2d8;
+  --acento-m4: #8a5a00;
+  --acento-m4-suave: #f8edd2;
+  --acento-m5: #0b6b78;
+  --acento-m5-suave: #d9f0f3;
+  --acento-m6: #74503a;
+  --acento-m6-suave: #f1e6df;
+  --acento-sobre-m: #ffffff;
+
+  --acento: var(--primary);
+  --acento-suave: var(--secondary);
+  --acento-sobre: var(--primary-foreground);
+}
+
+.dark {
+  --acento-m1: #b9adff;
+  --acento-m1-suave: #28234a;
+  --acento-m2: #f58aa8;
+  --acento-m2-suave: #3d1a2b;
+  --acento-m3: #a9d67a;
+  --acento-m3-suave: #22301a;
+  --acento-m4: #f0c36b;
+  --acento-m4-suave: #382a10;
+  --acento-m5: #6fd3e0;
+  --acento-m5-suave: #12313a;
+  --acento-m6: #d9b79a;
+  --acento-m6-suave: #33261f;
+  --acento-sobre-m: #170f45;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

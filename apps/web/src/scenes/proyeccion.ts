@@ -41,11 +41,30 @@ export function enPantalla(ndc: Vec3, margen = 0.12): boolean {
 }
 
 /**
- * ¿Mira el punto hacia la cámara? Compara el lado del centro del modelo en que está el punto con
- * el lado en que está la cámara: sin trazado de rayos, basta para atenuar los puntos que quedan
- * "detrás" del hueso (el cóndilo derecho visto desde la izquierda) sin ocultarlos.
+ * ¿Mira el punto hacia la cámara? Sin trazado de rayos, para atenuar los puntos que quedan "detrás" del
+ * hueso sin ocultarlos:
+ *  - con la `normal` de la superficie en el punto (hacia fuera del hueso), mira a la cámara si la normal
+ *    apunta hacia ella (producto escalar con la dirección punto-cámara no negativo, con un margen para los
+ *    puntos de borde). Es lo exacto para una superficie convexa y no considera lo que otra parte del hueso
+ *    tape;
+ *  - sin normal, compara el lado del centro del modelo en que está el punto con el lado en que está la
+ *    cámara (el cóndilo derecho visto desde la izquierda).
  */
-export function miraALaCamara(punto: Vec3, centro: Vec3, camara: Vec3, tolerancia = 0.15): boolean {
+export function miraALaCamara(
+  punto: Vec3,
+  centro: Vec3,
+  camara: Vec3,
+  tolerancia = 0.15,
+  normal?: Vec3,
+): boolean {
+  if (normal) {
+    const haciaCamara: Vec3 = [camara[0] - punto[0], camara[1] - punto[1], camara[2] - punto[2]];
+    const distancia = Math.hypot(haciaCamara[0], haciaCamara[1], haciaCamara[2]);
+    const coseno =
+      (normal[0] * haciaCamara[0] + normal[1] * haciaCamara[1] + normal[2] * haciaCamara[2]) /
+      distancia;
+    if (Number.isFinite(coseno)) return coseno >= -0.15;
+  }
   const producto =
     (punto[0] - centro[0]) * (camara[0] - centro[0]) +
     (punto[1] - centro[1]) * (camara[1] - centro[1]) +

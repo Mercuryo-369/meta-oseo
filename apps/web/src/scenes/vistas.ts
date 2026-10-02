@@ -7,7 +7,7 @@
  * `+Z` hacia delante (el mentón). El lado derecho del sujeto es, por tanto, `-X`.
  */
 import type { VistaCamara } from '@/content/nodos3d';
-import { FOV_VERTICAL_GRADOS, distanciaParaEncajar } from './encuadre';
+import { FOV_VERTICAL_GRADOS, RADIO_NORMALIZADO, distanciaParaEncajar } from './encuadre';
 
 export type Vec3 = readonly [number, number, number];
 
@@ -23,6 +23,11 @@ const ANGULOS_VISTA: Readonly<Record<VistaCamara, { azimut: number; elevacion: n
   superior: { azimut: 0, elevacion: 78 },
   inferior: { azimut: 0, elevacion: -78 },
   oblicua: { azimut: 40, elevacion: 28 },
+  // Cámara del lado contrario mirando la cara MEDIAL (interna) de la rama: `medial_derecha` está en el lado
+  // izquierdo del sujeto (+X), dentro del arco, y mira hacia el lado derecho. Algo adelantada y elevada para
+  // asomarse por encima de la rama contraria y ver de frente el foramen y la língula.
+  medial_derecha: { azimut: -75, elevacion: 25 },
+  medial_izquierda: { azimut: 75, elevacion: 25 },
 };
 
 /**
@@ -45,6 +50,14 @@ export const RADIO_ZONA_ANCLA = 0.45;
 
 /** Distancia mínima al objetivo: cerca del plano cercano (0,1) el hueso se recorta. */
 export const DISTANCIA_MIN_ABSOLUTA = 0.3;
+
+/**
+ * Distancia máxima de las vistas mediales al nodo: la cámara se queda DENTRO del arco de la mandíbula (entre las
+ * dos ramas, a unos 0,5 de la cara medial que mira) en vez de detrás de la rama contraria. Solo rige al
+ * encuadrar un nodo (radio menor que el del modelo entero): la vista medial del modelo entero no tiene arco.
+ */
+export const DISTANCIA_MAX_VISTA_MEDIAL = 0.9;
+const VISTAS_MEDIALES: readonly VistaCamara[] = ['medial_derecha', 'medial_izquierda'];
 
 export interface LimitesZoom {
   minima: number;
@@ -101,7 +114,10 @@ export function calcularEncuadre(entrada: EntradaEncuadre, limites?: LimitesZoom
     entrada.aspecto,
     entrada.fovVerticalGrados ?? FOV_VERTICAL_GRADOS,
   );
-  const bruta = base / zoom;
+  let bruta = base / zoom;
+  if (radio < RADIO_NORMALIZADO && VISTAS_MEDIALES.includes(entrada.vista)) {
+    bruta = Math.min(bruta, DISTANCIA_MAX_VISTA_MEDIAL);
+  }
   return {
     objetivo: entrada.centro,
     direccion: direccionDeVista(entrada.vista),
@@ -250,6 +266,8 @@ export const ETIQUETA_VISTA: Readonly<Record<VistaCamara, string>> = {
   superior: 'Superior',
   inferior: 'Inferior',
   oblicua: 'Oblicua',
+  medial_derecha: 'Medial derecha',
+  medial_izquierda: 'Medial izquierda',
 };
 
 /**

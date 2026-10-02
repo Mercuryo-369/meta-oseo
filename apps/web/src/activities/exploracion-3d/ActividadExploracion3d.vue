@@ -24,6 +24,14 @@
  *
  * Foco (R6): tocar una parte no mueve el foco; al completar pasa al encabezado del resultado, y al
  * empezar otro intento, a la lista de partes. Nada roba el foco al cargar.
+ *
+ * Variante PROCEDURAL (`config.modelo === 'procedural'`, docs/escena-3d-bmu.md): en lugar de un modelo con
+ * nodos, una escena hecha por código con LÍNEA DE TIEMPO. Las "partes" son los pasos de
+ * `config.linea_de_tiempo` (`prepararExploracion` los convierte en nodos, así que la lista, el avance, la
+ * instantánea y la finalización son los mismos) y en vez de `EscenaExploracion` se monta `PanelLineaTiempo`,
+ * que lleva la escena (fragmento perezoso), el texto de la fase y los controles de tiempo. Visitar un paso
+ * es detener la línea de tiempo en él o pasar por él (`visitarDesdeLinea`), o pulsarlo en la lista, que
+ * además lleva la línea hasta él. Sin WebGL, el panel (texto, deslizador, botones) y la lista bastan.
  */
 import {
   computed,
@@ -52,11 +60,13 @@ import type { EstadoEscena } from '@/scenes/useModeloExploracion';
 import {
   avanceDeExploracion,
   crearInstantanea,
+  esExploracionProcedural,
   exploracionCompleta,
   prepararExploracion,
   requeridosVisitados,
   restaurarVisitados,
 } from './logica';
+import PanelLineaTiempo from './PanelLineaTiempo.vue';
 import TextoMarkdown from './TextoMarkdown.vue';
 
 const props = withDefaults(defineProps<PropsActividadExploracion3d>(), {
@@ -116,6 +126,14 @@ const escenaNoDisponible = computed(
 
 const exploracion = computed(() => prepararExploracion(props.actividad.config));
 const nodos = computed(() => exploracion.value.nodos);
+const pasos = computed(() => exploracion.value.pasos);
+const esProcedural = computed(() => esExploracionProcedural(props.actividad.config));
+/** Cómo se llaman las partes en los textos: fases en una escena con línea de tiempo. */
+const partes = computed(() =>
+  esProcedural.value
+    ? { plural: 'fases', requeridas: 'fases requeridas', lista: 'Fases del proceso' }
+    : { plural: 'partes', requeridas: 'partes requeridas', lista: 'Partes del modelo' },
+);
 const requeridos = computed(() => exploracion.value.requeridos);
 const jugando = computed(() => props.modo === 'jugar');
 
@@ -125,6 +143,10 @@ const visitados = ref<string[]>(
 );
 const seleccionId = ref<string | null>(null);
 const ordenEnfoque = ref(0);
+/** Sube al empezar otro intento: la línea de tiempo vuelve a t = 0. */
+const ordenReinicio = ref(0);
+/** Fase en curso según `t` (solo escenas procedurales). */
+const faseActualId = ref<string | null>(null);
 /** ¿Ya hizo algo el estudiante en esta ejecución? Hasta entonces `estadoPrevio` puede reasignarse. */
 const interactuado = ref(false);
 const resultado = ref<ResultadoActividad<'exploracion-3d'> | null>(null);
@@ -217,13 +239,41 @@ function seleccionar(id: string): void {
   }
 }
 
+/**
+ * Pasos que la línea de tiempo visitó (se detuvo en ellos o pasó por ellos). Solo cuenta los nuevos: pasar
+ * otra vez por uno ya visitado no emite nada. No mueve la selección ni la línea (ya está donde está).
+ */
+function visitarDesdeLinea(ids: string[]): void {
+  if (!jugando.value) return;
+  for (const id of ids) {
+    const nodo = nodos.value.find((n) => n.id === id);
+    if (!nodo || visitados.value.includes(id)) continue;
+    interactuado.value = true;
+    emit('interaccion', { accion: 'selecciona_nodo', objeto: id });
+    visitados.value = [...visitados.value, id];
+    // Seguir explorando tras completar es libre: no cuenta ni vuelve a completar.
+    if (resultado.value !== null) continue;
+    if (exploracionCompleta(requeridos.value, visitados.value)) {
+      completar();
+      continue;
+    }
+    anuncio.value = `Fase visitada: ${nodo.etiqueta}. Llevas ${visitadosRequeridos.value} de ${requeridos.value.length} fases requeridas.`;
+    emisor.emitir({
+      avance: avanceDeExploracion(requeridos.value, visitados.value),
+      intentos: intentos.value,
+      instantanea: crearInstantanea(visitados.value, nodos.value),
+    });
+  }
+}
+
 function repetir(): void {
   if (!jugando.value) return;
   intentos.value += 1;
   visitados.value = [];
   seleccionId.value = null;
-  // Sin selección, la cámara vuelve al encuadre general.
+  // Sin selección, la cámara vuelve al encuadre general (y la línea de tiempo, a t = 0).
   ordenEnfoque.value += 1;
+  ordenReinicio.value += 1;
   resultado.value = null;
   anuncio.value = 'Empezaste de nuevo. Explora las partes requeridas.';
   emisor.reabrir();
@@ -233,7 +283,7 @@ function repetir(): void {
 
 const retroalimentacion = computed(() => textoRetroalimentacion(props.actividad, 1));
 
-defineExpose({ seleccionar, repetir });
+defineExpose({ seleccionar, repetir, visitarDesdeLinea });
 </script>
 
 <template>
@@ -267,12 +317,13 @@ defineExpose({ seleccionar, repetir });
     <div v-if="jugando" class="grid gap-1" data-testid="avance">
       <p class="flex items-center gap-2 text-sm font-medium">
         <CircleCheck v-if="!!resultado" class="text-success size-4 shrink-0" aria-hidden="true" />
-        {{ visitadosRequeridos }} de {{ requeridos.length }} partes requeridas exploradas
+        {{ visitadosRequeridos }} de {{ requeridos.length }} {{ partes.requeridas }}
+        {{ esProcedural ? 'visitadas' : 'exploradas' }}
       </p>
       <div
         class="bg-secondary h-2 overflow-hidden rounded-full"
         role="progressbar"
-        aria-label="Partes requeridas exploradas"
+        :aria-label="`${esProcedural ? 'Fases requeridas visitadas' : 'Partes requeridas exploradas'}`"
         aria-valuemin="0"
         :aria-valuemax="requeridos.length"
         :aria-valuenow="visitadosRequeridos"
@@ -285,7 +336,24 @@ defineExpose({ seleccionar, repetir });
     </div>
 
     <div class="grid gap-2">
+      <!-- Escena procedural: escena 3D, texto de la fase y controles de la línea de tiempo. -->
+      <PanelLineaTiempo
+        v-if="actividad.config.modelo === 'procedural' && actividad.config.escena"
+        :key="actividad.config.escena"
+        :escena="actividad.config.escena"
+        :alt="actividad.config.alt"
+        :pasos="pasos"
+        :visitados="jugando ? visitados : []"
+        :requeridos="requeridos"
+        :seleccion-id="seleccionId"
+        :orden-enfoque="ordenEnfoque"
+        :orden-reinicio="ordenReinicio"
+        @visitar="visitarDesdeLinea"
+        @estado="estadoEscena = $event"
+        @fase="faseActualId = $event"
+      />
       <EscenaExploracion
+        v-else-if="actividad.config.modelo !== 'procedural'"
         :key="actividad.config.modelo"
         :modelo="actividad.config.modelo"
         :alt="actividad.config.alt"
@@ -302,8 +370,9 @@ defineExpose({ seleccionar, repetir });
         data-testid="aviso-sin-3d"
       >
         <template v-if="visorNoDisponible">No se pudo cargar el visor 3D. </template>
-        Puedes {{ jugando ? 'completar la actividad' : 'leer las fichas' }} con la lista de partes:
-        es la misma actividad.
+        Puedes {{ jugando ? 'completar la actividad' : 'leer las fichas' }} con la lista de
+        {{ partes.plural }}<template v-if="esProcedural"> y la línea de tiempo</template>: es la
+        misma actividad.
       </p>
       <p
         v-if="actividad.config.modelo === 'mandibula'"
@@ -321,16 +390,28 @@ defineExpose({ seleccionar, repetir });
         tabindex="-1"
         class="text-base font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        Partes del modelo
+        {{ partes.lista }}
       </h4>
       <ul class="grid gap-2 sm:grid-cols-2" data-testid="lista-nodos">
         <li v-for="(nodo, indice) in nodos" :key="nodo.id">
           <button
             type="button"
             class="border-input bg-card text-card-foreground hover:bg-accent focus-visible:ring-ring flex min-h-11 w-full items-center gap-3 rounded-md border px-3 py-2 text-left outline-none focus-visible:ring-2"
-            :class="seleccionId === nodo.id ? 'border-primary bg-accent ring-primary ring-2' : ''"
-            :aria-current="seleccionId === nodo.id ? 'true' : undefined"
-            :aria-describedby="seleccionId === nodo.id ? idFicha : undefined"
+            :class="
+              (esProcedural ? faseActualId === nodo.id : seleccionId === nodo.id)
+                ? 'border-primary bg-accent ring-primary ring-2'
+                : ''
+            "
+            :aria-current="
+              esProcedural
+                ? faseActualId === nodo.id
+                  ? 'step'
+                  : undefined
+                : seleccionId === nodo.id
+                  ? 'true'
+                  : undefined
+            "
+            :aria-describedby="!esProcedural && seleccionId === nodo.id ? idFicha : undefined"
             :data-nodo="nodo.id"
             :data-visitado="jugando && visitados.includes(nodo.id)"
             @click="seleccionar(nodo.id)"
@@ -344,7 +425,9 @@ defineExpose({ seleccionar, repetir });
               <span class="block font-medium break-words">{{ nodo.etiqueta }}</span>
               <span class="text-muted-foreground block text-xs">
                 {{ nodo.requerido ? 'Requerida' : 'Opcional'
-                }}<template v-if="jugando && visitados.includes(nodo.id)"> · Explorada</template>
+                }}<template v-if="jugando && visitados.includes(nodo.id)">
+                  · {{ esProcedural ? 'Visitada' : 'Explorada' }}</template
+                >
               </span>
             </span>
             <Check
@@ -358,6 +441,7 @@ defineExpose({ seleccionar, repetir });
     </section>
 
     <article
+      v-if="!esProcedural"
       :id="idFicha"
       class="bg-card text-card-foreground rounded-xl border p-4"
       data-testid="ficha"

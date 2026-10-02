@@ -28,7 +28,7 @@ Estado de avance: [TODO.md](TODO.md). Repos a reutilizar: [docs/referencias.md](
 | Auth | **JWT (`PyJWT`) con `Authorization: Bearer`** | Sin contraseña al inicio: el estudiante entra con tipo y número de identificación. |
 | Certificados | **reportlab** (+ fuentes DejaVu) | PDF en Python puro, sin dependencias de sistema (WeasyPrint exige GTK en Windows), con código de verificación y QR. |
 | LLM | **Claude Opus 5 (`claude-opus-5`) vía SDK oficial `anthropic`** | Razonamiento científico. Thinking adaptativo, streaming. |
-| Vector store RAG | **ChromaDB en desarrollo → `pgvector` en producción** | Misma interfaz de retrieval detrás. |
+| Recuperación RAG | **BM25 propio en Python puro (hoy) → `pgvector` (F6-10)** | Cambio del 2026-09-24: sin ChromaDB ni embeddings (nada pesado en Windows con Python 3.14 ni en imagen slim). Corpus generado a `app/data/corpus.jsonl`; la interfaz `Retriever` permite sumar pgvector sin tocar el resto. Ver `docs/mentor-eval.md`. |
 | Monorepo | **pnpm workspace para `apps/web` + `services/api` con `uv`** | Un solo repo, dos apps. |
 
 ### Decisión clave: un solo backend
@@ -84,7 +84,7 @@ ova-metabolismo-oseo/
 │       │   │   ├── quiz.py       # /quiz
 │       │   │   └── teacher.py    # estadísticas para el docente
 │       │   ├── ai/               # cliente Anthropic, tools, prompts versionados
-│       │   └── rag/              # ingesta, chunking, retrieval
+│       │   └── rag/              # texto (español), corpus, retriever BM25, consulta, evaluación
 │       ├── alembic/              # migraciones
 │       ├── corpus/               # documentos del curso (gitignored)
 │       ├── tests/
@@ -193,7 +193,7 @@ Cada actividad emite `completada(puntaje)`; la store de gamificación acumula y 
 **Entregable:** Módulo 1 jugable de principio a fin, con puntaje, en móvil y desktop.
 
 ### Fase 3 — Mentor de IA contextual (semanas 6–9)
-- [ ] Ingesta RAG, `ingest.py`, ChromaDB.
+- [x] Corpus del mentor (`scripts/build_corpus.py`) y recuperación BM25 (`app/rag/`), sin ChromaDB (2026-09-24).
 - [ ] `/chat` con system prompt + contexto pedagógico + chunks + historial; prompt caching.
 - [ ] "Explícame esto" desde cualquier capa/nodo/molécula seleccionada, analogía según `nivel`.
 - [ ] Monitoreo: el mentor lee `progreso` y sugiere qué reforzar (`/progress-hint`).

@@ -16,8 +16,17 @@ const CRUDOS = import.meta.glob('../../../public/images/m6/*.svg', {
 const VIEWBOX = '0 0 800 600';
 /** Peso máximo fijado para estas ilustraciones: la mitad del límite del validador (200 KB). */
 const PESO_MAX_BYTES = 100 * 1024;
-/** 28 unidades del viewBox equivalen a unos 11 px reales en un teléfono de 320 px de ancho. */
-const TAMANO_MIN_ROTULO = 28;
+/** 30 unidades del viewBox equivalen a 12 px reales en un teléfono de 320 px de ancho. */
+const TAMANO_MIN_ROTULO = 30;
+/**
+ * Tinta índigo de la paleta H&E (la misma de los módulos 2 a 5). Los dibujos de este módulo se ven
+ * como imagen (`<img>`, donde `currentColor` es siempre negro) y también inyectados en la página
+ * (multicapa y animación), así que llevan su propia lámina clara de fondo y tinta fija: se leen igual
+ * en tema claro y oscuro.
+ */
+const TINTA = '#2b2350';
+/** Fondo de lámina (lavanda muy clara) que llevan todos los dibujos. */
+const LAMINA = '#f1edfa';
 
 /** Capas (grupos `<g id>`) por archivo, tal como las lista la tabla del guion. */
 const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
@@ -131,7 +140,7 @@ const OCULTAS_EN_ESCENA = [
 ] as const;
 
 /** Paleta H&E compartida entre los seis módulos: el hueso mineralizado tiene un solo color. */
-const COLOR_HUESO = '#dc9db3';
+const COLOR_HUESO = '#d98aa2';
 /** Dibujos que muestran matriz ósea mineralizada. */
 const CON_HUESO = [
   'm6_escena_estrogeno_rankl',
@@ -139,6 +148,7 @@ const CON_HUESO = [
   'm6_hueso_normal_osteoporotico',
   'm6_reborde_alveolar_cascada',
   'm6_atm_cambios_degenerativos',
+  'm6_prevencion_mapa',
 ];
 
 function existe(nombre: string): boolean {
@@ -210,17 +220,24 @@ describe('ilustraciones SVG del módulo 6', () => {
       }
     });
 
-    it('rotula con currentColor y con un tamaño legible a 320 px de ancho', () => {
-      const textos = [...leer(nombre).matchAll(/<text\b([^>]*)>/g)].map((m) => m[1] ?? '');
+    it('lleva su lámina de fondo opaca y rotula con la tinta de la paleta y un tamaño legible', () => {
+      const svg = leer(nombre);
+      // La lámina es un rect opaco: en la curva vive dentro de eje_edad_masa (visible en todos los
+      // pasos de la animación); en el resto, en el grupo fondo_lamina o en la capa base.
+      expect(svg, 'lámina de fondo').toMatch(new RegExp(`<rect [^>]*fill="${LAMINA}"`));
+      const textos = [...svg.matchAll(/<text\b([^>]*)>/g)].map((m) => m[1] ?? '');
+      expect(textos.length).toBeGreaterThan(0);
       for (const atributos of textos) {
-        expect(atributos, 'los rótulos usan fill="currentColor"').toMatch(/fill="currentColor"/);
+        expect(atributos, 'los rótulos usan la tinta de la paleta').toContain(`fill="${TINTA}"`);
         const tamano = Number(/font-size="([\d.]+)"/.exec(atributos)?.[1] ?? 0);
         expect(tamano).toBeGreaterThanOrEqual(TAMANO_MIN_ROTULO);
       }
     });
 
     it('no fija colores de texto que se pierdan en un tema (ni negro ni blanco puros)', () => {
-      expect(leer(nombre)).not.toMatch(/<text\b[^>]*fill="(?:#000(?:000)?|#fff(?:fff)?|black|white)"/i);
+      expect(leer(nombre)).not.toMatch(
+        /<text\b[^>]*fill="(?:#000(?:000)?|#fff(?:fff)?|black|white)"/i,
+      );
     });
 
     it('no usa script, style embebido, imágenes ni referencias externas', () => {
@@ -253,7 +270,12 @@ describe('ilustraciones SVG del módulo 6', () => {
       );
     }
     // Las capas de la escena base (célula, receptores, hueso) sí se ven desde el principio.
-    for (const capa of ['celula_osteoblastica', 'receptor_rank', 'linfocito_t', 'superficie_osea']) {
+    for (const capa of [
+      'celula_osteoblastica',
+      'receptor_rank',
+      'linfocito_t',
+      'superficie_osea',
+    ]) {
       expect(svg).not.toMatch(new RegExp(`<g id="${capa}"[^>]*visibility:hidden`));
     }
   });

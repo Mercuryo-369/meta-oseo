@@ -21,9 +21,10 @@ import httpx2
 from fastapi import Request
 
 from app.ai.errors import ia_not_configured
-from app.ai.prompt import MENTOR_SYSTEM_PROMPT
+from app.ai.prompt import FragmentoEtiquetado, render_datos, system_blocks
 from app.core.settings import Settings
 from app.schemas.chat import ChatMessage
+from app.schemas.contexto import ContextoPedagogico
 
 # Fallback del lado del servidor. El SDK instalado (anthropic 1.8) ya tipa el parámetro
 # `fallbacks` (acepta el literal "default") y la cabecera beta en `client.beta.messages.stream`,
@@ -95,13 +96,47 @@ def to_upstream_messages(messages: Sequence[ChatMessage]) -> list[dict[str, str]
     return [{"role": turn.role, "content": turn.content} for turn in turns]
 
 
-def build_request(settings: Settings, messages: Sequence[ChatMessage]) -> dict[str, Any]:
-    """Argumentos de `client.beta.messages.stream(...)` para una consulta al mentor."""
+def with_course_data(
+    turns: list[dict[str, Any]],
+    contexto: ContextoPedagogico | None,
+    material: Sequence[FragmentoEtiquetado],
+) -> list[dict[str, Any]]:
+    """Antepone el bloque `datos_del_curso` a la pregunta del estudiante (el último turno).
+
+    El historial anterior queda idéntico al que el cliente envió (sin datos), de modo que el prefijo
+    de la conversación no cambia de una petición a la siguiente. El texto del estudiante va en su
+    propio bloque, intacto.
+    """
+    *history, last = turns
+    return [
+        *history,
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": render_datos(contexto, material)},
+                {"type": "text", "text": last["content"]},
+            ],
+        },
+    ]
+
+
+def build_request(
+    settings: Settings,
+    messages: Sequence[ChatMessage],
+    *,
+    contexto: ContextoPedagogico | None = None,
+    material: Sequence[FragmentoEtiquetado] = (),
+) -> dict[str, Any]:
+    """Argumentos de `client.beta.messages.stream(...)` para una consulta al mentor.
+
+    Orden pensado para el prompt caching: `system` con el bloque estable y su `cache_control`; lo
+    variable (contexto pedagógico y fragmentos) va al final, en el último turno del estudiante.
+    """
     request: dict[str, Any] = {
         "model": settings.anthropic_model,
         "max_tokens": settings.mentor_max_tokens,
-        "system": MENTOR_SYSTEM_PROMPT,
-        "messages": to_upstream_messages(messages),
+        "system": system_blocks(),
+        "messages": with_course_data(to_upstream_messages(messages), contexto, material),
         "thinking": {"type": "adaptive"},
         "output_config": {"effort": settings.mentor_effort},
     }

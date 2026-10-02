@@ -10,7 +10,9 @@ Formato del archivo (versión 1):
     {
       "version": 1,
       "actividades": {"m1_capas_hueso": {"modulo": 1, "tipo": "multicapa", "puntaje_max": 30,
-                                          "obligatoria": true, "seccion": "tejido_dinamico"}},
+                                          "obligatoria": true, "seccion": "tejido_dinamico",
+                                          "seccion_titulo": "Un tejido vivo",
+                                          "concepto": "Organización del hueso largo"}},
       "modulos": {"1": {"slug": "...", "actividades": 9, "obligatorias": 7,
                          "puntaje_max": 270, "puntaje_max_obligatorias": 220}},
       "totales": {"actividades": 9, "obligatorias": 7, "puntaje_max": 270,
@@ -55,6 +57,11 @@ class ActivitySpec(BaseModel):
     puntaje_max: int = Field(ge=1, le=MAX_ACTIVITY_SCORE)
     obligatoria: bool
     seccion: str
+    # Título de la sección donde está la actividad y concepto que refuerza (F3-07): con ellos el
+    # servidor arma las sugerencias de refuerzo sin abrir el contenido. Vacíos si el contenido no
+    # los trae (los manifiestos anteriores a F3-07 no los tienen).
+    seccion_titulo: str = ""
+    concepto: str = ""
 
 
 class Manifest:
@@ -154,6 +161,8 @@ def build_manifest(contents: Iterable[Mapping[str, Any]]) -> Manifest:
                         puntaje_max=activity.get("puntaje_max"),
                         obligatoria=activity.get("obligatoria", True),
                         seccion=seccion_id,
+                        seccion_titulo=str(seccion.get("titulo", "")).strip(),
+                        concepto=str(activity.get("concepto", "")).strip(),
                     )
                 except ValidationError as error:
                     raise ManifestError(

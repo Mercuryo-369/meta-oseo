@@ -5,9 +5,10 @@
  *
  * Es un enlace real (`<a href="/modulo/n">`, vía RouterLink): se puede abrir con clic
  * derecho o en otra pestaña, y RouterLink pone `aria-current="page"` en el módulo abierto.
- * Un módulo bloqueado no es un enlace: se muestra como `role="link"` con
- * `aria-disabled="true"` y sigue siendo enfocable, para que quien usa teclado o lector de
- * pantalla sepa que existe y por qué no se abre.
+ * Un módulo bloqueado TAMBIÉN es un enlace (no un callejón sin salida): lleva a la página del
+ * módulo, que se muestra bloqueada en su sitio y explica qué falta y cómo desbloquearlo. Por eso
+ * no lleva `aria-disabled`; el candado, el borde discontinuo y el texto oculto dicen que aún no
+ * se puede estudiar.
  *
  * El estado nunca se comunica solo con color: activo = disco relleno con doble anillo,
  * completado = insignia con marca de verificación, bloqueado = borde discontinuo e insignia
@@ -25,12 +26,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{ elegir: [] }>();
 
-const atributos = computed(() =>
-  props.estado.bloqueado
-    ? { role: 'link', 'aria-disabled': 'true', tabindex: 0 }
-    : { to: { name: 'modulo', params: { n: props.modulo.numero } } },
-);
-
 const claseDisco = computed(() => {
   if (props.estado.activo) return 'fill-primary stroke-primary';
   if (props.estado.completado) return 'fill-success-soft stroke-success';
@@ -47,7 +42,7 @@ const claseNumero = computed(() => {
 
 const clasePildora = computed(() => {
   if (props.estado.activo) return 'border-primary ring-1 ring-primary';
-  if (props.estado.bloqueado) return 'border-dashed border-input';
+  if (props.estado.bloqueado) return 'border-dashed border-input hover:bg-muted';
   return 'border-input hover:bg-secondary';
 });
 
@@ -59,18 +54,17 @@ const claseTitulo = computed(() => {
 
 /** Un clic normal cierra el menú; los modificadores (nueva pestaña, etc.) lo dejan abierto. */
 function alHacerClic(e: MouseEvent): void {
-  if (props.estado.bloqueado) return;
   if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   emit('elegir');
 }
 </script>
 
 <template>
-  <component
-    :is="estado.bloqueado ? 'span' : RouterLink"
-    v-bind="atributos"
+  <RouterLink
+    :to="{ name: 'modulo', params: { n: modulo.numero } }"
     data-nodo-menu
     :data-modulo="modulo.numero"
+    :data-bloqueado="estado.bloqueado ? 'true' : undefined"
     class="bg-card box-border flex h-11 min-h-11 w-full items-center rounded-full border text-left shadow-md transition-colors"
     :class="clasePildora"
     @click="alHacerClic"
@@ -98,7 +92,7 @@ function alHacerClic(e: MouseEvent): void {
         :r="estado.activo ? 15 : 19"
         :class="claseDisco"
         stroke-width="2"
-        :stroke-dasharray="estado.bloqueado ? '3 3' : undefined"
+        :stroke-dasharray="estado.bloqueado && !estado.activo ? '3 3' : undefined"
       />
       <text
         x="22"
@@ -146,8 +140,8 @@ function alHacerClic(e: MouseEvent): void {
       </span>
       <span v-if="estado.completado" class="sr-only">, completado</span>
       <span v-if="estado.bloqueado" class="sr-only">
-        , bloqueado: completa antes el módulo {{ modulo.numero - 1 }}
+        , bloqueado: completa antes el módulo {{ modulo.numero - 1 }}; el enlace explica qué falta
       </span>
     </span>
-  </component>
+  </RouterLink>
 </template>

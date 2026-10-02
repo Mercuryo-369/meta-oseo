@@ -1,0 +1,8 @@
+# Plataforma de estudio con acceso por documento: no hay nada que indexar salvo la portada.
+User-agent: *
+Allow: /$
+Disallow: /api/
+Disallow: /docente
+Disallow: /modulo/
+Disallow: /certificado
+Disallow: /logros

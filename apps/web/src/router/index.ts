@@ -50,12 +50,40 @@ export const rutas: RouteRecordRaw[] = [
         meta: { titulo: 'Módulo' },
       },
       {
+        // Panel de seguimiento de la cohorte. Solo el rol docente ve los datos: la propia vista
+        // muestra "acceso solo para docentes" a un estudiante y no llama al panel.
+        path: 'docente',
+        name: 'docente',
+        component: () => import('@/views/DocenteView.vue'),
+        meta: { titulo: 'Panel del docente' },
+      },
+      {
         path: 'demo-mandibula',
         name: 'demo_mandibula',
         component: () => import('@/views/DemoMandibulaView.vue'),
         meta: { titulo: 'Demo de mandíbula 3D' },
       },
+      {
+        path: 'certificado',
+        name: 'certificado',
+        component: () => import('@/views/CertificadoView.vue'),
+        meta: { titulo: 'Mi certificado' },
+      },
+      {
+        path: 'logros',
+        name: 'logros',
+        component: () => import('@/views/LogrosView.vue'),
+        meta: { titulo: 'Mis logros' },
+      },
     ],
+  },
+  {
+    // Verificación pública de certificados: la abre un tercero desde el QR o la URL del PDF, sin
+    // sesión y sin AppShell. Sin código muestra el formulario para escribirlo.
+    path: '/verify/:codigo?',
+    name: 'verificar',
+    component: () => import('@/views/VerificarView.vue'),
+    meta: { publica: true, titulo: 'Verificar certificado' },
   },
   {
     path: '/:pathMatch(.*)*',

@@ -123,3 +123,58 @@ def ia_not_configured() -> HTTPException:
         "ia_no_configurada",
         "El mentor de IA no está disponible en este momento.",
     )
+
+
+def daily_limit_reached(limit: int, retry_after_seconds: int) -> HTTPException:
+    """429 `limite_diario`: el estudiante agotó sus mensajes de hoy (F3-10)."""
+    return api_error(
+        status.HTTP_429_TOO_MANY_REQUESTS,
+        "limite_diario",
+        f"Hoy ya usaste tus {limit} mensajes con el mentor. "
+        "Puedes seguir estudiando los módulos y volver a preguntarle mañana.",
+        headers={"Retry-After": str(max(1, retry_after_seconds))},
+    )
+
+
+def quiz_daily_limit_reached(limit: int, retry_after_seconds: int) -> HTTPException:
+    """429 `limite_diario_quiz`: el estudiante agotó sus quizzes de práctica de hoy (F4-03)."""
+    return api_error(
+        status.HTTP_429_TOO_MANY_REQUESTS,
+        "limite_diario_quiz",
+        f"Hoy ya hiciste tus {limit} quizzes de práctica con el mentor. "
+        "Puedes seguir con las actividades del módulo y volver a practicar mañana.",
+        headers={"Retry-After": str(max(1, retry_after_seconds))},
+    )
+
+
+def quiz_without_material() -> HTTPException:
+    """422 `material_insuficiente`: no hay material del curso sobre lo pedido."""
+    return api_error(
+        status.HTTP_422_UNPROCESSABLE_CONTENT,
+        "material_insuficiente",
+        "No encontré material del curso sobre ese tema para preparar preguntas. "
+        "Prueba con un concepto de los módulos.",
+    )
+
+
+def quiz_failed(status_code: int, code: str, message: str) -> HTTPException:
+    """502 `quiz_invalido` o `ia_error`: el modelo no entregó un quiz utilizable."""
+    return api_error(status_code, code, message)
+
+
+def session_not_found() -> HTTPException:
+    """404 `sesion_no_encontrada`: no existe o no es del usuario (no se distingue a propósito)."""
+    return api_error(
+        status.HTTP_404_NOT_FOUND,
+        "sesion_no_encontrada",
+        "No se encontró esa conversación.",
+    )
+
+
+def message_not_found() -> HTTPException:
+    """404 `mensaje_no_encontrado`: no existe, no es del mentor o no es del usuario."""
+    return api_error(
+        status.HTTP_404_NOT_FOUND,
+        "mensaje_no_encontrado",
+        "No se encontró esa respuesta del mentor.",
+    )

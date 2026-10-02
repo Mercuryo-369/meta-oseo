@@ -7,6 +7,7 @@ from app.core.db import build_engine, ensure_schema, resolve_database_url
 from app.core.settings import API_DIR, DEFAULT_SECRET_KEY, REPO_ROOT, Settings
 
 STRONG_SECRET = "una-clave-de-produccion-larga-y-aleatoria-1234567890"
+PUBLIC_URL = "https://ova.midominio.edu"
 
 
 def make_settings(**kwargs) -> Settings:
@@ -37,7 +38,52 @@ def test_produccion_rechaza_clave_corta():
 
 
 def test_produccion_acepta_clave_propia():
-    assert make_settings(env="prod", secret_key=STRONG_SECRET).is_prod
+    assert make_settings(env="prod", secret_key=STRONG_SECRET, public_base_url=PUBLIC_URL).is_prod
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://localhost:5173",
+        "http://localhost:8080/",
+        "https://LOCALHOST",
+        "http://127.0.0.1:8080",
+        "http://127.1.2.3",
+        "http://[::1]:8080",
+        "http://0.0.0.0:8080",
+        "http://ova.localhost",
+        "localhost:8080",
+    ],
+)
+def test_produccion_rechaza_public_base_url_local(url):
+    with pytest.raises(ValidationError, match="PUBLIC_BASE_URL"):
+        make_settings(env="prod", secret_key=STRONG_SECRET, public_base_url=url)
+
+
+def test_produccion_rechaza_el_public_base_url_por_defecto():
+    # Copiar el .env.example sin editarlo deja localhost: la API no debe arrancar así.
+    with pytest.raises(ValidationError, match="PUBLIC_BASE_URL"):
+        make_settings(env="prod", secret_key=STRONG_SECRET)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://ova.midominio.edu",
+        "https://ova.midominio.edu/",
+        "http://192.168.1.20:8080",
+        "http://ova.local:8080",
+        "https://localhost.midominio.edu",
+    ],
+)
+def test_produccion_acepta_public_base_url_publica(url):
+    assert make_settings(env="prod", secret_key=STRONG_SECRET, public_base_url=url).is_prod
+
+
+def test_desarrollo_permite_public_base_url_local():
+    assert make_settings(public_base_url="http://localhost:5173").public_base_url == (
+        "http://localhost:5173"
+    )
 
 
 def test_la_clave_no_se_filtra_en_repr():
@@ -47,6 +93,7 @@ def test_la_clave_no_se_filtra_en_repr():
 def test_lee_variables_de_entorno(monkeypatch):
     monkeypatch.setenv("ENV", "prod")
     monkeypatch.setenv("SECRET_KEY", STRONG_SECRET)
+    monkeypatch.setenv("PUBLIC_BASE_URL", PUBLIC_URL)
     monkeypatch.setenv("TRUST_PROXY", "true")
     monkeypatch.setenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
     monkeypatch.setenv("ALLOWED_ORIGINS", "https://a.example, https://b.example/")

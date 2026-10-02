@@ -55,6 +55,12 @@ jobs:
       - name: pytest (SQLite)
         run: uv run pytest
 
+      - name: El manifiesto de actividades está al día con el contenido
+        run: uv run python -m app.scripts.build_manifest --comprobar
+
+      - name: El corpus del mentor está al día con el contenido
+        run: uv run python -m app.scripts.build_corpus --comprobar
+
   api-postgres:
     name: API (pytest en PostgreSQL + pgvector)
     runs-on: ubuntu-latest

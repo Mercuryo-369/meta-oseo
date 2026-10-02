@@ -1,36 +1,28 @@
 /**
- * Guard de los módulos (F2-08): con el bloqueo secuencial activo, un módulo solo se abre cuando el
- * anterior está completado. En vez de un rebote mudo, el estudiante llega al primer módulo que sí
- * puede estudiar con `?bloqueado=n` y la página de módulo le explica qué le falta.
+ * Guard de los módulos (F2-08). YA NO REDIRIGE: un módulo bloqueado se abre en su propia dirección
+ * y la página (`ModuloView.vue` → `ModuloBloqueado.vue`) lo muestra bloqueado en su sitio, con la
+ * identidad del módulo, lo que falta y un botón al módulo que sí se puede estudiar. Redirigir al
+ * primer módulo hacía que cada clic en un módulo bloqueado mostrara la página del módulo 1 y que los
+ * seis módulos parecieran iguales.
  *
- * Falla ABIERTO: si el progreso no se pudo cargar (API caída, modo de desarrollo sin backend) no se
- * bloquea a nadie por un dato que falta; la propia página vuelve a comprobarlo cuando lo conozca.
- * Las secciones de dentro del módulo las protege la página (ver `ModuloView.vue`).
+ * Lo que sí hace: antes de entrar a un módulo con sesión, espera el progreso (una sola petición
+ * compartida con la propia página) para que la primera pantalla ya conozca el estado y no parpadee.
+ * El bloqueo lo decide la página con `decidirAccesoModulo`, que falla ABIERTO si el progreso no se
+ * pudo cargar (API caída, desarrollo sin backend): no se bloquea a nadie por un dato que falta.
+ * Las secciones de dentro del módulo las protege también la página.
  */
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
-import { decidirAccesoModulo } from '@/components/modulo/acceso';
-import { BLOQUEO_SECUENCIAL } from '@/config';
+import type { RouteLocationNormalized } from 'vue-router';
+import { cargarModulo } from '@/content/registry';
 import { useAuthStore } from '@/stores/auth';
 import { useProgresoStore } from '@/stores/progreso';
 
-export async function guardarModulo(to: RouteLocationNormalized): Promise<true | RouteLocationRaw> {
-  if (to.name !== 'modulo' || !BLOQUEO_SECUENCIAL) return true;
+export async function guardarModulo(to: RouteLocationNormalized): Promise<true> {
+  if (to.name !== 'modulo') return true;
   // Sin sesión decide guardarSesion (registrado antes que este guard).
   if (!useAuthStore().isAuthenticated) return true;
-
-  const n = Number(to.params.n);
-  const progreso = useProgresoStore();
-  await progreso.load();
-
-  const decision = decidirAccesoModulo(n, progreso.modulosCompletados, {
-    bloqueoSecuencial: BLOQUEO_SECUENCIAL,
-    progresoConocido: progreso.loaded,
-  });
-  if (decision.permitido) return true;
-  return {
-    name: 'modulo',
-    params: { n: decision.destino },
-    query: { bloqueado: String(n) },
-    replace: true,
-  };
+  // El contenido (chunk del módulo) se pide a la vez que el progreso, no después de montar la página:
+  // así el módulo no espera dos viajes en cascada. Un fallo aquí lo trata la propia página.
+  void cargarModulo(Number(to.params.n)).catch(() => undefined);
+  await useProgresoStore().load();
+  return true;
 }

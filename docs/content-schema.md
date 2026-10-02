@@ -227,7 +227,7 @@ confirma. Una referencia dudosa es peor que ninguna.
 
 Una sección es una unidad de estudio de 5 a 10 minutos: bloques de lectura seguidos de una o dos
 actividades. Tiene `id` (no puede ser `inicio`), `titulo` (plano, 3 a 100), `resumen` opcional (línea,
-10 a 300) y de 1 a 15 `bloques`. **Pon la actividad obligatoria al final de la sección:** una sección
+10 a 300) y de 1 a 16 `bloques`. **Pon la actividad obligatoria al final de la sección:** una sección
 está completada cuando todas sus actividades obligatorias lo están (sección 11).
 
 ```json ejemplo:seccion
@@ -938,17 +938,21 @@ El video se carga con `preload="none"`, sin autoplay y con subtítulos en españ
 
 ### 7.6 `exploracion-3d`: modelo 3D (solo mandíbula y células)
 
-El 3D se reserva para dos modelos: `mandibula` y `celulas` (CLAUDE.md). El estudiante gira el modelo,
-toca un nodo y lee su ficha; la cámara se acerca a él. Se completa al visitar los `requeridos`.
+El 3D se reserva para la mandíbula y las células (CLAUDE.md). Hay tres valores de `modelo`: `mandibula` y
+`celulas` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
+él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
+abajo). Se completa al visitar los `requeridos`.
 
 | Campo de `config` | Regla |
 |---|---|
-| `modelo` | `mandibula` o `celulas` |
+| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
 | `alt` | Plano, 10 a 300: descripción del modelo |
-| `nodos[]` | 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
+| `nodos[]` | Solo en `mandibula` y `celulas` (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
 | `ancla` | Solo en `mandibula`. `{ x, y, z }`, cada uno de 0 a 1 en la caja envolvente del modelo (sección 9). Para zonas que **no son una pieza** del modelo |
 | `camara` | `vista` (por defecto `frontal`) y `zoom` (0,5 a 3; por defecto 1) |
-| `requeridos` | 1 a 12 ids de nodos, sin repetir, todos existentes en `nodos` |
+| `requeridos` | 1 a 12 ids de nodos (o de pasos, en `procedural`), sin repetir, todos existentes |
+| `escena` | Solo `procedural`: nombre de la escena registrada (una de las de la sección 9) |
+| `linea_de_tiempo` | Solo `procedural`: `{ "pasos": [...] }`, de 2 a 12 pasos (ver abajo) |
 
 La cámara no lleva coordenadas: quien escribe el contenido no puede previsualizar el 3D. Se elige una
 **vista con nombre** (sección 9) y la escena calcula la posición a partir del tamaño del nodo. Sin
@@ -963,6 +967,8 @@ región funcional. Hay dos maneras de apuntar al modelo:
 - **Por ancla:** el nodo lleva `ancla: { x, y, z }` y su `id` es libre (snake_case, sin diminutivos). Funciona con
   el modelo provisional de una sola malla y con el GLB definitivo, y no depende de que el modelador separe nada.
   Si más adelante el GLB trae esa pieza, el mismo `id` puede pasar a resolverse como nodo.
+  Las coordenadas de la mandíbula no se escriben a mano: las calcula `tools/anclas/calcular_anclas.mjs` sobre la
+  malla real (método, límites y comandos en `docs/anclas-mandibula.md`) y quedan en `nodos3d.ts` y en el contenido.
 
 Sea cual sea, la lista de nodos (botones) **funciona siempre y permite completar la actividad aunque el
 lienzo 3D falle** (sección 16).
@@ -1016,6 +1022,71 @@ lienzo 3D falle** (sección 16).
 ```
 
 **Precisión:** siempre 1.
+
+#### Variante procedural: escena 3D con línea de tiempo
+
+Con `modelo: "procedural"` la actividad **sigue siendo `exploracion-3d`** (el contexto pedagógico y la API no
+cambian). No hay GLB ni nodos: las formas son esquemáticas y las genera el código, y **lo que se explora es
+el tiempo**. El estudiante reproduce, pausa, adelanta y atrasa (deslizador continuo, botones de fase
+anterior y siguiente, velocidad, reiniciar), gira la escena con un dedo y la acerca con dos. La escena dibuja
+su **estado en cada instante `t`** (0 a 1) y solo eso: adelantar y atrasar es exacto. Cada paso es un hito de
+la línea de tiempo:
+
+| Campo de un `paso` | Regla |
+|---|---|
+| `id` | Snake_case, único en la actividad (es lo que viaja en `requeridos` y en `visitados`) |
+| `t` | Número de 0 a 1. **Estrictamente creciente** de un paso al siguiente. Usa los hitos de la escena (sección 9): el texto de cada fase sale del paso más cercano a `t` |
+| `titulo` | Plano, 2 a 60 |
+| `texto` | Línea con Markdown restringido, 10 a 500: lo que se lee junto a la escena mientras esa fase está en curso |
+| `vista` | Vista de cámara con nombre **de esa escena** (sección 9); por defecto `general` |
+
+Visitar un paso es **detener la línea de tiempo en él o pasar por él** (reproduciendo o arrastrando el
+deslizador), o pulsarlo en la lista de fases, que lleva la línea hasta su hito. La actividad se completa al
+visitar los `requeridos`. Como en las demás, **la lista de fases (botones) y el texto de la fase funcionan sin
+WebGL** y bastan para completarla (sección 16). Nunca hay reproducción automática, tampoco con
+`prefers-reduced-motion`. La escala de tiempo es didáctica, no proporcional a la biología real (dilo en el
+texto si importa).
+
+```json ejemplo:actividad_exploracion_3d_procedural
+{
+  "id": "m5_bmu_3d_tiempo",
+  "tipo": "exploracion-3d",
+  "titulo": "Una BMU en 3D, a lo largo del tiempo",
+  "instrucciones": "Reproduce la línea de tiempo o muévela con el deslizador. Gira la escena con un dedo y acércala con dos. Visita las fases.",
+  "obligatoria": false,
+  "puntaje_max": 40,
+  "retroalimentacion": {
+    "correcta": "Recorriste las fases de la BMU: resorción, inversión, formación y mineralización."
+  },
+  "concepto": "Ciclo de remodelado de una BMU cortical a lo largo del tiempo",
+  "config": {
+    "modelo": "procedural",
+    "escena": "bmu_remodelado",
+    "alt": "Escena 3D de un fragmento de hueso cortical en el que una BMU excava un túnel y lo rellena con capas de osteoide.",
+    "linea_de_tiempo": {
+      "pasos": [
+        {
+          "id": "paso_quiescencia",
+          "t": 0,
+          "titulo": "Quiescencia: el hueso en reposo",
+          "texto": "Una osteona cortical en reposo, con su capilar y células de revestimiento en el conducto.",
+          "vista": "general"
+        },
+        {
+          "id": "paso_resorcion",
+          "t": 0.32,
+          "titulo": "Resorción: el cono de corte",
+          "texto": "Los osteoclastos excavan un túnel de unos 200 µm de diámetro: es el cono de corte.",
+          "vista": "perfil"
+        }
+      ]
+    },
+    "requeridos": ["paso_quiescencia", "paso_resorcion"]
+  }
+}
+```
+
+Cómo añadir otra escena procedural (código, no contenido): `docs/escena-3d-bmu.md`.
 
 ## 8. SVG multicapa
 
@@ -1118,10 +1189,69 @@ mientras no haya un modelo suyo.
 cóndilo; `z` 0 es atrás y 1 adelante (el mentón). Por ejemplo, el mentón está cerca de `{ x: 0.5, y: 0.2, z: 1 }`.
 
 **Vistas de cámara** (relativas al modelo, no a la pantalla): `frontal` (la vista por defecto),
-`posterior`, `lateral_derecha`, `lateral_izquierda`, `superior`, `inferior` y `oblicua` (tres cuartos,
-elevada; muestra mejor el volumen). `lateral_derecha` es la cámara colocada del lado **derecho del sujeto**,
+`posterior`, `lateral_derecha`, `lateral_izquierda`, `superior`, `inferior`, `oblicua` (tres cuartos,
+elevada; muestra mejor el volumen), `medial_derecha` y `medial_izquierda`. `lateral_derecha` es la cámara colocada del lado **derecho del sujeto**,
 mirando hacia el modelo (se ve la cara externa de ese lado); `lateral_izquierda`, la del lado izquierdo.
 Para estructuras que quedan detrás o al costado (el cóndilo, la rama) elige una vista lateral.
+Las estructuras de la cara **medial** (interna) de la rama, como el `foramen_mandibular` y la língula, no se ven
+desde fuera: usa `medial_derecha` o `medial_izquierda`. La cámara entra en el arco de la mandíbula (queda a 0,9 del
+nodo como máximo, por lo que ese `zoom` solo puede acercar) y mira hacia fuera la cara interna de la rama de ese
+lado. Si el nodo lleva el `ancla` calculada de una estructura, la actividad ya lo enfoca desde su vista recomendada
+y no hace falta fijar `camara`.
+
+**Escenas procedurales** (`modelo: "procedural"`, sección 7.6): no hay GLB ni catálogo de nodos, sino
+una escena registrada por nombre en `apps/web/src/scenes/procedural/registro.ts` y en `nodos3d.ts`
+(`ESCENAS_PROCEDURALES`, `VISTAS_ESCENA_PROCEDURAL`). Hoy hay catorce; cada una tiene su nota de diseño en
+`docs/escena-3d-<nombre>.md` con sus vistas, hitos y límites. Las cuatro primeras:
+
+- **`bmu_remodelado`**: ciclo de remodelado de una unidad multicelular básica (BMU) en hueso cortical, con
+  el hueso cortado en cuña para ver el túnel. Avanza de derecha a izquierda, como en el dibujo
+  `m5_bmu_cortical_longitudinal.svg`. Vistas: `general` (tres cuartos, la vista por defecto), `perfil` (el
+  túnel en corte longitudinal), `extremo` (la tapa abierta con las capas concéntricas en corte transversal) y
+  `detalle` (cerca de la pared del túnel). **Hitos** de sus siete fases, que el contenido debe usar como `t`
+  de sus pasos (la fase en curso es la del hito más cercano): `quiescencia` 0, `activacion` 0,14,
+  `resorcion` 0,32, `inversion` 0,5, `formacion` 0,66, `mineralizacion` 0,84 y `reposo` 1. Colores: los de
+  los SVG del proyecto (hueso `#d98aa2`, osteoide `#f4d3dd`, osteoblasto `#8b7bdc`, osteocito `#6f93e2`,
+  núcleos `#3b2f86`).
+- **`hueso_largo_a_osteona`**: un viaje por escalas, del órgano a la célula. Aquí `t` **no es tiempo sino
+  profundidad**: el deslizador baja del hueso largo entero (diáfisis, epífisis con cartílago articular y
+  periostio), al hueso abierto (cortical, médula y trabéculas), a un corte transversal de la diáfisis (periostio,
+  cortical con osteonas, endostio y médula; las capas se separan y se vuelven a juntar), a una osteona ampliada
+  y cortada en escalera (laminillas concéntricas con fibras de colágeno que alternan de dirección, conducto de
+  Havers con capilar y vénula, línea cementante, conducto de Volkmann) y a sus osteocitos con lagunas y
+  canalículos. Vistas: `general` (por defecto), `interior`, `corte`, `capas`, `osteona` y `detalle`. **Hitos** de
+  sus siete fases: `entero` 0, `abierto` 0,2, `corte` 0,42, `capas` 0,58, `osteonas` 0,74, `osteona` 0,88 y
+  `osteocitos` 1. Los tamaños son esquemáticos y no están a escala entre una pantalla y otra. Nota de diseño:
+  `docs/escena-3d-hueso.md`. Está en el módulo 1 como actividad opcional `m1_4_viaje_3d` (30 puntos).
+- **`matriz_osea`**: la composición de la matriz por escalas (`t` es profundidad): un fragmento de hueso laminar,
+  sus fibras de colágeno, una fibrilla con moléculas escalonadas y huecos, los cristales de hidroxiapatita que
+  crecen en ellos, las proteínas no colágenas y, al final, la respuesta a la tracción y a la compresión. Vistas:
+  `general`, `fibra`, `fibrilla`, `detalle` y `carga`. **Hitos**: `fragmento` 0, `fibras` 0,17, `fibrilla` 0,34,
+  `huecos` 0,5, `mineral` 0,64, `proteinas` 0,78 y `carga` 1. Nota: `docs/escena-3d-matriz.md`. Actividad opcional
+  `m1_3_matriz_3d` (30 puntos).
+- **`hueso_alveolar`**: un segmento del cuerpo mandibular con un diente, cortado en sentido vestibulolingual por la
+  raíz: tablas corticales, hueso trabecular, hueso alveolar propio (lámina cribiforme), ligamento periodontal y
+  conducto mandibular. Vistas: `general`, `corte`, `raiz` y `conducto`. **Hitos**: `cuerpo` 0, `corte` 0,18,
+  `tablas` 0,34, `trabecular` 0,5, `alveolar_propio` 0,66, `ligamento` 0,82 y `conducto` 1. Nota:
+  `docs/escena-3d-alveolar.md`. Actividad opcional `m1_5_alveolar_3d` (30 puntos).
+
+Las diez restantes (2026-09-26), todas con siete hitos (ocho el alvéolo) y una actividad opcional de 30 puntos:
+
+| Escena | Vistas | Dónde se usa | Nota |
+|---|---|---|---|
+| `osteoblasto_celula` | general, celula, organulos, matriz, detalle | `m2_2_osteoblasto_3d` | `escena-3d-osteoblasto.md` |
+| `osteocito_red` | general, laguna, canaliculos, red, superficie | `m2_3_osteocito_3d` | `escena-3d-osteocito.md` |
+| `osteoclasto_resorcion` | general, celula, borde, laguna | `m2_4_osteoclasto_3d` | `escena-3d-osteoclasto.md` |
+| `mandibula_fetal` | general, lateral, corte, detalle | `m2_1_mandibula_fetal_3d` | `escena-3d-mandibula-fetal.md` |
+| `dos_rutas_osificacion` | general, intramembranosa, endocondral, detalle | `m3_1_dos_rutas_3d` | `escena-3d-dos-rutas.md` |
+| `vesicula_matriz` | general, vesicula, interior, cristal | `m4_3_vesicula_3d` | `escena-3d-vesicula.md` |
+| `movimiento_ortodontico` | general, corte, compresion, tension | `m5_5_ortodoncia_3d` | `escena-3d-ortodoncia.md` |
+| `reparacion_fractura` | general, corte, callo, detalle | `m5_6_fractura_3d` | `escena-3d-fractura.md` |
+| `hueso_trabecular_tiempo` | general, detalle, corte, comparacion | `m6_3_trabecular_3d` | `escena-3d-trabecular.md` |
+| `alveolo_postextraccion` | general, corte, alveolo, reborde | `m6_4_alveolo_3d` | `escena-3d-alveolo.md` |
+
+Una escena puede reutilizarse en otro módulo con otra actividad y otros textos (`hueso_alveolar` en `m2_5_alveolar_3d`,
+`matriz_osea` en `m4_4_matriz_3d`): los `t` de los pasos siguen siendo los hitos de la escena.
 
 ## 10. Accesibilidad del contenido
 

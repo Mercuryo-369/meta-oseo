@@ -7,6 +7,7 @@
  * escrito a mano no pasa por el esquema en las pruebas), así que se sanea aquí.
  */
 import type { JsonObjeto } from '@/activities/types';
+import { MODELO_PROCEDURAL, estructuraDeNodo } from '@/content/nodos3d';
 import type { ConfigExploracion3d } from '@/content/schema';
 import type { NodoEscena } from '@/scenes/nodosEscena';
 
@@ -17,10 +18,51 @@ export interface NodoExploracion extends NodoEscena {
   requerido: boolean;
 }
 
+/** Un paso de la línea de tiempo de una escena procedural, listo para mostrar. */
+export interface PasoExploracion {
+  id: string;
+  /** Instante del hito, de 0 a 1. */
+  t: number;
+  titulo: string;
+  /** Markdown restringido de una línea. */
+  texto: string;
+  /** Vista de cámara con nombre de la escena procedural. */
+  vista: string;
+}
+
 export interface Exploracion {
   nodos: NodoExploracion[];
   /** Ids requeridos, en el orden del contenido y solo los que existen. */
   requeridos: string[];
+  /**
+   * Solo en una escena procedural: sus pasos ordenados por `t` (sin ids repetidos). Cada paso es también
+   * un nodo de `nodos` (la lista de fases que sirve de alternativa sin WebGL).
+   */
+  pasos: PasoExploracion[];
+}
+
+/** ¿Es una escena procedural (con línea de tiempo) en lugar de un modelo con nodos? */
+export function esExploracionProcedural(config: Pick<ConfigExploracion3d, 'modelo'>): boolean {
+  return config.modelo === MODELO_PROCEDURAL;
+}
+
+/** Pasos de la línea de tiempo, ordenados por `t` y sin ids repetidos (gana el primero). */
+export function pasosDeConfig(config: ConfigExploracion3d): PasoExploracion[] {
+  const vistos = new Set<string>();
+  return (config.linea_de_tiempo?.pasos ?? [])
+    .filter((paso) => {
+      if (vistos.has(paso.id)) return false;
+      vistos.add(paso.id);
+      return true;
+    })
+    .map((paso) => ({
+      id: paso.id,
+      t: paso.t,
+      titulo: paso.titulo,
+      texto: paso.texto,
+      vista: paso.vista,
+    }))
+    .sort((a, b) => a.t - b.t);
 }
 
 /**
@@ -29,8 +71,13 @@ export interface Exploracion {
  * completar nunca o se completaría sin haber explorado nada).
  */
 export function prepararExploracion(config: ConfigExploracion3d): Exploracion {
+  const pasos = esExploracionProcedural(config) ? pasosDeConfig(config) : [];
+  // En una escena procedural las partes son los pasos de la línea de tiempo.
+  const fuente: ConfigExploracion3d['nodos'] = esExploracionProcedural(config)
+    ? pasos.map((paso) => ({ id: paso.id, etiqueta: paso.titulo, descripcion: paso.texto }))
+    : config.nodos;
   const vistos = new Set<string>();
-  const unicos = config.nodos.filter((nodo) => {
+  const unicos = fuente.filter((nodo) => {
     if (vistos.has(nodo.id)) return false;
     vistos.add(nodo.id);
     return true;
@@ -40,12 +87,20 @@ export function prepararExploracion(config: ConfigExploracion3d): Exploracion {
   const marcados = new Set(requeridos);
   return {
     requeridos,
+    pasos,
     nodos: unicos.map((nodo) => ({
       id: nodo.id,
       etiqueta: nodo.etiqueta,
       descripcion: nodo.descripcion,
       ancla: nodo.ancla,
-      vista: nodo.camara?.vista ?? 'frontal',
+      // Sin cámara en el contenido, un nodo de la mandíbula con el ancla calculada usa la vista desde la que
+      // se ve su estructura (nodos3d.ts); el resto, la frontal.
+      vista:
+        nodo.camara?.vista ??
+        (config.modelo === 'mandibula'
+          ? estructuraDeNodo(nodo.id, nodo.ancla)?.vista
+          : undefined) ??
+        'frontal',
       zoom: nodo.camara?.zoom ?? 1,
       requerido: marcados.has(nodo.id),
     })),

@@ -203,6 +203,43 @@ describe('prefijarIdsReferenciados', () => {
   });
 });
 
+describe('ids únicos por actividad', () => {
+  const dibujo = svg(`<defs><linearGradient id="g"/></defs>
+    <g id="fondo_escena" aria-labelledby="t"><title id="t">Escena</title><rect fill="url(#g)" width="4" height="4"/></g>
+    <g id="capa_x"><rect width="2" height="2"/></g>`);
+  const opciones = { idsCapas: ['capa_x', 'fondo_escena'], viewBox: '0 0 800 600' };
+
+  it('prefija TODOS los ids (también los que nadie referencia) y reescribe aria-labelledby', () => {
+    const r = prepararSvg(dibujo, { ...opciones, prefijoId: 'm5_a__' });
+    const ids = Array.from(r.raiz.querySelectorAll('[id]'), (e) => e.id).sort();
+    expect(ids).toEqual(['m5_a__capa_x', 'm5_a__fondo_escena', 'm5_a__g', 'm5_a__t']);
+    expect(r.raiz.querySelector('g')!.getAttribute('aria-labelledby')).toBe('m5_a__t');
+  });
+
+  it('las capas se siguen buscando por su id original: el mapa y data-capa lo conservan', () => {
+    const r = prepararSvg(dibujo, { ...opciones, prefijoId: 'm5_a__' });
+    expect([...r.capas.keys()].sort()).toEqual(['capa_x', 'fondo_escena']);
+    expect(r.capas.get('capa_x')!.id).toBe('m5_a__capa_x');
+    expect(r.raiz.querySelector('[data-capa="capa_x"]')).toBe(r.capas.get('capa_x'));
+  });
+
+  it('dos dibujos iguales de actividades distintas, en el mismo documento, no repiten ids', () => {
+    const a = prepararSvg(dibujo, { ...opciones, prefijoId: prefijoDeIds('m5_a') });
+    const b = prepararSvg(dibujo, { ...opciones, prefijoId: prefijoDeIds('m5_b') });
+    const contenedor = document.createElement('div');
+    contenedor.append(a.raiz, b.raiz);
+    const ids = Array.from(contenedor.querySelectorAll('[id]'), (e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).toHaveLength(8);
+  });
+
+  it('las zonas táctiles clonadas no arrastran ids repetidos', () => {
+    const r = prepararSvg(dibujo, { ...opciones, prefijoId: 'm5_a__' });
+    const ids = Array.from(r.raiz.querySelectorAll('[id]'), (e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
 describe('prepararSvg', () => {
   it('con el SVG de muestra: viewBox, capas, atributos de accesibilidad y sin medidas fijas', () => {
     const r = prepararSvg(

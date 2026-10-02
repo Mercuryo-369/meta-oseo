@@ -8,6 +8,11 @@ import { auditarContenidoModulo, advertenciasDeModulo } from '@/content/auditori
 import { contarActividadesPorTipo, listarActividades, recorrerCadenas } from '@/content/consultas';
 import { PUNTAJE_MODULO_MAX, PUNTAJE_MODULO_MIN } from '@/content/constantes';
 import { puntajeMaximoModulo } from '@/content/scoring';
+import { HITOS_ALVEOLAR } from '@/scenes/procedural/alveolar/estado';
+import { HITOS_MANDIBULA_FETAL } from '@/scenes/procedural/mandibula_fetal/estado';
+import { HITOS_OSTEOBLASTO } from '@/scenes/procedural/osteoblasto/estado';
+import { HITOS_OSTEOCITO } from '@/scenes/procedural/osteocito/estado';
+import { HITOS_OSTEOCLASTO } from '@/scenes/procedural/osteoclasto/estado';
 import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type { ModuloContenido } from '@/content/schema';
 import type { DependenciasAuditoria } from '@/content/svg';
@@ -123,6 +128,52 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
 
 const { secciones: seccionesGuion, actividades: actividadesGuion } = leerGuion();
 
+/**
+ * Exploraciones 3D procedurales con línea de tiempo añadidas fuera del guion (una por célula y una por la mandíbula).
+ * Son opcionales y no cuentan en las cifras de la ficha, salvo en el total de puntos del módulo.
+ * Para añadir otra escena basta con una fila más: las pruebas de abajo se derivan de esta lista.
+ */
+const EXTRAS_3D = [
+  {
+    id: 'm2_1_mandibula_fetal_3d',
+    seccion: 'm2_1_origen_craneofacial',
+    escena: 'mandibula_fetal',
+    hitos: HITOS_MANDIBULA_FETAL,
+    puntaje: 30,
+  },
+  {
+    id: 'm2_2_osteoblasto_3d',
+    seccion: 'm2_2_linea_osteoblastica',
+    escena: 'osteoblasto_celula',
+    hitos: HITOS_OSTEOBLASTO,
+    puntaje: 30,
+  },
+  {
+    id: 'm2_3_osteocito_3d',
+    seccion: 'm2_3_osteocito',
+    escena: 'osteocito_red',
+    hitos: HITOS_OSTEOCITO,
+    puntaje: 30,
+  },
+  {
+    id: 'm2_4_osteoclasto_3d',
+    seccion: 'm2_4_osteoclasto',
+    escena: 'osteoclasto_resorcion',
+    hitos: HITOS_OSTEOCLASTO,
+    puntaje: 30,
+  },
+  {
+    id: 'm2_5_alveolar_3d',
+    seccion: 'm2_5_ligamento_periodontal',
+    escena: 'hueso_alveolar',
+    hitos: HITOS_ALVEOLAR,
+    puntaje: 30,
+  },
+] as const;
+const ID_EXTRAS_3D = new Set<string>(EXTRAS_3D.map((e) => e.id));
+/** Puntos que las exploraciones extra suman al total del módulo. */
+const PUNTAJE_EXTRAS_3D = EXTRAS_3D.reduce((s, e) => s + e.puntaje, 0);
+
 /** Cifras de la ficha del guion (verificadas a mano al escribir esta prueba). */
 const FICHA = {
   secciones: 5,
@@ -191,7 +242,10 @@ describe('módulo 2: esquema, carpeta y recursos', () => {
  * ----------------------------------------------------------------------------------------- */
 
 describe('módulo 2: cobertura del guion', () => {
-  const ubicadas = listarActividades(modulo);
+  /** Todas las actividades del módulo, con las exploraciones 3D añadidas fuera del guion. */
+  const todas = listarActividades(modulo);
+  /** Las del guion: sin las exploraciones 3D extra. */
+  const ubicadas = todas.filter((u) => !ID_EXTRAS_3D.has(u.actividad.id));
 
   it('el guion se parseó como se espera (5 secciones y 13 actividades)', () => {
     expect(seccionesGuion).toHaveLength(FICHA.secciones);
@@ -237,23 +291,42 @@ describe('módulo 2: cobertura del guion', () => {
   });
 
   it('el puntaje total y el obligatorio coinciden con la ficha y respetan el tope del esquema', () => {
-    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total);
+    expect(puntajeMaximoModulo(modulo)).toBe(FICHA.total + PUNTAJE_EXTRAS_3D);
     expect(puntajeMaximoModulo(modulo, { soloObligatorias: true })).toBe(FICHA.obligatorio);
     expect(actividadesGuion.reduce((s, a) => s + a.puntaje, 0)).toBe(FICHA.total);
     expect(puntajeMaximoModulo(modulo)).toBeLessThanOrEqual(PUNTAJE_MODULO_MAX);
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 13 actividades: 4 multicapa, 4 quiz, 1 relación, 2 videos, 1 arrastre y 1 exploración 3D', () => {
+  it('cuenta 13 actividades del guion (4 multicapa, 4 quiz, 1 relación, 2 videos, 1 arrastre y 1 exploración 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
       multicapa: 4,
       quiz: 4,
       'relacion-columnas': 1,
       'video-texto': 2,
       'arrastre-molecular': 1,
-      'exploracion-3d': 1,
+      'exploracion-3d': 1 + EXTRAS_3D.length,
     });
   });
+
+  it.each(EXTRAS_3D)(
+    'la exploración 3D $id es opcional, procedural y usa los hitos de su escena',
+    ({ id, seccion, escena, hitos, puntaje }) => {
+      const u = todas.find((x) => x.actividad.id === id)!;
+      expect(u, id).toBeDefined();
+      expect(u.seccion.id).toBe(seccion);
+      const a = u.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.obligatoria).toBe(false);
+      expect(a.puntaje_max).toBe(puntaje);
+      expect(a.config.modelo).toBe('procedural');
+      expect(a.config.escena).toBe(escena);
+      const pasos = a.config.linea_de_tiempo!.pasos;
+      // Los `t` del contenido son los hitos canónicos de la escena, en el orden de las fases.
+      expect(pasos.map((p) => p.t)).toEqual(Object.values(hitos));
+      expect(a.config.requeridos).toEqual(pasos.map((p) => p.id));
+    },
+  );
 
   it('los quiz conservan los ids de sus preguntas y suman 23 (10 en la evaluación final)', () => {
     let total = 0;
@@ -342,7 +415,8 @@ describe('módulo 2: cobertura del guion', () => {
   });
 
   it('cada sección respeta el tope de bloques del esquema', () => {
-    for (const s of modulo.secciones) expect(s.bloques.length, s.id).toBeLessThanOrEqual(15);
+    // El esquema admite hasta 16 bloques por sección (docs/content-schema.md).
+    for (const s of modulo.secciones) expect(s.bloques.length, s.id).toBeLessThanOrEqual(16);
   });
 });
 
@@ -478,18 +552,15 @@ describe('módulo 2: glosario', () => {
     for (const { texto } of textosVisibles()) {
       for (const m of texto.matchAll(/\]\(glosario:([a-z0-9_]+)\)/g)) usados.add(m[1]!);
     }
-    expect(usados.size).toBe(modulo.glosario.length - 4);
+    // Los pasos de las escenas 3D enlazan los cuatro términos que el texto corrido solo nombra en tablas.
+    expect(usados.size).toBe(modulo.glosario.length);
     const advertencias = advertenciasDeModulo(modulo);
     const sinEnlace = advertencias
       .filter((a) => a.includes('no está enlazado'))
       .map((a) => /"([^"]+)"/.exec(a)![1]);
-    // Aparecen solo en filas o títulos de tabla (donde el esquema no admite enlaces) o en las actividades.
-    expect(sinEnlace.sort()).toEqual([
-      'celula_osteoprogenitora',
-      'trap',
-      'union_comunicante',
-      'v_atpasa_bomba_de_protones',
-    ]);
+    // Ya no queda ningún término sin enlazar: los pasos de las escenas 3D cubren los que antes solo
+    // aparecían en tablas o actividades.
+    expect(sinEnlace).toEqual([]);
     // La única otra advertencia es el aviso de pendientes para el docente.
     expect(advertencias.filter((a) => !a.includes('no está enlazado'))).toEqual([
       expect.stringContaining('pendiente(s) de revisión'),

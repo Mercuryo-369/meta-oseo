@@ -467,7 +467,7 @@ describe('módulo 1 (integración): carga', () => {
       'bloqueada',
     ]);
     expect(anfitrion.get('[data-testid="avance-obligatorias"]').text()).toContain('0 de 14');
-    expect(anfitrion.get('[data-testid="puntaje-modulo"]').text()).toContain('440');
+    expect(anfitrion.get('[data-testid="puntaje-modulo"]').text()).toContain('530');
     expect(anfitrion.find('[data-testid="modulo-error"]').exists()).toBe(false);
   });
 
@@ -557,7 +557,7 @@ describe('módulo 1 (integración): módulo completo', () => {
       expect(anfitrion.find('[data-testid="modulo-completado"]').exists()).toBe(true),
     );
     const total = puntajeMaximoModulo(modulo);
-    expect(total).toBe(440);
+    expect(total).toBe(530);
     expect(anfitrion.get('[data-testid="puntaje-modulo"]').text()).toContain(String(total));
     expect(anfitrion.get('[data-testid="avance-obligatorias"]').text()).toContain('14 de 14');
   });
@@ -571,7 +571,7 @@ describe('módulo 1 (integración): módulo completo', () => {
     expect(posts.map((p) => p.ruta).sort()).toEqual(
       todas.map((a) => `/activities/${a.id}/result`).sort(),
     );
-    expect(posts.reduce((s, p) => s + (p.cuerpo as { puntaje: number }).puntaje, 0)).toBe(440);
+    expect(posts.reduce((s, p) => s + (p.cuerpo as { puntaje: number }).puntaje, 0)).toBe(530);
 
     await vi.waitFor(() =>
       expect(

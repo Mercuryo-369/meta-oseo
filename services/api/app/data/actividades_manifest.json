@@ -1,0 +1,1207 @@
+{
+  "version": 1,
+  "actividades": {
+    "m1_1_hueso_largo": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_1_tejido_vivo",
+      "seccion_titulo": "Un tejido vivo y dinámico",
+      "concepto": "Organización macroscópica del hueso largo"
+    },
+    "m1_1_quiz_conceptos": {
+      "modulo": 1,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_1_tejido_vivo",
+      "seccion_titulo": "Un tejido vivo y dinámico",
+      "concepto": "El hueso como tejido conjuntivo especializado, dinámico y vascularizado"
+    },
+    "m1_2_relacion_funciones": {
+      "modulo": 1,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_2_funciones",
+      "seccion_titulo": "Para qué sirve el hueso",
+      "concepto": "Funciones del hueso"
+    },
+    "m1_2_hormonas_oseas": {
+      "modulo": 1,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m1_2_funciones",
+      "seccion_titulo": "Para qué sirve el hueso",
+      "concepto": "Función endocrina del hueso"
+    },
+    "m1_2_quiz_calcio": {
+      "modulo": 1,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m1_2_funciones",
+      "seccion_titulo": "Para qué sirve el hueso",
+      "concepto": "Reservorio de calcio, médula ósea y homeostasis del calcio"
+    },
+    "m1_3_video_matriz": {
+      "modulo": 1,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": true,
+      "seccion": "m1_3_matriz",
+      "seccion_titulo": "De qué está hecho: la matriz ósea",
+      "concepto": "Composición de la matriz ósea"
+    },
+    "m1_3_matriz_3d": {
+      "modulo": 1,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m1_3_matriz",
+      "seccion_titulo": "De qué está hecho: la matriz ósea",
+      "concepto": "Composición de la matriz ósea por escalas: fibras, fibrilla de colágeno, huecos, hidroxiapatita y proteínas no colágenas"
+    },
+    "m1_3_relacion_matriz": {
+      "modulo": 1,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_3_matriz",
+      "seccion_titulo": "De qué está hecho: la matriz ósea",
+      "concepto": "Composición de la matriz ósea"
+    },
+    "m1_3_entretejido_laminar": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_3_matriz",
+      "seccion_titulo": "De qué está hecho: la matriz ósea",
+      "concepto": "Hueso laminar y entretejido"
+    },
+    "m1_3_quiz_matriz": {
+      "modulo": 1,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m1_3_matriz",
+      "seccion_titulo": "De qué está hecho: la matriz ósea",
+      "concepto": "Composición de la matriz ósea"
+    },
+    "m1_4_viaje_3d": {
+      "modulo": 1,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m1_4_organizacion",
+      "seccion_titulo": "Cómo se organiza: del corte a la osteona",
+      "concepto": "Organización del hueso por escalas: hueso largo, corte de la diáfisis, osteona y osteocitos"
+    },
+    "m1_4_corte_capas": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_4_organizacion",
+      "seccion_titulo": "Cómo se organiza: del corte a la osteona",
+      "concepto": "Hueso cortical y trabecular, periostio y endostio"
+    },
+    "m1_4_osteona": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_4_organizacion",
+      "seccion_titulo": "Cómo se organiza: del corte a la osteona",
+      "concepto": "Osteona y conductos de Havers y de Volkmann"
+    },
+    "m1_4_relacion_estructuras": {
+      "modulo": 1,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_4_organizacion",
+      "seccion_titulo": "Cómo se organiza: del corte a la osteona",
+      "concepto": "Organización microscópica del hueso"
+    },
+    "m1_4_quiz_organizacion": {
+      "modulo": 1,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m1_4_organizacion",
+      "seccion_titulo": "Cómo se organiza: del corte a la osteona",
+      "concepto": "Organización microscópica del hueso"
+    },
+    "m1_5_mandibula_3d": {
+      "modulo": 1,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Anatomía de la mandíbula"
+    },
+    "m1_5_proceso_alveolar": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Hueso alveolar propio"
+    },
+    "m1_5_alveolar_3d": {
+      "modulo": 1,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Cuerpo mandibular por dentro: tablas corticales, trabecular, hueso alveolar propio, ligamento y conducto"
+    },
+    "m1_5_wolff_casos": {
+      "modulo": 1,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Ley de Wolff"
+    },
+    "m1_5_wolff_femur": {
+      "modulo": 1,
+      "tipo": "multicapa",
+      "puntaje_max": 10,
+      "obligatoria": false,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Ley de Wolff"
+    },
+    "m1_5_evaluacion_final": {
+      "modulo": 1,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m1_5_mandibula",
+      "seccion_titulo": "La mandíbula, un hueso bajo carga",
+      "concepto": "Evaluación integradora del módulo 1"
+    },
+    "m2_video_origen_mandibula": {
+      "modulo": 2,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": true,
+      "seccion": "m2_1_origen_craneofacial",
+      "seccion_titulo": "Del ectomesénquima a la mandíbula",
+      "concepto": "Osificación mandibular"
+    },
+    "m2_1_mandibula_fetal_3d": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m2_1_origen_craneofacial",
+      "seccion_titulo": "Del ectomesénquima a la mandíbula",
+      "concepto": "Osificación intramembranosa junto al cartílago de Meckel; cartílagos secundarios después; dos mitades al nacer"
+    },
+    "m2_3d_origen_mandibula": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m2_1_origen_craneofacial",
+      "seccion_titulo": "Del ectomesénquima a la mandíbula",
+      "concepto": "Osificación mandibular"
+    },
+    "m2_quiz_origen": {
+      "modulo": 2,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m2_1_origen_craneofacial",
+      "seccion_titulo": "Del ectomesénquima a la mandíbula",
+      "concepto": "Osificación mandibular"
+    },
+    "m2_video_linaje_osteoblastico": {
+      "modulo": 2,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": true,
+      "seccion": "m2_2_linea_osteoblastica",
+      "seccion_titulo": "De célula madre a osteoblasto",
+      "concepto": "Linaje osteoblástico"
+    },
+    "m2_2_osteoblasto_3d": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m2_2_linea_osteoblastica",
+      "seccion_titulo": "De célula madre a osteoblasto",
+      "concepto": "Osteoblasto activo: diferenciación por RUNX2 y osterix, orgánulos, osteoide, mineralización y tres destinos"
+    },
+    "m2_multicapa_osteoblasto": {
+      "modulo": 2,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m2_2_linea_osteoblastica",
+      "seccion_titulo": "De célula madre a osteoblasto",
+      "concepto": "Osteoblasto funciones"
+    },
+    "m2_multicapa_osteocito": {
+      "modulo": 2,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m2_3_osteocito",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Osteocito red"
+    },
+    "m2_3_osteocito_3d": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m2_3_osteocito",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Osteocito: red lacuno-canalicular, flujo del líquido con la carga, esclerostina y señal a la superficie"
+    },
+    "m2_quiz_osteocito": {
+      "modulo": 2,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m2_3_osteocito",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Osteocito red"
+    },
+    "m2_multicapa_osteoclasto": {
+      "modulo": 2,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m2_4_osteoclasto",
+      "seccion_titulo": "El osteoclasto, célula que reabsorbe",
+      "concepto": "Resorción osteoclastica"
+    },
+    "m2_4_osteoclasto_3d": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m2_4_osteoclasto",
+      "seccion_titulo": "El osteoclasto, célula que reabsorbe",
+      "concepto": "Osteoclasto: fusión de precursores, zona de sellado, borde festoneado, laguna de Howship y apoptosis"
+    },
+    "m2_arrastre_senales_linajes": {
+      "modulo": 2,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m2_4_osteoclasto",
+      "seccion_titulo": "El osteoclasto, célula que reabsorbe",
+      "concepto": "Señales osteoclastogenicas"
+    },
+    "m2_quiz_linajes": {
+      "modulo": 2,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m2_4_osteoclasto",
+      "seccion_titulo": "El osteoclasto, célula que reabsorbe",
+      "concepto": "Linaje osteoclástico"
+    },
+    "m2_multicapa_ligamento_periodontal": {
+      "modulo": 2,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m2_5_ligamento_periodontal",
+      "seccion_titulo": "El ligamento periodontal y el hueso alveolar",
+      "concepto": "Ligamento periodontal"
+    },
+    "m2_5_alveolar_3d": {
+      "modulo": 2,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m2_5_ligamento_periodontal",
+      "seccion_titulo": "El ligamento periodontal y el hueso alveolar",
+      "concepto": "Ligamento periodontal y hueso alveolar propio en su contexto: tablas, trabecular y conducto"
+    },
+    "m2_relacion_celulas_funciones": {
+      "modulo": 2,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m2_5_ligamento_periodontal",
+      "seccion_titulo": "El ligamento periodontal y el hueso alveolar",
+      "concepto": "Funciones células óseas"
+    },
+    "m2_evaluacion_final": {
+      "modulo": 2,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m2_5_ligamento_periodontal",
+      "seccion_titulo": "El ligamento periodontal y el hueso alveolar",
+      "concepto": "Evaluación módulo 2"
+    },
+    "m3_multicapa_rutas": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m3_1_dos_rutas",
+      "seccion_titulo": "Dos rutas para construir hueso",
+      "concepto": "Osificación intramembranosa y endocondral"
+    },
+    "m3_1_dos_rutas_3d": {
+      "modulo": 3,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m3_1_dos_rutas",
+      "seccion_titulo": "Dos rutas para construir hueso",
+      "concepto": "Osificación intramembranosa y endocondral en paralelo: del mesénquima al hueso laminar"
+    },
+    "m3_quiz_rutas": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_1_dos_rutas",
+      "seccion_titulo": "Dos rutas para construir hueso",
+      "concepto": "Diferencias entre osificación intramembranosa y endocondral"
+    },
+    "m3_multicapa_mandibula_fetal": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m3_2_mandibula_historias",
+      "seccion_titulo": "La mandíbula, un hueso con dos historias",
+      "concepto": "Origen intramembranoso y endocondral de la mandíbula"
+    },
+    "m3_columnas_mandibula_origen": {
+      "modulo": 3,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_2_mandibula_historias",
+      "seccion_titulo": "La mandíbula, un hueso con dos historias",
+      "concepto": "Regiones mandibulares y tipo de osificación"
+    },
+    "m3_quiz_mandibula": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_2_mandibula_historias",
+      "seccion_titulo": "La mandíbula, un hueso con dos historias",
+      "concepto": "Desarrollo de la mandíbula"
+    },
+    "m3_quiz_condensacion": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_3_condensacion_laminar",
+      "seccion_titulo": "De la condensación al hueso laminar",
+      "concepto": "Osificación intramembranosa y programa genético del osteoblasto"
+    },
+    "m3_multicapa_osteoide": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m3_3_condensacion_laminar",
+      "seccion_titulo": "De la condensación al hueso laminar",
+      "concepto": "Osteoide, hueso inmaduro y hueso laminar"
+    },
+    "m3_arrastre_bmp": {
+      "modulo": 3,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_3_condensacion_laminar",
+      "seccion_titulo": "De la condensación al hueso laminar",
+      "concepto": "Vía BMP, Smad, RUNX2 y osterix"
+    },
+    "m3_video_mecanotransduccion": {
+      "modulo": 3,
+      "tipo": "video-texto",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m3_4_osteocito_sensor",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Mecanotransducción: del flujo de líquido a la señal celular"
+    },
+    "m3_multicapa_osteocito": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_4_osteocito_sensor",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Anatomía funcional del sistema lacuno-canalicular"
+    },
+    "m3_quiz_osteocito": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_4_osteocito_sensor",
+      "seccion_titulo": "El osteocito, sensor del hueso",
+      "concepto": "Detección de la carga por el osteocito"
+    },
+    "m3_multicapa_sensores": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m3_5_sensores_mensajeros",
+      "seccion_titulo": "Sensores y mensajeros",
+      "concepto": "Sensores y mensajeros de la mecanotransducción"
+    },
+    "m3_columnas_estimulo_respuesta": {
+      "modulo": 3,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m3_5_sensores_mensajeros",
+      "seccion_titulo": "Sensores y mensajeros",
+      "concepto": "Estímulos mecánicos y respuestas del osteocito"
+    },
+    "m3_quiz_cascada": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m3_5_sensores_mensajeros",
+      "seccion_titulo": "Sensores y mensajeros",
+      "concepto": "Cascada de mecanotransducción del osteocito"
+    },
+    "m3_arrastre_wnt": {
+      "modulo": 3,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 50,
+      "obligatoria": true,
+      "seccion": "m3_6_wnt_esclerostina_pth",
+      "seccion_titulo": "Wnt, esclerostina y PTH",
+      "concepto": "Vía Wnt/β-catenina, esclerostina y PTH"
+    },
+    "m3_columnas_sost_condiciones": {
+      "modulo": 3,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m3_6_wnt_esclerostina_pth",
+      "seccion_titulo": "Wnt, esclerostina y PTH",
+      "concepto": "Regulación de SOST y de la vía Wnt"
+    },
+    "m3_quiz_wnt_pth": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m3_6_wnt_esclerostina_pth",
+      "seccion_titulo": "Wnt, esclerostina y PTH",
+      "concepto": "Vía Wnt, esclerostina y PTH"
+    },
+    "m3_multicapa_mecanostato": {
+      "modulo": 3,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m3_7_mecanostato_mandibula",
+      "seccion_titulo": "El mecanostato y la carga en la mandíbula",
+      "concepto": "Mecanostato de Frost: ventanas y umbrales"
+    },
+    "m3_exploracion_mandibula": {
+      "modulo": 3,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m3_7_mecanostato_mandibula",
+      "seccion_titulo": "El mecanostato y la carga en la mandíbula",
+      "concepto": "Zonas de carga de la mandíbula y adaptación ósea"
+    },
+    "m3_quiz_casos_carga": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m3_7_mecanostato_mandibula",
+      "seccion_titulo": "El mecanostato y la carga en la mandíbula",
+      "concepto": "Aplicación clínica del mecanostato"
+    },
+    "m3_evaluacion_final": {
+      "modulo": 3,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m3_8_evaluacion_final",
+      "seccion_titulo": "Cierre y evaluación final",
+      "concepto": "Integración del módulo 3: formación ósea y mecanotransducción"
+    },
+    "m4_composicion_multicapa": {
+      "modulo": 4,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m4_1_osteoide",
+      "seccion_titulo": "Del osteoide al hueso mineralizado",
+      "concepto": "Composición de la matriz ósea"
+    },
+    "m4_1_quiz_osteoide": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m4_1_osteoide",
+      "seccion_titulo": "Del osteoide al hueso mineralizado",
+      "concepto": "Osteoide y composición de la matriz"
+    },
+    "m4_fibrilla_multicapa": {
+      "modulo": 4,
+      "tipo": "multicapa",
+      "puntaje_max": 25,
+      "obligatoria": true,
+      "seccion": "m4_2_colageno_i",
+      "seccion_titulo": "Colágeno tipo I, la plantilla del mineral",
+      "concepto": "Estructura de la fibrilla de colágeno I"
+    },
+    "m4_2_quiz_colageno": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m4_2_colageno_i",
+      "seccion_titulo": "Colágeno tipo I, la plantilla del mineral",
+      "concepto": "Ensamblaje del colágeno tipo I"
+    },
+    "m4_video_vesiculas_nucleacion": {
+      "modulo": 4,
+      "tipo": "video-texto",
+      "puntaje_max": 15,
+      "obligatoria": true,
+      "seccion": "m4_3_vesiculas_ppi",
+      "seccion_titulo": "Vesículas de matriz y pirofosfato, encender y frenar el mineral",
+      "concepto": "Vesículas de matriz y nucleación"
+    },
+    "m4_3_vesicula_3d": {
+      "modulo": 4,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m4_3_vesiculas_ppi",
+      "seccion_titulo": "Vesículas de matriz y pirofosfato, encender y frenar el mineral",
+      "concepto": "Vesículas de matriz: gemación, entrada de calcio y fosfato, nucleación, ruptura, propagación y freno del PPi"
+    },
+    "m4_arrastre_mineralizacion": {
+      "modulo": 4,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m4_3_vesiculas_ppi",
+      "seccion_titulo": "Vesículas de matriz y pirofosfato, encender y frenar el mineral",
+      "concepto": "Calcio, fosfato, fosfatasa alcalina y pirofosfato en la mineralización"
+    },
+    "m4_3_quiz_vesiculas": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": false,
+      "seccion": "m4_3_vesiculas_ppi",
+      "seccion_titulo": "Vesículas de matriz y pirofosfato, encender y frenar el mineral",
+      "concepto": "Vesículas de matriz, TNAP, PHOSPHO1 y pirofosfato"
+    },
+    "m4_fibrilla_mineralizada_multicapa": {
+      "modulo": 4,
+      "tipo": "multicapa",
+      "puntaje_max": 25,
+      "obligatoria": true,
+      "seccion": "m4_4_hidroxiapatita",
+      "seccion_titulo": "Hidroxiapatita, del cristal a la fibrilla",
+      "concepto": "Mineral intrafibrilar y extrafibrilar"
+    },
+    "m4_4_matriz_3d": {
+      "modulo": 4,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m4_4_hidroxiapatita",
+      "seccion_titulo": "Hidroxiapatita, del cristal a la fibrilla",
+      "concepto": "Mineral intrafibrilar y extrafibrilar en la fibrilla de colágeno, y su efecto mecánico"
+    },
+    "m4_orden_mineralizacion": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m4_4_hidroxiapatita",
+      "seccion_titulo": "Hidroxiapatita, del cristal a la fibrilla",
+      "concepto": "Secuencia de la mineralización"
+    },
+    "m4_4_quiz_hidroxiapatita": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m4_4_hidroxiapatita",
+      "seccion_titulo": "Hidroxiapatita, del cristal a la fibrilla",
+      "concepto": "Hidroxiapatita y su ubicación en la fibrilla"
+    },
+    "m4_relacion_ncp": {
+      "modulo": 4,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m4_5_proteinas_no_colagenas",
+      "seccion_titulo": "Proteínas no colágenas, los reguladores del cristal",
+      "concepto": "Funciones de las proteínas no colágenas"
+    },
+    "m4_5_quiz_ncp": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m4_5_proteinas_no_colagenas",
+      "seccion_titulo": "Proteínas no colágenas, los reguladores del cristal",
+      "concepto": "Proteínas no colágenas: vitamina K, inhibición y DMP1"
+    },
+    "m4_multicapa_frente": {
+      "modulo": 4,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m4_6_frente_y_fases",
+      "seccion_titulo": "Frente de mineralización, fases y marcadores de formación",
+      "concepto": "Frente de mineralización"
+    },
+    "m4_6_quiz_frente": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m4_6_frente_y_fases",
+      "seccion_titulo": "Frente de mineralización, fases y marcadores de formación",
+      "concepto": "Frente de mineralización, fases y marcadores de formación"
+    },
+    "m4_multicapa_homeostasis": {
+      "modulo": 4,
+      "tipo": "multicapa",
+      "puntaje_max": 25,
+      "obligatoria": true,
+      "seccion": "m4_7_homeostasis_ca_pi",
+      "seccion_titulo": "Calcio y fosfato, quién los suministra y quién los regula",
+      "concepto": "Órganos y hormonas de la homeostasis del calcio y del fosfato"
+    },
+    "m4_relacion_hormonas": {
+      "modulo": 4,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m4_7_homeostasis_ca_pi",
+      "seccion_titulo": "Calcio y fosfato, quién los suministra y quién los regula",
+      "concepto": "Hormonas de la homeostasis del calcio y del fosfato"
+    },
+    "m4_7_quiz_vitd": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m4_7_homeostasis_ca_pi",
+      "seccion_titulo": "Calcio y fosfato, quién los suministra y quién los regula",
+      "concepto": "Deficiencia de vitamina D y respuesta de la PTH"
+    },
+    "m4_relacion_patologias": {
+      "modulo": 4,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m4_8_patologias_mandibula",
+      "seccion_titulo": "Cuando la mineralización falla, patologías y mandíbula",
+      "concepto": "Patologías del defecto de mineralización y de la matriz"
+    },
+    "m4_exploracion_mandibula": {
+      "modulo": 4,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m4_8_patologias_mandibula",
+      "seccion_titulo": "Cuando la mineralización falla, patologías y mandíbula",
+      "concepto": "Mineralización y recambio en las regiones de la mandíbula"
+    },
+    "m4_evaluacion_final": {
+      "modulo": 4,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m4_8_patologias_mandibula",
+      "seccion_titulo": "Cuando la mineralización falla, patologías y mandíbula",
+      "concepto": "Integración del módulo 4: mineralización del tejido óseo"
+    },
+    "m5_bmu_video": {
+      "modulo": 5,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": false,
+      "seccion": "m5_1_bmu_ciclo",
+      "seccion_titulo": "La BMU y el ciclo de remodelado",
+      "concepto": "Estructura de la BMU cortical: cono de corte, zona de inversión y cono de cierre"
+    },
+    "m5_bmu_3d_tiempo": {
+      "modulo": 5,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 40,
+      "obligatoria": false,
+      "seccion": "m5_1_bmu_ciclo",
+      "seccion_titulo": "La BMU y el ciclo de remodelado",
+      "concepto": "Ciclo de remodelado de una BMU cortical a lo largo del tiempo"
+    },
+    "m5_ciclo_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m5_1_bmu_ciclo",
+      "seccion_titulo": "La BMU y el ciclo de remodelado",
+      "concepto": "Fases del ciclo de remodelado en una BMU"
+    },
+    "m5_ciclo_ordenar": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_1_bmu_ciclo",
+      "seccion_titulo": "La BMU y el ciclo de remodelado",
+      "concepto": "Secuencia del ciclo de remodelado"
+    },
+    "m5_bmu_columnas": {
+      "modulo": 5,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_1_bmu_ciclo",
+      "seccion_titulo": "La BMU y el ciclo de remodelado",
+      "concepto": "Células y estructuras de la BMU y su función"
+    },
+    "m5_osteoclastogenesis_video": {
+      "modulo": 5,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": false,
+      "seccion": "m5_2_eje_rankl_opg",
+      "seccion_titulo": "El eje RANK, RANKL y OPG, y el M-CSF",
+      "concepto": "Osteoclastogénesis: M-CSF, RANKL, RANK y OPG"
+    },
+    "m5_arrastre_rankl_opg": {
+      "modulo": 5,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_2_eje_rankl_opg",
+      "seccion_titulo": "El eje RANK, RANKL y OPG, y el M-CSF",
+      "concepto": "Eje M-CSF, RANKL, RANK y OPG"
+    },
+    "m5_quiz_eje_rankl": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_2_eje_rankl_opg",
+      "seccion_titulo": "El eje RANK, RANKL y OPG, y el M-CSF",
+      "concepto": "Origen del osteoclasto y control por RANKL, RANK, OPG y M-CSF"
+    },
+    "m5_acoplamiento_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m5_3_acoplamiento_esclerostina",
+      "seccion_titulo": "Acoplamiento y esclerostina",
+      "concepto": "Acoplamiento entre resorción y formación; esclerostina y vía Wnt"
+    },
+    "m5_arrastre_acoplamiento": {
+      "modulo": 5,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_3_acoplamiento_esclerostina",
+      "seccion_titulo": "Acoplamiento y esclerostina",
+      "concepto": "Señales de acoplamiento (TGF-β1, IGF-1), vía Wnt y esclerostina"
+    },
+    "m5_quiz_acoplamiento": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_3_acoplamiento_esclerostina",
+      "seccion_titulo": "Acoplamiento y esclerostina",
+      "concepto": "Acoplamiento y regulación de la formación por esclerostina"
+    },
+    "m5_hormonas_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m5_4_hormonas_remodelado",
+      "seccion_titulo": "Hormonas que regulan el remodelado",
+      "concepto": "Regulación hormonal de la calcemia y del remodelado"
+    },
+    "m5_relacion_hormonas": {
+      "modulo": 5,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_4_hormonas_remodelado",
+      "seccion_titulo": "Hormonas que regulan el remodelado",
+      "concepto": "Efecto de PTH, estrógenos, calcitonina, vitamina D y glucocorticoides sobre el hueso"
+    },
+    "m5_quiz_hormonas": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_4_hormonas_remodelado",
+      "seccion_titulo": "Hormonas que regulan el remodelado",
+      "concepto": "Regulación hormonal del remodelado óseo"
+    },
+    "m5_alveolar_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m5_5_alveolar_ortodoncia",
+      "seccion_titulo": "Hueso cortical, trabecular y alveolar: el movimiento ortodóntico",
+      "concepto": "Tejidos de soporte dentario: hueso alveolar propio, cortical, esponjoso y basal"
+    },
+    "m5_explora_mandibula_ortodoncia": {
+      "modulo": 5,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_5_alveolar_ortodoncia",
+      "seccion_titulo": "Hueso cortical, trabecular y alveolar: el movimiento ortodóntico",
+      "concepto": "Anatomía del hueso alveolar y zonas de tensión y compresión en ortodoncia"
+    },
+    "m5_ortodoncia_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_5_alveolar_ortodoncia",
+      "seccion_titulo": "Hueso cortical, trabecular y alveolar: el movimiento ortodóntico",
+      "concepto": "Respuesta del ligamento periodontal y del hueso alveolar al movimiento ortodóntico"
+    },
+    "m5_5_ortodoncia_3d": {
+      "modulo": 5,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m5_5_alveolar_ortodoncia",
+      "seccion_titulo": "Hueso cortical, trabecular y alveolar: el movimiento ortodóntico",
+      "concepto": "Movimiento ortodóntico: compresión y resorción de un lado, tensión y aposición del otro; el alvéolo migra con el diente"
+    },
+    "m5_quiz_ortodoncia": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_5_alveolar_ortodoncia",
+      "seccion_titulo": "Hueso cortical, trabecular y alveolar: el movimiento ortodóntico",
+      "concepto": "Recambio cortical y trabecular; remodelado alveolar en ortodoncia"
+    },
+    "m5_reparacion_fractura_video": {
+      "modulo": 5,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": false,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Fases de la reparación de una fractura"
+    },
+    "m5_6_fractura_3d": {
+      "modulo": 5,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Cicatrización secundaria de una fractura: hematoma, inflamación, callo blando, callo duro y remodelado"
+    },
+    "m5_ordenar_fractura": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Secuencia de la reparación de una fractura"
+    },
+    "m5_alveolo_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Fases de la cicatrización del alvéolo postextracción"
+    },
+    "m5_ordenar_alveolo": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Secuencia de la cicatrización del alvéolo postextracción"
+    },
+    "m5_quiz_reparacion": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_6_reparacion_fractura_alveolo",
+      "seccion_titulo": "Reparación: fractura y alveolo postextracción",
+      "concepto": "Tipos de cicatrización, función del callo blando y riesgo de MRONJ"
+    },
+    "m5_equilibrio_multicapa": {
+      "modulo": 5,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_7_equilibrio_alteraciones",
+      "seccion_titulo": "Equilibrio óseo y sus alteraciones",
+      "concepto": "Osteopetrosis, enfermedad de Paget y osteoporosis: desequilibrio del remodelado"
+    },
+    "m5_relacion_farmacos": {
+      "modulo": 5,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m5_7_equilibrio_alteraciones",
+      "seccion_titulo": "Equilibrio óseo y sus alteraciones",
+      "concepto": "Fármacos que actúan sobre RANKL, el osteoclasto, la PTH, la esclerostina y los estrógenos"
+    },
+    "m5_quiz_alteraciones": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m5_7_equilibrio_alteraciones",
+      "seccion_titulo": "Equilibrio óseo y sus alteraciones",
+      "concepto": "Osteopetrosis, enfermedad de Paget y osteoporosis"
+    },
+    "m5_evaluacion_final": {
+      "modulo": 5,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m5_8_evaluacion_final",
+      "seccion_titulo": "Evaluación final",
+      "concepto": "Integración del módulo 5: remodelado, reparación y equilibrio óseo"
+    },
+    "m6_1_video_curva": {
+      "modulo": 6,
+      "tipo": "video-texto",
+      "puntaje_max": 10,
+      "obligatoria": true,
+      "seccion": "m6_1_curva_y_menopausia",
+      "seccion_titulo": "La curva de la masa ósea y la menopausia",
+      "concepto": "Curva de la masa ósea: pico y declive"
+    },
+    "m6_1_arrastre_estrogenos": {
+      "modulo": 6,
+      "tipo": "arrastre-molecular",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m6_1_curva_y_menopausia",
+      "seccion_titulo": "La curva de la masa ósea y la menopausia",
+      "concepto": "Estrógenos, RANKL y OPG"
+    },
+    "m6_1_quiz_curva": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m6_1_curva_y_menopausia",
+      "seccion_titulo": "La curva de la masa ósea y la menopausia",
+      "concepto": "Pico de masa ósea y menopausia"
+    },
+    "m6_2_multicapa_tejido_envejecido": {
+      "modulo": 6,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m6_2_celulas_y_matriz",
+      "seccion_titulo": "Células y matriz que envejecen",
+      "concepto": "Envejecimiento celular y de la matriz"
+    },
+    "m6_2_quiz_envejecimiento": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m6_2_celulas_y_matriz",
+      "seccion_titulo": "Células y matriz que envejecen",
+      "concepto": "Envejecimiento celular y de la matriz"
+    },
+    "m6_3_multicapa_normal_osteoporotico": {
+      "modulo": 6,
+      "tipo": "multicapa",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m6_3_osteoporosis",
+      "seccion_titulo": "Osteoporosis: calidad, cantidad y riesgo",
+      "concepto": "Osteoporosis: calidad frente a cantidad"
+    },
+    "m6_3_trabecular_3d": {
+      "modulo": 6,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m6_3_osteoporosis",
+      "seccion_titulo": "Osteoporosis: calidad, cantidad y riesgo",
+      "concepto": "Osteoporosis en 3D: adelgazamiento, perforación y desconexión trabecular; calidad frente a cantidad"
+    },
+    "m6_3_relacion_factores": {
+      "modulo": 6,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 40,
+      "obligatoria": true,
+      "seccion": "m6_3_osteoporosis",
+      "seccion_titulo": "Osteoporosis: calidad, cantidad y riesgo",
+      "concepto": "Factores de riesgo y mecanismo"
+    },
+    "m6_3_quiz_diagnostico": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m6_3_osteoporosis",
+      "seccion_titulo": "Osteoporosis: calidad, cantidad y riesgo",
+      "concepto": "Criterios densitométricos y riesgo de fractura"
+    },
+    "m6_4_ordenar_reborde": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m6_4_mandibula_y_tiempo",
+      "seccion_titulo": "La mandíbula con los años",
+      "concepto": "Cascada de reabsorción del reborde alveolar"
+    },
+    "m6_4_mandibula_3d": {
+      "modulo": 6,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m6_4_mandibula_y_tiempo",
+      "seccion_titulo": "La mandíbula con los años",
+      "concepto": "Anatomía mandibular y envejecimiento"
+    },
+    "m6_4_alveolo_3d": {
+      "modulo": 6,
+      "tipo": "exploracion-3d",
+      "puntaje_max": 30,
+      "obligatoria": false,
+      "seccion": "m6_4_mandibula_y_tiempo",
+      "seccion_titulo": "La mandíbula con los años",
+      "concepto": "Cicatrización del alvéolo postextracción y reabsorción del reborde alveolar"
+    },
+    "m6_4_quiz_mandibula": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m6_4_mandibula_y_tiempo",
+      "seccion_titulo": "La mandíbula con los años",
+      "concepto": "Cambios de la mandíbula con la edad"
+    },
+    "m6_5_relacion_intervenciones": {
+      "modulo": 6,
+      "tipo": "relacion-columnas",
+      "puntaje_max": 30,
+      "obligatoria": true,
+      "seccion": "m6_5_prevenir_e_intervenir",
+      "seccion_titulo": "Prevenir e intervenir",
+      "concepto": "Intervenciones y mecanismo"
+    },
+    "m6_5_quiz_onm": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": false,
+      "seccion": "m6_5_prevenir_e_intervenir",
+      "seccion_titulo": "Prevenir e intervenir",
+      "concepto": "Osteonecrosis de los maxilares asociada a medicamentos"
+    },
+    "m6_5_evaluacion_final": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 100,
+      "obligatoria": true,
+      "seccion": "m6_5_prevenir_e_intervenir",
+      "seccion_titulo": "Prevenir e intervenir",
+      "concepto": "Envejecimiento y cambios degenerativos del tejido óseo"
+    }
+  },
+  "modulos": {
+    "1": {
+      "slug": "conociendo_el_hueso",
+      "actividades": 21,
+      "obligatorias": 14,
+      "puntaje_max": 530,
+      "puntaje_max_obligatorias": 370
+    },
+    "2": {
+      "slug": "descubriendo_sus_celulas",
+      "actividades": 18,
+      "obligatorias": 11,
+      "puntaje_max": 530,
+      "puntaje_max_obligatorias": 340
+    },
+    "3": {
+      "slug": "construyendo_hueso",
+      "actividades": 22,
+      "obligatorias": 19,
+      "puntaje_max": 730,
+      "puntaje_max_obligatorias": 650
+    },
+    "4": {
+      "slug": "transformando_la_matriz",
+      "actividades": 22,
+      "obligatorias": 15,
+      "puntaje_max": 720,
+      "puntaje_max_obligatorias": 510
+    },
+    "5": {
+      "slug": "renovando_el_hueso",
+      "actividades": 29,
+      "obligatorias": 20,
+      "puntaje_max": 890,
+      "puntaje_max_obligatorias": 700
+    },
+    "6": {
+      "slug": "el_paso_del_tiempo",
+      "actividades": 16,
+      "obligatorias": 9,
+      "puntaje_max": 500,
+      "puntaje_max_obligatorias": 330
+    }
+  },
+  "totales": {
+    "actividades": 128,
+    "obligatorias": 88,
+    "puntaje_max": 3900,
+    "puntaje_max_obligatorias": 2900
+  }
+}

@@ -204,6 +204,10 @@ export function recolectarIds(modulo: ConSecciones): EntradaId[] {
           break;
         case 'exploracion-3d':
           a.config.nodos.forEach((x, i) => agregar(x.id, 'nodo', [...rutaConfig, 'nodos', i]));
+          // Escena procedural: sus partes son los pasos de la línea de tiempo.
+          a.config.linea_de_tiempo?.pasos.forEach((x, i) =>
+            agregar(x.id, 'paso', [...rutaConfig, 'linea_de_tiempo', 'pasos', i]),
+          );
           break;
       }
     });
@@ -350,6 +354,17 @@ export function indiceEstructuras(modulo: ConSecciones): Map<string, EstructuraI
           id: nodo.id,
           etiqueta: nodo.etiqueta,
           descripcion: nodo.descripcion,
+          origen: 'nodo',
+          actividadId: actividad.id,
+          seccionId: seccion.id,
+        });
+      }
+      // Escena procedural: cada paso de la línea de tiempo se puede pedir al mentor como un nodo.
+      for (const paso of actividad.config.linea_de_tiempo?.pasos ?? []) {
+        indice.set(claveEstructura(actividad.id, paso.id), {
+          id: paso.id,
+          etiqueta: paso.titulo,
+          descripcion: paso.texto,
           origen: 'nodo',
           actividadId: actividad.id,
           seccionId: seccion.id,

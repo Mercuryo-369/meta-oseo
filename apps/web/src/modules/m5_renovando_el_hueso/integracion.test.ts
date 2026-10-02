@@ -354,7 +354,8 @@ describe('módulo 5 integrado: cabecera y bloqueo inicial', () => {
     expect(wrapper.get('[data-testid="titulo-modulo"]').text()).toBe('Renovando el hueso');
     expect(wrapper.findAll('[data-testid="objetivos"] li')).toHaveLength(modulo.objetivos.length);
     expect(wrapper.get('[data-testid="avance-obligatorias"]').text()).toContain('0 de 20');
-    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('790');
+    // 790 del guion más las exploraciones 3D extra (BMU 40, ortodoncia 30 y fractura 30).
+    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('890');
   });
 
   it('arranca en la sección 5.1 y las demás están bloqueadas hasta terminarla', async () => {
@@ -409,13 +410,10 @@ async function comprobarGlosario(idSeccion: string): Promise<number> {
 let enlacesProbados = 0;
 
 /**
- * HALLAZGO ABIERTO (ilustraciones): seis SVG de m5 traen un grupo decorativo
- * `<g id="fondo_escena">` (no lo cita el contenido) y, cuando dos de ellos se dibujan en la misma
- * sección (5.5: alveolar y ortodoncia; 5.6: fractura y alvéolo), el id queda repetido en la página. Se tolera aquí hasta que el
- * ilustrador lo renombre por figura o lo quite; la última prueba avisa cuando ya no haga falta.
+ * Seis SVG de m5 traen un grupo decorativo `<g id="fondo_escena">` que el contenido no cita. Los componentes de
+ * capas y de animación prefijan TODOS los ids con `{actividad.id}__` al inyectar (activities/idsUnicos.ts), así
+ * que dos de ellos en la misma sección (5.5: alveolar y ortodoncia; 5.6: fractura y alvéolo) no repiten ids.
  */
-const IDS_REPETIDOS_CONOCIDOS = new Set(['fondo_escena']);
-let excepcionUsada = false;
 
 describe('módulo 5 integrado: las ocho secciones', () => {
   for (const [indice, seccion] of modulo.secciones.entries()) {
@@ -487,11 +485,8 @@ describe('módulo 5 integrado: las ocho secciones', () => {
         repetidos.set(el.id, (repetidos.get(el.id) ?? 0) + 1);
       }
       const duplicados = [...repetidos].filter(([, n]) => n > 1);
-      for (const [id] of duplicados) if (IDS_REPETIDOS_CONOCIDOS.has(id)) excepcionUsada = true;
       expect(
-        duplicados
-          .filter(([id]) => !IDS_REPETIDOS_CONOCIDOS.has(id))
-          .map(([id, n]) => `${id} x${n}`),
+        duplicados.map(([id, n]) => `${id} x${n}`),
         `ids repetidos en ${seccion.id}`,
       ).toEqual([]);
 
@@ -522,7 +517,10 @@ describe('módulo 5 integrado: cierre y API', () => {
 
   it('(d) cada actividad se reportó una sola vez con el cuerpo del contrato', () => {
     const posts = api.filtrar('POST', '/activities/');
-    expect(posts).toHaveLength(26);
+    // 26 del guion y la actividad 3D opcional añadida fuera del guion (m5_bmu_3d_tiempo).
+    // 27 del guion y 2 exploraciones 3D extra.
+    expect(posts).toHaveLength(29);
+    expect(posts).toHaveLength(actividades().length);
     for (const a of actividades()) {
       const llamadas = api.filtrar('POST', `/activities/${a.id}/result`);
       expect(llamadas, a.id).toHaveLength(1);
@@ -585,13 +583,18 @@ describe('módulo 5 integrado: cierre y API', () => {
     }
   });
 
-  it('el módulo queda al 100 %: 20 obligatorias y 790 puntos', () => {
+  it('el módulo queda al 100 %: 20 obligatorias y 890 puntos', () => {
     expect(wrapper.get('[data-testid="avance-obligatorias"]').text()).toContain('20 de 20');
-    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('790');
+    expect(wrapper.get('[data-testid="puntaje-modulo"]').text()).toContain('890');
   });
 
-  it('la tolerancia de ids repetidos sigue haciendo falta (si falla, quita IDS_REPETIDOS_CONOCIDOS)', () => {
-    expect(excepcionUsada).toBe(true);
+  it('los SVG con el mismo fondo_escena, inyectados a la vez, dejan ids únicos y prefijados por actividad', () => {
+    const conFondo = Array.from(
+      document.body.querySelectorAll('[id$="__fondo_escena"]'),
+      (e) => e.id,
+    );
+    expect(document.body.querySelector('#fondo_escena')).toBeNull();
+    expect(new Set(conFondo).size).toBe(conFondo.length);
   });
 
   it('(a) en todo el recorrido no hubo ningún aviso ni error en la consola', () => {

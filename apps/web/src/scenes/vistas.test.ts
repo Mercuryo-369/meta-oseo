@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { VISTAS_CAMARA } from '@/content/nodos3d';
 import { distanciaParaEncajar } from './encuadre';
 import {
+  DISTANCIA_MAX_VISTA_MEDIAL,
   DISTANCIA_MIN_ABSOLUTA,
   DURACION_TRANSICION_MS,
   ETIQUETA_VISTA,
@@ -61,6 +62,18 @@ describe('direccionDeVista', () => {
     expect(y).toBeGreaterThan(direccionDeVista('frontal')[1]);
   });
 
+  it('las vistas mediales ponen la cámara del lado contrario, algo elevada, mirando la cara interna de la rama', () => {
+    const [xd, yd, zd] = direccionDeVista('medial_derecha');
+    // La cara medial de la rama DERECHA (-X) mira hacia +X: la cámara está en +X.
+    expect(xd).toBeGreaterThan(0.85);
+    expect(yd).toBeGreaterThan(0.3);
+    expect(zd).toBeGreaterThan(0);
+    const [xi, yi, zi] = direccionDeVista('medial_izquierda');
+    expect(xi).toBeCloseTo(-xd, 10);
+    expect(yi).toBeCloseTo(yd, 10);
+    expect(zi).toBeCloseTo(zd, 10);
+  });
+
   it('una vista desconocida (contenido corrupto) cae en frontal en vez de romper', () => {
     expect(direccionDeVista('cenital' as never)).toEqual(direccionDeVista('frontal'));
   });
@@ -92,6 +105,33 @@ describe('calcularEncuadre', () => {
     const modelo = calcularEncuadre({ ...base, aspecto: 1.5 });
     const nodo = calcularEncuadre({ ...base, radio: RADIO_ZONA_ANCLA, aspecto: 1.5 });
     expect(nodo.distancia).toBeLessThan(modelo.distancia / 2);
+  });
+
+  it('las vistas mediales de un nodo dejan la cámara dentro del arco: distancia máxima aunque el zoom sea 0,5', () => {
+    for (const vista of ['medial_derecha', 'medial_izquierda'] as const) {
+      const e = calcularEncuadre({
+        ...base,
+        radio: RADIO_ZONA_ANCLA,
+        vista,
+        zoom: 0.5,
+        aspecto: 0.5,
+      });
+      expect(e.distancia, vista).toBeLessThanOrEqual(DISTANCIA_MAX_VISTA_MEDIAL);
+      // Una vista externa con los mismos datos sí queda más lejos: el tope es solo de las mediales.
+      const lateral = calcularEncuadre({
+        ...base,
+        radio: RADIO_ZONA_ANCLA,
+        vista: 'lateral_izquierda',
+        zoom: 0.5,
+        aspecto: 0.5,
+      });
+      expect(lateral.distancia).toBeGreaterThan(DISTANCIA_MAX_VISTA_MEDIAL);
+    }
+  });
+
+  it('la vista medial del modelo entero (radio 1) no lleva tope: no hay arco que respetar', () => {
+    const e = calcularEncuadre({ ...base, vista: 'medial_derecha', aspecto: 1 });
+    expect(e.distancia).toBeCloseTo(distanciaParaEncajar(1, 1), 10);
   });
 
   it('en un móvil vertical la distancia es mayor que en horizontal (cabe el eje estrecho)', () => {

@@ -11,11 +11,13 @@
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { ArrowDown } from '@lucide/vue';
-import type { MensajeMentor } from '@/ai/useMentor';
+import type { Valoracion } from '@/ai/mentorApi';
+import type { CitaMentor, MensajeMentor } from '@/ai/useMentor';
 import { Button } from '@/components/ui/button';
 import MentorMensaje from './MentorMensaje.vue';
 
 const props = defineProps<{ mensajes: readonly MensajeMentor[] }>();
+defineEmits<{ navegar: [cita: CitaMentor]; valorar: [idMensaje: string, valor: Valoracion] }>();
 
 /** Cuántos píxeles de margen cuentan como "estar al final". */
 const UMBRAL_PX = 64;
@@ -87,7 +89,13 @@ defineExpose({ irAlFinal });
       @scroll.passive="alDesplazar"
     >
       <ol class="flex flex-col gap-3">
-        <MentorMensaje v-for="m in visibles" :key="m.id" :mensaje="m" />
+        <MentorMensaje
+          v-for="m in visibles"
+          :key="m.id"
+          :mensaje="m"
+          @navegar="(cita) => $emit('navegar', cita)"
+          @valorar="(valor) => $emit('valorar', m.id, valor)"
+        />
       </ol>
     </div>
 

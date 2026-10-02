@@ -29,6 +29,9 @@ backend, frontend y este documento a la vez. Ver también PLAN.md §3 (`Contexto
 | 422 | `actividad_desconocida` | `POST /api/activities/{id}/result` con un id que no existe o cuyo `modulo` o `tipo` no coinciden con el contenido (solo con manifiesto) |
 | 422 | `puntaje_invalido` | Resultado con `puntaje` mayor que el `puntaje_max` de la actividad (solo con manifiesto). Trae `puntaje_max` |
 | 429 | `demasiados_intentos` | Límite de intentos por IP o por usuario |
+| 429 | `limite_diario` | `POST /api/chat`: el estudiante agotó `MENTOR_MAX_MENSAJES_DIA` mensajes hoy. Trae `Retry-After` |
+| 404 | `sesion_no_encontrada` | `POST /api/chat` con `session_id`, `GET /api/chat/history` o `DELETE /api/chat/session` de una conversación inexistente o ajena |
+| 404 | `mensaje_no_encontrado` | `POST /api/chat/feedback` con un mensaje inexistente, ajeno o que no es del mentor |
 | 503 | `ia_no_configurada` | `/api/chat` sin `ANTHROPIC_API_KEY` |
 
 ## Identificación
@@ -278,38 +281,208 @@ sin ambiguos (`2-9` y `A-Z` salvo `I`, `L` y `O`; sin `0` ni `1`).
 **La SPA** debe ofrecer una vista pública en `/verify/:codigo` que llame a `GET /api/verify/{codigo}`
 (la URL impresa en el PDF y en el QR apunta a ella).
 
-### Mentor de IA (F1-07)
+### Mentor de IA (F1-07, F3-01 a F3-11, F4-03)
 
 `POST /api/chat` (requiere auth)
 ```json
 { "messages": [ { "role": "user", "content": "¿Qué hacen los osteoclastos?" } ],
-  "contexto": { } }
+  "contexto": { },
+  "session_id": 12 }
 ```
 - `messages`: de 1 a 40 elementos, `role` ∈ `user`, `assistant`; el último debe ser `user`; `content` de
-  1 a 8000 caracteres.
-- `contexto` (opcional): objeto `ContextoPedagogico` en camelCase (abajo). En Fase 1 se **valida y se
-  ignora**; su inyección en el prompt es F3-04.
-- Límite: 20 peticiones por minuto y por usuario → `429 demasiados_intentos`.
-- Sin `ANTHROPIC_API_KEY` → `503 ia_no_configurada` (antes de abrir el stream).
+  1 a 8000 caracteres. El cliente sigue enviando el historial completo; el servidor solo guarda el
+  último mensaje del estudiante y la respuesta.
+- `contexto` (opcional): objeto `ContextoPedagogico` en camelCase (abajo). Se valida, **se usa para
+  recuperar el material del curso y va al prompt** como datos (F3-04).
+- `session_id` (opcional, entero ≥ 1): conversación guardada a la que pertenece el mensaje, tal como la
+  devolvió el evento `sesion`. Sin él se abre una conversación nueva. Si no existe o es de otro usuario:
+  `404 sesion_no_encontrada` (antes de abrir el stream).
+- Límites, en este orden: sin `ANTHROPIC_API_KEY` → `503 ia_no_configurada`; más de
+  `MENTOR_MAX_MENSAJES_DIA` (60 por defecto) respuestas del mentor hoy → `429 limite_diario` con
+  `Retry-After` (segundos hasta la medianoche de Colombia, UTC-5) y un mensaje amable; más de 20
+  peticiones por minuto → `429 demasiados_intentos`. El día se cuenta con `usage_events` (respuestas que
+  el modelo empezó a generar): borrar conversaciones no devuelve el cupo y los fallos previos al modelo
+  no lo gastan.
 
 Respuesta: `200 text/event-stream` con `Cache-Control: no-cache` y `X-Accel-Buffering: no`. Cada evento
-tiene la forma `event: <nombre>\ndata: <json>\n\n`. Se emite un comentario `: ping` cada 15 s.
+tiene la forma `event: <nombre>\ndata: <json>\n\n`; `data` siempre es un objeto JSON. Se emite un
+comentario `: ping` cada 15 s. **El cliente ignora los eventos que no conoce** (así se agregaron los
+nuevos sin romper a nadie).
 
 | Evento | Payload | Nota |
 |---|---|---|
+| `sesion` | `{"session_id": 12}` | **Primero.** La conversación en la que se guardó el mensaje (nueva o la indicada). Aparece aunque después falle la respuesta |
 | `text` | `{"delta": "..."}` | Fragmento de texto de la respuesta |
+| `citas` | `{"citas": [{"id", "modulo", "seccion_id", "titulo", "url"}]}` | Solo si la respuesta terminó bien y se recuperó material del curso. Antes de `mensaje`/`usage`/`done` |
+| `mensaje` | `{"message_id": 31}` | Id de la respuesta guardada (para `POST /api/chat/feedback`). Solo si se guardó |
 | `usage` | `{"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}` | Una vez, al final |
 | `done` | `{"stop_reason": "end_turn"}` | Evento terminal de éxito |
 | `error` | `{"code": "refusal", "message": "..."}` | Evento terminal de fallo durante el stream |
-| `tool_use` | `{"id": "...", "name": "...", "input": { }}` | Reservado para F3-08, no se emite en F1 |
+| `tool_use` | `{"id": "...", "name": "...", "input": { }}` | Reservado para F3-08, no se emite |
+
+Orden en una respuesta completa: `sesion`, `text`\*, `citas`, `mensaje`, `usage`, `done`. En un fallo:
+`sesion`, `text`\*, [`usage`], `error` (sin `citas` ni `mensaje`, y la respuesta no se guarda).
 
 El stream termina con exactamente un `done` o un `error`. Códigos de `error` en stream: `refusal`,
 `max_tokens`, `upstream_error`, `rate_limited`. Cada `usage` se registra también en la tabla
 `usage_events` (control de costo desde el primer día).
 
+**Citas (F3-05).** `citas` lista solo los fragmentos del curso que **de verdad se recuperaron** y viajaron
+en el prompt, en el orden de las etiquetas `[1]`, `[2]`… que el mentor escribe en el texto (la cita `n`
+es la etiqueta `[n]`). `url` es una ruta interna del OVA (`/modulo/3?s=m3_4_osteocito_sensor`; `s` es el
+id de la sección); el frontend solo acepta `/modulo/1..6` con `?s=` opcional y las muestra como
+«Fuentes». El material del docente para el mentor (banco de preguntas, ganchos) informa la respuesta pero
+**no se cita**, porque el estudiante no lo ve.
+
+`GET /api/chat/history?session_id=12&limit=50` (requiere auth)
+```json
+{ "session_id": 12,
+  "messages": [ { "id": 30, "role": "user", "content": "...", "citas": [], "valoracion": null,
+                  "created_at": "2026-09-24T20:00:00Z" },
+                { "id": 31, "role": "assistant", "content": "...", "citas": [ { } ], "valoracion": 1,
+                  "created_at": "2026-09-24T20:00:05Z" } ] }
+```
+- Los últimos `limit` mensajes (1 a 100, por defecto 50) de una conversación **propia**, en orden
+  cronológico. Sin `session_id`, la conversación más reciente del usuario (o `{"session_id": null,
+  "messages": []}` si no tiene ninguna). Ajena o inexistente: `404 sesion_no_encontrada`.
+- Solo trae lo que se dijo: nunca el prompt de sistema ni el bloque de datos del curso.
+
+`DELETE /api/chat/session?session_id=12` (o `DELETE /api/chat/session/12`) → `204`. Borra la conversación
+propia y sus mensajes (el consumo de tokens en `usage_events` se conserva). Ajena o inexistente: `404
+sesion_no_encontrada`.
+
+`POST /api/chat/feedback` (F3-11)
+```json
+{ "message_id": 31, "valor": 1 }
+```
+- `valor`: `1` (útil), `-1` (no útil) o `0` (retirar la valoración). Respuesta `200`
+  `{"message_id": 31, "valor": 1}` (`valor: null` si se retiró). Solo respuestas del mentor de una
+  conversación propia; si no, `404 mensaje_no_encontrado`. Se guarda en `chat_messages.valoracion` y
+  vuelve en el historial.
+- **Interfaz:** cada respuesta completa que el servidor guardó lleva 👍/👎 (`aria-pressed`, 44 px). El
+  voto se ve al instante y se deshace si el servidor falla; tocar el voto activo lo retira (`valor: 0`)
+  y tocar el otro lo cambia. Las respuestas restauradas del historial traen su `valoracion`.
+
+**Interfaz del chat (F3-09, F3-11).**
+- *Restaurar:* al abrir el panel por primera vez en la sesión, el frontend pide `GET /api/chat/history`
+  (sin `session_id`: la conversación más reciente), fija `session_id` para continuarla y muestra los
+  mensajes con sus fuentes y su valoración. Un historial vacío no es un error; un fallo muestra un aviso
+  con «Reintentar». Si el estudiante ya escribió mientras llegaba, el historial se descarta (nunca se
+  duplican mensajes).
+- *Nueva conversación:* pide una confirmación sencilla y llama a `DELETE /api/chat/session`. Solo si el
+  servidor lo confirma (o responde `404`) se vacía la pantalla; si falla, la conversación se conserva y
+  se explica por qué (si no, volvería a aparecer al recargar).
+
+**Aislamiento:** todas estas rutas filtran por el usuario del token. La conversación o el mensaje de otro
+usuario responde igual que uno inexistente (404), sin revelar que existe.
+
+**Prompt y recuperación (resumen).** `system` lleva solo el bloque estable `prompts/mentor_v1.md`
+(con `cache_control`); el contexto pedagógico y los fragmentos recuperados van al final, en el último
+turno del estudiante, dentro de `<datos_del_curso>` con la orden de no obedecerlos y con `<`, `>` y `&`
+escapados. La recuperación es BM25 propio en Python puro sobre `app/data/corpus.jsonl` (se genera con
+`python -m app.scripts.build_corpus`; `--comprobar` para CI); su calidad se mide en
+[mentor-eval.md](mentor-eval.md). El motor tiene una interfaz `Retriever`; la búsqueda vectorial con
+pgvector (F6-10) será otra clase con la misma interfaz.
+
 El cliente usa `fetch` con `ReadableStream` (no `EventSource`, porque no permite POST ni cabeceras) y
 cancela con `AbortController`; el backend debe cancelar la petición a Anthropic cuando el cliente
 se desconecta.
+
+#### Sugerencias de refuerzo: `GET /api/mentor/refuerzo` (F3-07)
+
+Requiere auth. **No llama al modelo**: son reglas fijas sobre `activity_results`, `progress_modulos` y el
+manifiesto de actividades (`app/data/actividades_manifest.json`, que desde F3-07 trae el `concepto` y el
+`seccion_titulo` de cada actividad; regenerarlo con `python -m app.scripts.build_manifest`).
+Parámetros opcionales: `modulo` (1 a 6) y `limite` (1 a 10, por defecto 5).
+
+```json
+{ "sugerencias": [ {
+    "actividad_id": "m3_2_quiz_rankl", "concepto": "Señalización RANK-RANKL-OPG",
+    "modulo": 3, "seccion": "m3_2_rankl", "seccion_titulo": "La balanza RANKL/OPG",
+    "url": "/modulo/3?s=m3_2_rankl",
+    "motivo_tipo": "atascada", "motivo": "Llevas 4 intentos y aún no la completas",
+    "prioridad": "alta", "puntaje": 91 } ] }
+```
+
+- Una sugerencia por concepto (si dos actividades comparten concepto en un módulo queda la más urgente),
+  de la más a la menos urgente. **Lista vacía cuando no hay señal** (o el servidor no tiene el
+  manifiesto): la interfaz no muestra nada, ni siquiera un aviso.
+- `motivo_tipo` y su peso (`app/services/refuerzo.py`): `atascada` (sin completar, ≥ 3 intentos: 90 + hasta
+  9 extra), `precision_baja` (completada con menos del 70 % del máximo: 60 a 88), `en_curso`
+  (obligatoria empezada con 1 o 2 intentos, sin completar: 50), `varios_intentos` (completada con buen
+  puntaje pero ≥ 3 intentos: 40 + extra) y `pendiente` (obligatoria sin ningún intento **de un módulo ya
+  iniciado y no completado**: 30). `prioridad`: `alta` desde 80, `media` desde 50, `baja` el resto.
+  `motivo` es la frase en lenguaje claro para el estudiante.
+- Solo lee las filas del propio usuario (nada de datos ajenos). Errores: `401 token_invalido`, `422` si
+  `modulo` o `limite` están fuera de rango.
+- *Interfaz:* la tarjeta «Para reforzar» aparece en el estado vacío del panel del mentor (con «Ponme a
+  prueba» por sugerencia) y en la portada; cada concepto enlaza a su sección. Las `url` que no sean
+  `/modulo/1..6` con `?s=` opcional se descartan.
+
+#### «Explícame esto» (F3-06)
+
+No agrega endpoint: el contexto pedagógico (`estructuraSeleccionada`, `moleculaSeleccionada` y `nivel`)
+ya viaja en `POST /api/chat`, orienta la recuperación y llega al prompt como datos. El estado vacío del
+panel ofrece un botón «Explícame {nombre}» por cada selección, con el nombre legible sacado del contenido
+del módulo (etiqueta de la capa, del punto 3D o de la molécula; si falta, se deriva del id). Envía siempre
+la misma pregunta: «Explícame «{nombre}»: ¿qué es, qué función cumple y cómo se relaciona con lo que
+estoy estudiando?». Con el panel cerrado, junto a su botón aparece «Preguntar al mentor» que abre el
+panel y la envía. El prompt estable (`mentor_v1.md`) pide adaptar la analogía al nivel (pregrado: imagen
+cotidiana; posgrado: analogía breve y luego el mecanismo preciso) y decir dónde falla.
+
+**Evento de documento** (para que cualquier componente pregunte sin importar el panel):
+`document.dispatchEvent(new CustomEvent('ova:preguntar-al-mentor', { detail: { texto } }))`, o
+`preguntarAlMentor(texto)` de `apps/web/src/ai/explicame.ts`. `texto` es texto plano de 1 a 500
+caracteres; el panel se abre y lo envía como si lo hubiera escrito el estudiante (recuperando antes la
+conversación guardada). Se ignora si el texto no es válido o si el mentor está respondiendo.
+
+#### Quiz de práctica: `POST /api/mentor/quiz` (F4-03)
+
+Requiere auth. Pide a Claude 3 preguntas de opción múltiple sobre la sección o el concepto actual,
+apoyadas en el material del curso (RAG), con **salida estructurada** (`output_config.format` con un JSON
+schema; sin streaming). Es **práctica libre: no otorga puntos ni logros, no se guarda en
+`chat_messages` y no toca `activity_results`.**
+
+```json
+{ "tema": "Señalización RANK-RANKL-OPG", "modulo": 3, "seccion": "m3_2_rankl", "contexto": { } }
+```
+- Al menos uno entre `tema` (≤ 120 caracteres), `modulo` (1 a 6, con `seccion` opcional) y `contexto`
+  (`ContextoPedagogico`). `modulo` y `seccion` mandan sobre los del contexto; el `nivel` del contexto
+  decide si entra el material de posgrado.
+- **Material:** solo lo citable del corpus (contenido, glosario y objetivos: lo que el estudiante puede
+  leer). No entran el banco de preguntas ni los ganchos del docente, y el corpus no trae preguntas ni
+  respuestas de las actividades calificadas. La sección indicada va completa; con un tema se suma lo que
+  encuentra la búsqueda; sin nada de eso, el comienzo del módulo.
+
+```json
+{ "modulo": 3, "seccion": "m3_2_rankl", "tema": "La balanza RANKL/OPG", "otorga_puntos": false,
+  "preguntas": [ { "id": 1, "enunciado": "...", "opciones": [ { "texto": "..." } ], "correcta": 2,
+                   "explicacion": "...", "dificultad": "basica", "fuentes": ["1"] } ],
+  "fuentes": [ { "id": "...", "modulo": 3, "seccion_id": "m3_2_rankl", "titulo": "...", "url": "/modulo/3?s=m3_2_rankl" } ] }
+```
+- Exactamente 3 preguntas, cada una con 4 `opciones` y `correcta` (posición desde 0) en una sola; el
+  servidor **mezcla el orden de las opciones**. `dificultad`: `basica`, `intermedia` o `avanzada`.
+  `fuentes` de cada pregunta son etiquetas (`"1"`, `"2"`…) de la lista `fuentes` de la respuesta (la de
+  etiqueta `n` es la posición `n`, igual que las citas del chat).
+- **Validación estricta** de lo que devuelve el modelo (`app/ai/quiz.py`): JSON válido, 3 preguntas
+  distintas, 4 opciones distintas (sin acentos ni mayúsculas) con una sola correcta, sin «todas las
+  anteriores» ni «A y B», longitudes (enunciado 15–300, opción 1–200, explicación 20–700), dificultad
+  válida y de 1 a 3 fuentes que existan en el material. Si no pasa (o el modelo se corta por `max_tokens`)
+  se reintenta **una vez**; si vuelve a fallar, `502 quiz_invalido`.
+- **Cuotas y límites**, en este orden: sin `ANTHROPIC_API_KEY` → `503 ia_no_configurada`; más de
+  `MENTOR_MAX_QUIZ_DIA` (20 por defecto, 0 = sin límite; mismo día de Colombia) quizzes hoy →
+  `429 limite_diario_quiz` con `Retry-After`; y el límite de 20 peticiones por minuto **compartido con el
+  chat** → `429 demasiados_intentos`. La cuota del quiz es independiente de `MENTOR_MAX_MENSAJES_DIA`.
+  El consumo se registra en `usage_events` con `kind = "quiz"`: **una fila por quiz** (suma de sus
+  llamadas, aunque haya habido reintento), que es lo que cuenta la cuota; un fallo antes de llegar al
+  modelo no la gasta.
+- Errores: `401 token_invalido`; `422` de validación (formato de FastAPI) o `422 material_insuficiente`
+  (no hay material del curso para ese tema); `502 ia_error` (el modelo rechazó la consulta o el servicio
+  falló; el detalle técnico solo va al log) y `502 quiz_invalido`; `503 ia_no_configurada`.
+- *Interfaz:* botón «Ponme a prueba» en el estado vacío y en la cabecera del panel. Una pregunta a la
+  vez, con retroalimentación inmediata (explicación y fuentes al elegir), resumen con lo que conviene
+  repasar y una nota fija: «Es práctica libre: no suma puntos ni logros». Componente propio
+  (`components/mentor/MentorQuiz.vue`); no reutiliza `ActividadQuiz`.
 
 ## `ContextoPedagogico` (congelado en F1-09)
 
@@ -346,7 +519,10 @@ de cadena ≤ 64) se validan en ambos lados.
 
 Tablas de Fase 1: `users`, `progress_modulos` (único `(user_id, modulo)`), `activity_results`,
 `achievements` (catálogo), `user_achievements` (único `(user_id, codigo)`), `usage_events`.
-Tablas creadas vacías para fases posteriores: `chat_sessions`, `chat_messages`.
+Mentor (F3-09, migración `b7d2f4a91c36`): `chat_sessions` (`user_id`, `modulo` del contexto al abrirla,
+`created_at`, `updated_at`) y `chat_messages` (`session_id` con borrado en cascada, `role`, `content`,
+`input_tokens`, `output_tokens`, `model`, `citas` en JSON, `valoracion` 1 o -1 y `created_at`; las columnas
+`model`, `citas` y `valoracion` son nulas y las llena solo el mentor).
 Índice único en `users(tipo_identificacion, numero_identificacion)`.
 
 `certificates` (F5-05, migración `a3c81e5d7b02`): una fila por usuario (índice único en `user_id`) con
@@ -358,6 +534,10 @@ Tablas creadas vacías para fases posteriores: `chat_sessions`, `chat_messages`.
 | Variable | Por defecto | Uso |
 |---|---|---|
 | `ACTIVITIES_MANIFEST_PATH` | `services/api/app/data/actividades_manifest.json` | Manifiesto de actividades (vacía: sin validación; ruta explícita inexistente: error de arranque) |
+| `MENTOR_MAX_MENSAJES_DIA` | `60` | Respuestas del mentor por estudiante y día (calendario de Colombia, UTC-5); `0` = sin límite |
+| `MENTOR_RAG_TOP_K` | `5` | Fragmentos del curso que se recuperan por pregunta (1 a 10) |
+| `RAG_BACKEND` | `bm25` | Motor de recuperación. `pgvector` está reservado para F6-10 y aún no está implementado (la API se niega a arrancar con él) |
+| `RAG_CORPUS_PATH` | `services/api/app/data/corpus.jsonl` | Corpus del mentor (vacía: el mentor responde sin material del curso; ruta explícita inexistente: error de arranque) |
 | `CERT_MIN_PORCENTAJE` | `70` | % mínimo del máximo de las actividades obligatorias (solo con manifiesto), 0 a 100 |
 | `PUBLIC_BASE_URL` | `http://localhost:5173` | Origen público del sitio, para la URL de verificación impresa en el PDF |
 

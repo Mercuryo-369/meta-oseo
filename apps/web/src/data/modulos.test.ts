@@ -65,3 +65,61 @@ describe('config', () => {
     expect((await import('@/config')).BLOQUEO_SECUENCIAL).toBe(true);
   });
 });
+
+// Los SVG ya producidos, tal como los ve el bundler: la portada debe apuntar a uno que exista.
+const IMAGENES = import.meta.glob('../../public/images/m*/*.svg', {
+  query: '?url',
+  import: 'default',
+});
+
+const TEXTOS_SVG = import.meta.glob('../../public/images/m*/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+describe('identidad de cada módulo', () => {
+  it('cada módulo tiene rótulo, frase, icono y portada propios', () => {
+    for (const campo of ['rotulo', 'frase', 'icono'] as const) {
+      const valores = MODULOS.map((m) => m.identidad[campo]);
+      expect(new Set(valores).size, campo).toBe(6);
+      for (const v of valores) expect(v.length).toBeGreaterThan(2);
+    }
+    expect(new Set(MODULOS.map((m) => m.identidad.portada.src)).size).toBe(6);
+  });
+
+  it('la portada es un SVG ya producido de la carpeta de su módulo y el archivo existe', () => {
+    for (const m of MODULOS) {
+      const { src, ajuste } = m.identidad.portada;
+      expect(src).toMatch(
+        new RegExp('^/images/m' + m.numero + '/m' + m.numero + '_[a-z0-9_]+[.]svg$'),
+      );
+      expect(['cubrir', 'contener']).toContain(ajuste);
+      expect(Object.keys(IMAGENES), src).toContain(`../../public${src}`);
+    }
+  });
+
+  it('una portada con rótulos dentro del dibujo se muestra entera: recortarla cortaría sus palabras', () => {
+    for (const m of MODULOS) {
+      const { src, ajuste } = m.identidad.portada;
+      const svg = TEXTOS_SVG[`../../public${src}`] ?? '';
+      expect(svg.length, src).toBeGreaterThan(0);
+      if (/<text[\s>]/.test(svg)) expect(ajuste, `${src} tiene rótulos`).toBe('contener');
+    }
+  });
+
+  it('el marco de la portada es apaisado: ninguna portada es una figura vertical que quede diminuta', () => {
+    for (const m of MODULOS) {
+      const svg = TEXTOS_SVG[`../../public${m.identidad.portada.src}`] ?? '';
+      const [, ancho, alto] = /viewBox="0 0 (\d+) (\d+)"/.exec(svg)!.map(Number);
+      expect(ancho! / alto!, m.identidad.portada.src).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it('los SVG con rótulos oscuros y sin fondo propio llevan fondo de papel en su portada', () => {
+    const conPapel = MODULOS.filter((m) => m.identidad.portada.fondo === 'papel').map(
+      (m) => m.numero,
+    );
+    expect(conPapel).toEqual([3, 5, 6]);
+  });
+});

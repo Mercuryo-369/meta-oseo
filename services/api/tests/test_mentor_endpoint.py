@@ -20,6 +20,7 @@ from tests.test_mentor_fakes import (
     reply,
     text_block,
     thinking_block,
+    without_informative,
 )
 
 fake = fakes.fake_fixture
@@ -199,7 +200,7 @@ def test_secuencia_de_eventos_varios_text_usage_y_done(mentor_client: TestClient
         ]
     )
     response = post_chat(mentor_client, auth["headers"])
-    events = parse_sse(response.text)
+    events = without_informative(parse_sse(response.text))
 
     assert event_names(events) == ["text", "text", "text", "text", "usage", "done"]
     assert [data["delta"] for name, data in events if name == "text"] == [
@@ -221,7 +222,8 @@ def test_el_formato_de_cada_trama_es_event_data_y_linea_en_blanco(
     mentor_client: TestClient, fake, auth
 ):
     raw = post_chat(mentor_client, auth["headers"]).text
-    assert raw.startswith('event: text\ndata: {"delta":"Los osteoclastos "}\n\n')
+    assert raw.startswith("event: sesion\ndata: {")  # el primero, con la conversación
+    assert 'event: text\ndata: {"delta":"Los osteoclastos "}\n\n' in raw
     assert raw.endswith('event: done\ndata: {"stop_reason":"end_turn"}\n\n')
     assert "\r" not in raw
 
@@ -249,7 +251,7 @@ def test_saltos_de_linea_en_el_texto_no_rompen_las_tramas(mentor_client: TestCli
     fake.respond_with(
         [message_start(), *text_block(0, "linea 1\n\nlinea 2\r\nlinea 3"), *message_end()]
     )
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert events[0] == ("text", {"delta": "linea 1\n\nlinea 2\r\nlinea 3"})
 
 
@@ -272,7 +274,7 @@ def test_el_pensamiento_no_se_transmite_al_cliente(mentor_client: TestClient, fa
 
 def test_pensamiento_omitido_vacio_no_genera_eventos(mentor_client: TestClient, fake, auth):
     fake.respond_with(reply("Solo texto.", thinking=""))
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert event_names(events) == ["text", "usage", "done"]
 
 
@@ -284,13 +286,13 @@ def test_los_ping_del_proveedor_no_se_reenvian(mentor_client: TestClient, fake, 
 
 def test_respuesta_sin_texto_termina_bien(mentor_client: TestClient, fake, auth):
     fake.respond_with([message_start(), *message_end("end_turn", output_tokens=3)])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert event_names(events) == ["usage", "done"]
 
 
 def test_fragmentos_de_texto_vacios_se_omiten(mentor_client: TestClient, fake, auth):
     fake.respond_with([message_start(), *text_block(0, "", "hola", ""), *message_end()])
-    events = parse_sse(post_chat(mentor_client, auth["headers"]).text)
+    events = without_informative(parse_sse(post_chat(mentor_client, auth["headers"]).text))
     assert [d["delta"] for n, d in events if n == "text"] == ["hola"]
 
 
@@ -418,7 +420,7 @@ def test_si_el_modelo_tarda_se_emite_un_comentario_ping(
     fake.respond_raw(fakes.streamed_response(stream))
 
     raw = post_chat(mentor_client, auth["headers"]).text
-    parsed = parse_sse(raw)
+    parsed = without_informative(parse_sse(raw))
     assert ("comment", ": ping") in parsed
     # Los ping no alteran la secuencia de eventos ni el evento terminal.
     assert event_names(parsed)[-2:] == ["usage", "done"]
