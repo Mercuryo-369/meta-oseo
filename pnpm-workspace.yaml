@@ -5,6 +5,7 @@ packages:
 # vue-demi (dependencia transitiva de reka-ui) solo usa su postinstall para cambiar a la
 # variante de Vue 2; su build por defecto ya apunta a Vue 3, así que se deniega.
 allowBuilds:
-  esbuild: set this to true or false
+  # esbuild y workerd (de wrangler, despliegue en Cloudflare) descargan su binario en el postinstall.
+  esbuild: true
   vue-demi: false
-  workerd: set this to true or false
+  workerd: true
