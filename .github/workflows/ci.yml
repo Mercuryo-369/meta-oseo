@@ -7,9 +7,11 @@
 
 name: CI
 
+# 2026-10-03: solo manual (pestaña Actions > CI > Run workflow) mientras la cuenta de GitHub esté
+# bloqueada por facturación: con push/pull_request cada envío generaba tres trabajos fallidos.
+# Para reactivarlo, volver a añadir `push:` y `pull_request:`.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 # Una ejecución nueva sobre la misma rama o PR cancela la anterior que siga en curso.
 concurrency:
@@ -23,7 +25,7 @@ permissions:
 jobs:
   api:
     name: API (ruff + pytest en SQLite)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     defaults:
       run:
@@ -63,7 +65,7 @@ jobs:
 
   api-postgres:
     name: API (pytest en PostgreSQL + pgvector)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     defaults:
       run:
@@ -108,7 +110,7 @@ jobs:
 
   web:
     name: Web (typecheck + lint + test + build)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
