@@ -160,7 +160,7 @@ Detalle de fases en [PLAN.md](PLAN.md). Pedagogía en [docs/briefing-pedagogico.
 ---
 
 ## Decisiones tomadas (log)
-- 2026-10-03: versión de demostración en Cloudflare Workers (assets estáticos). `pnpm --filter @ova/web deploy:cf` compila con `--mode demo` (`apps/web/.env.demo`: VITE_MODO_DEMO=true, sin bloqueo secuencial) y sube con wrangler (`apps/web/wrangler.jsonc`, `apps/web/worker/index.ts`). En modo demo `lib/modoDemo.ts` contesta la API en memoria: funciona todo salvo guardar (al recargar se pierde), mentor, certificado y panel docente (503). El Worker ya reenvía `/api/*` a `API_ORIGIN` para cuando haya backend; entonces se compila con `pnpm build` normal.
+- 2026-10-03: versión de demostración en Cloudflare Workers (assets estáticos). `pnpm --filter @ova/web deploy:cf` compila con `--mode demo` (`apps/web/.env.demo`: VITE_MODO_DEMO=true, sin bloqueo secuencial) y sube con wrangler (`apps/web/wrangler.json`, `apps/web/worker/index.ts`). En modo demo `lib/modoDemo.ts` contesta la API en memoria: funciona todo salvo guardar (al recargar se pierde), mentor, certificado y panel docente (503). El Worker ya reenvía `/api/*` a `API_ORIGIN` para cuando haya backend; entonces se compila con `pnpm build` normal.
 
 | Fecha | Decisión | Motivo |
 |---|---|---|
