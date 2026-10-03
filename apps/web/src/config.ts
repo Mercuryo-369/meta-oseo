@@ -34,6 +34,9 @@ export const RUTA_CERTIFICADO = '/certificado';
 /** Prefijo de la API. Vite lo proxifica a FastAPI en desarrollo; nginx en Docker. */
 export const API_BASE = '/api';
 
+/** Versión de demostración sin backend (VITE_MODO_DEMO=true al compilar): ver `lib/modoDemo.ts`. */
+export const MODO_DEMO: boolean = import.meta.env.VITE_MODO_DEMO === 'true';
+
 /** Cantidad de módulos del OVA (briefing pedagógico). */
 export const TOTAL_MODULOS = 6;
 

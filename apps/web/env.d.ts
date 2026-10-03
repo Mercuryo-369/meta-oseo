@@ -11,6 +11,7 @@ interface ImportMetaEnv {
    * otro valor lo deja activo. Ver `BLOQUEO_SECUENCIAL` en src/config.ts.
    */
   readonly VITE_BLOQUEO_SECUENCIAL?: string;
+  readonly VITE_MODO_DEMO?: string;
 }
 
 interface ImportMeta {

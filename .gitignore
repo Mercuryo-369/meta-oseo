@@ -37,3 +37,6 @@ Thumbs.db
 
 # Salida y caché de vitest
 .vitest/
+
+# Sin secretos: configuración de la versión de demostración (Cloudflare)
+!apps/web/.env.demo

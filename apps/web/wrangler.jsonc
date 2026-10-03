@@ -1,0 +1,20 @@
+// Despliegue del frontend en Cloudflare Workers con assets estáticos (F7-01).
+// Construir y subir:  pnpm --filter @ova/web deploy:cf
+// El backend se conecta con la variable API_ORIGIN (panel de Cloudflare o `vars` de abajo).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ova-metabolismo-oseo",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "vars": {
+    // Vacío hasta que el backend esté publicado: mientras tanto /api responde 503.
+    "API_ORIGIN": "",
+  },
+  "observability": { "enabled": true },
+}

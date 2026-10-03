@@ -11,6 +11,7 @@
  *   módulo `devBypass`) se eliminan del build.
  */
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
+import { MODO_DEMO } from '@/config';
 import { useAuthStore } from '@/stores/auth';
 
 const BARRA_INVERTIDA = String.fromCharCode(92);
@@ -27,7 +28,10 @@ export function destinoSeguro(valor: unknown): string | null {
 export async function guardarSesion(to: RouteLocationNormalized): Promise<true | RouteLocationRaw> {
   const auth = useAuthStore();
 
-  if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
+  if (MODO_DEMO) {
+    const { usuarioDemo } = await import('@/lib/modoDemo');
+    if (!auth.usuario) auth.establecerUsuario(usuarioDemo());
+  } else if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
     const { activarSesionDeDesarrollo } = await import('@/lib/devBypass');
     activarSesionDeDesarrollo(auth);
   } else if (!auth.usuario && auth.token) {

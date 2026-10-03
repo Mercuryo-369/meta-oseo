@@ -9,7 +9,7 @@
  * Ambos agregan `Authorization: Bearer <jwt>` desde el store de auth y, ante un 401 en una
  * petición que llevaba token, cierran la sesión (el guard del router redirige a /acceso).
  */
-import { API_BASE } from '@/config';
+import { API_BASE, MODO_DEMO } from '@/config';
 import { useAuthStore } from '@/stores/auth';
 
 /** Error de la API, ya con mensaje en español apto para mostrar al estudiante. */
@@ -153,6 +153,11 @@ export async function apiFetchRaw(path: string, init: ApiFetchInit = {}): Promis
   if (body !== undefined) {
     cuerpo = typeof body === 'string' ? body : JSON.stringify(body);
     if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+  }
+
+  if (MODO_DEMO) {
+    const { responderDemo } = await import('@/lib/modoDemo');
+    return responderDemo(path, (resto.method ?? 'GET').toUpperCase(), cuerpo);
   }
 
   let res: Response;
