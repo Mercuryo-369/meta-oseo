@@ -1,4 +1,5 @@
 /**
+ * Versión de demostración publicada en Cloudflare: 2026-10-03.
  * Worker de Cloudflare que sirve el OVA (F7-01).
  *
  * - Los archivos de `dist/` (la SPA compilada) los sirve Cloudflare directamente; cualquier ruta
