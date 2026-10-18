@@ -40,7 +40,7 @@ encargos:
       around a red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
       bone with marrow, mandibular canal with nerve and vessels
     negativo: red crown, wood, bark, extra teeth, neighbouring teeth, gums, mouth
-    semilla:  # 2026-10-18: descartada la anterior (corona rojiza / raíz con textura de corteza)
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (coronas con vasos o forma irreal, raíces que no son las del dibujo); se queda en SVG
   - nombre: m1_entretejido_laminar
     modulo: m1
     glifos: []
@@ -56,7 +56,7 @@ encargos:
     prompt: >-
       dry bone specimen of the upper femur sawn in half lengthwise, femoral head, neck and shaft, thin compact cortex,
       inner cancellous bone with oriented trabecular struts, isolated on white background
-    semilla:
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (la cabeza femoral no sale con forma anatómica); se queda en SVG
 
   # --- Módulo 2 ---
   - nombre: m2_osteoblasto_activo
@@ -67,7 +67,7 @@ encargos:
       round nucleus, stacked rough endoplasmic reticulum, Golgi and secretory granules, thin flat lining cell on the right,
       electron microscopy inspired
     negativo: boxes, jellyfish, glass, plastic
-    semilla:
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (células como cajas); se queda en SVG
   - nombre: m2_osteocito_lagunar
     modulo: m2
     glifos: [esclerostina, osteocito_lagunar_uniones_comunicantes, fondo_rotulo_inset]
@@ -75,7 +75,7 @@ encargos:
       violet star-shaped osteocyte with dark nucleus inside a pale lacuna in pink mineralized bone matrix, thin
       dendrites in canaliculi linking to neighbouring osteocytes, flat cells on the top surface, small capillary in the corner
     negativo: spider, flower, mouth, red center
-    semilla:
+    semilla:   # 2026-10-18: la mejor (s10 _r2) pinta un núcleo gigante sin citoplasma y las prolongaciones salen de otro punto; se queda en SVG
   - nombre: m2_ligamento_periodontal
     modulo: m2
     glifos: [lado_presion, lado_tension]
@@ -93,7 +93,7 @@ encargos:
       cleared and stained fetal mandible specimen, alizarin red stained developing bone and alcian blue stained
       Meckel cartilage rod, unerupted tooth germs inside the jaw, translucent embryo tissue, macro photograph, white background
     negativo: adult teeth, erupted teeth, skull, gums, mouth, smile
-    semilla:
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dibuja dentaduras adultas); se queda en SVG
   - nombre: m3_osteoide_hueso_inmaduro
     modulo: m3
     glifos: []
@@ -101,7 +101,7 @@ encargos:
       microscopic section of growing bone, row of plump osteoblasts on a pale pink osteoid seam, mineralization
       front, woven bone with many round osteocytes, capillary with red cells in soft tissue above, lamellar bone on the right
     negativo: labels, letters, frames, ruler
-    semilla:
+    semilla: 9  # sufijo _r2
   - nombre: m3_osteocito_red_lacuno_canalicular
     modulo: m3
     glifos:
@@ -130,7 +130,7 @@ encargos:
       with red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
       bone, basal bone with mandibular canal
     negativo: red crown, wood, bark, screw, implant, extra teeth, neighbouring teeth
-    semilla:  # 2026-10-18: descartada la anterior (corona rojiza / raíz con textura de corteza)
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (coronas con vasos o forma irreal, raíces que no son las del dibujo); se queda en SVG
   - nombre: m5_movimiento_ortodontico_pdl
     modulo: m5
     glifos: [fuerza_ortodontica, senales_compresion, senales_tension]
@@ -139,7 +139,7 @@ encargos:
       central pulp canal, periodontal ligament fibers compressed on the right and stretched on the left, osteoclasts and
       osteoblasts on the socket wall, bone with osteocytes
     negativo: teeth, crowns, molars, mouth, gums, smile
-    semilla:
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dientes inventados o dentina naranja); se queda en SVG
   - nombre: m5_cicatrizacion_alveolo_fases
     modulo: m5
     glifos: [remodelado_del_reborde]
@@ -148,7 +148,7 @@ encargos:
       granulation tissue, new woven bone and trabecular bone filling the socket between the cortical walls, gum covering
       the top
     negativo: teeth, crowns, molars, roots, mouth
-    semilla:
+    semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dientes o cavidades inventados a los lados); se queda en SVG
 
   # --- Módulo 6 ---
   - nombre: m6_tejido_oseo_envejecido

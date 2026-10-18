@@ -96,6 +96,32 @@ uv run --no-project --with pytest python -m pytest tools/imagenes/tests -q
 uvx ruff check tools/imagenes --config tools/imagenes/ruff.toml && uvx ruff format --check tools/imagenes --config tools/imagenes/ruff.toml
 ```
 
+## Resultado de la primera pasada (2026-10-18)
+
+**Con ilustración (10):**
+
+| Módulo | SVG |
+|---|---|
+| m1 | `m1_corte_hueso_capas`, `m1_osteona_detalle`, `m1_entretejido_laminar` |
+| m2 | `m2_osteoclasto_resorcion`, `m2_ligamento_periodontal` |
+| m3 | `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` |
+| m4 | `m4_frente_mineralizacion` |
+| m6 | `m6_tejido_oseo_envejecido`, `m6_hueso_normal_osteoporotico` |
+
+**Siguen en SVG por falta de exactitud anatómica tras dos tandas (8):**
+
+| SVG | Motivo |
+|---|---|
+| `m1_wolff_femur` | Cabeza femoral sin forma real. |
+| `m2_osteoblasto_activo` | Células como cajas. |
+| `m2_osteocito_lagunar` | Núcleo gigante sin citoplasma. |
+| `m3_mandibula_desarrollo` | Dentaduras adultas. |
+| `m1_proceso_alveolar_corte`, `m5_hueso_cortical_trabecular_alveolar` | Coronas con vasos y raíces distintas a las del dibujo. |
+| `m5_movimiento_ortodontico_pdl`, `m5_cicatrizacion_alveolo_fases` | Dientes y cavidades inventados. |
+
+**La pauta.** El modelo acierta con los tejidos y la histología. Falla con los dientes, la anatomía macroscópica
+compleja y los orgánulos. Para esos casos, la vía exacta es un modelo 3D o un render hecho a mano, no la IA.
+
 ## Qué SVG convertir (propuesta, a revisar con el docente)
 
 **Escenas anatómicas, histológicas o celulares: ganan con la ilustración.**

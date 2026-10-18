@@ -1605,6 +1605,7 @@
             "config": {
               "svg": "/images/m3/m3_osteoide_hueso_inmaduro.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_osteoide_hueso_inmaduro.webp",
               "alt": "Corte de una trabécula en formación: osteoblastos, osteoide, frente de mineralización, hueso inmaduro con osteocitos y, al lado, hueso laminar ya remodelado.",
               "modo": "explorar",
               "capas": [
