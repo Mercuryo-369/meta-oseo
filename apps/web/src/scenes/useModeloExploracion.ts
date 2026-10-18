@@ -4,8 +4,9 @@
  *    las posiciones aproximadas de `ANCLAS_PROVISIONALES`. Cuando exista el GLB de F0-09 se cambia la
  *    carga aquí sin tocar la escena ni la actividad.
  *  - `celulas`: un GLB de piezas separadas (F0-10, aún no existe). Sus nodos se buscan por nombre.
- *  - `hueso_largo`: un hueso largo serrado que se construye por código (`hueso_largo/modeloHuesoLargo.ts`), sin
- *    descarga. Sus regiones son piezas con nombre; la etiqueta de cada una va al punto que da el modelo.
+ *  - los modelos construidos por código (`modelosPorCodigo.ts`: el hueso largo y los que sustituyen a dibujos de
+ *    las multicapa), sin descarga. Sus regiones son piezas con nombre; la etiqueta de cada una va al punto que da
+ *    el modelo.
  *
  * La descarga y el parseo ocurren FUERA del lienzo (el indicador de carga es HTML normal); al desmontar
  * se cancela la descarga y se libera lo cargado. Un fallo de carga NUNCA bloquea la actividad: la lista de
@@ -28,7 +29,8 @@ import {
   urlGlb,
 } from './glb';
 import { ErrorModelo, descargarModelo } from './stl';
-import { crearHuesoLargo, esRegionHuesoLargo, puntoDeRegion } from './hueso_largo/modeloHuesoLargo';
+import { MODELOS_POR_CODIGO } from './modelosPorCodigo';
+import type { ModeloPorCodigo } from './modelosPorCodigo';
 import { hayWebGL2 } from './webgl';
 import { useModeloMandibula } from './useModeloMandibula';
 import type { EstadoEscena } from './useModeloMandibula';
@@ -182,8 +184,11 @@ function usarGlb(opciones: OpcionesModeloExploracion): ModeloExploracion {
   };
 }
 
-/** Hueso largo serrado, construido por código: listo en el acto, sin descarga. */
-function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion {
+/** Modelo construido por código (`modelosPorCodigo.ts`): sin descarga, solo el fragmento de su código. */
+function usarModeloPorCodigo(
+  opciones: OpcionesModeloExploracion,
+  cargarModelo: () => Promise<ModeloPorCodigo>,
+): ModeloExploracion {
   const { nombre, aspecto } = opciones;
   const estado = ref<EstadoEscena>('detectando');
   const mensajeError = ref('');
@@ -191,6 +196,7 @@ function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion 
   const cajaRef = shallowRef<CajaModelo | null>(null);
   const camaraInicial = shallowRef<Vector3 | null>(null);
   let hueso: Object3D | null = null;
+  let definicion: ModeloPorCodigo | null = null;
 
   function soltar(): void {
     if (raiz.value) liberarEscena(raiz.value);
@@ -203,8 +209,9 @@ function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion 
     estado.value = 'cargando';
     mensajeError.value = '';
     try {
+      definicion = await cargarModelo();
       soltar();
-      const modelo = crearHuesoLargo();
+      const modelo = definicion.crear();
       const normalizada = normalizarEscena(modelo);
       hueso = modelo;
       raiz.value = normalizada.raiz;
@@ -214,7 +221,7 @@ function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion 
       );
       estado.value = 'listo';
     } catch (error) {
-      console.error(`[${nombre}] no se pudo construir el hueso largo`, error);
+      console.error(`[${nombre}] no se pudo construir el modelo ${opciones.modelo}`, error);
       mensajeError.value = 'No se pudo preparar el modelo 3D.';
       estado.value = 'error';
     }
@@ -236,8 +243,8 @@ function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion 
 
   /** Punto de la etiqueta de la región, pasado del modelo a la escena normalizada. */
   function ubicar(nodo: NodoUbicable): UbicacionNodo | null {
-    if (!hueso || !raiz.value || !esRegionHuesoLargo(nodo.id)) return null;
-    const region = puntoDeRegion(nodo.id);
+    if (!hueso || !raiz.value || !definicion?.esRegion(nodo.id)) return null;
+    const region = definicion.puntoDeRegion(nodo.id);
     raiz.value.updateMatrixWorld(true);
     const punto = hueso.localToWorld(new Vector3(...region.punto));
     return {
@@ -274,6 +281,7 @@ function usarHuesoLargo(opciones: OpcionesModeloExploracion): ModeloExploracion 
 /** El modelo se elige al montar: quien use esta función debe volver a montarse si cambia `modelo`. */
 export function useModeloExploracion(opciones: OpcionesModeloExploracion): ModeloExploracion {
   if (opciones.modelo === 'mandibula') return usarMandibula(opciones);
-  if (opciones.modelo === 'hueso_largo') return usarHuesoLargo(opciones);
+  const porCodigo = MODELOS_POR_CODIGO[opciones.modelo];
+  if (porCodigo) return usarModeloPorCodigo(opciones, porCodigo);
   return usarGlb(opciones);
 }

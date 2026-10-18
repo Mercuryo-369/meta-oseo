@@ -68,6 +68,7 @@ import {
 } from './logica';
 import PanelLineaTiempo from './PanelLineaTiempo.vue';
 import TextoMarkdown from './TextoMarkdown.vue';
+import { esModeloPorCodigo } from '@/scenes/modelosPorCodigo';
 
 const props = withDefaults(defineProps<PropsActividadExploracion3d>(), {
   modo: 'jugar',
@@ -362,7 +363,7 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
         :seleccion-id="seleccionId"
         :orden-enfoque="ordenEnfoque"
         :etiquetas-laterales="
-          actividad.config.modelo === 'mandibula' || actividad.config.modelo === 'hueso_largo'
+          actividad.config.modelo === 'mandibula' || esModeloPorCodigo(actividad.config.modelo)
         "
         @seleccionar="seleccionar"
         @estado="estadoEscena = $event"
