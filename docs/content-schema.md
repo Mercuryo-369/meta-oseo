@@ -444,6 +444,7 @@ El estudiante toca (o pasa el cursor sobre) las estructuras de un dibujo y lee q
 |---|---|
 | `svg` | Ruta `/images/m{n}/nombre.svg` (sección 8) |
 | `viewBox` | `"0 0 ancho alto"`, enteros positivos; **igual al del archivo** |
+| `fondo` | Opcional. Ilustración realista (`/images/m{n}/nombre.webp`, png, jpg o avif) que va **debajo** del SVG, con su misma proporción. El SVG pone encima las zonas que se tocan (con relleno transparente, `fill-opacity="0"`, donde la ilustración ya muestra la estructura) y lo que la ilustración no dibuja con exactitud (moléculas, receptores). No va dentro del SVG: el saneado quita las `<image>` |
 | `alt` | Plano, 10 a 300: descripción de la imagen completa |
 | `modo` | `explorar` o `identificar` |
 | `capas[]` | 2 a **15**. `id` (= el `<g id>` del SVG), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `pista` (línea, 10 a 200) y `pistas_extra` (hasta 2 consignas más sobre la misma capa) |

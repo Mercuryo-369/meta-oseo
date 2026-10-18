@@ -442,6 +442,11 @@ let anchoViewBox = 0;
 let ultimaEscala: number | null = null;
 let observador: ResizeObserver | null = null;
 
+/** Ruta pública de un archivo de `public/` respetando la base de la aplicación. */
+function rutaPublica(ruta: string): string {
+  return `${import.meta.env.BASE_URL}${ruta.replace(/^\/+/, '')}`;
+}
+
 /** Ruta pública del SVG respetando la base de la aplicación (`import.meta.env.BASE_URL`). */
 function urlDelSvg(): string {
   return `${import.meta.env.BASE_URL}${config.value.svg.replace(/^\/+/, '')}`;
@@ -710,17 +715,28 @@ defineExpose({ activar, reiniciar });
         :aria-busy="estadoSvg === 'cargando'"
         data-testid="multicapa-lienzo"
       >
-        <div
-          v-show="estadoSvg === 'listo'"
-          ref="anfitrion"
-          role="group"
-          :aria-label="config.alt"
-          class="anfitrion"
-          data-testid="multicapa-svg"
-          @click="alClicSvg"
-          @pointerover="alPunteroSobre"
-          @pointerleave="alPunteroFuera"
-        />
+        <div v-show="estadoSvg === 'listo'" class="relative">
+          <!-- Ilustración realista bajo las capas: misma caja y mismo encaje que el SVG (los dos centrados y sin
+               recortar), así cada zona queda sobre su estructura. Decorativa: el grupo ya lleva la descripción. -->
+          <img
+            v-if="config.fondo"
+            :src="rutaPublica(config.fondo)"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full rounded-md object-contain"
+            data-testid="multicapa-fondo"
+          />
+          <div
+            ref="anfitrion"
+            role="group"
+            :aria-label="config.alt"
+            class="anfitrion relative"
+            data-testid="multicapa-svg"
+            @click="alClicSvg"
+            @pointerover="alPunteroSobre"
+            @pointerleave="alPunteroFuera"
+          />
+        </div>
         <p
           v-if="estadoSvg === 'cargando'"
           class="text-muted-foreground flex min-h-32 items-center justify-center gap-2 text-sm"

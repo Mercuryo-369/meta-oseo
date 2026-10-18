@@ -336,6 +336,12 @@ export const ConfigMulticapaSchema = z
   .strictObject({
     svg: rutaSvg,
     viewBox,
+    /**
+     * Ilustración realista opcional (webp, png…) que va DEBAJO del SVG, con su misma proporción: el SVG pone encima
+     * las zonas que se tocan (transparentes donde la ilustración ya muestra la estructura) y lo que la ilustración no
+     * puede dibujar con exactitud (moléculas, receptores). No va dentro del SVG: su saneado quita las `<image>`.
+     */
+    fondo: rutaImagen.optional(),
     /** Descripción de la imagen completa, para lectores de pantalla. */
     alt: textoPlano(10, 300),
     modo: z.enum(MODOS_MULTICAPA),
