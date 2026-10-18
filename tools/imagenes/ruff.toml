@@ -1,0 +1,18 @@
+# Configuración de ruff solo para tools/imagenes (no toca la de services/api).
+line-length = 120
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4", "RUF"]
+ignore = [
+    # Mensajes del informe y docstrings en español, largos a propósito; el formateador ya ajusta el código.
+    "E501",
+    # Texto en español con letras como "é": no confundir con caracteres ambiguos.
+    "RUF001", "RUF002", "RUF003",
+]
+
+[lint.isort]
+known-first-party = ["svg_fondo", "imagenes"]
+
+[format]
+line-ending = "lf"

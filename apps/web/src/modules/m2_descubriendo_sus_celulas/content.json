@@ -1729,6 +1729,7 @@
             "config": {
               "svg": "/images/m2/m2_osteoclasto_resorcion.svg",
               "viewBox": "0 0 1000 900",
+              "fondo": "/images/m2/m2_osteoclasto_resorcion.webp",
               "alt": "Osteoclasto multinucleado sobre la superficie ósea, con zona clara, borde festoneado, laguna de Howship y la maquinaria de acidificación y digestión.",
               "modo": "identificar",
               "capas": [

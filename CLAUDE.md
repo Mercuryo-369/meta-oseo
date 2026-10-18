@@ -78,6 +78,9 @@ python tools/guiones/pendientes.py [--comprobar]            # regenera docs/revi
 python tools/guiones/comprobar_docs.py                      # enlaces internos, cifras y ortografía básica de los documentos
 uv run --no-project --with pyyaml --with pytest python -m pytest tools/guiones/tests -q   # pruebas de tools/guiones
 uvx ruff check tools/guiones --config tools/guiones/ruff.toml && uvx ruff format --check tools/guiones --config tools/guiones/ruff.toml
+# Ilustraciones realistas bajo las multicapa, con la GPU local (entorno y modelos en ~/ova-imagenes; ver tools/imagenes/README.md):
+~/ova-imagenes/.venv/Scripts/python.exe tools/imagenes/imagenes.py generar NOMBRE --n 6        # candidatas + hoja de revisión
+~/ova-imagenes/.venv/Scripts/python.exe tools/imagenes/imagenes.py integrar NOMBRE --semilla K # WebP, SVG de zonas y config.fondo
 
 # Docker (construido y probado en local el 2026-10-14; ver docs/guia-instalacion.md). Validar la configuración no exige el motor, pero sí
 # SECRET_KEY y POSTGRES_PASSWORD definidas en el .env:

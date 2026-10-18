@@ -1,0 +1,13 @@
+# Encargos de ilustración realista (tools/imagenes/README.md). Uno por SVG de multicapa.
+#   nombre: el SVG de apps/web/public/images/{modulo}/{nombre}.svg (y el WebP que se genera a su lado)
+#   glifos: capas que NO pinta la IA y quedan dibujadas encima (moléculas, receptores, flechas)
+#   prompt: en inglés, lo propio del dibujo primero y breve (CLIP corta a 77 tokens; el estilo se añade al final)
+#   semilla: la candidata elegida tras revisar la hoja (vacía mientras no se elija)
+encargos:
+  - nombre: m2_osteoclasto_resorcion
+    modulo: m2
+    glifos: [bomba_protones, canal_cloruro, anhidrasa_carbonica_ii, catepsina_k, trap, receptores_rank_cfms]
+    prompt: >-
+      cutaway of a giant osteoclast cell resting on bone, translucent lilac cytoplasm, five dark purple oval nuclei
+      with speckled chromatin, ruffled membrane over a dark acidic resorption pit, porous ivory bone
+    semilla: 6  # sufijo _v2, hoja del 2026-10-18 (refinado 0,62): núcleos con cromatina, sellado y borde festoneado alineados
