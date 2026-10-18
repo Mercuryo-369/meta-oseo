@@ -11,6 +11,7 @@ import {
   liberarEscena,
   normalizarEscena,
   parsearGlb,
+  resaltarNodo,
   ubicarNodoGlb,
   urlGlb,
 } from './glb';
@@ -127,5 +128,34 @@ describe('liberarEscena', () => {
     liberarEscena(malla);
     expect(d1).toHaveBeenCalledTimes(1);
     expect(d2).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('resaltarNodo', () => {
+  it('enciende el brillo del nodo elegido y devuelve los demás a su brillo original', () => {
+    const raiz = new Group();
+    const a = new Group();
+    a.name = 'epifisis';
+    const matA = new MeshStandardMaterial({ emissive: '#000000', emissiveIntensity: 0 });
+    a.add(new Mesh(new BoxGeometry(), matA));
+    const matB = new MeshStandardMaterial({ emissive: '#112233', emissiveIntensity: 0.2 });
+    const b = new Mesh(new BoxGeometry(), matB);
+    b.name = 'diafisis';
+    raiz.add(a, b);
+
+    resaltarNodo(raiz, 'epifisis', '#2a6db5');
+    expect(matA.emissive.getHexString()).toBe('2a6db5');
+    expect(matA.emissiveIntensity).toBeGreaterThan(0);
+    expect(matB.emissive.getHexString()).toBe('112233');
+    expect(matB.emissiveIntensity).toBe(0.2);
+
+    resaltarNodo(raiz, 'diafisis', '#2a6db5');
+    expect(matA.emissive.getHexString()).toBe('000000');
+    expect(matA.emissiveIntensity).toBe(0);
+    expect(matB.emissive.getHexString()).toBe('2a6db5');
+
+    resaltarNodo(raiz, null, '#2a6db5');
+    expect(matB.emissive.getHexString()).toBe('112233');
+    expect(matB.emissiveIntensity).toBe(0.2);
   });
 });

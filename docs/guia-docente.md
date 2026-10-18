@@ -50,12 +50,12 @@ una evaluación final. La mandíbula es el ejemplo recurrente en los seis. Las a
 
 | Tipo | Qué hace el estudiante | Cuántas hay |
 |---|---|---|
-| `multicapa` | Toca o identifica estructuras en un dibujo con capas | <!--c:tipo_multicapa-->30<!--/c--> |
+| `multicapa` | Toca o identifica estructuras en un dibujo con capas | <!--c:tipo_multicapa-->29<!--/c--> |
 | `arrastre-molecular` | Arrastra moléculas hasta su receptor y ve el efecto biológico | <!--c:tipo_arrastre-molecular-->8<!--/c--> |
 | `relacion-columnas` | Relaciona dos columnas (por ejemplo, célula y función) | <!--c:tipo_relacion-columnas-->16<!--/c--> |
 | `quiz` | Responde preguntas (opción múltiple, verdadero o falso, ordenar) con explicación inmediata | <!--c:tipo_quiz-->43<!--/c--> |
 | `video-texto` | Sigue una explicación animada paso a paso junto a un texto | <!--c:tipo_video-texto-->9<!--/c--> |
-| `exploracion-3d` | Gira la mandíbula en 3D (o una escena del remodelado) y consulta sus partes | <!--c:tipo_exploracion-3d-->22<!--/c--> |
+| `exploracion-3d` | Gira la mandíbula o un hueso largo en 3D (o una escena del remodelado) y consulta sus partes | <!--c:tipo_exploracion-3d-->23<!--/c--> |
 
 El contenido de cada módulo vive en **un solo archivo** (`apps/web/src/modules/m{n}_{nombre}/content.json`), no en el
 código de la aplicación: es lo que se edita para cambiar un texto, una pregunta o un puntaje (parte 7).

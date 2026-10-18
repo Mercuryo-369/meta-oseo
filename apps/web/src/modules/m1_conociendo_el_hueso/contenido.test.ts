@@ -314,8 +314,9 @@ describe('módulo 1: cobertura respecto al guion', () => {
     ]);
     expect(porTipo(actividades)).toEqual({
       'arrastre-molecular': 1,
-      'exploracion-3d': 1,
-      multicapa: 6,
+      // m1_1_hueso_largo pasó de multicapa (SVG) a exploración 3D (2026-10-17).
+      'exploracion-3d': 2,
+      multicapa: 5,
       quiz: 5,
       'relacion-columnas': 4,
       'video-texto': 1,

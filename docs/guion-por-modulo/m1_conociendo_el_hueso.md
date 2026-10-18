@@ -134,18 +134,19 @@ Ahora explora tú mismo el hueso largo y comprueba después lo aprendido.
 ##### Actividad m1_1_hueso_largo
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Recorre un hueso largo"
-instrucciones: "Toca cada región del hueso largo para leer qué es y qué hace (con teclado, usa Tab para pasar de una región a otra y Enter para abrir su descripción; también puedes usar la lista de regiones bajo la imagen). Visita al menos las cinco regiones marcadas como requeridas."
+instrucciones: "Gira el hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): está serrado a lo largo para que veas su interior. Toca cada región para leer qué es y qué hace. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco regiones requeridas."
 obligatoria: true
 puntaje_max: 20
 concepto: "Organización macroscópica del hueso largo"
 retroalimentacion:
   acierto: "Muy bien. Ya conoces las regiones de un hueso largo y sabes que no es una pieza maciza: tiene una cavidad medular y una arteria que lo nutre."
   error: "Todavía te faltan regiones por visitar. Revisa las regiones que no tienen la marca de visitada: cada una explica una parte distinta de la estructura del hueso."
-svg: m1_hueso_largo_macro
-modo: explorar
-capas:
+# 2026-10-17: pasa del dibujo SVG (m1_hueso_largo_macro) a un modelo 3D de un hueso largo serrado a lo largo
+# (pedido de la usuaria: el dibujo no se veía profesional). Mismas regiones, textos y requeridas.
+modelo: hueso_largo
+hotspots:
   - id: cartilago_articular
     etiqueta: "Cartílago articular"
     descripcion: "Capa de cartílago hialino que recubre la superficie articular de la epífisis. Amortigua las cargas y reduce la fricción. No lleva periostio ni tiene vasos propios: se nutre del líquido sinovial."
@@ -167,7 +168,7 @@ capas:
   - id: arteria_nutricia
     etiqueta: "Arteria nutricia"
     descripcion: "Vaso principal del hueso. Entra por un foramen de la diáfisis y se ramifica en la médula. Irriga la médula y la parte interna de la cortical; los vasos del periostio irrigan la parte externa."
-requeridas: [epifisis, metafisis, diafisis, cavidad_medular, arteria_nutricia]
+requeridos: [epifisis, metafisis, diafisis, cavidad_medular, arteria_nutricia]
 ```
 
 ##### Actividad m1_1_quiz_conceptos

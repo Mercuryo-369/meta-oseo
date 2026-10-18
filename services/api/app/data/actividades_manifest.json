@@ -3,7 +3,7 @@
   "actividades": {
     "m1_1_hueso_largo": {
       "modulo": 1,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 20,
       "obligatoria": true,
       "seccion": "m1_1_tejido_vivo",

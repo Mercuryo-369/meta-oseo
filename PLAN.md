@@ -256,7 +256,7 @@ Cada actividad emite `completada(puntaje)`; la store de gamificación acumula y 
 
 | Riesgo | Mitigación |
 |---|---|
-| Móvil al 100 % con 3D | 3D solo en mandíbula y células; todo lo demás en SVG. Probar en teléfono real desde la Fase 1. |
+| Móvil al 100 % con 3D | 3D en mandíbula, células, hueso largo y escenas procedurales, con presupuesto por escena (< 40 000 triángulos y < 40 llamadas de dibujo, contando la doble pasada y las sombras); todo lo demás en SVG. Probar en teléfono real desde la Fase 1. |
 | Módulos 3, 4 y 5 muy densos | Motor de actividades genérico primero; el contenido se vuelca como JSON, no como código. |
 | Contenido del docente llega tarde | Fase 0 arranca ya; Módulo 1 como piloto porque es el de menor densidad. |
 | Alucinaciones en contenido médico | RAG obligatorio con citas, revisión docente de prompts, disclaimer. |

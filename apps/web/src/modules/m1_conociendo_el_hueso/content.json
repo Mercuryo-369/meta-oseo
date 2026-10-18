@@ -481,9 +481,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m1_1_hueso_largo",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Recorre un hueso largo",
-            "instrucciones": "Toca cada región del hueso largo para leer qué es y qué hace (con teclado, usa Tab para pasar de una región a otra y Enter para abrir su descripción; también puedes usar la lista de regiones bajo la imagen). Visita al menos las cinco regiones marcadas como requeridas.",
+            "instrucciones": "Gira el hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): está serrado a lo largo para que veas su interior. Toca cada región para leer qué es y qué hace. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco regiones requeridas.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
@@ -492,11 +492,9 @@
             },
             "concepto": "Organización macroscópica del hueso largo",
             "config": {
-              "svg": "/images/m1/m1_hueso_largo_macro.svg",
-              "viewBox": "0 0 800 600",
-              "alt": "Corte longitudinal de un hueso largo (por ejemplo, fémur) con sus regiones y su irrigación principal.",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "hueso_largo",
+              "alt": "Modelo tridimensional de un hueso largo (un fémur acortado) serrado a lo largo: se ven la cortical, el hueso esponjoso de los extremos, la cavidad medular con médula amarilla, la línea epifisaria, el cartílago articular y la arteria nutricia.",
+              "nodos": [
                 {
                   "id": "cartilago_articular",
                   "etiqueta": "Cartílago articular",
@@ -533,7 +531,7 @@
                   "descripcion": "Vaso principal del hueso. Entra por un foramen de la diáfisis y se ramifica en la médula. Irriga la médula y la parte interna de la cortical; los vasos del periostio irrigan la parte externa."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "epifisis",
                 "metafisis",
                 "diafisis",
