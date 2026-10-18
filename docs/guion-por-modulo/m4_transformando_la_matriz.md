@@ -1010,19 +1010,19 @@ Como contraste, el CTX (fragmento del telopéptido C del colágeno I) es el marc
 ```yaml
 tipo: exploracion-3d
 titulo: "El frente de mineralización, capa por capa"
-instrucciones: "Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de una superficie ósea en formación. Recórrelo de la superficie hacia el interior y toca cada estructura para leer su ficha. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cuatro estructuras requeridas."
+instrucciones: "Lee cada pista y toca en el corte la estructura que describe (con teclado, Tab y Enter). Al acertar lees su ficha. Debes ubicar cuatro estructuras."
 obligatoria: true
 puntaje_max: 30
 concepto: "Frente de mineralización"
 retroalimentacion:
   acierto: "Bien: ubicas el frente como el límite entre el osteoide blando y el hueso mineralizado, con el osteocito ya incluido en la matriz."
-  error: "Todavía te faltan estructuras por visitar. Recorre el corte en orden, de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
+  error: "Esa no es la estructura de la pista. Recuerda el orden de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
 # 2026-10-18: pasa de la multicapa sobre el dibujo m4_frente_mineralizacion (modo identificar, con una ilustración
 # hecha con IA debajo que tenía errores: osteoblastos como cajas y vesículas gigantes) a un modelo 3D construido por
 # código: un bloque de superficie ósea en formación cortado de la superficie hacia el interior. Mismas estructuras,
-# textos, requeridas y puntaje. La exploración 3D no tiene modo identificar: las pistas de abajo (comentadas) quedan
-# sin uso mientras no lo tenga; se conservan para el docente.
+# textos, pistas, requeridas y puntaje; conserva el modo identificar (exploración 3D con consignas).
 modelo: frente_mineralizacion
+modo: identificar
 hotspots:
   - id: osteoblastos
     etiqueta: "Osteoblastos"
@@ -1030,22 +1030,22 @@ hotspots:
   - id: osteoide
     etiqueta: "Osteoide"
     descripcion: "Matriz recién secretada, sin mineral. En hueso normal la costura mide aproximadamente 10 µm [verificar]. Un grosor mucho mayor sugiere retraso de la mineralización."
-    # pista (modo identificar): "La capa de matriz blanda recién secretada que aún no tiene mineral, entre las células de superficie y el hueso duro."
+    pista: "La capa de matriz blanda recién secretada que aún no tiene mineral, entre las células de superficie y el hueso duro."
   - id: vesiculas_matriz
     etiqueta: "Vesículas de matriz"
     descripcion: "Pequeñas vesículas en el osteoide, donde nacen los primeros cristales (sección 4.3)."
   - id: frente_mineralizacion
     etiqueta: "Frente de mineralización"
     descripcion: "Límite entre el osteoide y el hueso mineralizado. Avanza hacia la superficie a medida que se forma matriz nueva. Es donde se fija la tetraciclina."
-    # pista (modo identificar): "La línea de transición donde la matriz blanda pasa a matriz con mineral y donde se fija la tetraciclina."
+    pista: "La línea de transición donde la matriz blanda pasa a matriz con mineral y donde se fija la tetraciclina."
   - id: hueso_mineralizado
     etiqueta: "Hueso mineralizado"
     descripcion: "Matriz con mineral. Tras la fase primaria tiene aproximadamente 60 a 70 % del mineral máximo y sigue madurando durante meses o años [verificar]."
-    # pista (modo identificar): "La matriz dura y ya mineralizada, situada más al interior que el frente, donde quedan incluidas las células."
+    pista: "La matriz dura y ya mineralizada, situada más al interior que el frente, donde quedan incluidas las células."
   - id: osteocito
     etiqueta: "Osteocito"
     descripcion: "Osteoblasto que quedó incluido en la matriz, en su laguna. Regula la mineralización mediante proteínas como DMP1 y produce FGF23."
-    # pista (modo identificar): "La célula con prolongaciones que quedó atrapada en una laguna dentro de la matriz mineralizada."
+    pista: "La célula con prolongaciones que quedó atrapada en una laguna dentro de la matriz mineralizada."
   - id: canaliculos
     etiqueta: "Canalículos"
     descripcion: "Conductos que comunican los osteocitos entre sí y con la superficie. Por ellos circulan líquido, iones y señales."
@@ -1972,7 +1972,7 @@ Segunda ronda: ajuste del guion tras la revisión científica independiente. Los
 | Instrucciones y textos por encima de los límites; sin explicación por par (menor) | Aceptado | Se acortaron las instrucciones del arrastre, la evaluación final y las tres relaciones a 300 caracteres o menos, se acortó `r_dmp1` a menos de 140 y se añadió una explicación por cada par de las tres relaciones. |
 | DMP1 "frena el FGF23" (menor) | Aceptado | Se cambió a "restringe la producción de FGF23" en la relación, la retroalimentación y el glosario. |
 | Hotspots mandibulares sin [verificar]; cóndilo "cubierto por cartílago" (menor) | Aceptado | Se añadió [verificar] a la mineralización por región y a la reacción del alvéolo, se corrigió la descripción del cóndilo (capa articular fibrosa sobre cartílago secundario) y se amplió la nota de verificación. |
-| Actividades de exploración sin acto de evaluación; hotspots internos difíciles en móvil (menor) | Aceptado en parte | `m4_multicapa_frente` y `m4_multicapa_homeostasis` pasaron a modo identificar con pista por capa requerida, y el 3D ofrece lista de hotspots. Se mantienen como exploración la barra de composición, la fibrilla mineralizada, el video y el 3D, que introducen contenido nuevo; no se añadieron micropreguntas por hotspot. El 2026-10-18 `m4_multicapa_frente` pasó a exploración 3D (modelo `frente_mineralizacion`) y perdió el modo identificar: queda por acordar con el docente si se repone. |
+| Actividades de exploración sin acto de evaluación; hotspots internos difíciles en móvil (menor) | Aceptado en parte | `m4_multicapa_frente` y `m4_multicapa_homeostasis` pasaron a modo identificar con pista por capa requerida, y el 3D ofrece lista de hotspots. Se mantienen como exploración la barra de composición, la fibrilla mineralizada, el video y el 3D, que introducen contenido nuevo; no se añadieron micropreguntas por hotspot. El 2026-10-18 `m4_multicapa_frente` pasó a exploración 3D (modelo `frente_mineralizacion`) y conserva el modo identificar con las mismas pistas. |
 | Distractores absurdos, respuesta más larga y preguntas repetidas (menor) | Aceptado | Se reescribieron los distractores de `m4_f_alp_osteomalacia`, `m4_q_ha_reservorio`, `m4_f_osteomalacia_histologia` y `m4_q_vitd_mecanismo`, se acortaron las opciones correctas más largas y se sustituyeron `m4_f_anexinas` y `m4_f_ubicacion_mineral` por preguntas nuevas de calcitonina y de osteocalcina con vitamina K. La mineralización primaria y secundaria se evalúa en el quiz obligatorio de 4.6, y PHOSPHO1 en el arrastre obligatorio y en un refuerzo. |
 | Omisión de osteomalacia oncogénica, enfermedad renal crónica y siglas (menor) | Aceptado | Se añadieron ambas causas a 4.8 y a la tabla, y al glosario RGD, GPI, ACP, BSAP, MS/OS, ANKH y los dos tiempos. |
 | Orden estricto de osteoide y vesículas (menor) | Aceptado | Ambos pasos se fusionaron; el orden queda en seis pasos sin ambigüedad. |

@@ -1143,18 +1143,20 @@ El diente se desplaza a través del hueso porque uno de los lados se reabsorbe y
 
 ```yaml
 tipo: exploracion-3d
-titulo: "Recorre el ligamento periodontal"
-instrucciones: "Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es la raíz de un diente cortada a lo largo en su alvéolo y empujada por una fuerza lateral. Toca cada parte para leer qué es y qué hace. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las nueve partes requeridas."
+titulo: "Identifica las partes del ligamento periodontal"
+instrucciones: "Lee la pista y toca la parte del dibujo que le corresponde. Si aciertas, se revela su nombre y su explicación; cada error resta una parte del puntaje. Con teclado: Tab recorre las capas y Enter elige la enfocada. Nada depende del mouse."
 obligatoria: true
 puntaje_max: 20
-concepto: "ligamento_periodontal"
+concepto: "Ligamento periodontal"
 retroalimentacion:
   acierto: "Bien. Ubicaste las células del ligamento y del hueso alveolar, y entendiste qué ocurre en el lado de presión y en el lado de tensión."
-  error: "Todavía te faltan partes por visitar. Repasa la tabla de células del ligamento y recuerda: presión, resorción por osteoclastos; tensión, formación por osteoblastos."
-# 2026-10-18: pasa del dibujo SVG (m2_ligamento_periodontal, modo identificar) a un modelo 3D de la raíz en su
-# alvéolo construido por código (la ilustración hecha con IA tenía errores). Mismas partes, etiquetas y requeridas;
-# la exploración no tiene pistas: cada pista pasa al inicio de su descripción.
+  parcial: "Vas bien; repasa la tabla de células del ligamento y qué ocurre en el lado de presión (resorción) y en el de tensión (formación)."
+  error: "Alguna capa no coincide con su pista. Repasa la tabla de células del ligamento y recuerda: presión, resorción por osteoclastos; tensión, formación por osteoblastos."
+# 2026-10-18: pasa del dibujo SVG (m2_ligamento_periodontal) a un modelo 3D de la raíz en su alvéolo construido por
+# código (la ilustración hecha con IA tenía errores). Mismas partes, textos, pistas, requeridas y puntaje; conserva el
+# modo identificar (exploración 3D con consignas).
 modelo: ligamento_periodontal
+modo: identificar
 hotspots:
   - id: cemento_radicular
     etiqueta: "Cemento radicular"
@@ -1164,34 +1166,43 @@ hotspots:
     descripcion: "Tejido conectivo fibroso, muy celular y vascularizado, situado entre la raíz y el hueso. Mide aproximadamente entre 0,15 y 0,4 mm de ancho [verificar] y amortigua las fuerzas de la masticación. En el modelo está ensanchado para que se vean sus células."
   - id: fibras_sharpey
     etiqueta: "Fibras de Sharpey"
-    descripcion: "Extremos de los haces de colágeno (las fibras principales del ligamento) que quedan incluidos en el cemento y en el hueso y anclan el diente. Transmiten al hueso alveolar las fuerzas de la masticación."
+    descripcion: "Son los extremos de las fibras principales del ligamento. Transmiten al hueso alveolar las fuerzas de la masticación."
+    pista: "Extremos de los haces de colágeno que quedan incluidos en el cemento y en el hueso y anclan el diente."
   - id: hueso_alveolar_propio
     etiqueta: "Hueso alveolar propio"
-    descripcion: "Lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de anclaje. También se llama hueso fasciculado. Está perforado por conductos vasculares y en la radiografía se ve como la lámina dura."
+    descripcion: "También se llama hueso fasciculado. Está perforado por conductos vasculares y en la radiografía se ve como la lámina dura."
+    pista: "Lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de anclaje."
   - id: fibroblastos_periodontales
     etiqueta: "Fibroblastos periodontales"
-    descripcion: "Células más abundantes del tejido fibroso situado entre la raíz y el hueso; renuevan su colágeno de forma continua. Además expresan RANKL y OPG, con lo que participan en el control de los osteoclastos. Algunos son progenitores."
+    descripcion: "Además expresan RANKL y OPG, con lo que participan en el control de los osteoclastos. Algunos son progenitores."
+    pista: "Células más abundantes del tejido fibroso situado entre la raíz y el hueso; renuevan su colágeno de forma continua."
   - id: celulas_progenitoras_perivasculares
     etiqueta: "Células progenitoras perivasculares"
     descripcion: "Células madre mesenquimales cercanas a los vasos que reponen fibroblastos, cementoblastos y osteoblastos."
   - id: cementoblastos
     etiqueta: "Cementoblastos"
-    descripcion: "Células cúbicas sobre la superficie de la raíz que depositan el tejido mineralizado donde se insertan las fibras. Forman el cemento radicular. Derivan del folículo dental, es decir, del ectomesénquima."
+    descripcion: "Forman el cemento radicular. Derivan del folículo dental, es decir, del ectomesénquima."
+    pista: "Células cúbicas sobre la superficie de la raíz que depositan el tejido mineralizado donde se insertan las fibras."
   - id: osteoblastos_alveolares
     etiqueta: "Osteoblastos alveolares"
-    descripcion: "Células formadoras de hueso alineadas en la cara del hueso que mira al tejido fibroso entre la raíz y el hueso. Forman hueso alveolar, sobre todo en el lado de tensión. Sus progenitores provienen de células perivasculares del ligamento."
+    descripcion: "Forman hueso alveolar, sobre todo en el lado de tensión. Sus progenitores provienen de células perivasculares del ligamento."
+    pista: "Células formadoras de hueso alineadas en la cara del hueso que mira al tejido fibroso entre la raíz y el hueso."
   - id: osteoclastos_alveolares
     etiqueta: "Osteoclastos alveolares"
-    descripcion: "Células gigantes multinucleadas que, cuando hay resorción, se apoyan en depresiones de la superficie del hueso. Predominan en el lado de presión. Vienen de la médula ósea, no del folículo dental."
+    descripcion: "Predominan en el lado de presión. Vienen de la médula ósea, no del folículo dental."
+    pista: "Células gigantes multinucleadas que, cuando hay resorción, se apoyan en depresiones de la superficie del hueso."
   - id: restos_epiteliales_malassez
     etiqueta: "Restos epiteliales de Malassez"
-    descripcion: "Pequeños cúmulos de células cerca del cemento, vestigios de la estructura que guió la formación de la raíz. Son remanentes de la vaina epitelial radicular de Hertwig. No son células óseas ni mesenquimales."
+    descripcion: "Son remanentes de la vaina epitelial radicular de Hertwig. No son células óseas ni mesenquimales."
+    pista: "Pequeños cúmulos de células cerca del cemento, vestigios de la estructura que guió la formación de la raíz."
   - id: lado_presion
     etiqueta: "Lado de presión"
-    descripcion: "Región del tejido fibroso entre la raíz y el hueso que se comprime cuando una fuerza empuja el diente. Allí aumenta RANKL y predomina la resorción ósea, lo que abre espacio para el movimiento del diente."
+    descripcion: "Allí aumenta RANKL y predomina la resorción ósea, lo que abre espacio para el movimiento del diente."
+    pista: "Región del tejido fibroso entre la raíz y el hueso que se comprime cuando una fuerza empuja el diente."
   - id: lado_tension
     etiqueta: "Lado de tensión"
-    descripcion: "Región del tejido fibroso entre la raíz y el hueso que se estira cuando una fuerza empuja el diente. Allí se estimula a los osteoblastos y predomina la formación de hueso."
+    descripcion: "Allí se estimula a los osteoblastos y predomina la formación de hueso."
+    pista: "Región del tejido fibroso entre la raíz y el hueso que se estira cuando una fuerza empuja el diente."
 requeridos: [fibras_sharpey, hueso_alveolar_propio, fibroblastos_periodontales, cementoblastos, osteoblastos_alveolares, osteoclastos_alveolares, restos_epiteliales_malassez, lado_presion, lado_tension]
 ```
 
