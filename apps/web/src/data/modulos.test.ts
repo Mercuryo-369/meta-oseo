@@ -66,8 +66,9 @@ describe('config', () => {
   });
 });
 
-// Los SVG ya producidos, tal como los ve el bundler: la portada debe apuntar a uno que exista.
-const IMAGENES = import.meta.glob('../../public/images/m*/*.svg', {
+// Las imágenes ya producidas, tal como las ve el bundler: la portada debe apuntar a una que exista. Puede ser un SVG
+// o un render/ilustración en WebP (desde 2026-10-18: el modelo 3D de la osteona en m1 y el osteoclasto en m2).
+const IMAGENES = import.meta.glob('../../public/images/m*/*.{svg,webp}', {
   query: '?url',
   import: 'default',
 });
@@ -88,11 +89,11 @@ describe('identidad de cada módulo', () => {
     expect(new Set(MODULOS.map((m) => m.identidad.portada.src)).size).toBe(6);
   });
 
-  it('la portada es un SVG ya producido de la carpeta de su módulo y el archivo existe', () => {
+  it('la portada es una imagen ya producida de la carpeta de su módulo y el archivo existe', () => {
     for (const m of MODULOS) {
       const { src, ajuste } = m.identidad.portada;
       expect(src).toMatch(
-        new RegExp('^/images/m' + m.numero + '/m' + m.numero + '_[a-z0-9_]+[.]svg$'),
+        new RegExp('^/images/m' + m.numero + '/m' + m.numero + '_[a-z0-9_]+[.](svg|webp)$'),
       );
       expect(['cubrir', 'contener']).toContain(ajuste);
       expect(Object.keys(IMAGENES), src).toContain(`../../public${src}`);
@@ -100,7 +101,7 @@ describe('identidad de cada módulo', () => {
   });
 
   it('una portada con rótulos dentro del dibujo se muestra entera: recortarla cortaría sus palabras', () => {
-    for (const m of MODULOS) {
+    for (const m of MODULOS.filter((x) => x.identidad.portada.src.endsWith('.svg'))) {
       const { src, ajuste } = m.identidad.portada;
       const svg = TEXTOS_SVG[`../../public${src}`] ?? '';
       expect(svg.length, src).toBeGreaterThan(0);
@@ -109,7 +110,8 @@ describe('identidad de cada módulo', () => {
   });
 
   it('el marco de la portada es apaisado: ninguna portada es una figura vertical que quede diminuta', () => {
-    for (const m of MODULOS) {
+    // Los WebP (render de m1, 1064 x 840; ilustración de m2, 1200 x 1080) se comprobaron al producirlos.
+    for (const m of MODULOS.filter((x) => x.identidad.portada.src.endsWith('.svg'))) {
       const svg = TEXTOS_SVG[`../../public${m.identidad.portada.src}`] ?? '';
       const [, ancho, alto] = /viewBox="0 0 (\d+) (\d+)"/.exec(svg)!.map(Number);
       expect(ancho! / alto!, m.identidad.portada.src).toBeGreaterThanOrEqual(1);

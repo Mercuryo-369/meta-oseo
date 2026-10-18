@@ -32,7 +32,7 @@ export interface IdentidadModulo {
   frase: string;
   icono: IconoModulo;
   portada: {
-    /** SVG ya producido para el módulo, en `public/images/m{n}/` (ruta pública). */
+    /** Imagen del módulo (SVG o render/ilustración en WebP), en `public/images/m{n}/` (ruta pública). */
     src: string;
     /** Cómo encaja en el recuadro: `cubrir` recorta a los bordes, `contener` muestra todo. */
     ajuste: 'cubrir' | 'contener';
@@ -64,7 +64,12 @@ export const MODULOS: readonly Modulo[] = [
       rotulo: 'Un tejido vivo',
       frase: 'El hueso, órgano y tejido a la vez',
       icono: 'hueso',
-      portada: { src: '/images/m1/m1_osteona_detalle.svg', ajuste: 'cubrir', posicion: 'center' },
+      // Render del modelo 3D de la osteona (el mismo de la actividad m1_4_osteona), sin fondo.
+      portada: {
+        src: '/images/m1/m1_portada_osteona.webp',
+        ajuste: 'contener',
+        posicion: 'center',
+      },
     },
   },
   {
@@ -81,7 +86,8 @@ export const MODULOS: readonly Modulo[] = [
       // El árbol de linajes (viewBox 1000 x 1540) es una figura vertical: en un marco apaisado queda diminuto y
       // recortarlo parte sus rótulos. La osteoclasto (sin rótulos) llena el marco y es la meta de la frase.
       portada: {
-        src: '/images/m2/m2_osteoclasto_resorcion.svg',
+        // La ilustración realista; el SVG del mismo nombre es solo la capa de zonas táctiles que va encima.
+        src: '/images/m2/m2_osteoclasto_resorcion.webp',
         ajuste: 'cubrir',
         posicion: 'center',
       },

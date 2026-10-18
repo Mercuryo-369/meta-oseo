@@ -111,7 +111,8 @@ const VARIANTES_ROTULADAS: Record<string, string> = {
 
 /** Dibujos que no usa content.json sino otra parte de la aplicación. */
 const FUERA_DEL_CONTENIDO: Record<string, string> = {
-  m1_osteona_detalle: 'portada del módulo (src/data/modulos.ts)',
+  m1_osteona_detalle:
+    'dibujo de referencia del modelo 3D `osteona` (tabla de ilustraciones del guion)',
 };
 
 const ARCHIVOS = Object.keys(CAPAS_POR_ARCHIVO);
@@ -299,7 +300,7 @@ describe('ilustraciones SVG del módulo 1', () => {
         if (FUERA_DEL_CONTENIDO[nombre]) continue;
         expect(usados, nombre).toContain(`/images/m1/${nombre}.svg`);
       }
-      expect(moduloPorNumero(1)?.identidad.portada?.src).toBe('/images/m1/m1_osteona_detalle.svg');
+      expect(moduloPorNumero(1)?.identidad.portada?.src).toBe('/images/m1/m1_portada_osteona.webp');
     });
   });
 
