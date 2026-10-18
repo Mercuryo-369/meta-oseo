@@ -23,23 +23,8 @@ encargos:
         fuerza: 0.9
 
   # --- Módulo 1 ---
-  - nombre: m1_corte_hueso_capas
-    modulo: m1
-    glifos: []
-    prompt: >-
-      longitudinal cut through the end of a long bone, thin fibrous periosteum on the outside, dense ivory cortical
-      bone thick along the shaft and thin at the epiphysis, arched spongy trabecular bone, yellow fatty marrow, white
-      background
-    semilla: 3
-        fuerza: 0.8
-  - nombre: m1_osteona_detalle
-    modulo: m1
-    glifos: []
-    prompt: >-
-      histology cross-section of compact bone, round osteons with concentric lamellae around a central Haversian canal
-      with a blood vessel, osteocyte lacunae with fine canaliculi, scalloped cement lines, oblique Volkmann canal
-    semilla: 1
-        crecer: 8
+  # m1_corte_hueso_capas: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
+  # m1_osteona_detalle: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
   - nombre: m1_proceso_alveolar_corte
     modulo: m1
     glifos: []
@@ -49,15 +34,7 @@ encargos:
       bone with marrow, mandibular canal with nerve and vessels
     negativo: red crown, wood, bark, extra teeth, neighbouring teeth, gums, mouth
     semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (coronas con vasos o forma irreal, raíces que no son las del dibujo); se queda en SVG
-  - nombre: m1_entretejido_laminar
-    modulo: m1
-    glifos: []
-    prompt: >-
-      two microscopic panels of bone tissue side by side, left woven bone with thick randomly interlaced collagen
-      bundles and many large osteocytes, right lamellar bone with parallel layers and few aligned osteocytes, white
-      background
-    semilla: 2
-        fuerza: 0.85
+  # m1_entretejido_laminar: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
   - nombre: m1_wolff_femur
     modulo: m1
     glifos: [trayectorias_compresion, trayectorias_traccion]
@@ -97,34 +74,11 @@ encargos:
       Meckel cartilage rod, unerupted tooth germs inside the jaw, translucent embryo tissue, macro photograph, white background
     negativo: adult teeth, erupted teeth, skull, gums, mouth, smile
     semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dibuja dentaduras adultas); se queda en SVG
-  - nombre: m3_osteoide_hueso_inmaduro
-    modulo: m3
-    glifos: []
-    prompt: >-
-      microscopic section of growing bone, row of plump osteoblasts on a pale pink osteoid seam, mineralization
-      front, woven bone with many round osteocytes, capillary with red cells in soft tissue above, lamellar bone on the right
-    negativo: labels, letters, frames, ruler
-    semilla: 9
-    sufijo: _r2
-        fuerza: 0.85
-  - nombre: m3_osteocito_red_lacuno_canalicular
-    modulo: m3
-    glifos:
-      [fibras_de_anclaje, integrinas_puntos_union, cilio_primario, canal_piezo1, conexina_43, flechas_flujo_liquido,
-       mensajeros_pge2_no]
-    prompt: >-
-      osteocyte in its lacuna deep in mineralized bone, dendritic processes running through canaliculi with a fluid
-      space around them, neighbouring osteocytes, lining cells on the bone surface, Haversian capillary with red cells
-    semilla: 2
+  # m3_osteoide_hueso_inmaduro: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
+  # m3_osteocito_red_lacuno_canalicular: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
 
   # --- Módulo 4 ---
-  - nombre: m4_frente_mineralizacion
-    modulo: m4
-    glifos: [marcas_tetraciclina]
-    prompt: >-
-      histology of a bone forming surface, row of osteoblasts on top, pale unmineralized osteoid seam, small matrix
-      vesicles, mineralization front, pink mineralized bone with osteocytes and canaliculi
-    semilla: 2
+  # m4_frente_mineralizacion: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
 
   # --- Módulo 5 ---
   - nombre: m5_hueso_cortical_trabecular_alveolar
@@ -156,18 +110,5 @@ encargos:
     semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dientes o cavidades inventados a los lados); se queda en SVG
 
   # --- Módulo 6 ---
-  - nombre: m6_tejido_oseo_envejecido
-    modulo: m6
-    glifos: [matriz_colageno_age]
-    prompt: >-
-      aged cortical bone cross-section, osteon with sparse osteocytes, empty and mineralized lacunae, a thin
-      microcrack, an enlarged cortical pore, endosteal surface with few cells, fatty marrow with large adipocytes below
-    semilla: 2
-        fuerza: 0.85
-  - nombre: m6_hueso_normal_osteoporotico
-    modulo: m6
-    glifos: [perforacion_trabecular]  # colapso_vertebral es una vértebra rellena: taparía la ilustración
-    prompt: >-
-      four anatomical panels, vertebral body with dense connected trabeculae, osteoporotic vertebra with thin sparse
-      trabeculae, thick cortical bone ring, thin porous cortical ring with wide marrow cavity, white background
-    semilla: 3
+  # m6_tejido_oseo_envejecido: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
+  # m6_hueso_normal_osteoporotico: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).

@@ -96,77 +96,29 @@ uv run --no-project --with pytest python -m pytest tools/imagenes/tests -q
 uvx ruff check tools/imagenes --config tools/imagenes/ruff.toml && uvx ruff format --check tools/imagenes --config tools/imagenes/ruff.toml
 ```
 
-## Resultado de la primera pasada (2026-10-18)
+## Resultado (2026-10-18)
 
-**Con ilustración (10):**
+**En uso: solo el osteoclasto (`m2_osteoclasto_resorcion`).** Se integró la corrección por capas (`corregir`) que
+convierte la zona clara en el pie del citoplasma sellado contra el hueso.
 
-| Módulo | SVG |
-|---|---|
-| m1 | `m1_corte_hueso_capas`, `m1_osteona_detalle`, `m1_entretejido_laminar` |
-| m2 | `m2_osteoclasto_resorcion`, `m2_ligamento_periodontal` |
-| m3 | `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` |
-| m4 | `m4_frente_mineralizacion` |
-| m6 | `m6_tejido_oseo_envejecido`, `m6_hueso_normal_osteoporotico` |
+Al revisarlas a tamaño completo, estructura por estructura, las otras 9 ilustraciones tenían errores histológicos.
+Por ejemplo, el hueso laminar salía como bandas con cavidades, la osteona con radios y la cortical osteoporótica
+gruesa. `corregir` tampoco los arregló, porque el modelo no conoce la histología. Esas 9 actividades se convirtieron
+en **exploraciones 3D con modelos construidos por código** (docs/realismo-3d.md, `scenes/modelosPorCodigo.ts`):
+- Exactas por construcción.
+- Con los materiales realistas de las demás escenas.
+- Las de modo identificar lo conservan (`config.modo`).
 
-**Siguen en SVG por falta de exactitud anatómica tras dos tandas (8):**
+Las 8 multicapa que no lograron una candidata exacta siguen con su SVG:
+- `m1_wolff_femur`
+- `m2_osteoblasto_activo`
+- `m2_osteocito_lagunar`
+- `m3_mandibula_desarrollo`
+- `m1_proceso_alveolar_corte`
+- `m5_hueso_cortical_trabecular_alveolar`
+- `m5_movimiento_ortodontico_pdl`
+- `m5_cicatrizacion_alveolo_fases`
 
-| SVG | Motivo |
-|---|---|
-| `m1_wolff_femur` | Cabeza femoral sin forma real. |
-| `m2_osteoblasto_activo` | Células como cajas. |
-| `m2_osteocito_lagunar` | Núcleo gigante sin citoplasma. |
-| `m3_mandibula_desarrollo` | Dentaduras adultas. |
-| `m1_proceso_alveolar_corte`, `m5_hueso_cortical_trabecular_alveolar` | Coronas con vasos y raíces distintas a las del dibujo. |
-| `m5_movimiento_ortodontico_pdl`, `m5_cicatrizacion_alveolo_fases` | Dientes y cavidades inventados. |
-
-**La pauta.** El modelo acierta con los tejidos y la histología. Falla con los dientes, la anatomía macroscópica
-compleja y los orgánulos. Para esos casos, la vía exacta es un modelo 3D o un render hecho a mano, no la IA.
-
-## Corrección por capas (`corregir`) y errores pendientes (2026-10-18)
-
-`corregir` repinta solo las zonas de las capas indicadas en `correcciones` del encargo (máscara sacada del SVG) con una
-descripción precisa. Funciona para retoques locales de forma: así se corrigió la zona clara del osteoclasto, que ahora
-es un pie del citoplasma y no dos cuerpos aparte. **No funciona para detalle histológico**: en 9 ilustraciones el
-modelo inventó órganos, picos y cavidades en lugar de laminillas, lagunas o células. Tampoco sirvió un render
-determinista del SVG (exacto, pero con aspecto de plástico) ni la IA a baja intensidad sobre él (sigue siendo
-esquema).
-
-**Errores que siguen en las ilustraciones publicadas, a resolver con el docente:**
-
-| SVG | Error |
-|---|---|
-| `m1_entretejido_laminar` | El hueso laminar sale como bandas con cavidades. |
-| `m1_corte_hueso_capas` | La cortical es pardo rojiza, con aspecto de músculo. |
-| `m1_osteona_detalle` | No se ven las lagunas ni los canalículos. |
-| `m2_ligamento_periodontal` | Raíz con morfología irreal; células como anillos. |
-| `m3_osteoide_hueso_inmaduro` | Osteoblastos como cajas; osteocitos como dianas. |
-| `m3_osteocito_red_lacuno_canalicular` | Células de revestimiento como rebanadas; capilar como diana. |
-| `m4_frente_mineralizacion` | Osteoblastos como cajas; vesículas gigantes. |
-| `m6_tejido_oseo_envejecido` | Osteona con radios en vez de laminillas concéntricas; adipocitos rellenos. |
-| `m6_hueso_normal_osteoporotico` | Aspecto de piedra; la cortical osteoporótica sale gruesa. |
-
-## Qué SVG convertir (propuesta, a revisar con el docente)
-
-**Escenas anatómicas, histológicas o celulares: ganan con la ilustración.**
-
-| Módulo | SVG |
-|---|---|
-| m1 | `m1_corte_hueso_capas`, `m1_osteona_detalle`, `m1_proceso_alveolar_corte`, `m1_entretejido_laminar`, `m1_wolff_femur` |
-| m2 | `m2_osteoclasto_resorcion` (piloto), `m2_osteoblasto_activo`, `m2_osteocito_lagunar`, `m2_ligamento_periodontal` |
-| m3 | `m3_mandibula_desarrollo`, `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` |
-| m4 | `m4_frente_mineralizacion` |
-| m5 | `m5_hueso_cortical_trabecular_alveolar`, `m5_movimiento_ortodontico_pdl`, `m5_cicatrizacion_alveolo_fases` |
-| m6 | `m6_tejido_oseo_envejecido`, `m6_hueso_normal_osteoporotico` |
-
-**Esquemas: se quedan en SVG.** Son vías de señalización, gráficas, mapas y balances, y ahí la ilustración realista
-no aporta nada:
-
-| Módulo | SVG |
-|---|---|
-| m3 | `m3_sensores_mecanicos` (membrana y moléculas), `m3_rutas_formacion_osea`, `m3_mecanostato_ventanas`, `m3_bmp_runx2_osterix`, `m3_via_wnt_esclerostina` |
-| m4 | `m4_fibrilla_colageno`, `m4_fibrilla_mineralizada` (escala molecular), `m4_composicion_matriz`, `m4_homeostasis_calcio_fosfato` |
-| m5 | `m5_ciclo_remodelado_bmu` (línea de tiempo: la IA inventa rótulos), `m5_hormonas_regulacion_calcemia`, `m5_equilibrio_remodelado_alteraciones`, `m5_acoplamiento_matriz_esclerostina`, `m5_osteoclastogenesis_rank_rankl_opg` |
-| m6 | `m6_curva_masa_osea`, `m6_prevencion_mapa` |
-
-Las imágenes estáticas (`tipo: imagen`) y los fondos de arrastre o vídeo siguen siendo SVG. Si se quiere
-ilustrarlos, se puede reutilizar el WebP de su multicapa como `src`, pero eso pierde los glifos.
+**Pauta para usar este flujo en el futuro.** El modelo general (RealVisXL) acierta con superficies y volúmenes, pero no
+con la histología ni con los dientes. Solo sirve para escenas celulares sencillas. Cada ilustración la revisa a tamaño
+completo alguien con formación en histología y la aprueba el docente. Ante la duda, un modelo 3D por código.
