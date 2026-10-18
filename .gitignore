@@ -40,3 +40,6 @@ Thumbs.db
 
 # Sin secretos: configuración de la versión de demostración (Cloudflare)
 !apps/web/.env.demo
+
+# Copias de trabajo temporales de Claude Code (agentes en paralelo)
+.claude/worktrees/
