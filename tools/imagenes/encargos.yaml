@@ -85,14 +85,8 @@ encargos:
       dendrites in canaliculi linking to neighbouring osteocytes, flat cells on the top surface, small capillary in the corner
     negativo: spider, flower, mouth, red center
     semilla:   # 2026-10-18: la mejor (s10 _r2) pinta un núcleo gigante sin citoplasma y las prolongaciones salen de otro punto; se queda en SVG
-  - nombre: m2_ligamento_periodontal
-    modulo: m2
-    glifos: [lado_presion, lado_tension]
-    colores: ["#e0453a"]
-    prompt: >-
-      longitudinal section of a tooth root in its alveolar socket, collagen fibers of the periodontal ligament anchored
-      in cementum and bone, fibroblasts, osteoblasts and osteoclasts along the bone, spongy alveolar bone, histology
-    semilla: 3
+  # m2_ligamento_periodontal: retirado el 2026-10-18. La ilustración tenía una raíz irreal y células como anillos;
+  # la actividad pasó a la exploración 3D `ligamento_periodontal` (apps/web/src/scenes/ligamento_periodontal).
 
   # --- Módulo 3 ---
   - nombre: m3_mandibula_desarrollo

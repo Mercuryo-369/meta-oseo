@@ -318,7 +318,7 @@
     },
     "m2_multicapa_ligamento_periodontal": {
       "modulo": 2,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 20,
       "obligatoria": true,
       "seccion": "m2_5_ligamento_periodontal",

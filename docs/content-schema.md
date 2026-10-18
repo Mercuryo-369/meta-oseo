@@ -940,8 +940,8 @@ El video se carga con `preload="none"`, sin autoplay y con subtítulos en españ
 ### 7.6 `exploracion-3d`: modelo 3D (solo mandíbula y células)
 
 El 3D de exploración es para la mandíbula, las células, el hueso largo de m1 (desde 2026-10-17) y los modelos que
-sustituyen a dibujos de las multicapa, como el frente de mineralización de m4 (desde 2026-10-18). Los valores de
-`modelo` son `mandibula`, `celulas`, `hueso_largo` y `frente_mineralizacion` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
+sustituyen a dibujos de las multicapa (desde 2026-10-18; lista en la sección 9). Los valores de `modelo` son
+`mandibula`, `celulas`, los construidos por código (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
 él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
 abajo). Se completa al visitar los `requeridos` o, en modo `identificar`, al resolver sus consignas.
 
@@ -1207,6 +1207,14 @@ es una región del modelo con ese nombre, y la etiqueta va al punto que da el mo
 `marcas_tetraciclina`. Es un bloque de superficie ósea en formación, cortado de la superficie hacia el interior, que
 se construye por código (`apps/web/src/scenes/frente_mineralizacion/modeloFrenteMineralizacion.ts`), sin GLB y a escala
 (1 unidad = 1 µm). Como en `hueso_largo`, cada nodo es una región del modelo y **no admite `ancla`**.
+
+**Modelo `ligamento_periodontal`** (2026-10-18, actividad m2_multicapa_ligamento_periodontal): `cemento_radicular`,
+`ligamento_periodontal`, `fibras_sharpey`, `hueso_alveolar_propio`, `fibroblastos_periodontales`,
+`celulas_progenitoras_perivasculares`, `cementoblastos`, `osteoblastos_alveolares`, `osteoclastos_alveolares`,
+`restos_epiteliales_malassez`, `lado_presion`, `lado_tension`. Es la raíz de un diente en su alvéolo, cortada a lo
+largo y empujada por una fuerza lateral, que se construye por código
+(`apps/web/src/scenes/ligamento_periodontal/modeloLigamentoPeriodontal.ts`), sin GLB: cada nodo es una región del
+modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `ancla`**.
 
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del

@@ -108,8 +108,9 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
       ]) {
         listas[clave] = elementosDeLista(yaml, clave).length;
       }
-      // `requeridas` (capas o hotspots) va en línea: [a, b, c].
-      listas.requeridas = elementosEnLinea(yaml, 'requeridas');
+      // `requeridas` (capas) o `requeridos` (nodos 3D) va en línea: [a, b, c].
+      listas.requeridas =
+        elementosEnLinea(yaml, 'requeridas') || elementosEnLinea(yaml, 'requeridos');
       actividades.push({
         id: a[1]!,
         seccion: m[3]!,
@@ -224,11 +225,10 @@ describe('módulo 2: esquema, carpeta y recursos', () => {
       if (c.escena?.fondo_svg) rutas.add(c.escena.fondo_svg);
     }
     for (const ruta of rutas) expect(archivosPublicos.has(`/public${ruta}`), ruta).toBe(true);
-    // Seis dibujos: 2.1 (origen), 2.2 (árbol de linajes, también en 2.4), osteoblasto, osteocito,
-    // osteoclasto y ligamento periodontal.
+    // Cinco dibujos: 2.1 (origen), 2.2 (árbol de linajes, también en 2.4), osteoblasto, osteocito y
+    // osteoclasto. El ligamento periodontal (2.5) es un modelo 3D desde 2026-10-18.
     expect([...rutas].sort()).toEqual([
       '/images/m2/m2_arbol_linajes_oseos.svg',
-      '/images/m2/m2_ligamento_periodontal.svg',
       '/images/m2/m2_origen_mandibula.svg',
       '/images/m2/m2_osteoblasto_activo.svg',
       '/images/m2/m2_osteocito_lagunar.svg',
@@ -298,14 +298,15 @@ describe('módulo 2: cobertura del guion', () => {
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 13 actividades del guion (4 multicapa, 4 quiz, 1 relación, 2 videos, 1 arrastre y 1 exploración 3D) más las 3D extra', () => {
+  it('cuenta 13 actividades del guion (3 multicapa, 4 quiz, 1 relación, 2 videos, 1 arrastre y 2 exploraciones 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
-      multicapa: 4,
+      // m2_multicapa_ligamento_periodontal pasó de multicapa (SVG) a exploración 3D (2026-10-18).
+      multicapa: 3,
       quiz: 4,
       'relacion-columnas': 1,
       'video-texto': 2,
       'arrastre-molecular': 1,
-      'exploracion-3d': 1 + EXTRAS_3D.length,
+      'exploracion-3d': 2 + EXTRAS_3D.length,
     });
   });
 
