@@ -939,21 +939,33 @@ El video se carga con `preload="none"`, sin autoplay y con subtítulos en españ
 
 ### 7.6 `exploracion-3d`: modelo 3D (solo mandíbula y células)
 
-El 3D de exploración es para la mandíbula, las células y el hueso largo de m1 (desde 2026-10-17). Hay cuatro valores
-de `modelo`: `mandibula`, `celulas` y `hueso_largo` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
+El 3D de exploración es para la mandíbula, las células, el hueso largo de m1 (desde 2026-10-17) y los modelos que
+sustituyen a dibujos de las multicapa, como el frente de mineralización de m4 (desde 2026-10-18). Los valores de
+`modelo` son `mandibula`, `celulas`, `hueso_largo` y `frente_mineralizacion` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
 él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
-abajo). Se completa al visitar los `requeridos`.
+abajo). Se completa al visitar los `requeridos` o, en modo `identificar`, al resolver sus consignas.
 
 | Campo de `config` | Regla |
 |---|---|
-| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), `hueso_largo` (construido por código, con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
+| `modo` | Opcional: `explorar` (por defecto) o `identificar`. No vale con `procedural` |
+| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), uno de los construidos por código de la sección 9 (con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
 | `alt` | Plano, 10 a 300: descripción del modelo |
-| `nodos[]` | Solo en `mandibula`, `celulas` y `hueso_largo` (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
+| `nodos[]` | Solo en los modelos con nodos (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
 | `ancla` | Solo en `mandibula`. `{ x, y, z }`, cada uno de 0 a 1 en la caja envolvente del modelo (sección 9). Para zonas que **no son una pieza** del modelo |
 | `camara` | `vista` (por defecto `frontal`) y `zoom` (0,5 a 3; por defecto 1) |
+| `pista`, `pistas_extra` | Del nodo, línea de 10 a 200 (hasta 2 extra). Solo cuentan en modo `identificar`, donde todo requerido necesita `pista` |
 | `requeridos` | 1 a 12 ids de nodos (o de pasos, en `procedural`), sin repetir, todos existentes |
 | `escena` | Solo `procedural`: nombre de la escena registrada (una de las de la sección 9) |
 | `linea_de_tiempo` | Solo `procedural`: `{ "pasos": [...] }`, de 2 a 12 pasos (ver abajo) |
+
+**Modo identificar.** Es la misma mecánica que la multicapa (7.1): se pide cada requerido, en orden, por su
+`pista` y luego por sus `pistas_extra`, sin dar el nombre. El estudiante toca el modelo o elige en la lista:
+- Tocar otro nodo cuenta un fallo contra el pedido.
+- Tocar uno ya identificado no cuenta.
+- La precisión es aciertos / (aciertos + fallos).
+
+El `detalle` añade `modo`, `aciertos`, `errores` y `errores_por_nodo`, y la interacción es `identifica_nodo`. Con este
+modo, las multicapa de identificar que pasaron a 3D conservan la evaluación.
 
 La cámara no lleva coordenadas: quien escribe el contenido no puede previsualizar el 3D. Se elige una
 **vista con nombre** (sección 9) y la escena calcula la posición a partir del tamaño del nodo. Sin
@@ -1022,7 +1034,7 @@ lienzo 3D falle** (sección 16).
 }
 ```
 
-**Precisión:** siempre 1.
+**Precisión:** 1 en modo `explorar`; en `identificar`, aciertos / (aciertos + fallos).
 
 #### Variante procedural: escena 3D con línea de tiempo
 
@@ -1189,6 +1201,12 @@ mientras no haya un modelo suyo.
 `linea_epifisaria`, `metafisis`, `diafisis`, `cavidad_medular`, `arteria_nutricia`. Es un hueso largo serrado
 a lo largo que se construye por código (`apps/web/src/scenes/hueso_largo/modeloHuesoLargo.ts`), sin GLB: cada nodo
 es una región del modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `ancla`**.
+
+**Modelo `frente_mineralizacion`** (2026-10-18, actividad m4_multicapa_frente): `osteoblastos`, `osteoide`,
+`vesiculas_matriz`, `frente_mineralizacion`, `hueso_mineralizado`, `osteocito`, `canaliculos`,
+`marcas_tetraciclina`. Es un bloque de superficie ósea en formación, cortado de la superficie hacia el interior, que
+se construye por código (`apps/web/src/scenes/frente_mineralizacion/modeloFrenteMineralizacion.ts`), sin GLB y a escala
+(1 unidad = 1 µm). Como en `hueso_largo`, cada nodo es una región del modelo y **no admite `ancla`**.
 
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del

@@ -6,7 +6,7 @@
  * ids repetidos ni con `requeridos` que no existen: el esquema los rechaza, pero un contenido viejo o
  * escrito a mano no pasa por el esquema en las pruebas), así que se sanea aquí.
  */
-import type { JsonObjeto } from '@/activities/types';
+import type { DetalleExploracion3d, JsonObjeto } from '@/activities/types';
 import { MODELO_PROCEDURAL, estructuraDeNodo } from '@/content/nodos3d';
 import type { ConfigExploracion3d } from '@/content/schema';
 import type { NodoEscena } from '@/scenes/nodosEscena';
@@ -169,4 +169,127 @@ export function restaurarVisitados(
     if (nodo && !ids.includes(nodo.id)) ids.push(nodo.id);
   }
   return ids;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Modo identificar (`config.modo === 'identificar'`): la misma mecánica que la multicapa
+ * ----------------------------------------------------------------------------------------- */
+
+/** Techo de fallos por nodo que se guarda: evita números absurdos en una instantánea manipulada. */
+const MAX_ERRORES_POR_NODO = 999;
+
+export interface ConsignaNodo {
+  /** Id del nodo que hay que tocar. */
+  nodo: string;
+  /** Texto de la consigna (Markdown de una línea). */
+  texto: string;
+}
+
+/** ¿Se juega a identificar? Una escena procedural siempre se explora. */
+export function esModoIdentificar(config: Pick<ConfigExploracion3d, 'modelo' | 'modo'>): boolean {
+  return config.modo === 'identificar' && !esExploracionProcedural(config);
+}
+
+/**
+ * Consignas en el orden de los requeridos (ya saneados): por cada uno, su `pista` y luego sus `pistas_extra`.
+ * Un requerido sin `pista` (el esquema lo rechaza) se pide por su nombre, para no dejar la actividad sin salida.
+ */
+export function consignasDeIdentificar(
+  config: ConfigExploracion3d,
+  exploracion: Exploracion,
+): ConsignaNodo[] {
+  const porId = new Map(config.nodos.map((n) => [n.id, n] as const));
+  const consignas: ConsignaNodo[] = [];
+  for (const id of exploracion.requeridos) {
+    const nodo = porId.get(id);
+    if (!nodo) continue;
+    const textos = [nodo.pista, ...(nodo.pistas_extra ?? [])].filter(
+      (t): t is string => typeof t === 'string' && t.trim() !== '',
+    );
+    if (textos.length === 0) textos.push(`Toca «${nodo.etiqueta}» en el modelo.`);
+    for (const texto of textos) consignas.push({ nodo: id, texto });
+  }
+  return consignas;
+}
+
+export type VeredictoNodo = 'correcta' | 'incorrecta' | 'repetida';
+
+/** `correcta` si es el pedido; `repetida` si ya se identificó antes (no es fallo); si no, `incorrecta`. */
+export function veredictoDeNodo(
+  tocado: string,
+  pedido: string,
+  identificados: ReadonlySet<string>,
+): VeredictoNodo {
+  if (tocado === pedido) return 'correcta';
+  return identificados.has(tocado) ? 'repetida' : 'incorrecta';
+}
+
+/** Nodos ya identificados cuando se han resuelto las primeras `paso` consignas, en orden y sin repetir. */
+export function nodosIdentificados(consignas: readonly ConsignaNodo[], paso: number): string[] {
+  return [...new Set(consignas.slice(0, Math.max(0, paso)).map((c) => c.nodo))];
+}
+
+function limpiarErrores(errores: Record<string, number>): Record<string, number> {
+  const limpio: Record<string, number> = {};
+  for (const [id, n] of Object.entries(errores)) {
+    if (Number.isFinite(n) && n > 0) limpio[id] = Math.min(MAX_ERRORES_POR_NODO, Math.floor(n));
+  }
+  return limpio;
+}
+
+/** Suma de fallos de todos los nodos. */
+export function totalErrores(errores: Record<string, number>): number {
+  return Object.values(limpiarErrores(errores)).reduce((suma, n) => suma + n, 0);
+}
+
+/** Instantánea de un intento de identificar a medias: consigna actual y fallos por nodo pedido. */
+export function crearInstantaneaIdentificar(
+  paso: number,
+  errores: Record<string, number>,
+): JsonObjeto {
+  return { modo: 'identificar', paso, errores_por_nodo: { ...limpiarErrores(errores) } };
+}
+
+/**
+ * Estado que recupera una instantánea de identificar, validado contra las consignas actuales; `null` si no
+ * sirve (otro modo, forma rara o ya resuelta entera) y se empieza de cero.
+ */
+export function restaurarIdentificar(
+  instantanea: unknown,
+  consignas: readonly ConsignaNodo[],
+): { paso: number; errores: Record<string, number> } | null {
+  if (typeof instantanea !== 'object' || instantanea === null || Array.isArray(instantanea)) {
+    return null;
+  }
+  const bruta = instantanea as Record<string, unknown>;
+  if (bruta.modo !== 'identificar') return null;
+  const { paso } = bruta;
+  if (typeof paso !== 'number' || !Number.isInteger(paso) || paso < 0 || paso >= consignas.length) {
+    return null;
+  }
+  const pedidos = new Set(consignas.map((c) => c.nodo));
+  const errores: Record<string, number> = {};
+  const brutos = bruta.errores_por_nodo;
+  if (typeof brutos === 'object' && brutos !== null && !Array.isArray(brutos)) {
+    for (const [id, n] of Object.entries(brutos)) {
+      if (pedidos.has(id) && typeof n === 'number' && Number.isFinite(n) && n > 0) {
+        errores[id] = Math.min(MAX_ERRORES_POR_NODO, Math.floor(n));
+      }
+    }
+  }
+  return { paso, errores };
+}
+
+/** `detalle` del resultado en modo identificar. */
+export function detalleDeIdentificar(
+  consignas: readonly ConsignaNodo[],
+  errores: Record<string, number>,
+): DetalleExploracion3d {
+  return {
+    modo: 'identificar',
+    visitados: nodosIdentificados(consignas, consignas.length),
+    aciertos: consignas.length,
+    errores: totalErrores(errores),
+    errores_por_nodo: limpiarErrores(errores),
+  };
 }

@@ -24,6 +24,7 @@ export const MODELOS_3D = [
   'hueso_capas',
   'osteona',
   'hueso_entretejido_laminar',
+  'frente_mineralizacion',
 ] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
@@ -107,6 +108,22 @@ const NODOS_HUESO_ENTRETEJIDO_LAMINAR: readonly NodoCatalogo[] = [
   { id: 'osteocitos_laminares', etiqueta: 'Osteocitos del hueso laminar' },
 ];
 
+/**
+ * Bloque de una superficie ósea en formación (`scenes/frente_mineralizacion/modeloFrenteMineralizacion.ts`, actividad
+ * m4_multicapa_frente; sustituye a la ilustración de la multicapa desde 2026-10-18): cada región es un grupo del
+ * modelo con este nombre, de la superficie hacia el interior.
+ */
+const NODOS_FRENTE_MINERALIZACION: readonly NodoCatalogo[] = [
+  { id: 'osteoblastos', etiqueta: 'Osteoblastos' },
+  { id: 'osteoide', etiqueta: 'Osteoide' },
+  { id: 'vesiculas_matriz', etiqueta: 'Vesículas de matriz' },
+  { id: 'frente_mineralizacion', etiqueta: 'Frente de mineralización' },
+  { id: 'hueso_mineralizado', etiqueta: 'Hueso mineralizado' },
+  { id: 'osteocito', etiqueta: 'Osteocito' },
+  { id: 'canaliculos', etiqueta: 'Canalículos' },
+  { id: 'marcas_tetraciclina', etiqueta: 'Marcas de tetraciclina' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
@@ -114,6 +131,7 @@ export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>>
   hueso_capas: NODOS_HUESO_CAPAS,
   osteona: NODOS_OSTEONA,
   hueso_entretejido_laminar: NODOS_HUESO_ENTRETEJIDO_LAMINAR,
+  frente_mineralizacion: NODOS_FRENTE_MINERALIZACION,
 };
 
 /**

@@ -36,7 +36,7 @@ Los tejidos dentarios (dentina, cemento) se mineralizan con mecanismos y molécu
 
 ## Ilustraciones y modelos requeridos
 
-Todas las imágenes se producen como SVG multicapa con un `<g id="...">` por capa (ids en snake_case, en español, sin tildes ni eñes). El único modelo 3D es la mandíbula, con una sola malla: se resuelve con hotspots con nombre, no con piezas separadas. Las células van en SVG. En el texto, una figura se cita con una línea aparte con el formato `[Figura: id_de_archivo | pie de figura]`.
+Todas las imágenes se producen como SVG multicapa con un `<g id="...">` por capa (ids en snake_case, en español, sin tildes ni eñes). Hay dos modelos 3D: la mandíbula, con una sola malla, que se resuelve con hotspots con nombre, no con piezas separadas, y, desde 2026-10-18, el bloque del frente de mineralización (`frente_mineralizacion`), construido por código con una pieza por estructura. Las células van en SVG. En el texto, una figura se cita con una línea aparte con el formato `[Figura: id_de_archivo | pie de figura]`.
 
 | id de archivo | Qué muestra | Capas o zonas (id: etiqueta) | Se usa en |
 |---|---|---|---|
@@ -44,16 +44,17 @@ Todas las imágenes se producen como SVG multicapa con un `<g id="...">` por cap
 | `m4_fibrilla_colageno` | Fibrilla de colágeno I en corte longitudinal: cinco moléculas de tropocolágeno escalonadas, con el patrón de bandas del periodo D. | `molecula_tropocolageno`: Molécula de tropocolágeno; `zona_hueco`: Zona de hueco; `zona_solapamiento`: Zona de solapamiento; `periodo_d`: Periodo D; `entrecruzamientos`: Entrecruzamientos de lisil oxidasa | 4.2 |
 | `m4_vesicula_matriz` | Vesícula de matriz que brota de la membrana del osteoblasto hacia el osteoide, con sus proteínas, iones y un cristal de hidroxiapatita en formación. Sirve de escena al video-texto y a la actividad de arrastre. | `osteoblasto`: Osteoblasto; `fibrilla_colageno`: Fibrilla de colágeno; `membrana_vesicula`: Membrana de la vesícula (cara externa); `canal_anexina`: Canal de anexina; `transportador_fosfato`: Transportador de fosfato PiT-1; `lumen_vesicula`: Interior de la vesícula; `tnap_membrana`: TNAP anclada a la membrana; `enpp1_ankh`: ENPP1 y ANKH (fuentes de PPi); `cristal_hidroxiapatita`: Cristal de hidroxiapatita; `iones_calcio`: Iones Ca2+; `iones_fosfato`: Iones de fosfato; `pirofosfato`: Pirofosfato inorgánico | 4.3 |
 | `m4_fibrilla_mineralizada` | La misma fibrilla de la sección 4.2 ya mineralizada: cristales dentro de las zonas de hueco y agregados entre fibrillas. | `fibrilla_colageno`: Fibrilla de colágeno; `zona_hueco`: Zona de hueco; `nodulo_mineral`: Nódulo mineral de origen vesicular; `cristales_intrafibrilares`: Cristales intrafibrilares; `cristales_extrafibrilares`: Cristales extrafibrilares; `eje_c_cristales`: Eje c de los cristales | 4.4 |
-| `m4_frente_mineralizacion` | Corte de una superficie ósea en formación, de la superficie hacia el interior: osteoblastos, osteoide, frente de mineralización, hueso mineralizado y osteocito con sus canalículos. | `osteoblastos`: Osteoblastos; `osteoide`: Osteoide; `vesiculas_matriz`: Vesículas de matriz; `frente_mineralizacion`: Frente de mineralización; `hueso_mineralizado`: Hueso mineralizado; `osteocito`: Osteocito; `canaliculos`: Canalículos; `marcas_tetraciclina`: Marcas de tetraciclina | 4.6 |
+| `m4_frente_mineralizacion` | Corte de una superficie ósea en formación, de la superficie hacia el interior: osteoblastos, osteoide, frente de mineralización, hueso mineralizado y osteocito con sus canalículos. Figura del texto; la actividad usa el modelo 3D `frente_mineralizacion`. | `osteoblastos`: Osteoblastos; `osteoide`: Osteoide; `vesiculas_matriz`: Vesículas de matriz; `frente_mineralizacion`: Frente de mineralización; `hueso_mineralizado`: Hueso mineralizado; `osteocito`: Osteocito; `canaliculos`: Canalículos; `marcas_tetraciclina`: Marcas de tetraciclina | 4.6 |
 | `m4_homeostasis_calcio_fosfato` | Esquema del cuerpo con los órganos que regulan el calcio y el fosfato, y las flechas de cada hormona. | `piel`: Piel; `higado`: Hígado; `rinon`: Riñón; `intestino_delgado`: Intestino delgado; `glandula_paratiroides`: Glándulas paratiroides; `tiroides_celulas_c`: Tiroides (células C); `hueso_osteocitos`: Hueso y osteocitos | 4.7 |
 | `m4_osteoide_normal_vs_osteomalacia` | Dos paneles comparados de una superficie ósea, con marcaje doble de tetraciclina. Figura de apoyo al texto, sin actividad propia. | `panel_hueso_normal`: Hueso normal; `costura_osteoide_normal`: Costura de osteoide normal; `hueso_mineralizado_normal`: Hueso mineralizado normal; `marcas_tetraciclina_normales`: Marcas de tetraciclina nítidas; `panel_osteomalacia`: Osteomalacia; `costura_osteoide_ensanchada`: Costura de osteoide ensanchada; `hueso_mineralizado_reducido`: Hueso mineralizado reducido; `marcas_tetraciclina_difusas`: Marcas de tetraciclina difusas o ausentes | 4.8 |
+| `frente_mineralizacion` (modelo 3D construido por código) | Bloque de 64 × 24 µm de una superficie ósea en formación, con la cara de corte hacia el estudiante: hilera de osteoblastos poligonales con el núcleo excéntrico, costura de osteoide de unas 10 µm con vesículas de matriz de 0,1 a 0,2 µm, frente granular, hueso laminar mineralizado con dos osteocitos en sus lagunas y canalículos de 0,4 µm, y dos marcas de tetraciclina separadas 8 µm. | Las mismas ocho estructuras que el dibujo, una pieza cada una | 4.6 (actividad `m4_multicapa_frente`) |
 | `mandibula` (modelo 3D, una sola malla) | Mandíbula humana para la exploración 3D, con hotspots con nombre. | Hotspots: `cortical_basal`: Cortical del borde basal; `proceso_alveolar`: Proceso alveolar; `lamina_dura`: Lámina dura; `hueso_trabecular_cuerpo`: Hueso trabecular del cuerpo; `condilo`: Cóndilo; `foramen_mentoniano`: Foramen mentoniano | 4.8 |
 
 Notas de precisión anatómica y científica:
 
 - **Fibrilla (`m4_fibrilla_colageno`, `m4_fibrilla_mineralizada`):** molécula de unos 300 nm, periodo D de aproximadamente 67 nm, zona de hueco de aproximadamente 40 nm (0,6 D) y zona de solapamiento de aproximadamente 27 nm (0,4 D) [verificar]. Algunas fuentes invierten las etiquetas; el guion sigue la convención hueco = 0,6 D. Los cristales son placas o agujas nanométricas: dibujarlos esquemáticos, con el eje c paralelo al eje mayor de la fibrilla, y rotular "no está a escala". En `m4_fibrilla_colageno`, `periodo_d` se dibuja como un corchete o regla aparte, encima de la fibrilla, y su área táctil no contiene las de `zona_hueco` ni `zona_solapamiento`; así, tocar un hueco nunca cuenta como tocar el periodo D.
 - **Vesícula (`m4_vesicula_matriz`):** en la actividad de arrastre, `canal_anexina`, `transportador_fosfato`, `lumen_vesicula`, `membrana_vesicula` y `cristal_hidroxiapatita` son las zonas donde se suelta cada molécula; deben tener áreas táctiles separadas, con los centros a 18 unidades o más. La fosfatidilserina va en la hoja interna de la bicapa; las anexinas se dibujan en la cara interna y como canal; la TNAP va en la cara externa con su ancla de GPI; PHOSPHO1 va dentro del interior de la vesícula; PiT-1 atraviesa la membrana. El cristal nace dentro y crece hacia afuera hasta perforar la membrana.
-- **Frente (`m4_frente_mineralizacion`):** el orden de la superficie hacia el interior es osteoblastos, osteoide, frente, hueso mineralizado. Las vesículas se dibujan en el osteoide, cerca del frente. Los osteocitos están dentro del hueso mineralizado, en lagunas, con canalículos que salen hacia el frente y hacia la superficie. Las marcas de tetraciclina son dos líneas paralelas amarillas dentro del hueso mineralizado, separadas una distancia rotulada (por ejemplo 8 µm). Como la actividad de esta figura pide identificar capas, las áreas táctiles no se contienen entre sí: `osteocito`, `canaliculos`, `vesiculas_matriz` y `marcas_tetraciclina` se dibujan encima de la capa que los rodea y reciben el toque primero, y el área de `hueso_mineralizado` excluye la del osteocito.
+- **Frente (`m4_frente_mineralizacion`):** el orden de la superficie hacia el interior es osteoblastos, osteoide, frente, hueso mineralizado. Las vesículas se dibujan en el osteoide, cerca del frente. Los osteocitos están dentro del hueso mineralizado, en lagunas, con canalículos que salen hacia el frente y hacia la superficie. Las marcas de tetraciclina son dos líneas paralelas amarillas dentro del hueso mineralizado, separadas una distancia rotulada (por ejemplo 8 µm). El dibujo conserva las áreas táctiles de cuando era una multicapa de modo identificar (hasta 2026-10-18), que no se contienen entre sí: `osteocito`, `canaliculos`, `vesiculas_matriz` y `marcas_tetraciclina` se dibujan encima de la capa que los rodea y reciben el toque primero, y el área de `hueso_mineralizado` excluye la del osteocito.
 - **Comparación normal y osteomalacia (`m4_osteoide_normal_vs_osteomalacia`):** en el panel normal la costura de osteoide mide aproximadamente 10 µm; en el panel de osteomalacia es varias veces más ancha, con marcas de tetraciclina borrosas.
 - **Homeostasis (`m4_homeostasis_calcio_fosfato`):** las glándulas paratiroides son cuatro, en la cara posterior del tiroides; las células C están en el tiroides, no en las paratiroides. La 25-hidroxilación ocurre en el hígado y la 1α-hidroxilación en el riñón. La actividad de esta figura pide identificar órganos: cada órgano tiene un área táctil propia y sin solaparse con las demás.
 - **Mandíbula (`mandibula`):** una sola malla. Las estructuras internas (`lamina_dura`, `hueso_trabecular_cuerpo`) se muestran con un plano de corte, transparencia o un hotspot con línea guía, no con piezas separadas. La posición exacta de cada hotspot la fija quien modele la malla. Bajo el modelo se ofrece una lista de los hotspots como alternativa táctil y de teclado, porque los internos (`lamina_dura`, `hueso_trabecular_cuerpo`) son difíciles de tocar en un teléfono.
@@ -1007,47 +1008,51 @@ Como contraste, el CTX (fragmento del telopéptido C del colágeno I) es el marc
 ##### Actividad m4_multicapa_frente
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "El frente de mineralización, capa por capa"
-instrucciones: "Lee cada pista y toca en el corte la estructura que describe (con teclado, Tab y Enter). Al acertar lees su ficha. Debes ubicar cuatro estructuras."
+instrucciones: "Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de una superficie ósea en formación. Recórrelo de la superficie hacia el interior y toca cada estructura para leer su ficha. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cuatro estructuras requeridas."
 obligatoria: true
 puntaje_max: 30
 concepto: "Frente de mineralización"
 retroalimentacion:
   acierto: "Bien: ubicas el frente como el límite entre el osteoide blando y el hueso mineralizado, con el osteocito ya incluido en la matriz."
-  error: "Esa no es la estructura de la pista. Recuerda el orden de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
-svg: m4_frente_mineralizacion
-modo: identificar
-capas:
+  error: "Todavía te faltan estructuras por visitar. Recorre el corte en orden, de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
+# 2026-10-18: pasa de la multicapa sobre el dibujo m4_frente_mineralizacion (modo identificar, con una ilustración
+# hecha con IA debajo que tenía errores: osteoblastos como cajas y vesículas gigantes) a un modelo 3D construido por
+# código: un bloque de superficie ósea en formación cortado de la superficie hacia el interior. Mismas estructuras,
+# textos, requeridas y puntaje. La exploración 3D no tiene modo identificar: las pistas de abajo (comentadas) quedan
+# sin uso mientras no lo tenga; se conservan para el docente.
+modelo: frente_mineralizacion
+hotspots:
   - id: osteoblastos
     etiqueta: "Osteoblastos"
     descripcion: "Capa de células que secretan el osteoide sobre la superficie ósea y liberan vesículas de matriz."
   - id: osteoide
     etiqueta: "Osteoide"
     descripcion: "Matriz recién secretada, sin mineral. En hueso normal la costura mide aproximadamente 10 µm [verificar]. Un grosor mucho mayor sugiere retraso de la mineralización."
-    pista: "La capa de matriz blanda recién secretada que aún no tiene mineral, entre las células de superficie y el hueso duro."
+    # pista (modo identificar): "La capa de matriz blanda recién secretada que aún no tiene mineral, entre las células de superficie y el hueso duro."
   - id: vesiculas_matriz
     etiqueta: "Vesículas de matriz"
     descripcion: "Pequeñas vesículas en el osteoide, donde nacen los primeros cristales (sección 4.3)."
   - id: frente_mineralizacion
     etiqueta: "Frente de mineralización"
     descripcion: "Límite entre el osteoide y el hueso mineralizado. Avanza hacia la superficie a medida que se forma matriz nueva. Es donde se fija la tetraciclina."
-    pista: "La línea de transición donde la matriz blanda pasa a matriz con mineral y donde se fija la tetraciclina."
+    # pista (modo identificar): "La línea de transición donde la matriz blanda pasa a matriz con mineral y donde se fija la tetraciclina."
   - id: hueso_mineralizado
     etiqueta: "Hueso mineralizado"
     descripcion: "Matriz con mineral. Tras la fase primaria tiene aproximadamente 60 a 70 % del mineral máximo y sigue madurando durante meses o años [verificar]."
-    pista: "La matriz dura y ya mineralizada, situada más al interior que el frente, donde quedan incluidas las células."
+    # pista (modo identificar): "La matriz dura y ya mineralizada, situada más al interior que el frente, donde quedan incluidas las células."
   - id: osteocito
     etiqueta: "Osteocito"
     descripcion: "Osteoblasto que quedó incluido en la matriz, en su laguna. Regula la mineralización mediante proteínas como DMP1 y produce FGF23."
-    pista: "La célula con prolongaciones que quedó atrapada en una laguna dentro de la matriz mineralizada."
+    # pista (modo identificar): "La célula con prolongaciones que quedó atrapada en una laguna dentro de la matriz mineralizada."
   - id: canaliculos
     etiqueta: "Canalículos"
     descripcion: "Conductos que comunican los osteocitos entre sí y con la superficie. Por ellos circulan líquido, iones y señales."
   - id: marcas_tetraciclina
     etiqueta: "Marcas de tetraciclina"
     descripcion: "Dos líneas paralelas depositadas en el frente en dos momentos. La distancia entre ellas dividida por los días entre ciclos es la tasa de aposición mineral."
-requeridas:
+requeridos:
   - osteoide
   - frente_mineralizacion
   - hueso_mineralizado
@@ -1967,7 +1972,7 @@ Segunda ronda: ajuste del guion tras la revisión científica independiente. Los
 | Instrucciones y textos por encima de los límites; sin explicación por par (menor) | Aceptado | Se acortaron las instrucciones del arrastre, la evaluación final y las tres relaciones a 300 caracteres o menos, se acortó `r_dmp1` a menos de 140 y se añadió una explicación por cada par de las tres relaciones. |
 | DMP1 "frena el FGF23" (menor) | Aceptado | Se cambió a "restringe la producción de FGF23" en la relación, la retroalimentación y el glosario. |
 | Hotspots mandibulares sin [verificar]; cóndilo "cubierto por cartílago" (menor) | Aceptado | Se añadió [verificar] a la mineralización por región y a la reacción del alvéolo, se corrigió la descripción del cóndilo (capa articular fibrosa sobre cartílago secundario) y se amplió la nota de verificación. |
-| Actividades de exploración sin acto de evaluación; hotspots internos difíciles en móvil (menor) | Aceptado en parte | `m4_multicapa_frente` y `m4_multicapa_homeostasis` pasaron a modo identificar con pista por capa requerida, y el 3D ofrece lista de hotspots. Se mantienen como exploración la barra de composición, la fibrilla mineralizada, el video y el 3D, que introducen contenido nuevo; no se añadieron micropreguntas por hotspot. |
+| Actividades de exploración sin acto de evaluación; hotspots internos difíciles en móvil (menor) | Aceptado en parte | `m4_multicapa_frente` y `m4_multicapa_homeostasis` pasaron a modo identificar con pista por capa requerida, y el 3D ofrece lista de hotspots. Se mantienen como exploración la barra de composición, la fibrilla mineralizada, el video y el 3D, que introducen contenido nuevo; no se añadieron micropreguntas por hotspot. El 2026-10-18 `m4_multicapa_frente` pasó a exploración 3D (modelo `frente_mineralizacion`) y perdió el modo identificar: queda por acordar con el docente si se repone. |
 | Distractores absurdos, respuesta más larga y preguntas repetidas (menor) | Aceptado | Se reescribieron los distractores de `m4_f_alp_osteomalacia`, `m4_q_ha_reservorio`, `m4_f_osteomalacia_histologia` y `m4_q_vitd_mecanismo`, se acortaron las opciones correctas más largas y se sustituyeron `m4_f_anexinas` y `m4_f_ubicacion_mineral` por preguntas nuevas de calcitonina y de osteocalcina con vitamina K. La mineralización primaria y secundaria se evalúa en el quiz obligatorio de 4.6, y PHOSPHO1 en el arrastre obligatorio y en un refuerzo. |
 | Omisión de osteomalacia oncogénica, enfermedad renal crónica y siglas (menor) | Aceptado | Se añadieron ambas causas a 4.8 y a la tabla, y al glosario RGD, GPI, ACP, BSAP, MS/OS, ANKH y los dos tiempos. |
 | Orden estricto de osteoide y vesículas (menor) | Aceptado | Ambos pasos se fusionaron; el orden queda en seis pasos sin ambigüedad. |

@@ -890,6 +890,12 @@ export const NodoEscenaSchema = z.strictObject({
    */
   ancla: AnclaNodoSchema.optional(),
   camara: CamaraNodoSchema.optional(),
+  /**
+   * Solo en modo `identificar`: lo que el estudiante debe reconocer (función o rasgo, sin el nombre). Cada
+   * requerido necesita una; `pistas_extra` son consignas adicionales sobre el mismo nodo.
+   */
+  pista: markdownLinea(10, 200).optional(),
+  pistas_extra: z.array(markdownLinea(10, 200)).max(2).optional(),
 });
 
 /**
@@ -917,6 +923,12 @@ export const ConfigExploracion3dSchema = z
     /** Descripción del modelo para lectores de pantalla. */
     alt: textoPlano(10, 300),
     /**
+     * `explorar` (por defecto): se completa visitando los requeridos, sin errores posibles. `identificar`: como
+     * la multicapa, se pide cada requerido por su `pista` y tocar otra parte cuenta un fallo (precisión).
+     * No vale con `procedural`.
+     */
+    modo: z.enum(['explorar', 'identificar']).optional(),
+    /**
      * Partes del modelo (2 a 12). Solo en los modelos con GLB: una escena `procedural` no lleva
      * `nodos` (sus partes son los pasos de `linea_de_tiempo`).
      */
@@ -930,6 +942,9 @@ export const ConfigExploracion3dSchema = z
   })
   .superRefine((config, ctx) => {
     if (config.modelo === MODELO_PROCEDURAL) {
+      if (config.modo === 'identificar') {
+        agregar(ctx, ['modo'], 'Una escena "procedural" solo admite el modo "explorar".');
+      }
       validarProcedural(config, ctx);
       return;
     }
@@ -977,6 +992,24 @@ export const ConfigExploracion3dSchema = z
         agregar(ctx, ['requeridos', i], `El nodo requerido "${id}" no existe en "nodos".`);
       }
     });
+    config.nodos.forEach((nodo, i) => {
+      if (nodo.pistas_extra !== undefined && !nodo.pista) {
+        agregar(ctx, ['nodos', i, 'pistas_extra'], '"pistas_extra" necesita también "pista".');
+      }
+    });
+    if (config.modo === 'identificar') {
+      const porId = new Map(config.nodos.map((n, i) => [n.id, i] as const));
+      for (const id of config.requeridos) {
+        const indice = porId.get(id);
+        if (indice !== undefined && !config.nodos[indice]?.pista) {
+          agregar(
+            ctx,
+            ['nodos', indice, 'pista'],
+            `En modo "identificar", el nodo requerido "${id}" necesita "pista" (qué debe encontrar el estudiante).`,
+          );
+        }
+      }
+    }
   });
 
 /** Reglas propias del modelo `procedural`: escena registrada, pasos únicos y vistas válidas. */

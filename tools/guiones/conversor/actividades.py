@@ -975,6 +975,7 @@ def _video_texto(a: _Actividad) -> dict:
 
 def _exploracion_3d(a: _Actividad) -> dict:
     modelo = str(a.d.get("modelo", "")).strip()
+    modo = str(a.d.get("modo", "explorar")).strip()
     nodos = []
     for i, h in enumerate(a.lista("hotspots")):
         ident = a.id_de_lista(h.get("id"), a.donde(f"hotspots[{i}].id"))
@@ -983,6 +984,12 @@ def _exploracion_3d(a: _Actividad) -> dict:
             "etiqueta": a.texto(h.get("etiqueta"), f"nodo {ident}.etiqueta", plano=True, minimo=2, maximo=60),
             "descripcion": a.texto(h.get("descripcion"), f"nodo {ident}.descripcion", minimo=10, maximo=500),
         }
+        if "pista" in h:
+            nodo["pista"] = a.texto(h.get("pista"), f"nodo {ident}.pista", minimo=10, maximo=200)
+        if "pistas_extra" in h:
+            nodo["pistas_extra"] = [
+                a.texto(x, f"nodo {ident}.pistas_extra", minimo=10, maximo=200) for x in h.get("pistas_extra") or []
+            ]
         if modelo == "mandibula":
             ancla = ANCLAS_MANDIBULA.get(ident)
             if ancla is None:
@@ -995,7 +1002,9 @@ def _exploracion_3d(a: _Actividad) -> dict:
         for campo in ("zona_anatomica", "zona"):
             if campo in h:
                 a.omitir(campo, a.donde(f"nodo {ident}"))
-        for extra in sorted(set(h) - {"id", "etiqueta", "descripcion", "zona_anatomica", "zona"}):
+        for extra in sorted(
+            set(h) - {"id", "etiqueta", "descripcion", "zona_anatomica", "zona", "pista", "pistas_extra"}
+        ):
             a.omitir(extra, a.donde(f"nodo {ident}"))
         nodos.append(nodo)
     if modelo == "mandibula" and nodos:
@@ -1008,12 +1017,19 @@ def _exploracion_3d(a: _Actividad) -> dict:
     ]
     if not 2 <= len(nodos) <= 12:
         a.ctx.informe.revisar(a.donde("hotspots"), f"{len(nodos)} nodos; el esquema admite de 2 a 12")
-    return {
-        "modelo": modelo,
-        "alt": ALT_MODELO_3D.get(modelo, ALT_MODELO_3D["mandibula"]),
-        "nodos": nodos,
-        "requeridos": requeridos,
-    }
+    config: dict[str, Any] = {"modelo": modelo}
+    if modo == "identificar":
+        config["modo"] = "identificar"
+    elif modo != "explorar":
+        a.ctx.informe.revisar(a.donde("modo"), f"modo «{modo}»; la exploración 3D admite explorar o identificar")
+    config.update(
+        {
+            "alt": ALT_MODELO_3D.get(modelo, ALT_MODELO_3D["mandibula"]),
+            "nodos": nodos,
+            "requeridos": requeridos,
+        }
+    )
+    return config
 
 
 # --- punto de entrada ----------------------------------------------------------------------------

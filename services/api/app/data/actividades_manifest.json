@@ -678,7 +678,7 @@
     },
     "m4_multicapa_frente": {
       "modulo": 4,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 30,
       "obligatoria": true,
       "seccion": "m4_6_frente_y_fases",

@@ -62,6 +62,14 @@ export const MODELOS_POR_CODIGO: Readonly<Partial<Record<Modelo3d, Cargador>>> =
       puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
     };
   },
+  frente_mineralizacion: async () => {
+    const m = await import('./frente_mineralizacion/modeloFrenteMineralizacion');
+    return {
+      crear: m.crearFrenteMineralizacion,
+      esRegion: m.esRegionFrente,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
 };
 
 export function esModeloPorCodigo(modelo: Modelo3d): boolean {
