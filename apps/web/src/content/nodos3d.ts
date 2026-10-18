@@ -2,8 +2,9 @@
  * Catálogo de las escenas 3D del contenido (docs/content-schema.md, "Actividad exploracion-3d").
  *
  * El 3D de exploración es para la mandíbula, las células y, desde 2026-10-17 (pedido de la usuaria: el dibujo
- * SVG no se veía profesional), el hueso largo de m1_1, que se construye por código y no lleva GLB. Hay DOS
- * maneras de que un nodo
+ * SVG no se veía profesional), el hueso largo de m1_1, que se construye por código y no lleva GLB. Desde
+ * 2026-10-18 también la raíz en su alvéolo con el ligamento periodontal de m2 (`ligamento_periodontal`, por código:
+ * sustituye a una multicapa cuya ilustración tenía errores). Hay DOS maneras de que un nodo
  * del contenido apunte al modelo:
  *  - por PIEZA: su `id` es el nombre de un nodo del GLB. Solo valen los del catálogo de este
  *    archivo, que es exactamente lo que F0-08 (mandíbula) y F0-10 (células) planean separar en
@@ -17,7 +18,7 @@
  * deben respetar. Si el modelador cambia un nombre, se cambia aquí y en el contenido.
  */
 
-export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo'] as const;
+export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo', 'ligamento_periodontal'] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
 export interface NodoCatalogo {
@@ -66,10 +67,30 @@ const NODOS_HUESO_LARGO: readonly NodoCatalogo[] = [
   { id: 'arteria_nutricia', etiqueta: 'Arteria nutricia' },
 ];
 
+/**
+ * Raíz de un diente en su alvéolo con el ligamento periodontal, en corte longitudinal y con una fuerza lateral
+ * (`scenes/ligamento_periodontal/modeloLigamentoPeriodontal.ts`): cada región es un grupo del modelo con este nombre.
+ */
+const NODOS_LIGAMENTO_PERIODONTAL: readonly NodoCatalogo[] = [
+  { id: 'cemento_radicular', etiqueta: 'Cemento radicular' },
+  { id: 'ligamento_periodontal', etiqueta: 'Ligamento periodontal' },
+  { id: 'fibras_sharpey', etiqueta: 'Fibras de Sharpey' },
+  { id: 'hueso_alveolar_propio', etiqueta: 'Hueso alveolar propio' },
+  { id: 'fibroblastos_periodontales', etiqueta: 'Fibroblastos periodontales' },
+  { id: 'celulas_progenitoras_perivasculares', etiqueta: 'Células progenitoras perivasculares' },
+  { id: 'cementoblastos', etiqueta: 'Cementoblastos' },
+  { id: 'osteoblastos_alveolares', etiqueta: 'Osteoblastos alveolares' },
+  { id: 'osteoclastos_alveolares', etiqueta: 'Osteoclastos alveolares' },
+  { id: 'restos_epiteliales_malassez', etiqueta: 'Restos epiteliales de Malassez' },
+  { id: 'lado_presion', etiqueta: 'Lado de presión' },
+  { id: 'lado_tension', etiqueta: 'Lado de tensión' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
   hueso_largo: NODOS_HUESO_LARGO,
+  ligamento_periodontal: NODOS_LIGAMENTO_PERIODONTAL,
 };
 
 /**

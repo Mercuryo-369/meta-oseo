@@ -1,8 +1,9 @@
 /**
  * Modelos de la exploración 3D que se construyen por código (sin GLB ni descarga): el hueso largo de m1_1 y los que
- * sustituyen a las ilustraciones de las multicapa (docs/realismo-3d.md). Cada modelo es un grupo de three.js cuyas
- * regiones son grupos con el id de su nodo del catálogo (`content/nodos3d.ts`); la exploración los encuentra por
- * nombre, los resalta y pone la etiqueta en el punto que da `puntoDeRegion`.
+ * sustituyen a las ilustraciones de las multicapa (docs/realismo-3d.md), como la raíz con su ligamento periodontal de
+ * m2. Cada modelo es un grupo de three.js cuyas regiones son grupos con el id de su nodo del catálogo
+ * (`content/nodos3d.ts`); la exploración los encuentra por nombre, los resalta y pone la etiqueta en el punto que da
+ * `puntoDeRegion`.
  *
  * Para añadir un modelo: su carpeta en `scenes/` con `crear`, `esRegion` y `puntoDeRegion`, su id en `MODELOS_3D`,
  * sus nodos en `CATALOGO_NODOS` y una línea en `MODELOS_POR_CODIGO`. Se cargan bajo demanda (`import()`), así cada
@@ -34,6 +35,14 @@ export const MODELOS_POR_CODIGO: Readonly<Partial<Record<Modelo3d, Cargador>>> =
     return {
       crear: m.crearHuesoLargo,
       esRegion: m.esRegionHuesoLargo,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  ligamento_periodontal: async () => {
+    const m = await import('./ligamento_periodontal/modeloLigamentoPeriodontal');
+    return {
+      crear: m.crearLigamentoPeriodontal,
+      esRegion: m.esRegionLigamento,
       puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
     };
   },

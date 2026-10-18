@@ -1,8 +1,8 @@
 // Prueba permanente de las ilustraciones SVG del módulo 2 ("Descubriendo sus células").
 // Valida cada archivo de public/images/m2 con el validador real (src/content/svg.ts) y comprueba que
 // estén todas las capas y zonas que pide el guion, en docs/guion-por-modulo/m2_descubriendo_sus_celulas.md,
-// sección "Ilustraciones y modelos requeridos" (tablas "Capas de ..."). El modelo 3D de la mandíbula no
-// es un SVG y no se comprueba aquí.
+// sección "Ilustraciones y modelos requeridos" (tablas "Capas de ..."). Los modelos 3D de la mandíbula y
+// del ligamento periodontal no son SVG y no se comprueban aquí.
 //
 // Ids repetidos entre dibujos: el guion llama `uniones_comunicantes` a una capa de m2_osteoblasto_activo y
 // de m2_osteocito_lagunar, y `matriz_mineralizada` a una de m2_osteocito_lagunar y de
@@ -29,7 +29,7 @@ const CONTENIDOS = import.meta.glob('./content.json', {
 /** Peso máximo fijado para estas ilustraciones: la mitad del límite del validador (200 KB). */
 const PESO_MAX_BYTES = 100 * 1024;
 /**
- * Los seis dibujos son verticales o cuadrados y de 1000 unidades de ancho (el guion pide "cuadrado o
+ * Los cinco dibujos son verticales o cuadrados y de 1000 unidades de ancho (el guion pide "cuadrado o
  * vertical, por ejemplo 1000 x 1000"). A 320 px de ancho, 12 px reales son 37,5 unidades.
  */
 const ANCHO_VIEWBOX = 1000;
@@ -145,25 +145,6 @@ const DIBUJOS: Record<string, Dibujo> = {
       'receptores_rank_cfms',
     ],
   },
-  // Sección 2.5 (multicapa, identificar)
-  m2_ligamento_periodontal: {
-    viewBox: '0 0 1000 900',
-    modo: 'identificar',
-    capas: [
-      'cemento_radicular',
-      'ligamento_periodontal',
-      'fibras_sharpey',
-      'hueso_alveolar_propio',
-      'fibroblastos_periodontales',
-      'celulas_progenitoras_perivasculares',
-      'cementoblastos',
-      'osteoblastos_alveolares',
-      'osteoclastos_alveolares',
-      'restos_epiteliales_malassez',
-      'lado_presion',
-      'lado_tension',
-    ],
-  },
 };
 
 const ARCHIVOS = Object.keys(DIBUJOS);
@@ -198,8 +179,10 @@ function cuerpoDeGrupo(svg: string, abre: number): string {
 }
 
 describe('ilustraciones SVG del módulo 2', () => {
-  it('produce los 6 SVG que lista la tabla del guion, ni uno más ni uno menos', () => {
-    expect(ARCHIVOS).toHaveLength(6);
+  it('produce los 5 SVG que lista la tabla del guion, ni uno más ni uno menos', () => {
+    // El de la sección 2.5 (m2_ligamento_periodontal) se sustituyó el 2026-10-18 por el modelo 3D
+    // `ligamento_periodontal` (scenes/ligamento_periodontal).
+    expect(ARCHIVOS).toHaveLength(5);
     for (const nombre of ARCHIVOS) {
       expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     }

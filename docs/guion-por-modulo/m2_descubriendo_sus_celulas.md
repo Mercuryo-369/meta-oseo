@@ -44,7 +44,7 @@ Este módulo prepara los siguientes: el módulo 3 (mecanotransducción, osteocit
 
 ## Ilustraciones y modelos requeridos
 
-Todas las células se dibujan en SVG multicapa. El único modelo 3D del módulo es la mandíbula (una sola malla, con hotspots con nombre). Este módulo no usa el modelo 3D `celulas`.
+Las células se dibujan en SVG multicapa, salvo las del ligamento periodontal (sección 2.5), que desde 2026-10-18 van en el modelo 3D `ligamento_periodontal`, construido por código: una raíz en su alvéolo, en corte, con sus células. Los otros modelos 3D son la mandíbula (una sola malla, con hotspots con nombre) y las escenas procedurales de refuerzo. Este módulo no usa el modelo 3D `celulas`.
 
 Convenciones de producción (aplican a todos los SVG):
 
@@ -63,7 +63,7 @@ Convenciones de producción (aplican a todos los SVG):
 | `m2_osteoblasto_activo` | Osteoblasto cúbico sobre una capa de osteoide, con sus orgánulos, y una célula de revestimiento vecina sobre una superficie en reposo | `m2_multicapa_osteoblasto` |
 | `m2_osteocito_lagunar` | Osteocito estrellado dentro de su laguna, con canalículos, dendritas, uniones comunicantes, vaso sanguíneo y la superficie con células de revestimiento | `m2_multicapa_osteocito` |
 | `m2_osteoclasto_resorcion` | Osteoclasto multinucleado sobre la superficie ósea, con zona clara, borde festoneado, laguna de Howship y la maquinaria de acidificación y digestión | `m2_multicapa_osteoclasto` |
-| `m2_ligamento_periodontal` | Corte de un diente y su alvéolo: cemento, ligamento periodontal con sus células, fibras de Sharpey y hueso alveolar; con la raíz sometida a una fuerza lateral para mostrar el lado de presión y el lado de tensión | `m2_multicapa_ligamento_periodontal` |
+| `ligamento_periodontal` (modelo 3D, por código) | Corte longitudinal de la raíz de un diente en su alvéolo: cemento, ligamento periodontal con sus células, fibras de Sharpey y hueso alveolar; con la raíz sometida a una fuerza lateral para mostrar el lado de presión y el lado de tensión. Sustituye desde 2026-10-18 al dibujo `m2_ligamento_periodontal` | `m2_multicapa_ligamento_periodontal` |
 | `mandibula` (modelo 3D) | Mandíbula humana completa, una sola malla, con hotspots con nombre | `m2_3d_origen_mandibula` |
 
 Junto al texto de cada sección se muestra una ilustración de apoyo (encima del texto en móvil y al lado en pantallas anchas), con todas sus capas visibles y sin interacción. La misma ilustración se reutiliza después en la actividad de la sección:
@@ -74,7 +74,7 @@ Junto al texto de cada sección se muestra una ilustración de apoyo (encima del
 | 2.2 | `m2_arbol_linajes_oseos` (mitad mesenquimal) y `m2_osteoblasto_activo` |
 | 2.3 | `m2_osteocito_lagunar` |
 | 2.4 | `m2_osteoclasto_resorcion` y `m2_arbol_linajes_oseos` (mitad hematopoyética) |
-| 2.5 | `m2_ligamento_periodontal` |
+| 2.5 | Ninguna: el corte del ligamento es el modelo 3D `ligamento_periodontal` de la actividad |
 
 **Capas de `m2_origen_mandibula`**
 
@@ -167,9 +167,9 @@ Junto al texto de cada sección se muestra una ilustración de apoyo (encima del
 | `matriz_mineralizada` | Matriz mineralizada |
 | `receptores_rank_cfms` | Receptores RANK y c-Fms |
 
-**Capas de `m2_ligamento_periodontal`**
+**Nodos del modelo 3D `ligamento_periodontal`** (construido por código; los ids coinciden con el catálogo `apps/web/src/content/nodos3d.ts`)
 
-| id_capa | Etiqueta |
+| id_nodo | Etiqueta |
 |---|---|
 | `cemento_radicular` | Cemento radicular |
 | `ligamento_periodontal` | Ligamento periodontal |
@@ -203,7 +203,7 @@ Junto al texto de cada sección se muestra una ilustración de apoyo (encima del
 - `m2_osteoblasto_activo`. El osteoblasto activo es cúbico, con el núcleo en el polo opuesto al hueso, retículo rugoso y Golgi visibles. El osteoide queda entre la célula y el hueso mineralizado, y el frente de mineralización es el límite entre ambos. La célula de revestimiento se dibuja plana y alargada, sobre una superficie sin osteoide.
 - `m2_osteocito_lagunar`. El cuerpo del osteocito ocupa la laguna; las dendritas ocupan los canalículos y dejan un espacio con líquido (mayor en el canalículo que el grosor de la dendrita). Las uniones comunicantes se dibujan en los extremos de las dendritas, no en el cuerpo. La red debe llegar a la superficie ósea y a un vaso.
 - `m2_osteoclasto_resorcion`. La zona clara (zona de sellado) es un anillo que rodea al borde festoneado y apoya sobre el hueso. La laguna de Howship es la depresión del hueso bajo el borde festoneado. La bomba de protones, el canal de cloruro y el borde festoneado son adyacentes: se dibujan con un área de toque de al menos 12 % del ancho del `viewBox` y sin solaparse. La bomba de protones y el canal de cloruro se ubican en el borde festoneado; la anhidrasa carbónica II, en el citoplasma; la catepsina K, en el espacio sellado.
-- `m2_ligamento_periodontal`. Las regiones `lado_presion` y `lado_tension` no son áreas que cubren a las células: se dibujan como marcadores independientes (llave, flecha y rótulo) en el borde de la zona correspondiente, fuera de las capas celulares, para que las células se puedan tocar. El ligamento es estrecho en proporción a la raíz. Las fibras de Sharpey cruzan el ligamento y se insertan en el cemento y en el hueso alveolar propio. Los restos epiteliales de Malassez quedan cerca del cemento. En el lado de presión el ligamento se dibuja más estrecho, con osteoclastos en la superficie del hueso; en el lado de tensión se dibuja estirado, con osteoblastos.
+- Modelo 3D `ligamento_periodontal` (2026-10-18; sustituye al dibujo `m2_ligamento_periodontal`, cuya ilustración hecha con IA tenía una raíz de morfología irreal y células como anillos). Una sola raíz cónica de unos 13 mm, cortada a lo largo: dentina, conducto pulpar central y estrecho que se afina hasta el foramen apical, y una capa fina de cemento, más gruesa hacia el ápice. La raíz y el hueso tienen proporciones reales; el ligamento (0,85 mm en reposo frente a los 0,15 a 0,38 mm reales) y las células (unas diez veces) están ampliados para que se vean, y el texto alternativo lo dice. Los haces principales son oblicuos (se insertan en el hueso más arriba que en el cemento), horizontales junto a la cresta y en abanico en el ápice; sus extremos incluidos en el cemento y en el hueso alveolar propio son las fibras de Sharpey (`fibras_sharpey` marca solo esos extremos). La lámina (hueso alveolar propio) está perforada por conductos vasculares por los que pasan vasos del ligamento. Una fuerza lateral (flecha) empuja la raíz hacia la derecha, en bloque: a la izquierda (lado de tensión) el ligamento es ancho y sus haces están rectos y tensos, con osteoblastos cúbicos sobre una capa de osteoide; a la derecha (lado de presión) es estrecho, sus haces están ondulados y hay osteoclastos multinucleados en lagunas de Howship, donde los haces han perdido su inserción. `lado_presion` y `lado_tension` son dos pares de flechas por delante del ligamento (que se acercan y que se alejan), no áreas que tapen a las células. Fibroblastos fusiformes entre los haces y alineados con ellos; células progenitoras junto a los vasos; cementoblastos cúbicos en fila sobre el cemento; restos de Malassez en nidos de seis células cerca del cemento.
 - Modelo 3D `mandibula`. Los hotspots son puntos con nombre sobre una sola malla: no se separan piezas. La ubicación de `foramen_mentoniano` y `sinfisis` debe coincidir con la anatomía de la malla.
 
 ## Secciones
@@ -1142,65 +1142,57 @@ El diente se desplaza a través del hueso porque uno de los lados se reabsorbe y
 ##### Actividad m2_multicapa_ligamento_periodontal
 
 ```yaml
-tipo: multicapa
-titulo: "Identifica las partes del ligamento periodontal"
-instrucciones: "Lee la pista y toca la parte del dibujo que le corresponde. Si aciertas, se revela su nombre y su explicación; cada error resta una parte del puntaje. Con teclado: Tab recorre las capas y Enter elige la enfocada. Nada depende del mouse."
+tipo: exploracion-3d
+titulo: "Recorre el ligamento periodontal"
+instrucciones: "Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es la raíz de un diente cortada a lo largo en su alvéolo y empujada por una fuerza lateral. Toca cada parte para leer qué es y qué hace. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las nueve partes requeridas."
 obligatoria: true
 puntaje_max: 20
 concepto: "ligamento_periodontal"
 retroalimentacion:
   acierto: "Bien. Ubicaste las células del ligamento y del hueso alveolar, y entendiste qué ocurre en el lado de presión y en el lado de tensión."
-  parcial: "Vas bien; repasa la tabla de células del ligamento y qué ocurre en el lado de presión (resorción) y en el de tensión (formación)."
-  error: "Alguna capa no coincide con su pista. Repasa la tabla de células del ligamento y recuerda: presión, resorción por osteoclastos; tensión, formación por osteoblastos."
-svg: m2_ligamento_periodontal
-modo: identificar
-capas:
+  error: "Todavía te faltan partes por visitar. Repasa la tabla de células del ligamento y recuerda: presión, resorción por osteoclastos; tensión, formación por osteoblastos."
+# 2026-10-18: pasa del dibujo SVG (m2_ligamento_periodontal, modo identificar) a un modelo 3D de la raíz en su
+# alvéolo construido por código (la ilustración hecha con IA tenía errores). Mismas partes, etiquetas y requeridas;
+# la exploración no tiene pistas: cada pista pasa al inicio de su descripción.
+modelo: ligamento_periodontal
+hotspots:
   - id: cemento_radicular
     etiqueta: "Cemento radicular"
     descripcion: "Tejido mineralizado que cubre la dentina de la raíz y recibe los extremos de las fibras que anclan el diente."
   - id: ligamento_periodontal
     etiqueta: "Ligamento periodontal"
-    descripcion: "Tejido conectivo fibroso, muy celular y vascularizado, situado entre la raíz y el hueso. Mide aproximadamente entre 0,15 y 0,4 mm de ancho [verificar] y amortigua las fuerzas de la masticación."
+    descripcion: "Tejido conectivo fibroso, muy celular y vascularizado, situado entre la raíz y el hueso. Mide aproximadamente entre 0,15 y 0,4 mm de ancho [verificar] y amortigua las fuerzas de la masticación. En el modelo está ensanchado para que se vean sus células."
   - id: fibras_sharpey
     etiqueta: "Fibras de Sharpey"
-    pista: "Extremos de los haces de colágeno que quedan incluidos en el cemento y en el hueso y anclan el diente."
-    descripcion: "Son los extremos de las fibras principales del ligamento. Transmiten al hueso alveolar las fuerzas de la masticación."
+    descripcion: "Extremos de los haces de colágeno (las fibras principales del ligamento) que quedan incluidos en el cemento y en el hueso y anclan el diente. Transmiten al hueso alveolar las fuerzas de la masticación."
   - id: hueso_alveolar_propio
     etiqueta: "Hueso alveolar propio"
-    pista: "Lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de anclaje."
-    descripcion: "También se llama hueso fasciculado. Está perforado por conductos vasculares y en la radiografía se ve como la lámina dura."
+    descripcion: "Lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de anclaje. También se llama hueso fasciculado. Está perforado por conductos vasculares y en la radiografía se ve como la lámina dura."
   - id: fibroblastos_periodontales
     etiqueta: "Fibroblastos periodontales"
-    pista: "Células más abundantes del tejido fibroso situado entre la raíz y el hueso; renuevan su colágeno de forma continua."
-    descripcion: "Además expresan RANKL y OPG, con lo que participan en el control de los osteoclastos. Algunos son progenitores."
+    descripcion: "Células más abundantes del tejido fibroso situado entre la raíz y el hueso; renuevan su colágeno de forma continua. Además expresan RANKL y OPG, con lo que participan en el control de los osteoclastos. Algunos son progenitores."
   - id: celulas_progenitoras_perivasculares
     etiqueta: "Células progenitoras perivasculares"
     descripcion: "Células madre mesenquimales cercanas a los vasos que reponen fibroblastos, cementoblastos y osteoblastos."
   - id: cementoblastos
     etiqueta: "Cementoblastos"
-    pista: "Células cúbicas sobre la superficie de la raíz que depositan el tejido mineralizado donde se insertan las fibras."
-    descripcion: "Forman el cemento radicular. Derivan del folículo dental, es decir, del ectomesénquima."
+    descripcion: "Células cúbicas sobre la superficie de la raíz que depositan el tejido mineralizado donde se insertan las fibras. Forman el cemento radicular. Derivan del folículo dental, es decir, del ectomesénquima."
   - id: osteoblastos_alveolares
     etiqueta: "Osteoblastos alveolares"
-    pista: "Células formadoras de hueso alineadas en la cara del hueso que mira al tejido fibroso entre la raíz y el hueso."
-    descripcion: "Forman hueso alveolar, sobre todo en el lado de tensión. Sus progenitores provienen de células perivasculares del ligamento."
+    descripcion: "Células formadoras de hueso alineadas en la cara del hueso que mira al tejido fibroso entre la raíz y el hueso. Forman hueso alveolar, sobre todo en el lado de tensión. Sus progenitores provienen de células perivasculares del ligamento."
   - id: osteoclastos_alveolares
     etiqueta: "Osteoclastos alveolares"
-    pista: "Células gigantes multinucleadas que, cuando hay resorción, se apoyan en depresiones de la superficie del hueso."
-    descripcion: "Predominan en el lado de presión. Vienen de la médula ósea, no del folículo dental."
+    descripcion: "Células gigantes multinucleadas que, cuando hay resorción, se apoyan en depresiones de la superficie del hueso. Predominan en el lado de presión. Vienen de la médula ósea, no del folículo dental."
   - id: restos_epiteliales_malassez
     etiqueta: "Restos epiteliales de Malassez"
-    pista: "Pequeños cúmulos de células cerca del cemento, vestigios de la estructura que guió la formación de la raíz."
-    descripcion: "Son remanentes de la vaina epitelial radicular de Hertwig. No son células óseas ni mesenquimales."
+    descripcion: "Pequeños cúmulos de células cerca del cemento, vestigios de la estructura que guió la formación de la raíz. Son remanentes de la vaina epitelial radicular de Hertwig. No son células óseas ni mesenquimales."
   - id: lado_presion
     etiqueta: "Lado de presión"
-    pista: "Región del tejido fibroso entre la raíz y el hueso que se comprime cuando una fuerza empuja el diente."
-    descripcion: "Allí aumenta RANKL y predomina la resorción ósea, lo que abre espacio para el movimiento del diente."
+    descripcion: "Región del tejido fibroso entre la raíz y el hueso que se comprime cuando una fuerza empuja el diente. Allí aumenta RANKL y predomina la resorción ósea, lo que abre espacio para el movimiento del diente."
   - id: lado_tension
     etiqueta: "Lado de tensión"
-    pista: "Región del tejido fibroso entre la raíz y el hueso que se estira cuando una fuerza empuja el diente."
-    descripcion: "Allí se estimula a los osteoblastos y predomina la formación de hueso."
-requeridas: [fibras_sharpey, hueso_alveolar_propio, fibroblastos_periodontales, cementoblastos, osteoblastos_alveolares, osteoclastos_alveolares, restos_epiteliales_malassez, lado_presion, lado_tension]
+    descripcion: "Región del tejido fibroso entre la raíz y el hueso que se estira cuando una fuerza empuja el diente. Allí se estimula a los osteoblastos y predomina la formación de hueso."
+requeridos: [fibras_sharpey, hueso_alveolar_propio, fibroblastos_periodontales, cementoblastos, osteoblastos_alveolares, osteoclastos_alveolares, restos_epiteliales_malassez, lado_presion, lado_tension]
 ```
 
 ##### Actividad m2_relacion_celulas_funciones
