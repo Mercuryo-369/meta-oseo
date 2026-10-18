@@ -1038,7 +1038,7 @@
     },
     "m6_2_multicapa_tejido_envejecido": {
       "modulo": 6,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 30,
       "obligatoria": true,
       "seccion": "m6_2_celulas_y_matriz",
@@ -1056,7 +1056,7 @@
     },
     "m6_3_multicapa_normal_osteoporotico": {
       "modulo": 6,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 30,
       "obligatoria": true,
       "seccion": "m6_3_osteoporosis",

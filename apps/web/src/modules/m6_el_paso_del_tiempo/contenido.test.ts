@@ -11,6 +11,7 @@ import { textoPlanoDeMarkdown } from '@/content/markdown';
 import { puntajeMaximoModulo } from '@/content/scoring';
 import { HITOS_ALVEOLO } from '@/scenes/procedural/alveolo/estado';
 import { HITOS_TRABECULAR } from '@/scenes/procedural/trabecular/estado';
+import { CATALOGO_NODOS } from '@/content/nodos3d';
 import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type { ModuloContenido } from '@/content/schema';
 import type { DependenciasAuditoria } from '@/content/svg';
@@ -27,6 +28,7 @@ const svgsPublicos = import.meta.glob('/public/**/*.svg', {
   eager: true,
 }) as Record<string, string>;
 const archivosPublicos = new Set(Object.keys(import.meta.glob('/public/**/*')));
+const archivosM6 = Object.keys(import.meta.glob('/public/images/m6/*'));
 const dependencias: DependenciasAuditoria = {
   leerSvg: (ruta) => svgsPublicos[`/public${ruta}`],
   existe: (ruta) => archivosPublicos.has(`/public${ruta}`),
@@ -64,6 +66,8 @@ interface ActividadGuion {
   puntaje: number;
   /** SVG que cita el guion (`svg:`, `ilustracion:` o `escena.svg:`). */
   svg: string | undefined;
+  /** Modelo 3D que cita el guion (`modelo:`), en las exploraciones. */
+  modelo: string | undefined;
   /** Cantidad de elementos de cada lista de primer nivel del yaml (capas, pares, pasos...). */
   listas: Record<string, number>;
   preguntas: PreguntaGuion[];
@@ -151,6 +155,7 @@ function leerGuion(): { secciones: SeccionGuion[]; actividades: ActividadGuion[]
         obligatoria: /^obligatoria: true$/m.test(yaml),
         puntaje: Number(/^puntaje_max: (\d+)$/m.exec(yaml)![1]),
         svg: /^(?:svg|ilustracion|\s{2}svg): (m6_[a-z0-9_]+)$/m.exec(yaml)?.[1],
+        modelo: /^modelo: ([a-z0-9_]+)$/m.exec(yaml)?.[1],
         listas,
         preguntas: leerPreguntas(yaml),
       });
@@ -246,17 +251,17 @@ describe('módulo 6: esquema, carpeta y recursos', () => {
     expect(sinEnlace.sort()).toEqual(['micropetrosis']);
   });
 
-  it('cada SVG que usa el módulo existe y los seis dibujos del guion están todos referenciados', () => {
+  it('cada SVG que usa el módulo existe y los siete dibujos del guion están todos referenciados', () => {
     const usados = new Set<string>();
     recorrerCadenas(modulo, [], (texto) => {
       const m = /^\/images\/m6\/(m6_[a-z0-9_]+)\.svg$/.exec(texto);
-      // `X_zonas.svg` (capas sobre la ilustración realista de `X.svg`, tools/imagenes) cuenta como su dibujo `X`.
-      if (m) usados.add(m[1]!.replace(/_zonas$/, ''));
+      if (m) usados.add(m[1]!);
     });
     for (const nombre of usados) {
       expect(archivosPublicos.has(`/public/images/m6/${nombre}.svg`), nombre).toBe(true);
     }
-    // El séptimo dibujo del guion (tejido envejecido) es de la multicapa; hay siete en total.
+    // El tejido envejecido y la comparación normal/osteoporótico son figuras del texto (sus actividades son
+    // modelos 3D construidos por código).
     expect([...usados].sort()).toEqual(
       [
         'm6_atm_cambios_degenerativos',
@@ -330,15 +335,40 @@ describe('módulo 6: cobertura del guion', () => {
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 14 actividades del guion (2 multicapa, 7 quiz, 2 relaciones, 1 video, 1 arrastre y 1 exploración 3D) más las 3D extra', () => {
+  it('cuenta 14 actividades del guion (7 quiz, 2 relaciones, 1 video, 1 arrastre y 3 exploraciones 3D) más las 3D extra', () => {
+    // m6_2 y m6_3 pasaron de multicapa a exploración 3D (2026-10-18).
     expect(contarActividadesPorTipo(modulo)).toEqual({
-      multicapa: 2,
+      multicapa: 0,
       quiz: 7,
       'relacion-columnas': 2,
       'video-texto': 1,
       'arrastre-molecular': 1,
-      'exploracion-3d': 1 + EXTRAS_3D.length,
+      'exploracion-3d': 3 + EXTRAS_3D.length,
     });
+  });
+
+  it.each([
+    ['m6_2_multicapa_tejido_envejecido', 'tejido_oseo_envejecido'],
+    ['m6_3_multicapa_normal_osteoporotico', 'hueso_osteoporotico'],
+  ] as const)(
+    '%s explora el modelo construido por código %s con todas sus regiones',
+    (id, modeloEsperado) => {
+      const a = ubicadas.find((x) => x.actividad.id === id)!.actividad;
+      if (a.tipo !== 'exploracion-3d') throw new Error('tipo inesperado');
+      expect(a.config.modelo).toBe(modeloEsperado);
+      expect(actividadesGuion.find((g) => g.id === id)!.modelo).toBe(modeloEsperado);
+      // Cada estructura de la antigua multicapa es una región del modelo, con la misma etiqueta del catálogo.
+      expect(a.config.nodos.map((n) => [n.id, n.etiqueta])).toEqual(
+        CATALOGO_NODOS[modeloEsperado].map((n) => [n.id, n.etiqueta]),
+      );
+      for (const n of a.config.nodos) expect(n.ancla, n.id).toBeUndefined();
+      expect(a.config.requeridos).toHaveLength(5);
+    },
+  );
+
+  it('no quedan las ilustraciones hechas con IA ni sus capas de zonas', () => {
+    expect(archivosM6.filter((r) => /\.webp$|_zonas\.svg$/.test(r))).toEqual([]);
+    expect(contenidoTexto).not.toMatch(/"fondo"|_zonas/);
   });
 
   it.each(EXTRAS_3D)(
@@ -437,19 +467,18 @@ describe('módulo 6: cobertura del guion', () => {
       const a = ubicadas.find((x) => x.actividad.id === g.id)!.actividad;
       const ruta = `/images/m6/${g.svg}.svg`;
       let usada: string | undefined;
-      if (a.tipo === 'multicapa' || a.tipo === 'video-texto') {
+      if (a.tipo === 'video-texto') {
         usada = 'svg' in a.config ? (a.config as { svg: string }).svg : undefined;
       } else if (a.tipo === 'arrastre-molecular') {
         usada = a.config.escena.fondo_svg;
       }
-      // La multicapa con ilustración usa `X_zonas.svg`, la versión de capas de `X.svg` (tools/imagenes).
-      expect(usada?.replace(/_zonas\.svg$/, '.svg'), g.id).toBe(ruta);
+      expect(usada, g.id).toBe(ruta);
       expect(archivosPublicos.has(`/public${ruta}`), ruta).toBe(true);
       comprobadas++;
     }
     expect(comprobadas).toBe(actividadesGuion.filter((x) => x.svg).length);
-    // Video de la curva, arrastre de la escena y las dos multicapa.
-    expect(comprobadas).toBe(4);
+    // Video de la curva y arrastre de la escena (las antiguas multicapa son ahora modelos 3D).
+    expect(comprobadas).toBe(2);
   });
 
   it('los receptores del arrastre están sobre los sitios dibujados en su SVG', () => {
@@ -599,7 +628,7 @@ describe('módulo 6: textos visibles', () => {
     const conAlt = listarActividades(modulo).filter(({ actividad }) =>
       ['multicapa', 'video-texto', 'exploracion-3d'].includes(actividad.tipo),
     );
-    // Cuatro del guion más las exploraciones 3D extra (que también llevan `alt`).
+    // Cuatro del guion (el video y tres exploraciones 3D) más las exploraciones 3D extra.
     expect(conAlt.length).toBe(4 + EXTRAS_3D.length);
     for (const { actividad } of conAlt) {
       const alt = (actividad.config as { alt?: string }).alt;

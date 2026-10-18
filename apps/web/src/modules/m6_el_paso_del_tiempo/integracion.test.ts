@@ -7,15 +7,15 @@
 //   (c) el bloqueo por secuencia abre la sección siguiente solo al terminar las obligatorias,
 //   (d) al completar el módulo se llama a la API con los cuerpos del contrato (fetch simulado),
 //   (e) los enlaces del glosario abren su definición.
-// El modelo 3D de la mandíbula no se dibuja (happy-dom no tiene WebGL 2): la exploración se
-// resuelve con la lista de nodos, que es la alternativa de teclado y de lector de pantalla.
+// Los modelos 3D (la mandíbula y los construidos por código del tejido envejecido y del hueso
+// osteoporótico) no se dibujan (happy-dom no tiene WebGL 2): cada exploración se resuelve con la
+// lista de nodos, que es la alternativa de teclado y de lector de pantalla.
 import { flushPromises, mount } from '@vue/test-utils';
 import type { VueWrapper } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import type { Router } from 'vue-router';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { construirConsignas } from '@/activities/multicapa/logica';
 import { PATRON_ACTIVITY_ID_API } from '@/content/constantes';
 import { BLOQUEO_SECUENCIAL } from '@/config';
 import { simularApi } from '@/components/modulo/utilesPrueba';
@@ -27,7 +27,6 @@ import type {
   Actividad,
   ActividadArrastreMolecular,
   ActividadExploracion3d,
-  ActividadMulticapa,
   ActividadQuiz,
   ActividadRelacionColumnas,
   ActividadVideoTexto,
@@ -84,19 +83,7 @@ async function esperarActividad(id: string): Promise<void> {
   const a = actividades().find((x) => x.id === id)!;
   await esperar(() => expect(wrapper.find(`[data-actividad="${id}"] h3`).exists()).toBe(true));
   // Las que descargan un SVG lo dejan listo antes de tocar nada; si falla, se dice por qué.
-  if (a.tipo === 'multicapa') {
-    await esperar(() => {
-      expect(
-        wrapper.find(`[data-actividad="${id}"] [data-testid="multicapa-error-svg"]`).exists(),
-        `El SVG de ${id} no cargó (fetch: ${api.llamadas.map((l) => l.ruta).join(', ')})`,
-      ).toBe(false);
-      expect(
-        wrapper
-          .find(`[data-actividad="${id}"] [data-testid="multicapa-svg"] g[data-capa]`)
-          .exists(),
-      ).toBe(true);
-    });
-  } else if (a.tipo === 'video-texto') {
+  if (a.tipo === 'video-texto') {
     await esperar(() => {
       expect(
         wrapper.find(`[data-actividad="${id}"] [data-testid="error-svg"]`).exists(),
@@ -123,44 +110,6 @@ const estadoDe = (id: string) => bloque(id).get('[data-testid="estado-actividad"
 /* -------------------------------------------------------------------------------------------
  * Conductores: la interacción mínima de cada tipo, como la haría un estudiante
  * ----------------------------------------------------------------------------------------- */
-
-/** Punto tocable de una capa dentro del SVG inyectado (la zona que el componente clona). */
-function zonaTocable(id: string, capa: string): Element {
-  const raiz = bloque(id).get('[data-testid="multicapa-svg"]').element;
-  const g = Array.from(raiz.querySelectorAll('[data-capa]')).find(
-    (e) => e.getAttribute('data-capa') === capa,
-  );
-  if (!g) throw new Error(`El SVG de ${id} no tiene la capa ${capa}`);
-  const zona = g.querySelector('[data-zona-auto], [data-zona-toque]');
-  if (!zona) throw new Error(`La capa ${capa} de ${id} no tiene zona táctil`);
-  return zona;
-}
-
-async function tocarEnSvg(id: string, capa: string): Promise<void> {
-  zonaTocable(id, capa).dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  await flushPromises();
-}
-
-async function pulsarCapaDeLista(id: string, capa: string): Promise<void> {
-  const boton = bloque(id)
-    .findAll('[data-testid="multicapa-lista"] button')
-    .find((b) => b.attributes('data-capa') === capa);
-  if (!boton) throw new Error(`No hay botón de lista para la capa ${capa} de ${id}`);
-  await boton.trigger('click');
-  await flushPromises();
-}
-
-async function completarMulticapa(a: ActividadMulticapa): Promise<void> {
-  if (a.config.modo === 'identificar') {
-    // Cada consigna se responde tocando la capa en el dibujo.
-    for (const c of construirConsignas(a.config)) await tocarEnSvg(a.id, c.capa);
-  } else {
-    // La primera capa se toca en el dibujo y las demás con la alternativa de la lista.
-    const [primera, ...resto] = a.config.requeridas;
-    await tocarEnSvg(a.id, primera!);
-    for (const capa of resto) await pulsarCapaDeLista(a.id, capa);
-  }
-}
 
 /** La opción cuyo texto contiene el pedido; si hay varias, la de texto más corto (la más exacta). */
 function entrada(id: string, texto: string) {
@@ -265,7 +214,7 @@ async function completarExploracion(a: ActividadExploracion3d): Promise<void> {
 async function completar(a: Actividad): Promise<void> {
   switch (a.tipo) {
     case 'multicapa':
-      return completarMulticapa(a);
+      throw new Error(`El módulo 6 ya no tiene multicapa (${a.id})`);
     case 'quiz':
       return completarQuiz(a);
     case 'relacion-columnas':
@@ -665,24 +614,28 @@ describe('módulo 6 integrado: nivel de posgrado', () => {
 });
 
 /* -------------------------------------------------------------------------------------------
- * Dibujos: cada capa que el contenido referencia se puede tocar en el SVG real
+ * Modelos 3D construidos por código: cada región se puede elegir sin WebGL
  * ----------------------------------------------------------------------------------------- */
 
-describe('módulo 6 integrado: zonas táctiles de los dibujos reales', () => {
-  it('cada capa de cada multicapa tiene una zona táctil dentro del SVG inyectado', async () => {
-    const problemas: string[] = [];
-    for (const a of actividades().filter((x): x is ActividadMulticapa => x.tipo === 'multicapa')) {
+describe('módulo 6 integrado: exploraciones 3D del tejido envejecido y del hueso osteoporótico', () => {
+  it('cada nodo tiene su botón en la lista, que sirve también sin 3D', async () => {
+    const porCodigo = actividades().filter(
+      (x): x is ActividadExploracion3d =>
+        x.tipo === 'exploracion-3d' &&
+        ['tejido_oseo_envejecido', 'hueso_osteoporotico'].includes(x.config.modelo),
+    );
+    expect(porCodigo.map((a) => a.id)).toEqual([
+      'm6_2_multicapa_tejido_envejecido',
+      'm6_3_multicapa_normal_osteoporotico',
+    ]);
+    for (const a of porCodigo) {
       const secc = listarActividades(modulo).find((u) => u.actividad.id === a.id)!.seccion;
       await irA(secc.id);
       await esperarActividad(a.id);
-      for (const capa of a.config.capas) {
-        try {
-          zonaTocable(a.id, capa.id);
-        } catch (e) {
-          problemas.push((e as Error).message);
-        }
-      }
+      const botones = bloque(a.id)
+        .findAll('[data-nodo]')
+        .map((b) => b.attributes('data-nodo'));
+      expect(botones, a.id).toEqual(a.config.nodos.map((n) => n.id));
     }
-    expect(problemas).toEqual([]);
   });
 });

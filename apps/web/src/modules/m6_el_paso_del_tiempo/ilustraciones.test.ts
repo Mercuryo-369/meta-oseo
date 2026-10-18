@@ -2,7 +2,7 @@
 // Valida cada archivo de public/images/m6 con el validador real (src/content/svg.ts) y comprueba
 // que estén todas las capas que pide el guion, en docs/guion-por-modulo/m6_el_paso_del_tiempo.md,
 // sección "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). El modelo 3D de la mandíbula
-// (`mandibula`) no es un SVG y no se comprueba aquí.
+// (`mandibula`) y los construidos por código de 6.2 y 6.3 no son SVG y no se comprueban aquí.
 import { describe, expect, it } from 'vitest';
 import { analizarSvg, problemasSvg } from '@/content/svg';
 
@@ -21,7 +21,7 @@ const TAMANO_MIN_ROTULO = 30;
 /**
  * Tinta índigo de la paleta H&E (la misma de los módulos 2 a 5). Los dibujos de este módulo se ven
  * como imagen (`<img>`, donde `currentColor` es siempre negro) y también inyectados en la página
- * (multicapa y animación), así que llevan su propia lámina clara de fondo y tinta fija: se leen igual
+ * (animación y escena del arrastre), así que llevan su propia lámina clara de fondo y tinta fija: se leen igual
  * en tema claro y oscuro.
  */
 const TINTA = '#2b2350';
@@ -64,7 +64,7 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'efecto_proliferacion',
     'efecto_amplificacion_tnf',
   ],
-  // Sección 6.2 (multicapa, explorar)
+  // Sección 6.2 (figura; la actividad usa el modelo 3D tejido_oseo_envejecido)
   m6_tejido_oseo_envejecido: [
     'osteocito_senescente',
     'red_canalicular_reducida',
@@ -75,7 +75,7 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'matriz_colageno_age',
     'superficie_osteoblastos_escasos',
   ],
-  // Sección 6.3 (multicapa, explorar)
+  // Sección 6.3 (figura; la actividad usa el modelo 3D hueso_osteoporotico)
   m6_hueso_normal_osteoporotico: [
     'trabeculas_normales',
     'trabeculas_osteoporoticas',
@@ -178,11 +178,8 @@ describe('ilustraciones SVG del módulo 6', () => {
     for (const nombre of ARCHIVOS) {
       expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     }
-    // `X_zonas.svg` es la versión de capas de `X.svg` que va sobre su ilustración realista (tools/imagenes): no es
-    // un dibujo más del guion.
     const presentes = Object.keys(CRUDOS)
       .map((ruta) => /([^/]+)\.svg$/.exec(ruta)?.[1] ?? '')
-      .filter((n) => !n.endsWith('_zonas'))
       .sort();
     expect(presentes).toEqual([...ARCHIVOS].sort());
   });
@@ -192,7 +189,7 @@ describe('ilustraciones SVG del módulo 6', () => {
 
     it('pasa el validador real con su viewBox y todas sus capas como <g id>', () => {
       // gruposRaiz exige además que cada capa sea hijo directo de <svg> y que no haya formas sueltas:
-      // así el mismo archivo sirve para explorar (multicapa), para animar (video-texto) y de fondo.
+      // así el mismo archivo sirve de figura, para animar (video-texto) y de fondo.
       expect(problemasSvg(leer(nombre), { viewBox: VIEWBOX, capas, gruposRaiz: capas })).toEqual(
         [],
       );

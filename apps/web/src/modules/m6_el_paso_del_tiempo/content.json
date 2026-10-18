@@ -948,7 +948,7 @@
           "tipo": "imagen",
           "src": "/images/m6/m6_tejido_oseo_envejecido.svg",
           "alt": "Corte esquemático de hueso cortical envejecido con osteocitos senescentes, una microfisura, un poro ampliado y una médula con más grasa",
-          "pie": "Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorar cada estructura."
+          "pie": "Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorarlo en 3D."
         },
         {
           "id": "tb_que_cambia",
@@ -1041,9 +1041,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m6_2_multicapa_tejido_envejecido",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Explora un hueso que envejece",
-            "instrucciones": "Toca cada estructura del corte para leer qué le ocurre al envejecer (con teclado, usa Tab para pasar de una a otra y Enter para abrir su descripción; también puedes usar la lista de estructuras bajo la imagen). Visita al menos las cinco estructuras marcadas como requeridas.",
+            "instrucciones": "Gira el bloque de hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de hueso cortical envejecido visto al microscopio. Toca cada estructura para leer qué le ocurre al envejecer. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco estructuras requeridas.",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
@@ -1052,12 +1052,9 @@
             },
             "concepto": "Envejecimiento celular y de la matriz",
             "config": {
-              "svg": "/images/m6/m6_tejido_oseo_envejecido_zonas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m6/m6_tejido_oseo_envejecido.webp",
-              "alt": "Corte transversal esquemático de hueso cortical envejecido con una osteona, un poro ampliado, la superficie endostal y la médula.",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "tejido_oseo_envejecido",
+              "alt": "Modelo tridimensional de un bloque de hueso cortical envejecido en corte transversal: osteona con laminillas concéntricas, osteocitos senescentes, lagunas vacías y mineralizadas, una microfisura, un poro ampliado, endostio con pocos osteoblastos, médula grasa y una lupa del colágeno con AGE.",
+              "nodos": [
                 {
                   "id": "osteocito_senescente",
                   "etiqueta": "Osteocito senescente",
@@ -1099,7 +1096,7 @@
                   "descripcion": "En el hueso envejecido hay menos osteoblastos activos sobre la superficie ósea. Cada ciclo de remodelado repone menos hueso del que se reabsorbió."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "osteocito_senescente",
                 "laguna_mineralizada",
                 "microfisura",
@@ -1241,7 +1238,7 @@
           "tipo": "imagen",
           "src": "/images/m6/m6_hueso_normal_osteoporotico.svg",
           "alt": "Comparación esquemática de un cuerpo vertebral y de una cortical, normales y osteoporóticos",
-          "pie": "Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorar cada capa."
+          "pie": "Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorarlos en 3D."
         },
         {
           "id": "tb_cantidad_frente_a_calidad",
@@ -1316,9 +1313,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m6_3_multicapa_normal_osteoporotico",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Hueso normal frente a hueso osteoporótico",
-            "instrucciones": "Toca cada capa para leer qué muestra y compara el panel normal con el osteoporótico (con teclado, usa Tab para pasar de una capa a otra y Enter para abrir su descripción; también puedes usar la lista de capas bajo la imagen). Visita al menos las cinco capas marcadas como requeridas.",
+            "instrucciones": "Gira el modelo con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): a la izquierda, hueso normal; a la derecha, osteoporótico, a la misma escala. Arriba, un cuerpo vertebral serrado; abajo, la diáfisis de un hueso largo cortada. Toca cada estructura para leer qué muestra. Con teclado, Tab y Enter, o usa la lista bajo el modelo. Visita las cinco requeridas.",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
@@ -1327,12 +1324,9 @@
             },
             "concepto": "Osteoporosis: calidad frente a cantidad",
             "config": {
-              "svg": "/images/m6/m6_hueso_normal_osteoporotico_zonas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m6/m6_hueso_normal_osteoporotico.webp",
-              "alt": "Dos paneles a la misma escala: un cuerpo vertebral en corte sagital y una cortical en corte transversal, en hueso normal (izquierda) y osteoporótico (derecha).",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "hueso_osteoporotico",
+              "alt": "Modelo tridimensional con dos pares a la misma escala, normal a la izquierda y osteoporótico a la derecha: cuerpo vertebral en corte sagital (red trabecular densa frente a trabéculas finas y rotas, con aplastamiento en cuña) y diáfisis en corte transversal (cortical gruesa o delgada y porosa).",
+              "nodos": [
                 {
                   "id": "trabeculas_normales",
                   "etiqueta": "Trabéculas conectadas (hueso normal)",
@@ -1374,7 +1368,7 @@
                   "descripcion": "Fractura típica de la osteoporosis: el cuerpo vertebral se comprime con cargas cotidianas. Puede pasar inadvertida y sumarse hasta causar una joroba (cifosis) y pérdida de estatura."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "trabeculas_normales",
                 "trabeculas_osteoporoticas",
                 "perforacion_trabecular",

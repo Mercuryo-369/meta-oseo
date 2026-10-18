@@ -1216,6 +1216,17 @@ largo y empujada por una fuerza lateral, que se construye por código
 (`apps/web/src/scenes/ligamento_periodontal/modeloLigamentoPeriodontal.ts`), sin GLB: cada nodo es una región del
 modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `ancla`**.
 
+**Modelo `tejido_oseo_envejecido`** (2026-10-18, actividad m6_2_multicapa_tejido_envejecido): `osteocito_senescente`,
+`red_canalicular_reducida`, `laguna_mineralizada`, `microfisura`, `poro_cortical`, `medula_adiposa`,
+`matriz_colageno_age`, `superficie_osteoblastos_escasos`. Bloque de hueso cortical envejecido en corte transversal
+(`apps/web/src/scenes/tejido_oseo_envejecido/`). Construido por código, como `hueso_largo`, y **no admite `ancla`**.
+
+**Modelo `hueso_osteoporotico`** (2026-10-18, actividad m6_3_multicapa_normal_osteoporotico): `trabeculas_normales`,
+`trabeculas_osteoporoticas`, `perforacion_trabecular`, `cortical_normal`, `cortical_adelgazada`,
+`porosidad_cortical`, `cavidad_medular_ampliada`, `colapso_vertebral`. Cuerpo vertebral en corte sagital y diáfisis
+en corte transversal, normales y osteoporóticos a la misma escala (`apps/web/src/scenes/hueso_osteoporotico/`).
+Construido por código, como `hueso_largo`, y **no admite `ancla`**.
+
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del
 cóndilo; `z` 0 es atrás y 1 adelante (el mentón). Por ejemplo, el mentón está cerca de `{ x: 0.5, y: 0.2, z: 1 }`.
