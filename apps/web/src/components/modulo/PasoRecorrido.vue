@@ -1,15 +1,15 @@
 <script setup lang="ts">
 /**
  * Contenido de un paso de un recorrido horizontal (secciones en la cabecera del módulo, módulos en la
- * portada del inicio): nodo con el número, la marca de completado o el candado; riel hasta el paso
- * siguiente; debajo, un rótulo opcional («Módulo 4») y el título. Va DENTRO de un elemento interactivo (botón o enlace) con las clases
+ * portada del inicio): nodo con el número, la marca de completado o el candado; una flecha («>») que lo
+ * separa del paso siguiente; debajo, un rótulo opcional («Módulo 4») y el título. Va DENTRO de un elemento interactivo (botón o enlace) con las clases
  * `relative flex flex-col`; este componente no es interactivo por sí mismo.
  *
  * Mismo lenguaje que el menú lateral (`navegacion/MenuModulos.vue`): el paso actual va con el nodo relleno
  * de azul, el completado en verde con una marca y el bloqueado en gris con candado. El estado se dice
  * también en texto para lectores de pantalla (`etiqueta`).
  */
-import { Check, Lock } from '@lucide/vue';
+import { Check, ChevronRight, Lock } from '@lucide/vue';
 
 defineProps<{
   /** Número que va dentro del nodo («4», «3.1»). */
@@ -21,7 +21,7 @@ defineProps<{
   etiqueta: string;
   estado: 'completada' | 'bloqueada' | 'normal';
   actual: boolean;
-  /** El último paso no lleva riel a la derecha. */
+  /** El último paso no lleva flecha a la derecha. */
   ultimo: boolean;
 }>();
 </script>
@@ -46,7 +46,13 @@ defineProps<{
         <Lock v-else-if="estado === 'bloqueada'" class="size-3" :stroke-width="2.5" />
         <template v-else>{{ numero }}</template>
       </span>
-      <span v-if="!ultimo" class="bg-border ml-2 h-px flex-1" />
+      <!-- Separador hacia el paso siguiente: una flecha («>») en el borde derecho. -->
+      <ChevronRight
+        v-if="!ultimo"
+        class="text-muted-foreground ml-auto size-5 shrink-0"
+        :stroke-width="2.25"
+        data-testid="flecha-paso"
+      />
     </span>
     <span
       class="mt-2 block min-w-0 pr-3 leading-snug"

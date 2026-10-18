@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * Pasos del módulo: un recorrido horizontal («3.1 ─ 3.2 ─ …») con un nodo por sección unido por un riel,
- * el número dentro del nodo y el título debajo (sin repetir el número). La sección que se lee lleva el nodo relleno de azul; la completada, una
- * marca verde; la bloqueada, un candado (rediseño del 2026-10-17, antes eran flechas encadenadas).
+ * Pasos del módulo: flechas encadenadas («3.1 > 3.2 > …», pedido de la usuaria del 2026-10-18), una por sección,
+ * con su icono, su número y su título. La sección que se lee va rellena de azul; la completada lleva una marca
+ * verde; la bloqueada, un candado.
  *
  *  - En pantallas anchas los pasos se reparten el ancho de la cabecera. Cuando no caben (móvil), la fila
  *    se desplaza en horizontal con ajuste a cada paso; el paso actual se centra solo al cambiar de sección.
@@ -13,12 +13,12 @@
  * solo con color. Una sección bloqueada se puede activar: no navega, pero pide a la página que
  * explique qué falta (`bloqueada`), en vez de ser un botón mudo.
  *
- * El dibujo de cada paso lo pone `PasoRecorrido.vue` (compartido con la portada del inicio).
+ * El dibujo de cada paso lo pone `PasoFlecha.vue`.
  */
 import { computed, nextTick, ref, watch } from 'vue';
 import type { EstadoSeccion } from '@/content/scoring';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
-import PasoRecorrido from './PasoRecorrido.vue';
+import PasoFlecha from './PasoFlecha.vue';
 
 const props = defineProps<{
   secciones: readonly { id: string; titulo: string }[];
@@ -102,7 +102,12 @@ watch(
       class="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       data-testid="indice-secciones"
     >
-      <li v-for="item in items" :key="item.id" class="min-w-[8.5rem] flex-1 snap-start">
+      <li
+        v-for="item in items"
+        :key="item.id"
+        class="min-w-[10rem] flex-1 snap-start"
+        :class="item.i === 0 ? '' : '-ml-2'"
+      >
         <button
           :ref="(el) => (botones[item.i] = el as HTMLElement)"
           type="button"
@@ -110,17 +115,16 @@ watch(
           :aria-disabled="item.bloqueada ? 'true' : undefined"
           :data-estado="item.estado"
           :title="`${item.numero}. ${item.titulo} (${item.etiqueta})`"
-          class="focus-visible:ring-ring relative flex h-full min-h-11 w-full flex-col items-start rounded-lg p-2 text-left outline-none focus-visible:ring-2"
-          :class="item.actual ? 'bg-secondary' : 'hover:bg-muted'"
+          class="group focus-visible:ring-ring relative flex h-full min-h-11 w-full rounded-lg text-left drop-shadow-sm outline-none focus-visible:ring-2"
           @click="activar(item.i)"
         >
-          <PasoRecorrido
-            :numero="item.numero"
+          <PasoFlecha
+            :numero="String(item.numero)"
             :titulo="item.titulo"
             :etiqueta="item.etiqueta"
             :estado="item.marca"
             :actual="item.actual"
-            :ultimo="item.i === items.length - 1"
+            :primero="item.i === 0"
           />
         </button>
       </li>
