@@ -417,7 +417,7 @@
     },
     "m3_multicapa_osteoide": {
       "modulo": 3,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 20,
       "obligatoria": true,
       "seccion": "m3_3_condensacion_laminar",
@@ -444,7 +444,7 @@
     },
     "m3_multicapa_osteocito": {
       "modulo": 3,
-      "tipo": "multicapa",
+      "tipo": "exploracion-3d",
       "puntaje_max": 30,
       "obligatoria": true,
       "seccion": "m3_4_osteocito_sensor",

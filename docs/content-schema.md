@@ -939,16 +939,17 @@ El video se carga con `preload="none"`, sin autoplay y con subtítulos en españ
 
 ### 7.6 `exploracion-3d`: modelo 3D (solo mandíbula y células)
 
-El 3D de exploración es para la mandíbula, las células y el hueso largo de m1 (desde 2026-10-17). Hay cuatro valores
-de `modelo`: `mandibula`, `celulas` y `hueso_largo` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
-él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
+El 3D de exploración es para la mandíbula, las células, el hueso largo de m1 (desde 2026-10-17) y los cortes
+histológicos de m3 que sustituyen a ilustraciones inexactas (desde 2026-10-18). Hay seis valores de `modelo`:
+`mandibula`, `celulas`, `hueso_largo`, `osteoide` y `red_lacuno_canalicular` (modelos con nodos: el estudiante gira el
+modelo, toca un nodo y lee su ficha; la cámara se acerca a él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
 abajo). Se completa al visitar los `requeridos`.
 
 | Campo de `config` | Regla |
 |---|---|
-| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), `hueso_largo` (construido por código, con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
+| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), `hueso_largo`, `osteoide` o `red_lacuno_canalicular` (construidos por código, con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
 | `alt` | Plano, 10 a 300: descripción del modelo |
-| `nodos[]` | Solo en `mandibula`, `celulas` y `hueso_largo` (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
+| `nodos[]` | Solo en los modelos con nodos (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
 | `ancla` | Solo en `mandibula`. `{ x, y, z }`, cada uno de 0 a 1 en la caja envolvente del modelo (sección 9). Para zonas que **no son una pieza** del modelo |
 | `camara` | `vista` (por defecto `frontal`) y `zoom` (0,5 a 3; por defecto 1) |
 | `requeridos` | 1 a 12 ids de nodos (o de pasos, en `procedural`), sin repetir, todos existentes |
@@ -1189,6 +1190,19 @@ mientras no haya un modelo suyo.
 `linea_epifisaria`, `metafisis`, `diafisis`, `cavidad_medular`, `arteria_nutricia`. Es un hueso largo serrado
 a lo largo que se construye por código (`apps/web/src/scenes/hueso_largo/modeloHuesoLargo.ts`), sin GLB: cada nodo
 es una región del modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `ancla`**.
+
+**Modelo `osteoide`** (2026-10-18, actividad m3_multicapa_osteoide): `osteoblastos_activos`, `osteoide`,
+`frente_mineralizacion`, `hueso_inmaduro`, `osteocito_incluido`, `capilar`, `linea_cementante`, `hueso_laminar`. Es
+la superficie de formación de una trabécula cortada por un plano (`apps/web/src/scenes/osteoide/modeloOsteoide.ts`),
+construida por código como el hueso largo. **No admite `ancla`**.
+
+**Modelo `red_lacuno_canalicular`** (2026-10-18, actividad m3_multicapa_osteocito): `matriz_mineralizada`,
+`laguna_osteocitica`, `cuerpo_osteocito`, `procesos_dendriticos`, `canaliculos` (con el espacio pericelular),
+`fibras_de_anclaje` (con las integrinas), `cilio_primario`, `canales_de_membrana` (Piezo1 y conexina 43),
+`capilar_conducto_haversiano`, `celulas_revestimiento`, `flechas_flujo_liquido`, `mensajeros_pge2_no`. Es un osteocito
+en hueso cortical cortado, con su red y el conducto de Havers
+(`apps/web/src/scenes/red_lacuno_canalicular/modeloRedLacunoCanalicular.ts`), construido por código. **No admite
+`ancla`**.
 
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del

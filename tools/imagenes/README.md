@@ -104,7 +104,7 @@ uvx ruff check tools/imagenes --config tools/imagenes/ruff.toml && uvx ruff form
 |---|---|
 | m1 | `m1_corte_hueso_capas`, `m1_osteona_detalle`, `m1_entretejido_laminar` |
 | m2 | `m2_osteoclasto_resorcion`, `m2_ligamento_periodontal` |
-| m3 | `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` |
+| m3 | `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` (retiradas después: ver abajo) |
 | m4 | `m4_frente_mineralizacion` |
 | m6 | `m6_tejido_oseo_envejecido`, `m6_hueso_normal_osteoporotico` |
 
@@ -139,11 +139,14 @@ esquema).
 | `m1_corte_hueso_capas` | La cortical es pardo rojiza, con aspecto de músculo. |
 | `m1_osteona_detalle` | No se ven las lagunas ni los canalículos. |
 | `m2_ligamento_periodontal` | Raíz con morfología irreal; células como anillos. |
-| `m3_osteoide_hueso_inmaduro` | Osteoblastos como cajas; osteocitos como dianas. |
-| `m3_osteocito_red_lacuno_canalicular` | Células de revestimiento como rebanadas; capilar como diana. |
 | `m4_frente_mineralizacion` | Osteoblastos como cajas; vesículas gigantes. |
 | `m6_tejido_oseo_envejecido` | Osteona con radios en vez de laminillas concéntricas; adipocitos rellenos. |
 | `m6_hueso_normal_osteoporotico` | Aspecto de piedra; la cortical osteoporótica sale gruesa. |
+
+**Retiradas y sustituidas por modelos 3D construidos por código (2026-10-18).** `m3_osteoide_hueso_inmaduro`
+(osteoblastos como cajas; osteocitos como dianas) y `m3_osteocito_red_lacuno_canalicular` (células de revestimiento
+como rebanadas; capilar como diana): sus multicapa son ahora exploraciones 3D (`osteoide` y `red_lacuno_canalicular`,
+en `apps/web/src/scenes`). El SVG de la red se conserva, sin ilustración, para la animación de la sección 3.4.
 
 ## Qué SVG convertir (propuesta, a revisar con el docente)
 

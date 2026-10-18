@@ -238,7 +238,9 @@ describe('módulo 3: esquema, carpeta y recursos', () => {
     expect(sinEnlace.sort()).toEqual(SIN_ENLACE);
   });
 
-  it('todos los recursos SVG del módulo existen y son los 8 dibujos de la carpeta m3', () => {
+  // Eran 8: m3_osteoide_hueso_inmaduro se retiró al pasar su multicapa a un modelo 3D (2026-10-18). El dibujo de la
+  // red lacuno-canalicular se conserva: lo usa la animación m3_video_mecanotransduccion.
+  it('todos los recursos SVG del módulo existen y son los 7 dibujos de la carpeta m3', () => {
     const rutas = new Set<string>();
     recorrerCadenas(modulo, [], (texto) => {
       // `X_zonas.svg` (capas sobre la ilustración realista de `X.svg`, tools/imagenes) cuenta como su dibujo `X`.
@@ -250,7 +252,7 @@ describe('módulo 3: esquema, carpeta y recursos', () => {
       .filter((r) => r.startsWith('/public/images/m3/') && !r.endsWith('_zonas.svg'))
       .map((r) => r.replace('/public', ''));
     expect([...rutas].sort()).toEqual(enDisco.sort());
-    expect(rutas.size).toBe(8);
+    expect(rutas.size).toBe(7);
   });
 });
 
@@ -310,14 +312,15 @@ describe('módulo 3: cobertura del guion', () => {
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 21 actividades del guion (6 multicapa, 8 quiz, 3 relaciones, 1 video, 2 arrastres y 1 exploración 3D) más las 3D extra', () => {
+  it('cuenta 21 actividades del guion (4 multicapa, 8 quiz, 3 relaciones, 1 video, 2 arrastres y 3 exploraciones 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
-      multicapa: 6,
+      // m3_multicapa_osteoide y m3_multicapa_osteocito pasaron de multicapa a exploración 3D (2026-10-18).
+      multicapa: 4,
       quiz: 8,
       'relacion-columnas': 3,
       'video-texto': 1,
       'arrastre-molecular': 2,
-      'exploracion-3d': 1 + EXTRAS_3D.length,
+      'exploracion-3d': 3 + EXTRAS_3D.length,
     });
   });
 

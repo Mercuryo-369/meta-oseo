@@ -103,25 +103,10 @@ encargos:
       Meckel cartilage rod, unerupted tooth germs inside the jaw, translucent embryo tissue, macro photograph, white background
     negativo: adult teeth, erupted teeth, skull, gums, mouth, smile
     semilla:   # 2026-10-18: sin candidata exacta tras dos tandas (dibuja dentaduras adultas); se queda en SVG
-  - nombre: m3_osteoide_hueso_inmaduro
-    modulo: m3
-    glifos: []
-    prompt: >-
-      microscopic section of growing bone, row of plump osteoblasts on a pale pink osteoid seam, mineralization
-      front, woven bone with many round osteocytes, capillary with red cells in soft tissue above, lamellar bone on the right
-    negativo: labels, letters, frames, ruler
-    semilla: 9
-    sufijo: _r2
-        fuerza: 0.85
-  - nombre: m3_osteocito_red_lacuno_canalicular
-    modulo: m3
-    glifos:
-      [fibras_de_anclaje, integrinas_puntos_union, cilio_primario, canal_piezo1, conexina_43, flechas_flujo_liquido,
-       mensajeros_pge2_no]
-    prompt: >-
-      osteocyte in its lacuna deep in mineralized bone, dendritic processes running through canaliculi with a fluid
-      space around them, neighbouring osteocytes, lining cells on the bone surface, Haversian capillary with red cells
-    semilla: 2
+  # 2026-10-18: m3_osteoide_hueso_inmaduro y m3_osteocito_red_lacuno_canalicular salen de los encargos. Sus multicapa
+  # pasaron a modelos 3D construidos por código (osteoide y red_lacuno_canalicular, apps/web/src/scenes): la ilustración
+  # tenía errores histológicos (osteoblastos como cajas, osteocitos como dianas; células de revestimiento como rebanadas,
+  # capilar como diana). El SVG de la red queda solo para la animación m3_video_mecanotransduccion, sin ilustración.
 
   # --- Módulo 4 ---
   - nombre: m4_frente_mineralizacion

@@ -37,6 +37,22 @@ export const MODELOS_POR_CODIGO: Readonly<Partial<Record<Modelo3d, Cargador>>> =
       puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
     };
   },
+  osteoide: async () => {
+    const m = await import('./osteoide/modeloOsteoide');
+    return {
+      crear: m.crearOsteoide,
+      esRegion: m.esRegionOsteoide,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  red_lacuno_canalicular: async () => {
+    const m = await import('./red_lacuno_canalicular/modeloRedLacunoCanalicular');
+    return {
+      crear: m.crearRedLacunoCanalicular,
+      esRegion: m.esRegionRedLacunoCanalicular,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
 };
 
 export function esModeloPorCodigo(modelo: Modelo3d): boolean {

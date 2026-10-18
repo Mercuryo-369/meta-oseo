@@ -1,8 +1,9 @@
 // Prueba permanente de las ilustraciones SVG del módulo 3 ("Construyendo hueso").
 // Valida cada archivo de public/images/m3 con el validador real (src/content/svg.ts) y comprueba
 // que estén todas las capas que pide el guion, en docs/guion-por-modulo/m3_construyendo_hueso.md,
-// sección "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). El modelo 3D de la mandíbula
-// no es un SVG y no se comprueba aquí.
+// sección "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). Los modelos 3D (la mandíbula y, desde
+// 2026-10-18, la trabécula en formación de 3.3 y la red lacuno-canalicular de 3.4, construidos por código) no son SVG
+// y no se comprueban aquí: tienen sus pruebas en src/scenes.
 import { describe, expect, it } from 'vitest';
 import { analizarSvg, problemasSvg } from '@/content/svg';
 
@@ -47,17 +48,6 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'cartilago_sinfisario',
     'extremo_posterior_meckel',
   ],
-  // Sección 3.3 (multicapa, explorar)
-  m3_osteoide_hueso_inmaduro: [
-    'osteoblastos_activos',
-    'osteoide',
-    'frente_mineralizacion',
-    'hueso_inmaduro',
-    'osteocito_incluido',
-    'capilar',
-    'linea_cementante',
-    'hueso_laminar',
-  ],
   // Sección 3.3 (arrastre molecular): fondo de la escena
   m3_bmp_runx2_osterix: [
     'celula_progenitora',
@@ -69,7 +59,7 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'osterix_sp7',
     'genes_osteoblasto',
   ],
-  // Sección 3.4 (multicapa, explorar) y animación de la sección 3.4 (video-texto)
+  // Animación de la sección 3.4 (video-texto). La exploración de 3.4 es ahora el modelo 3D `red_lacuno_canalicular`.
   m3_osteocito_red_lacuno_canalicular: [
     'matriz_mineralizada',
     'laguna_osteocitica',
@@ -155,8 +145,9 @@ function cuerpoDeGrupo(svg: string, abre: number): string {
 }
 
 describe('ilustraciones SVG del módulo 3', () => {
-  it('produce los 8 SVG que lista la tabla del guion, ni uno más ni uno menos', () => {
-    expect(ARCHIVOS).toHaveLength(8);
+  it('produce los 7 SVG que lista la tabla del guion, ni uno más ni uno menos', () => {
+    // Eran 8: m3_osteoide_hueso_inmaduro pasó a un modelo 3D (2026-10-18) y se retiró.
+    expect(ARCHIVOS).toHaveLength(7);
     for (const nombre of ARCHIVOS) {
       expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     }
@@ -211,11 +202,7 @@ describe('ilustraciones SVG del módulo 3', () => {
   });
 
   it('mantiene el mismo color para hueso y osteoide en los dibujos que muestran matriz ósea', () => {
-    for (const nombre of [
-      'm3_rutas_formacion_osea',
-      'm3_osteoide_hueso_inmaduro',
-      'm3_osteocito_red_lacuno_canalicular',
-    ]) {
+    for (const nombre of ['m3_rutas_formacion_osea', 'm3_osteocito_red_lacuno_canalicular']) {
       const svg = leer(nombre);
       expect(svg, `${nombre}: hueso mineralizado`).toContain(COLOR_HUESO);
       if (nombre !== 'm3_osteocito_red_lacuno_canalicular') {
