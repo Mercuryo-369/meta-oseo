@@ -14,11 +14,16 @@ SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 900" fill="no
 <!-- cabecera original -->
 <g id="hueso"><path d="M0,500 L1000,500 L1000,900 L0,900 Z" fill="#d98aa2" stroke="currentColor"/>
 <path d="M0,800 L1000,800" fill="none" stroke="#a8748c"/></g>
+<g id="fibras"><path d="M0,100 L900,100" fill="none" stroke="#a8748c" stroke-width="3"/></g>
 <g id="adorno"><circle cx="10" cy="10" r="5" fill="#fff"/></g>
 <g id="nucleo"><ellipse cx="500" cy="300" rx="60" ry="40" fill="#5b3a8c"/>
 <g data-zona-toque="" fill="transparent"><ellipse cx="500" cy="300" rx="80" ry="60"/></g></g>
 <g id="bomba"><rect x="400" y="480" width="20" height="30" fill="#2a9db5"/><text x="0" y="0">H+</text></g>
 <defs><linearGradient id="d"><stop offset="0"/></linearGradient></defs>
+<g id="fondo"><rect x="10" y="10" width="80" height="20" fill="#fff"/><text x="12" y="25">Vestibular</text>
+<path d="M0,0 L5,5" stroke="#000"/></g>
+<g id="panel"><rect x="0" y="0" width="900" height="800" fill="#fff"/><text x="5" y="5">Normal</text></g>
+<g><line x1="0" y1="0" x2="50" y2="50" stroke="#333"/><text x="60" y="60">Cortical</text></g>
 </svg>"""
 
 
@@ -39,7 +44,7 @@ def test_svg_sin_capas_quita_glifos_y_zonas():
 
 
 def _como_zonas():
-    texto = svg_fondo.svg_como_zonas(SVG, ["bomba"], ["hueso", "nucleo", "bomba"], "/images/m2/x.webp")
+    texto = svg_fondo.svg_como_zonas(SVG, ["bomba"], ["hueso", "nucleo", "bomba", "fibras"], "/images/m2/x.webp")
     return texto, svg_fondo.leer(texto)
 
 
@@ -66,8 +71,10 @@ def test_capa_sin_zona_recibe_zona_con_sus_formas_rellenas():
     zona = raiz.find(".//*[@id='hueso']/*[@data-zona-toque]")
     assert zona is not None and zona.get("fill") == "transparent" and zona.get("stroke") == "none"
     formas = list(zona)
-    assert len(formas) == 1  # solo el path con relleno; la línea de solo contorno no
+    assert len(formas) == 2  # el path con relleno y la línea de solo contorno, cada uno a su manera
     assert formas[0].get("fill") is None and formas[0].get("stroke") is None
+    assert formas[1].get("fill") == "none" and formas[1].get("stroke") == "transparent"
+    assert float(formas[1].get("stroke-width")) >= 44 * 1000 / 320 - 0.1
 
 
 def test_capas_no_declaradas_no_reciben_zona_y_comentarios_se_conservan():
@@ -95,3 +102,33 @@ def test_poner_fondo_tras_viewbox_e_idempotente(tmp_path):
     svg_fondo.poner_fondo(p, "/images/m2/x.svg", "/images/m2/x.webp", "/images/m2/x_zonas.svg")
     config = json.loads(p.read_text(encoding="utf-8"))["secciones"][0]["actividades"][0]["config"]
     assert config["svg"] == "/images/m2/x_zonas.svg"
+
+
+def test_rotulos_fuera_del_boceto():
+    raiz = svg_fondo.leer(svg_fondo.svg_sin_capas(SVG, []))
+    assert not raiz.findall(".//s:text", NS)
+    assert raiz.find(".//s:line", NS) is None  # línea guía del rótulo
+    assert raiz.find(".//*[@id='fondo']/s:rect", NS) is None  # pastilla
+    assert raiz.find(".//*[@id='fondo']/s:path", NS) is not None
+
+
+def test_rotulos_dibujados_con_halo_sobre_la_ilustracion():
+    _, raiz = _como_zonas()
+    pastilla = raiz.find(".//*[@id='fondo']/s:rect", NS)
+    assert pastilla.get("fill-opacity") is None
+    assert raiz.find(".//*[@id='fondo']/s:path", NS).get("fill-opacity") == "0"
+    assert raiz.find(".//s:line", NS).get("stroke") == "#333"
+    for texto in raiz.findall(".//s:text", NS):
+        if texto.text != "H+":
+            assert texto.get("stroke") == "#ffffff" and texto.get("paint-order") == "stroke"
+
+
+def test_panel_grande_antes_de_un_titulo_no_es_pastilla():
+    _, raiz = _como_zonas()
+    assert raiz.find(".//*[@id='panel']/s:rect", NS).get("fill-opacity") == "0"
+
+
+def test_capa_de_solo_contorno_recibe_zona_tactil_ancha():
+    _, raiz = _como_zonas()
+    linea = raiz.find(".//*[@id='fibras']/*[@data-zona-toque]/s:path", NS)
+    assert linea.get("stroke") == "transparent" and float(linea.get("stroke-width")) >= 137

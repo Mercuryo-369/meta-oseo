@@ -63,12 +63,20 @@ Desde la raíz del repo, con `PY=~/ova-imagenes/.venv/Scripts/python.exe`:
      - `--refinar` (0,5–0,7): más alto da más realismo y algo menos de fidelidad.
      - `--escala` y `--factor`: fuerza de los bordes en la primera pasada.
      - `--semilla` y `--sufijo`: para probar sin pisar candidatas anteriores.
-3. **Elegir.** Se anota la `semilla` en el encargo. Criterios:
-   - Anatomía plausible para un médico u odontólogo.
-   - Cada estructura dentro de su contorno.
-   - Sin texto ni artefactos.
+3. **Elegir.** Se anota la `semilla` en el encargo. Es material de un trabajo universitario: la anatomía debe ser
+   **exacta**, no solo plausible. Se descarta la candidata si:
+   - Alguna estructura no cae dentro de su contorno.
+   - Tiene un color o una textura que no corresponde: una corona que no es esmalte blanco, una raíz con aspecto de
+     madera, un diente con forma de implante.
+   - Tiene texto o artefactos.
+   - Inventa estructuras. Las que caen fuera de la silueta se recortan solas (paso 4); las que caen dentro, no.
+
+   Ante la duda, la actividad se queda con su SVG. La ilustración es un apoyo visual: lo que se evalúa sigue
+   siendo el dibujo validado y sus capas.
 4. **Integrar.** `$PY tools/imagenes/imagenes.py integrar NOMBRE --semilla K [--sufijo _x]`
-   - Escribe `public/images/mX/NOMBRE.webp` a 1200 px de ancho, normalmente menos de 100 KB.
+   - Escribe `public/images/mX/NOMBRE.webp` a 1200 px de ancho, normalmente menos de 150 KB.
+   - **Recorta la ilustración a la silueta del SVG** (sin rótulos): fuera, transparente. La IA rellena a su manera lo
+     que el dibujo deja vacío (dientes vecinos, cráneos) y eso no llega a la actividad.
    - Transforma el SVG de capas para ir encima.
    - Añade `fondo` a la config.
    - Si el mismo SVG se usa fuera de la multicapa (imagen, vídeo, arrastre), lo conserva y escribe las zonas en
@@ -96,9 +104,9 @@ uvx ruff check tools/imagenes --config tools/imagenes/ruff.toml && uvx ruff form
 |---|---|
 | m1 | `m1_corte_hueso_capas`, `m1_osteona_detalle`, `m1_proceso_alveolar_corte`, `m1_entretejido_laminar`, `m1_wolff_femur` |
 | m2 | `m2_osteoclasto_resorcion` (piloto), `m2_osteoblasto_activo`, `m2_osteocito_lagunar`, `m2_ligamento_periodontal` |
-| m3 | `m3_mandibula_desarrollo`, `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular`, `m3_sensores_mecanicos` |
-| m4 | `m4_fibrilla_colageno`, `m4_fibrilla_mineralizada`, `m4_frente_mineralizacion` |
-| m5 | `m5_ciclo_remodelado_bmu`, `m5_hueso_cortical_trabecular_alveolar`, `m5_movimiento_ortodontico_pdl`, `m5_cicatrizacion_alveolo_fases` |
+| m3 | `m3_mandibula_desarrollo`, `m3_osteoide_hueso_inmaduro`, `m3_osteocito_red_lacuno_canalicular` |
+| m4 | `m4_frente_mineralizacion` |
+| m5 | `m5_hueso_cortical_trabecular_alveolar`, `m5_movimiento_ortodontico_pdl`, `m5_cicatrizacion_alveolo_fases` |
 | m6 | `m6_tejido_oseo_envejecido`, `m6_hueso_normal_osteoporotico` |
 
 **Esquemas: se quedan en SVG.** Son vías de señalización, gráficas, mapas y balances, y ahí la ilustración realista
@@ -106,9 +114,9 @@ no aporta nada:
 
 | Módulo | SVG |
 |---|---|
-| m3 | `m3_rutas_formacion_osea`, `m3_mecanostato_ventanas`, `m3_bmp_runx2_osterix`, `m3_via_wnt_esclerostina` |
-| m4 | `m4_composicion_matriz`, `m4_homeostasis_calcio_fosfato` |
-| m5 | `m5_hormonas_regulacion_calcemia`, `m5_equilibrio_remodelado_alteraciones`, `m5_acoplamiento_matriz_esclerostina`, `m5_osteoclastogenesis_rank_rankl_opg` |
+| m3 | `m3_sensores_mecanicos` (membrana y moléculas), `m3_rutas_formacion_osea`, `m3_mecanostato_ventanas`, `m3_bmp_runx2_osterix`, `m3_via_wnt_esclerostina` |
+| m4 | `m4_fibrilla_colageno`, `m4_fibrilla_mineralizada` (escala molecular), `m4_composicion_matriz`, `m4_homeostasis_calcio_fosfato` |
+| m5 | `m5_ciclo_remodelado_bmu` (línea de tiempo: la IA inventa rótulos), `m5_hormonas_regulacion_calcemia`, `m5_equilibrio_remodelado_alteraciones`, `m5_acoplamiento_matriz_esclerostina`, `m5_osteoclastogenesis_rank_rankl_opg` |
 | m6 | `m6_curva_masa_osea`, `m6_prevencion_mapa` |
 
 Las imágenes estáticas (`tipo: imagen`) y los fondos de arrastre o vídeo siguen siendo SVG. Si se quiere

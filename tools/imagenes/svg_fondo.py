@@ -10,12 +10,14 @@
 from __future__ import annotations
 
 import copy
+import itertools
 import json
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 NS = "http://www.w3.org/2000/svg"
+MARCA = "Zonas sobre la ilustración"  # comentario que deja svg_como_zonas: el SVG ya está transformado
 ET.register_namespace("", NS)
 ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
 
@@ -66,11 +68,52 @@ def _grupos_por_id(raiz: ET.Element, ids: set[str]) -> list[ET.Element]:
     return [e for e in raiz.iter() if e.get("id") in ids]
 
 
-def svg_sin_capas(texto: str, quitar: list[str]) -> str:
-    """Copia del SVG sin las capas `quitar` ni las zonas táctiles: el boceto que guía a la IA."""
+def _hijos_dibujados(e: ET.Element) -> list[ET.Element]:
+    return [c for c in e if _local(c.tag) not in {"", "title", "desc"}]
+
+
+def _es_anotacion(e: ET.Element) -> bool:
+    """Grupo sin id con un texto directo: un rótulo con sus líneas guía (no es una estructura)."""
+    return _local(e.tag) == "g" and not e.get("id") and any(_local(c.tag) == "text" for c in e)
+
+
+def _area(e: ET.Element) -> float | None:
+    """Área de un rect, círculo o elipse en unidades del viewBox (None para otras formas)."""
+    try:
+        if _local(e.tag) == "rect":
+            return float(e.get("width", 0)) * float(e.get("height", 0))
+        if _local(e.tag) == "circle":
+            return 3.1416 * float(e.get("r", 0)) ** 2
+        if _local(e.tag) == "ellipse":
+            return 3.1416 * float(e.get("rx", 0)) * float(e.get("ry", 0))
+    except ValueError:
+        return None
+    return None
+
+
+def _pastillas(raiz: ET.Element) -> set[ET.Element]:
+    """Rect, círculo o elipse PEQUEÑO (menos del 3 % del dibujo) justo antes de un texto en el mismo grupo: el fondo
+    del rótulo («Vestibular», «Tiempo»). Un panel grande seguido de su título no lo es."""
+    ancho, alto = viewbox(raiz)
+    pastillas = set()
+    for padre in raiz.iter():
+        hijos = _hijos_dibujados(padre)
+        for anterior, actual in itertools.pairwise(hijos):
+            area = _area(anterior)
+            if _local(actual.tag) == "text" and area is not None and area <= 0.03 * ancho * alto:
+                pastillas.add(anterior)
+    return pastillas
+
+
+def svg_sin_capas(texto: str, quitar: list[str], colores: list[str] = ()) -> str:
+    """Copia del SVG sin las capas `quitar`, las zonas táctiles ni los rótulos: el boceto que guía a la IA (con texto,
+    la IA pinta letras inventadas)."""
     raiz = leer(texto)
     padres = _padres(raiz)
-    for e in _grupos_por_id(raiz, set(quitar)) + [e for e in raiz.iter() if "data-zona-toque" in e.attrib]:
+    fuera = _grupos_por_id(raiz, set(quitar)) + [e for e in raiz.iter() if "data-zona-toque" in e.attrib]
+    fuera += [e for e in raiz.iter() if _local(e.tag) == "text" or _es_anotacion(e)] + list(_pastillas(raiz))
+    fuera += [e for e in raiz.iter() if _de_color(e, colores)]
+    for e in fuera:
         if e in padres and e in list(padres[e]):
             padres[e].remove(e)
     return escribir(raiz)
@@ -85,6 +128,29 @@ def _dentro_de(e: ET.Element, padres: dict, condicion) -> bool:
     return False
 
 
+ATRIBUTOS_NO_CLONADOS = (
+    "id",
+    "fill",
+    "fill-opacity",
+    "stroke",
+    "stroke-opacity",
+    "stroke-width",
+    "opacity",
+    "filter",
+    "class",
+    "style",
+)
+
+
+def _heredado(e: ET.Element, atributo: str, padres: dict, defecto: str) -> str:
+    nodo = e
+    while nodo is not None:
+        if atributo in nodo.attrib:
+            return nodo.attrib[atributo].strip()
+        nodo = padres.get(nodo)
+    return defecto
+
+
 def _pinta_relleno(e: ET.Element, padres: dict) -> bool:
     nodo = e
     while nodo is not None:
@@ -94,7 +160,12 @@ def _pinta_relleno(e: ET.Element, padres: dict) -> bool:
     return True  # relleno por defecto de SVG: negro
 
 
-def svg_como_zonas(texto: str, glifos: list[str], capas: list[str], fondo: str) -> str:
+def _de_color(e: ET.Element, colores) -> bool:
+    """Forma pintada con uno de `colores` (flechas o marcas sueltas dentro de un grupo de fondo)."""
+    return _local(e.tag) in FORMAS and (e.get("fill") or "").lower() in {c.lower() for c in colores}
+
+
+def svg_como_zonas(texto: str, glifos: list[str], capas: list[str], fondo: str, colores: list[str] = ()) -> str:
     """SVG para poner encima de la ilustración `fondo`.
 
     - Las formas fuera de las capas `glifos` se vuelven invisibles: `fill-opacity="0"` y `stroke="none"`. El CSS de
@@ -102,11 +173,13 @@ def svg_como_zonas(texto: str, glifos: list[str], capas: list[str], fondo: str) 
       su contorno se dibuja sobre la ilustración.
     - A cada capa de `capas` sin zona propia se le añade un `<g data-zona-toque>` con copias transparentes de sus
       formas con relleno (el componente solo clona formas visibles y estas ya no lo son).
-    - Los textos (`<text>`) se conservan.
+    - Los rótulos se conservan dibujados (textos, sus grupos sin id con líneas guía y la forma de fondo que los
+      precede) y cada texto recibe un halo blanco para leerse sobre la ilustración. También las formas de `colores`.
     """
     raiz = leer(texto)
     padres = _padres(raiz)
     ids_glifo = set(glifos)
+    ancho_tactil = round(44 * viewbox(raiz)[0] / 320, 1)
 
     for capa in _grupos_por_id(raiz, set(capas) - ids_glifo):
         if (
@@ -116,42 +189,45 @@ def svg_como_zonas(texto: str, glifos: list[str], capas: list[str], fondo: str) 
             continue
         zona = ET.Element(f"{{{NS}}}g", {"data-zona-toque": "", "fill": "transparent", "stroke": "none"})
         for forma in capa.iter():
-            if (
-                _local(forma.tag) in FORMAS
-                and _pinta_relleno(forma, padres)
-                and not _dentro_de(forma, padres, lambda n: _local(n.tag) in NO_RENDERIZADOS)
-            ):
-                clon = copy.deepcopy(forma)
-                for atributo in (
-                    "id",
-                    "fill",
-                    "fill-opacity",
-                    "stroke",
-                    "stroke-opacity",
-                    "stroke-width",
-                    "opacity",
-                    "filter",
-                    "class",
-                    "style",
-                ):
-                    clon.attrib.pop(atributo, None)
-                zona.append(clon)
+            if _local(forma.tag) not in FORMAS or _dentro_de(forma, padres, lambda n: _local(n.tag) in NO_RENDERIZADOS):
+                continue
+            relleno = _pinta_relleno(forma, padres)
+            if not relleno and _heredado(forma, "stroke", padres, "none").lower() in {"none", "transparent"}:
+                continue
+            clon = copy.deepcopy(forma)
+            for atributo in ATRIBUTOS_NO_CLONADOS:
+                clon.attrib.pop(atributo, None)
+            if not relleno:
+                # Solo contorno (fibras, láminas): trazo transparente con el ancho táctil mínimo, como hace el
+                # componente con las zonas automáticas (44 px sobre el ancho de referencia de 320 px).
+                ancho = float(_heredado(forma, "stroke-width", padres, "1") or 1)
+                clon.attrib.update(
+                    {"fill": "none", "stroke": "transparent", "stroke-width": f"{max(ancho, ancho_tactil):g}"}
+                )
+            zona.append(clon)
         if len(zona):
             capa.append(zona)
 
     padres = _padres(raiz)
+    pastillas = _pastillas(raiz)
     for forma in list(raiz.iter()):
-        if _local(forma.tag) not in FORMAS:
+        if _local(forma.tag) == "text" and "stroke" not in forma.attrib:
+            forma.attrib.update(
+                {"stroke": "#ffffff", "stroke-width": "4", "stroke-linejoin": "round", "paint-order": "stroke"}
+            )
+        if _local(forma.tag) not in FORMAS or forma in pastillas or _de_color(forma, colores):
             continue
         if _dentro_de(forma, padres, lambda n: "data-zona-toque" in n.attrib or _local(n.tag) in NO_RENDERIZADOS):
             continue
-        if forma.get("id") in ids_glifo or _dentro_de(forma, padres, lambda n: n.get("id") in ids_glifo):
+        if forma.get("id") in ids_glifo or _dentro_de(
+            forma, padres, lambda n: n.get("id") in ids_glifo or _es_anotacion(n)
+        ):
             continue
         forma.set("fill-opacity", "0")
         forma.set("stroke", "none")
 
     nota = ET.Comment(
-        f" Zonas sobre la ilustración {fondo} (tools/imagenes): las estructuras son invisibles y tocables; "
+        f" {MARCA} {fondo} (tools/imagenes): las estructuras son invisibles y tocables; "
         f"quedan dibujadas solo las capas {', '.join(glifos) or '(ninguna)'}. "
     )
     nota.tail = "\n"

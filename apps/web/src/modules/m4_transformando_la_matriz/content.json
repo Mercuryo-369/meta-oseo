@@ -2269,8 +2269,9 @@
             },
             "concepto": "Frente de mineralización",
             "config": {
-              "svg": "/images/m4/m4_frente_mineralizacion.svg",
+              "svg": "/images/m4/m4_frente_mineralizacion_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m4/m4_frente_mineralizacion.webp",
               "alt": "Corte de una superficie ósea en formación, de la superficie hacia el interior: osteoblastos, osteoide, frente de mineralización, hueso mineralizado y osteocito con sus canalículos.",
               "modo": "identificar",
               "capas": [

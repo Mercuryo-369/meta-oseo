@@ -1,6 +1,10 @@
 # Encargos de ilustración realista (tools/imagenes/README.md). Uno por SVG de multicapa.
 #   nombre: el SVG de apps/web/public/images/{modulo}/{nombre}.svg (y el WebP que se genera a su lado)
 #   glifos: capas que NO pinta la IA y quedan dibujadas encima (moléculas, receptores, flechas)
+#   colores: (opcional) rellenos de formas sueltas que también quedan dibujadas (p. ej. una flecha dentro del fondo)
+#   boceto_con_glifos: (opcional) los glifos también guían a la IA (p. ej. trayectorias trabeculares que deben
+#     coincidir con el hueso esponjoso pintado debajo)
+#   Los rótulos (textos, sus líneas guía y su fondo) siempre quedan dibujados y fuera del boceto.
 #   prompt: en inglés, lo propio del dibujo primero y breve (CLIP corta a 77 tokens; el estilo se añade al final)
 #   semilla: la candidata elegida tras revisar la hoja (vacía mientras no se elija)
 encargos:
@@ -11,3 +15,153 @@ encargos:
       cutaway of a giant osteoclast cell resting on bone, translucent lilac cytoplasm, five dark purple oval nuclei
       with speckled chromatin, ruffled membrane over a dark acidic resorption pit, porous ivory bone
     semilla: 6  # sufijo _v2, hoja del 2026-10-18 (refinado 0,62): núcleos con cromatina, sellado y borde festoneado alineados
+
+  # --- Módulo 1 ---
+  - nombre: m1_corte_hueso_capas
+    modulo: m1
+    glifos: []
+    prompt: >-
+      longitudinal cut through the end of a long bone, thin fibrous periosteum on the outside, dense ivory cortical
+      bone thick along the shaft and thin at the epiphysis, arched spongy trabecular bone, yellow fatty marrow, white
+      background
+    semilla: 3
+  - nombre: m1_osteona_detalle
+    modulo: m1
+    glifos: []
+    prompt: >-
+      histology cross-section of compact bone, round osteons with concentric lamellae around a central Haversian canal
+      with a blood vessel, osteocyte lacunae with fine canaliculi, scalloped cement lines, oblique Volkmann canal
+    semilla: 1
+  - nombre: m1_proceso_alveolar_corte
+    modulo: m1
+    glifos: []
+    prompt: >-
+      anatomical cross-section of a single lower tooth in the mandible, glossy white enamel crown, ivory dentin root
+      around a red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
+      bone with marrow, mandibular canal with nerve and vessels
+    negativo: red crown, wood, bark, extra teeth, neighbouring teeth, gums, mouth
+    semilla:  # 2026-10-18: descartada la anterior (corona rojiza / raíz con textura de corteza)
+  - nombre: m1_entretejido_laminar
+    modulo: m1
+    glifos: []
+    prompt: >-
+      two microscopic panels of bone tissue side by side, left woven bone with thick randomly interlaced collagen
+      bundles and many large osteocytes, right lamellar bone with parallel layers and few aligned osteocytes, white
+      background
+    semilla: 2
+  - nombre: m1_wolff_femur
+    modulo: m1
+    glifos: [trayectorias_compresion, trayectorias_traccion]
+    boceto_con_glifos: true
+    prompt: >-
+      dry bone specimen of the upper femur sawn in half lengthwise, femoral head, neck and shaft, thin compact cortex,
+      inner cancellous bone with oriented trabecular struts, isolated on white background
+    semilla:
+
+  # --- Módulo 2 ---
+  - nombre: m2_osteoblasto_activo
+    modulo: m2
+    glifos: [fosfatasa_alcalina, osteocalcina, ligandos_rankl_opg, uniones_comunicantes]
+    prompt: >-
+      plump living osteoblast cells lined up on a smooth pink osteoid layer over bone, granular cytoplasm,
+      round nucleus, stacked rough endoplasmic reticulum, Golgi and secretory granules, thin flat lining cell on the right,
+      electron microscopy inspired
+    negativo: boxes, jellyfish, glass, plastic
+    semilla:
+  - nombre: m2_osteocito_lagunar
+    modulo: m2
+    glifos: [esclerostina, osteocito_lagunar_uniones_comunicantes, fondo_rotulo_inset]
+    prompt: >-
+      violet star-shaped osteocyte with dark nucleus inside a pale lacuna in pink mineralized bone matrix, thin
+      dendrites in canaliculi linking to neighbouring osteocytes, flat cells on the top surface, small capillary in the corner
+    negativo: spider, flower, mouth, red center
+    semilla:
+  - nombre: m2_ligamento_periodontal
+    modulo: m2
+    glifos: [lado_presion, lado_tension]
+    colores: ["#e0453a"]
+    prompt: >-
+      longitudinal section of a tooth root in its alveolar socket, collagen fibers of the periodontal ligament anchored
+      in cementum and bone, fibroblasts, osteoblasts and osteoclasts along the bone, spongy alveolar bone, histology
+    semilla: 3
+
+  # --- Módulo 3 ---
+  - nombre: m3_mandibula_desarrollo
+    modulo: m3
+    glifos: [decoracion_orientacion]
+    prompt: >-
+      cleared and stained fetal mandible specimen, alizarin red stained developing bone and alcian blue stained
+      Meckel cartilage rod, unerupted tooth germs inside the jaw, translucent embryo tissue, macro photograph, white background
+    negativo: adult teeth, erupted teeth, skull, gums, mouth, smile
+    semilla:
+  - nombre: m3_osteoide_hueso_inmaduro
+    modulo: m3
+    glifos: []
+    prompt: >-
+      microscopic section of growing bone, row of plump osteoblasts on a pale pink osteoid seam, mineralization
+      front, woven bone with many round osteocytes, capillary with red cells in soft tissue above, lamellar bone on the right
+    negativo: labels, letters, frames, ruler
+    semilla:
+  - nombre: m3_osteocito_red_lacuno_canalicular
+    modulo: m3
+    glifos:
+      [fibras_de_anclaje, integrinas_puntos_union, cilio_primario, canal_piezo1, conexina_43, flechas_flujo_liquido,
+       mensajeros_pge2_no]
+    prompt: >-
+      osteocyte in its lacuna deep in mineralized bone, dendritic processes running through canaliculi with a fluid
+      space around them, neighbouring osteocytes, lining cells on the bone surface, Haversian capillary with red cells
+    semilla: 2
+
+  # --- Módulo 4 ---
+  - nombre: m4_frente_mineralizacion
+    modulo: m4
+    glifos: [marcas_tetraciclina]
+    prompt: >-
+      histology of a bone forming surface, row of osteoblasts on top, pale unmineralized osteoid seam, small matrix
+      vesicles, mineralization front, pink mineralized bone with osteocytes and canaliculi
+    semilla: 2
+
+  # --- Módulo 5 ---
+  - nombre: m5_hueso_cortical_trabecular_alveolar
+    modulo: m5
+    glifos: []
+    prompt: >-
+      anatomical cross-section of a premolar in the mandible, glossy white enamel crown, smooth ivory dentin root
+      with red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
+      bone, basal bone with mandibular canal
+    negativo: red crown, wood, bark, screw, implant, extra teeth, neighbouring teeth
+    semilla:  # 2026-10-18: descartada la anterior (corona rojiza / raíz con textura de corteza)
+  - nombre: m5_movimiento_ortodontico_pdl
+    modulo: m5
+    glifos: [fuerza_ortodontica, senales_compresion, senales_tension]
+    prompt: >-
+      microscopic transverse section of a single tooth root embedded in jaw bone, circular dentin ring around a
+      central pulp canal, periodontal ligament fibers compressed on the right and stretched on the left, osteoclasts and
+      osteoblasts on the socket wall, bone with osteocytes
+    negativo: teeth, crowns, molars, mouth, gums, smile
+    semilla:
+  - nombre: m5_cicatrizacion_alveolo_fases
+    modulo: m5
+    glifos: [remodelado_del_reborde]
+    prompt: >-
+      buccolingual section through a healing extraction socket in the jaw bone, dark red blood clot on top,
+      granulation tissue, new woven bone and trabecular bone filling the socket between the cortical walls, gum covering
+      the top
+    negativo: teeth, crowns, molars, roots, mouth
+    semilla:
+
+  # --- Módulo 6 ---
+  - nombre: m6_tejido_oseo_envejecido
+    modulo: m6
+    glifos: [matriz_colageno_age]
+    prompt: >-
+      aged cortical bone cross-section, osteon with sparse osteocytes, empty and mineralized lacunae, a thin
+      microcrack, an enlarged cortical pore, endosteal surface with few cells, fatty marrow with large adipocytes below
+    semilla: 2
+  - nombre: m6_hueso_normal_osteoporotico
+    modulo: m6
+    glifos: [perforacion_trabecular]  # colapso_vertebral es una vértebra rellena: taparía la ilustración
+    prompt: >-
+      four anatomical panels, vertebral body with dense connected trabeculae, osteoporotic vertebra with thin sparse
+      trabeculae, thick cortical bone ring, thin porous cortical ring with wide marrow cavity, white background
+    semilla: 3

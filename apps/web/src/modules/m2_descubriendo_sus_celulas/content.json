@@ -2415,6 +2415,7 @@
             "config": {
               "svg": "/images/m2/m2_ligamento_periodontal.svg",
               "viewBox": "0 0 1000 900",
+              "fondo": "/images/m2/m2_ligamento_periodontal.webp",
               "alt": "Corte de un diente y su alvéolo: cemento, ligamento periodontal con sus células, fibras de Sharpey y hueso alveolar; con la raíz sometida a una fuerza lateral para mostrar el lado de presión y el lado de tensión.",
               "modo": "identificar",
               "capas": [

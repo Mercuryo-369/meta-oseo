@@ -1880,8 +1880,9 @@
             },
             "concepto": "Anatomía funcional del sistema lacuno-canalicular",
             "config": {
-              "svg": "/images/m3/m3_osteocito_red_lacuno_canalicular.svg",
+              "svg": "/images/m3/m3_osteocito_red_lacuno_canalicular_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_osteocito_red_lacuno_canalicular.webp",
               "alt": "Corte de hueso cortical con un osteocito en su laguna, sus procesos en los canalículos, el espacio pericelular, los sensores y la conexión con el capilar y con las células de la superficie.",
               "modo": "explorar",
               "capas": [

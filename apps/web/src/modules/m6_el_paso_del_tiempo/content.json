@@ -1052,8 +1052,9 @@
             },
             "concepto": "Envejecimiento celular y de la matriz",
             "config": {
-              "svg": "/images/m6/m6_tejido_oseo_envejecido.svg",
+              "svg": "/images/m6/m6_tejido_oseo_envejecido_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m6/m6_tejido_oseo_envejecido.webp",
               "alt": "Corte transversal esquemático de hueso cortical envejecido con una osteona, un poro ampliado, la superficie endostal y la médula.",
               "modo": "explorar",
               "capas": [
@@ -1326,8 +1327,9 @@
             },
             "concepto": "Osteoporosis: calidad frente a cantidad",
             "config": {
-              "svg": "/images/m6/m6_hueso_normal_osteoporotico.svg",
+              "svg": "/images/m6/m6_hueso_normal_osteoporotico_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m6/m6_hueso_normal_osteoporotico.webp",
               "alt": "Dos paneles a la misma escala: un cuerpo vertebral en corte sagital y una cortical en corte transversal, en hueso normal (izquierda) y osteoporótico (derecha).",
               "modo": "explorar",
               "capas": [

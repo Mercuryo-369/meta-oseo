@@ -1571,8 +1571,9 @@
             },
             "concepto": "Hueso laminar y entretejido",
             "config": {
-              "svg": "/images/m1/m1_entretejido_laminar.svg",
+              "svg": "/images/m1/m1_entretejido_laminar_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m1/m1_entretejido_laminar.webp",
               "alt": "Dos paneles a la misma escala: hueso entretejido (izquierda) y hueso laminar (derecha).",
               "modo": "explorar",
               "capas": [
@@ -1931,6 +1932,7 @@
             "config": {
               "svg": "/images/m1/m1_corte_hueso_capas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m1/m1_corte_hueso_capas.webp",
               "alt": "Corte longitudinal de la extremidad de un hueso largo, de la superficie al interior.",
               "modo": "identificar",
               "capas": [
@@ -1992,6 +1994,7 @@
             "config": {
               "svg": "/images/m1/m1_osteona_detalle.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m1/m1_osteona_detalle.webp",
               "alt": "Bloque de hueso cortical (esquema clásico) con una osteona en primer plano.",
               "modo": "identificar",
               "capas": [

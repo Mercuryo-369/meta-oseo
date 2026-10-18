@@ -241,11 +241,13 @@ describe('módulo 3: esquema, carpeta y recursos', () => {
   it('todos los recursos SVG del módulo existen y son los 8 dibujos de la carpeta m3', () => {
     const rutas = new Set<string>();
     recorrerCadenas(modulo, [], (texto) => {
-      if (/^\/images\/m3\/[a-z0-9_]+\.svg$/.test(texto)) rutas.add(texto);
+      // `X_zonas.svg` (capas sobre la ilustración realista de `X.svg`, tools/imagenes) cuenta como su dibujo `X`.
+      if (/^\/images\/m3\/[a-z0-9_]+\.svg$/.test(texto))
+        rutas.add(texto.replace(/_zonas\.svg$/, '.svg'));
     });
     for (const ruta of rutas) expect(archivosPublicos.has(`/public${ruta}`), ruta).toBe(true);
     const enDisco = Object.keys(svgsPublicos)
-      .filter((r) => r.startsWith('/public/images/m3/'))
+      .filter((r) => r.startsWith('/public/images/m3/') && !r.endsWith('_zonas.svg'))
       .map((r) => r.replace('/public', ''));
     expect([...rutas].sort()).toEqual(enDisco.sort());
     expect(rutas.size).toBe(8);

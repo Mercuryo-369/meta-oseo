@@ -250,7 +250,8 @@ describe('módulo 6: esquema, carpeta y recursos', () => {
     const usados = new Set<string>();
     recorrerCadenas(modulo, [], (texto) => {
       const m = /^\/images\/m6\/(m6_[a-z0-9_]+)\.svg$/.exec(texto);
-      if (m) usados.add(m[1]!);
+      // `X_zonas.svg` (capas sobre la ilustración realista de `X.svg`, tools/imagenes) cuenta como su dibujo `X`.
+      if (m) usados.add(m[1]!.replace(/_zonas$/, ''));
     });
     for (const nombre of usados) {
       expect(archivosPublicos.has(`/public/images/m6/${nombre}.svg`), nombre).toBe(true);
@@ -441,7 +442,8 @@ describe('módulo 6: cobertura del guion', () => {
       } else if (a.tipo === 'arrastre-molecular') {
         usada = a.config.escena.fondo_svg;
       }
-      expect(usada, g.id).toBe(ruta);
+      // La multicapa con ilustración usa `X_zonas.svg`, la versión de capas de `X.svg` (tools/imagenes).
+      expect(usada?.replace(/_zonas\.svg$/, '.svg'), g.id).toBe(ruta);
       expect(archivosPublicos.has(`/public${ruta}`), ruta).toBe(true);
       comprobadas++;
     }

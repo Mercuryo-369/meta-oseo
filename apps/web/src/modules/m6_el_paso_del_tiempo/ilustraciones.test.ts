@@ -178,8 +178,11 @@ describe('ilustraciones SVG del módulo 6', () => {
     for (const nombre of ARCHIVOS) {
       expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     }
+    // `X_zonas.svg` es la versión de capas de `X.svg` que va sobre su ilustración realista (tools/imagenes): no es
+    // un dibujo más del guion.
     const presentes = Object.keys(CRUDOS)
       .map((ruta) => /([^/]+)\.svg$/.exec(ruta)?.[1] ?? '')
+      .filter((n) => !n.endsWith('_zonas'))
       .sort();
     expect(presentes).toEqual([...ARCHIVOS].sort());
   });

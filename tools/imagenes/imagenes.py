@@ -49,12 +49,29 @@ def ruta_svg(e: dict) -> Path:
     return PUBLICO / "images" / e["modulo"] / f"{e['nombre']}.svg"
 
 
-def png_de_svg(texto: str, ancho: int, alto: int) -> Image.Image:
+def png_de_svg(texto: str, ancho: int, alto: int, fondo: str | None = "#ffffff") -> Image.Image:
     import resvg_py
 
     # resvg conserva la proporción del viewBox: se dibuja a ese ancho y se deforma luego a las medidas de trabajo.
-    datos = resvg_py.svg_to_bytes(svg_string=texto, width=ancho, background="#ffffff")
-    return Image.open(io.BytesIO(bytes(datos))).convert("RGB").resize((ancho, alto), Image.LANCZOS)
+    datos = resvg_py.svg_to_bytes(svg_string=texto, width=ancho, **({"background": fondo} if fondo else {}))
+    modo = "RGB" if fondo else "RGBA"
+    return Image.open(io.BytesIO(bytes(datos))).convert(modo).resize((ancho, alto), Image.LANCZOS)
+
+
+def recortar_a_silueta(imagen: Image.Image, texto: str) -> Image.Image:
+    """Deja la ilustración solo donde el dibujo validado (el SVG) tiene forma; fuera, transparente.
+
+    La IA rellena a su manera lo que el SVG deja vacío (dientes vecinos, cráneos, otros huesos): eso no corresponde a
+    la anatomía del dibujo y no debe llegar a un material docente. La silueta es el SVG sin rótulos (con los glifos),
+    con el borde suavizado un píxel.
+    """
+    from PIL import ImageFilter
+
+    silueta = png_de_svg(svg_fondo.svg_sin_capas(texto, []), imagen.width, imagen.height, fondo=None)
+    alfa = silueta.getchannel("A").point(lambda v: 255 if v > 8 else 0).filter(ImageFilter.GaussianBlur(1))
+    recortada = imagen.convert("RGBA")
+    recortada.putalpha(alfa)
+    return recortada
 
 
 def preparar(e: dict) -> None:
@@ -66,7 +83,11 @@ def preparar(e: dict) -> None:
     w, h = svg_fondo.tamano_generacion(vw, vh)
     carpeta = TRABAJO / e["nombre"]
     carpeta.mkdir(parents=True, exist_ok=True)
-    color = png_de_svg(svg_fondo.svg_sin_capas(texto, e.get("glifos", [])), w, h)
+    color = png_de_svg(
+        svg_fondo.svg_sin_capas(texto, [] if e.get("boceto_con_glifos") else e.get("glifos", []), e.get("colores", [])),
+        w,
+        h,
+    )
     color.save(carpeta / "boceto.png")
     gris = cv2.cvtColor(np.array(color), cv2.COLOR_RGB2GRAY)
     # Desenfoque y umbrales altos: quedan los contornos de las estructuras, no los adornos pequeños del dibujo.
@@ -206,10 +227,13 @@ def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
     carpeta = TRABAJO / e["nombre"]
     svg = ruta_svg(e)
     texto = svg.read_text(encoding="utf-8")
+    if svg_fondo.MARCA in texto:
+        sys.exit(f"{svg.name} ya es un SVG de zonas: restaurar el original (git checkout) antes de integrar de nuevo")
     raiz = svg_fondo.leer(texto)
     vw, vh = svg_fondo.viewbox(raiz)
     imagen = Image.open(carpeta / f"s{semilla}{sufijo}.png").convert("RGB")
     imagen = imagen.resize((ANCHO_WEBP, round(ANCHO_WEBP * vh / vw)), Image.LANCZOS)
+    imagen = recortar_a_silueta(imagen, texto)
     webp = svg.with_suffix(".webp")
     imagen.save(webp, "WEBP", quality=80, method=6)
     fondo = f"/images/{e['modulo']}/{webp.name}"
@@ -223,7 +247,9 @@ def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
     modulo = next((RAIZ / "apps/web/src/modules").glob(f"{e['modulo']}_*/content.json"))
     capas = svg_fondo.capas_de(modulo, ruta)
     destino.write_text(
-        svg_fondo.svg_como_zonas(texto, e.get("glifos", []), capas, fondo), encoding="utf-8", newline="\n"
+        svg_fondo.svg_como_zonas(texto, e.get("glifos", []), capas, fondo, e.get("colores", [])),
+        encoding="utf-8",
+        newline="\n",
     )
 
     nuevo_svg = f"/images/{e['modulo']}/{destino.name}" if destino != svg else None
