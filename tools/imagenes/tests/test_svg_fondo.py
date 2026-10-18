@@ -132,3 +132,10 @@ def test_capa_de_solo_contorno_recibe_zona_tactil_ancha():
     _, raiz = _como_zonas()
     linea = raiz.find(".//*[@id='fibras']/*[@data-zona-toque]/s:path", NS)
     assert linea.get("stroke") == "transparent" and float(linea.get("stroke-width")) >= 137
+
+
+def test_svg_solo_capas_deja_solo_las_formas_pedidas():
+    raiz = svg_fondo.leer(svg_fondo.svg_solo_capas(SVG, ["nucleo"]))
+    assert raiz.find(".//*[@id='nucleo']/s:ellipse", NS) is not None
+    assert raiz.find(".//*[@id='hueso']/s:path", NS) is None
+    assert not raiz.findall(".//s:text", NS)

@@ -14,7 +14,13 @@ encargos:
     prompt: >-
       cutaway of a giant osteoclast cell resting on bone, translucent lilac cytoplasm, five dark purple oval nuclei
       with speckled chromatin, ruffled membrane over a dark acidic resorption pit, porous ivory bone
-    semilla: 6  # sufijo _v2, hoja del 2026-10-18 (refinado 0,62): núcleos con cromatina, sellado y borde festoneado alineados
+    semilla: 6  # integrada la corrección c2 (s6_v2c2.png): zona clara como pie del citoplasma; hoja del 2026-10-18 (refinado 0,62): núcleos con cromatina, sellado y borde festoneado alineados
+    sufijo: _v2
+    correcciones:
+      - capas: ["zona_clara"]
+        prompt: "pale homogeneous clear zone, the rim of cytoplasm of the same giant cell pressed flat and sealed against the bone surface, no organelles"
+        negativo: "separate cells, spheres, nuclei, balls"
+        fuerza: 0.9
 
   # --- Módulo 1 ---
   - nombre: m1_corte_hueso_capas
@@ -25,6 +31,7 @@ encargos:
       bone thick along the shaft and thin at the epiphysis, arched spongy trabecular bone, yellow fatty marrow, white
       background
     semilla: 3
+        fuerza: 0.8
   - nombre: m1_osteona_detalle
     modulo: m1
     glifos: []
@@ -32,6 +39,7 @@ encargos:
       histology cross-section of compact bone, round osteons with concentric lamellae around a central Haversian canal
       with a blood vessel, osteocyte lacunae with fine canaliculi, scalloped cement lines, oblique Volkmann canal
     semilla: 1
+        crecer: 8
   - nombre: m1_proceso_alveolar_corte
     modulo: m1
     glifos: []
@@ -49,6 +57,7 @@ encargos:
       bundles and many large osteocytes, right lamellar bone with parallel layers and few aligned osteocytes, white
       background
     semilla: 2
+        fuerza: 0.85
   - nombre: m1_wolff_femur
     modulo: m1
     glifos: [trayectorias_compresion, trayectorias_traccion]
@@ -101,7 +110,9 @@ encargos:
       microscopic section of growing bone, row of plump osteoblasts on a pale pink osteoid seam, mineralization
       front, woven bone with many round osteocytes, capillary with red cells in soft tissue above, lamellar bone on the right
     negativo: labels, letters, frames, ruler
-    semilla: 9  # sufijo _r2
+    semilla: 9
+    sufijo: _r2
+        fuerza: 0.85
   - nombre: m3_osteocito_red_lacuno_canalicular
     modulo: m3
     glifos:
@@ -158,6 +169,7 @@ encargos:
       aged cortical bone cross-section, osteon with sparse osteocytes, empty and mineralized lacunae, a thin
       microcrack, an enlarged cortical pore, endosteal surface with few cells, fatty marrow with large adipocytes below
     semilla: 2
+        fuerza: 0.85
   - nombre: m6_hueso_normal_osteoporotico
     modulo: m6
     glifos: [perforacion_trabecular]  # colapso_vertebral es una vértebra rellena: taparía la ilustración

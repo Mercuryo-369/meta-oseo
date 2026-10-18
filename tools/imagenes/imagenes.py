@@ -3,6 +3,8 @@
   preparar  NOMBRE...           SVG -> boceto de bordes (solo las estructuras que pinta la IA)
   generar   NOMBRE... [--n 4]   candidatas en dos pasadas (estructura guiada por los bordes del SVG + refinado
                                 realista) y hoja de revisión con los bordes superpuestos
+  corregir  NOMBRE... [--n 3]   repinta solo las zonas de `correcciones` del encargo (capas del SVG o regiones) sobre
+                                la candidata elegida, con su descripción precisa; hoja antes/después
   integrar  NOMBRE --semilla K  WebP en public/images, SVG de zonas encima y `fondo` en content.json
 
 Se ejecuta con el entorno de la GPU (fuera del repo, ver README): torch solo se importa en `generar`.
@@ -113,6 +115,7 @@ def cargar_pipeline(textos: list[tuple[str, str]]):
         DPMSolverMultistepScheduler,
         StableDiffusionXLAdapterPipeline,
         StableDiffusionXLImg2ImgPipeline,
+        StableDiffusionXLInpaintPipeline,
         T2IAdapter,
     )
 
@@ -156,7 +159,16 @@ def cargar_pipeline(textos: list[tuple[str, str]]):
         unet=pipe.unet,
         scheduler=pipe.scheduler,
     )
-    return pipe, refinador, codificados
+    repintor = StableDiffusionXLInpaintPipeline(
+        vae=pipe.vae,
+        text_encoder=None,
+        text_encoder_2=None,
+        tokenizer=pipe.tokenizer,
+        tokenizer_2=pipe.tokenizer_2,
+        unet=pipe.unet,
+        scheduler=pipe.scheduler,
+    )
+    return pipe, refinador, codificados, repintor
 
 
 def generar(
@@ -168,7 +180,7 @@ def generar(
 
     import torch
 
-    pipe, refinador, codificados = pipes
+    pipe, refinador, codificados, _ = pipes
     carpeta = TRABAJO / e["nombre"]
     bordes = Image.open(carpeta / "bordes.png").convert("RGB")
     w, h = bordes.size
@@ -204,6 +216,77 @@ def generar(
     hoja(carpeta, candidatas, bordes, sufijo)
 
 
+def textos_correccion(e: dict) -> list[tuple[str, str]]:
+    return [
+        (f"{c['prompt'].strip()}, {ESTILO}", f"{NEGATIVO}, {c.get('negativo', '')}".strip(", "))
+        for c in e.get("correcciones", [])
+    ]
+
+
+def mascara(e: dict, c: dict, ancho: int, alto: int) -> Image.Image:
+    """Máscara de una corrección a las medidas de trabajo: la silueta de sus `capas` en el SVG original, o sus
+    `elipses` ([cx, cy, rx, ry] en unidades del viewBox), ensanchada `crecer` píxeles y con el borde suavizado."""
+    from PIL import ImageFilter
+
+    texto = (TRABAJO / e["nombre"] / "original.svg").read_text(encoding="utf-8")
+    vw, vh = svg_fondo.viewbox(svg_fondo.leer(texto))
+    m = Image.new("L", (ancho, alto), 0)
+    if c.get("capas"):
+        capas = png_de_svg(svg_fondo.svg_solo_capas(texto, c["capas"]), ancho, alto, fondo=None)
+        m = capas.getchannel("A").point(lambda v: 255 if v > 8 else 0)
+    dibujo = ImageDraw.Draw(m)
+    for cx, cy, rx, ry in c.get("elipses", []):
+        sx, sy = ancho / vw, alto / vh
+        dibujo.ellipse([(cx - rx) * sx, (cy - ry) * sy, (cx + rx) * sx, (cy + ry) * sy], fill=255)
+    crecer = int(c.get("crecer", 10))
+    if crecer:
+        m = m.filter(ImageFilter.MaxFilter(2 * crecer + 1))
+    return m.filter(ImageFilter.GaussianBlur(4))
+
+
+def corregir(pipes, e: dict, n: int, pasos: int) -> None:
+    """Aplica en orden las `correcciones` del encargo a su candidata elegida (`semilla` + `sufijo`). Cada versión usa
+    otra semilla; se guardan como s{semilla}{sufijo}c{k}.png con una hoja antes/después."""
+    import math
+
+    import torch
+
+    _, _, codificados, repintor = pipes
+    carpeta = TRABAJO / e["nombre"]
+    base_nombre = f"s{e['semilla']}{e.get('sufijo', '')}"
+    base = Image.open(carpeta / f"{base_nombre}.png").convert("RGB")
+    w, h = base.size
+    versiones = []
+    for k in range(1, n + 1):
+        imagen = base
+        for i, c in enumerate(e["correcciones"]):
+            fuerza = float(c.get("fuerza", 0.85))
+            textos = codificados[textos_correccion(e)[i][0]]
+            imagen = repintor(
+                **textos,
+                image=imagen,
+                mask_image=mascara(e, c, w, h),
+                width=w,
+                height=h,
+                strength=fuerza,
+                num_inference_steps=math.ceil(pasos / fuerza),
+                guidance_scale=1.5,
+                generator=torch.Generator("cpu").manual_seed(100 * k + i),
+            ).images[0]
+        imagen.save(carpeta / f"{base_nombre}c{k}.png")
+        versiones.append((k, imagen))
+    lado = 560
+    esc = lado / max(w, h)
+    tw, th = round(w * esc), round(h * esc)
+    lienzo = Image.new("RGB", (tw * (n + 1) + 10 * n, th + 24), (24, 24, 28))
+    dib = ImageDraw.Draw(lienzo)
+    for i, (rotulo, im) in enumerate([("antes", base), *[(f"c{k}", v) for k, v in versiones]]):
+        dib.text((i * (tw + 10) + 6, 4), rotulo, fill=(230, 230, 230))
+        lienzo.paste(im.resize((tw, th)), (i * (tw + 10), 24))
+    lienzo.save(carpeta / "hoja_correccion.png")
+    print(f"{e['nombre']}: {n} correcciones; hoja en {carpeta / 'hoja_correccion.png'}", flush=True)
+
+
 def hoja(carpeta: Path, candidatas: list[tuple[int, Image.Image]], bordes: Image.Image, sufijo: str = "") -> None:
     """Hoja de revisión: cada candidata en pequeño, a la izquierda limpia y a la derecha con los bordes del SVG."""
     lado = 384
@@ -229,6 +312,7 @@ def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
     texto = svg.read_text(encoding="utf-8")
     if svg_fondo.MARCA in texto:
         sys.exit(f"{svg.name} ya es un SVG de zonas: restaurar el original (git checkout) antes de integrar de nuevo")
+    (carpeta / "original.svg").write_text(texto, encoding="utf-8")
     raiz = svg_fondo.leer(texto)
     vw, vh = svg_fondo.viewbox(raiz)
     imagen = Image.open(carpeta / f"s{semilla}{sufijo}.png").convert("RGB")
@@ -260,7 +344,7 @@ def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
 
 def main() -> None:
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    a.add_argument("accion", choices=["preparar", "generar", "integrar"])
+    a.add_argument("accion", choices=["preparar", "generar", "corregir", "integrar"])
     a.add_argument("nombres", nargs="*", help="encargos (por defecto, todos los de encargos.yaml)")
     a.add_argument("--n", type=int, default=4)
     a.add_argument("--semilla", type=int, default=1)
@@ -283,6 +367,15 @@ def main() -> None:
         pipes = cargar_pipeline([prompts(e) for e in elegidos])
         for e in elegidos:
             generar(pipes, e, args.n, args.semilla, args.pasos, args.escala, args.factor, args.refinar, args.sufijo)
+    elif args.accion == "corregir":
+        elegidos = [e for e in elegidos if e.get("correcciones")]
+        for e in elegidos:
+            (TRABAJO / e["nombre"] / "original.svg").write_text(
+                ruta_svg(e).read_text(encoding="utf-8"), encoding="utf-8"
+            )
+        pipes = cargar_pipeline([t for e in elegidos for t in textos_correccion(e)])
+        for e in elegidos:
+            corregir(pipes, e, args.n, args.pasos)
     else:
         if len(elegidos) != 1:
             a.error("integrar: un solo encargo y su --semilla")

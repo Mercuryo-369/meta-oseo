@@ -160,6 +160,21 @@ def _pinta_relleno(e: ET.Element, padres: dict) -> bool:
     return True  # relleno por defecto de SVG: negro
 
 
+def svg_solo_capas(texto: str, capas: list[str]) -> str:
+    """Copia del SVG con solo las formas de las capas `capas` (para las máscaras de corrección): el resto se quita."""
+    raiz = leer(texto)
+    padres = _padres(raiz)
+    ids = set(capas)
+    for e in list(raiz.iter()):
+        if _local(e.tag) not in FORMAS and _local(e.tag) != "text":
+            continue
+        if e.get("id") in ids or _dentro_de(e, padres, lambda n: n.get("id") in ids):
+            continue
+        if e in padres:
+            padres[e].remove(e)
+    return escribir(raiz)
+
+
 def _de_color(e: ET.Element, colores) -> bool:
     """Forma pintada con uno de `colores` (flechas o marcas sueltas dentro de un grupo de fondo)."""
     return _local(e.tag) in FORMAS and (e.get("fill") or "").lower() in {c.lower() for c in colores}

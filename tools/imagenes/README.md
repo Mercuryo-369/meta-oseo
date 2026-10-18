@@ -122,6 +122,29 @@ uvx ruff check tools/imagenes --config tools/imagenes/ruff.toml && uvx ruff form
 **La pauta.** El modelo acierta con los tejidos y la histología. Falla con los dientes, la anatomía macroscópica
 compleja y los orgánulos. Para esos casos, la vía exacta es un modelo 3D o un render hecho a mano, no la IA.
 
+## Corrección por capas (`corregir`) y errores pendientes (2026-10-18)
+
+`corregir` repinta solo las zonas de las capas indicadas en `correcciones` del encargo (máscara sacada del SVG) con una
+descripción precisa. Funciona para retoques locales de forma: así se corrigió la zona clara del osteoclasto, que ahora
+es un pie del citoplasma y no dos cuerpos aparte. **No funciona para detalle histológico**: en 9 ilustraciones el
+modelo inventó órganos, picos y cavidades en lugar de laminillas, lagunas o células. Tampoco sirvió un render
+determinista del SVG (exacto, pero con aspecto de plástico) ni la IA a baja intensidad sobre él (sigue siendo
+esquema).
+
+**Errores que siguen en las ilustraciones publicadas, a resolver con el docente:**
+
+| SVG | Error |
+|---|---|
+| `m1_entretejido_laminar` | El hueso laminar sale como bandas con cavidades. |
+| `m1_corte_hueso_capas` | La cortical es pardo rojiza, con aspecto de músculo. |
+| `m1_osteona_detalle` | No se ven las lagunas ni los canalículos. |
+| `m2_ligamento_periodontal` | Raíz con morfología irreal; células como anillos. |
+| `m3_osteoide_hueso_inmaduro` | Osteoblastos como cajas; osteocitos como dianas. |
+| `m3_osteocito_red_lacuno_canalicular` | Células de revestimiento como rebanadas; capilar como diana. |
+| `m4_frente_mineralizacion` | Osteoblastos como cajas; vesículas gigantes. |
+| `m6_tejido_oseo_envejecido` | Osteona con radios en vez de laminillas concéntricas; adipocitos rellenos. |
+| `m6_hueso_normal_osteoporotico` | Aspecto de piedra; la cortical osteoporótica sale gruesa. |
+
 ## Qué SVG convertir (propuesta, a revisar con el docente)
 
 **Escenas anatómicas, histológicas o celulares: ganan con la ilustración.**
