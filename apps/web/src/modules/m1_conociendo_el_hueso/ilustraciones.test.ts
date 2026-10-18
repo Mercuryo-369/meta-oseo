@@ -1,12 +1,13 @@
 // Prueba permanente de las ilustraciones SVG del módulo 1 ("Conociendo el hueso").
 // Valida cada archivo de public/images/m1 con el validador real (src/content/svg.ts) y comprueba que
 // estén todas las capas que pide el guion, en docs/guion-por-modulo/m1_conociendo_el_hueso.md, sección
-// "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). El modelo 3D de la mandíbula no es un
+// "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). Los modelos 3D (la mandíbula y los hechos por código) no son un
 // SVG y no se comprueba aquí. Las capas se listan de forma explícita (citando esa tabla) y, además, se
 // cruzan con la propia tabla del guion y con las actividades de content.json.
 import { describe, expect, it } from 'vitest';
 import { analizarSvg, auditarRecursos, problemasSvg } from '@/content/svg';
 import type { ConSecciones } from '@/content/consultas';
+import { moduloPorNumero } from '@/data/modulos';
 import contenido from './content.json';
 
 /** Texto crudo de los SVG de public/images/m1, indexado por ruta relativa a esta prueba. */
@@ -61,22 +62,23 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'fuerza_traccion',
     'fuerza_compresion',
   ],
-  // Sección 1.3 (multicapa, explorar)
+  // Figura de la sección 1.3 (la actividad usa el modelo 3D hueso_entretejido_laminar desde 2026-10-18)
   m1_entretejido_laminar: [
     'fibras_entretejidas',
     'osteocitos_entretejido',
     'laminillas_paralelas',
     'osteocitos_laminares',
   ],
-  // Sección 1.4 (multicapa, identificar)
-  m1_corte_hueso_capas: [
+  // Figura de la sección 1.4, con rótulos (la actividad usa el modelo 3D hueso_capas desde 2026-10-18; el dibujo
+  // sin rótulos de la multicapa se retiró)
+  m1_corte_hueso_capas_rotulado: [
     'periostio',
     'hueso_cortical',
     'endostio',
     'hueso_trabecular',
     'medula_osea',
   ],
-  // Sección 1.4 (multicapa, identificar)
+  // Portada del módulo (la actividad usa el modelo 3D osteona desde 2026-10-18)
   m1_osteona_detalle: [
     'conducto_de_havers',
     'laminillas_concentricas',
@@ -104,18 +106,22 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
  * el nombre de las estructuras escrito en el dibujo, pero la figura de la lectura sí. Mismas capas.
  */
 const VARIANTES_ROTULADAS: Record<string, string> = {
-  m1_corte_hueso_capas_rotulado: 'm1_corte_hueso_capas',
   m1_proceso_alveolar_corte_rotulado: 'm1_proceso_alveolar_corte',
+};
+
+/** Dibujos que no usa content.json sino otra parte de la aplicación. */
+const FUERA_DEL_CONTENIDO: Record<string, string> = {
+  m1_osteona_detalle: 'portada del módulo (src/data/modulos.ts)',
 };
 
 const ARCHIVOS = Object.keys(CAPAS_POR_ARCHIVO);
 const ANIMACION = ['m1_matriz_composicion'];
 /** Modo "identificar": el dibujo no puede nombrar las estructuras (delataría la respuesta). */
-const IDENTIFICAR = ['m1_corte_hueso_capas', 'm1_osteona_detalle', 'm1_proceso_alveolar_corte'];
+const IDENTIFICAR = ['m1_proceso_alveolar_corte'];
 /** Estructuras finas: la guía pide un área táctil transparente más ancha sobre ellas (`data-zona-toque`). */
 const CAPAS_FINAS: Record<string, readonly string[]> = {
   m1_hueso_largo_macro: ['cartilago_articular', 'linea_epifisaria', 'arteria_nutricia'],
-  m1_corte_hueso_capas: ['periostio', 'endostio'],
+  m1_corte_hueso_capas_rotulado: ['periostio', 'endostio'],
   m1_osteona_detalle: ['canaliculos', 'linea_cementante', 'conducto_de_volkmann'],
   m1_proceso_alveolar_corte: ['hueso_alveolar_propio', 'ligamento_periodontal'],
 };
@@ -126,7 +132,7 @@ const CON_HUESO = [
   'm1_hueso_largo_macro',
   'm1_hormonas_oseas_escena',
   'm1_entretejido_laminar',
-  'm1_corte_hueso_capas',
+  'm1_corte_hueso_capas_rotulado',
   'm1_osteona_detalle',
   'm1_proceso_alveolar_corte',
   'm1_wolff_femur',
@@ -160,7 +166,7 @@ const textosDe = (svg: string): string[] =>
   [...svg.matchAll(/<text\b([^>]*)>/g)].map((m) => m[1] ?? '');
 
 describe('ilustraciones SVG del módulo 1', () => {
-  it('produce los 8 SVG que lista la tabla del guion, más solo las 2 variantes rotuladas', () => {
+  it('produce los 8 SVG que lista la tabla del guion, más solo la variante rotulada', () => {
     expect(ARCHIVOS).toHaveLength(8);
     for (const nombre of ARCHIVOS) expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     for (const nombre of Object.keys(VARIANTES_ROTULADAS)) {
@@ -289,7 +295,11 @@ describe('ilustraciones SVG del módulo 1', () => {
 
     it('todos los SVG del módulo los usa content.json', () => {
       const usados = JSON.stringify(contenido);
-      for (const nombre of ARCHIVOS) expect(usados, nombre).toContain(`/images/m1/${nombre}.svg`);
+      for (const nombre of ARCHIVOS) {
+        if (FUERA_DEL_CONTENIDO[nombre]) continue;
+        expect(usados, nombre).toContain(`/images/m1/${nombre}.svg`);
+      }
+      expect(moduloPorNumero(1)?.identidad.portada?.src).toBe('/images/m1/m1_osteona_detalle.svg');
     });
   });
 

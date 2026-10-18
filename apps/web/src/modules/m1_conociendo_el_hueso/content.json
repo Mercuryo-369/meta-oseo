@@ -329,8 +329,8 @@
         "nota": "Confirmar: «Contiene capilares, fibras nerviosas y tejido conjuntivo laxo, y mide unas 50 µm»"
       },
       {
-        "id": "laminillas_concentricas",
-        "nota": "Confirmar: «Entre unas 5 y 20 por osteona»"
+        "id": "m1_4_osteona",
+        "nota": "Confirmar (nodo «Laminillas concéntricas»): «Entre unas 5 y 20 por osteona»"
       },
       {
         "id": "t_mandibula",
@@ -1560,23 +1560,20 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m1_3_entretejido_laminar",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Entretejido frente a laminar",
-            "instrucciones": "Toca cada zona de la imagen para ver qué la distingue (con teclado, Tab para moverte entre zonas y Enter para abrir su descripción; hay una lista de zonas bajo la imagen). Visita las cuatro zonas.",
+            "instrucciones": "Gira los bloques con un dedo y acércalos con dos (en escritorio, arrastra con el ratón y usa la rueda): a la izquierda, hueso entretejido; a la derecha, hueso laminar, a la misma escala. Toca cada estructura para ver qué la distingue. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita las cuatro.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
               "correcta": "Muy bien. Ya distingues el hueso entretejido, de fibras al azar y formación rápida, del laminar, de laminillas paralelas y más resistente.",
-              "incorrecta": "Faltan zonas por visitar. Compara los dos paneles: fíjate en la dirección de las fibras y en la cantidad y la posición de los osteocitos."
+              "incorrecta": "Faltan estructuras por visitar. Compara los dos bloques: fíjate en la dirección de las fibras y en la cantidad, el tamaño y la posición de los osteocitos."
             },
             "concepto": "Hueso laminar y entretejido",
             "config": {
-              "svg": "/images/m1/m1_entretejido_laminar_zonas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m1/m1_entretejido_laminar.webp",
-              "alt": "Dos paneles a la misma escala: hueso entretejido (izquierda) y hueso laminar (derecha).",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "hueso_entretejido_laminar",
+              "alt": "Modelo tridimensional de dos bloques a la misma escala: hueso entretejido, con haces de colágeno gruesos entrecruzados al azar y osteocitos numerosos y grandes, y hueso laminar, con laminillas paralelas cuyas fibras cambian de dirección y osteocitos aplanados entre ellas.",
+              "nodos": [
                 {
                   "id": "fibras_entretejidas",
                   "etiqueta": "Fibras entrecruzadas al azar",
@@ -1598,7 +1595,7 @@
                   "descripcion": "Son menos numerosos y se alinean entre las laminillas, con canalículos que los conectan. La mineralización es más uniforme y mayor."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "fibras_entretejidas",
                 "osteocitos_entretejido",
                 "laminillas_paralelas",
@@ -1831,7 +1828,7 @@
         {
           "id": "t_organizacion_2",
           "tipo": "texto",
-          "markdown": "Ahora trabajarás sobre imágenes. Primero baja de escala en 3D, del hueso entero hasta el osteocito; después, sobre el corte completo y sobre la osteona, ubicarás cada estructura."
+          "markdown": "Ahora trabajarás en 3D. Primero baja de escala, del hueso entero hasta el osteocito; después, sobre el extremo de un hueso serrado y sobre un bloque de hueso cortical con sus osteonas, ubicarás cada estructura."
         },
         {
           "tipo": "actividad",
@@ -1919,9 +1916,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m1_4_corte_capas",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Del periostio a la médula",
-            "instrucciones": "La aplicación te pedirá tocar, una por una, cada estructura del corte, desde la superficie hacia el interior (con teclado, Tab para moverte y Enter para confirmar; también puedes elegir en la lista de estructuras bajo la imagen). Si te equivocas, verás una pista y podrás intentarlo de nuevo.",
+            "instrucciones": "La aplicación te pedirá tocar, una por una, cada estructura del corte, desde la superficie hacia el interior. Gira el hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo el modelo. Si te equivocas, verás una pista y podrás intentarlo de nuevo.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
@@ -1930,12 +1927,10 @@
             },
             "concepto": "Hueso cortical y trabecular, periostio y endostio",
             "config": {
-              "svg": "/images/m1/m1_corte_hueso_capas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m1/m1_corte_hueso_capas.webp",
-              "alt": "Corte longitudinal de la extremidad de un hueso largo, de la superficie al interior.",
+              "modelo": "hueso_capas",
               "modo": "identificar",
-              "capas": [
+              "alt": "Modelo tridimensional del extremo de un hueso largo serrado a lo largo: periostio de dos capas, cortical gruesa en la diáfisis y fina en la epífisis, endostio, hueso trabecular en arcadas y médula ósea amarilla en la cavidad y roja entre las trabéculas.",
+              "nodos": [
                 {
                   "id": "periostio",
                   "etiqueta": "Periostio",
@@ -1967,7 +1962,7 @@
                   "pista": "Busca el tejido blando que llena la cavidad central y los espacios entre trabéculas."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "periostio",
                 "hueso_cortical",
                 "endostio",
@@ -1981,9 +1976,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m1_4_osteona",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Localiza las partes de la osteona",
-            "instrucciones": "La aplicación te pedirá tocar, una por una, cada estructura de la osteona por su nombre. Si te equivocas, verás una pista y podrás intentarlo de nuevo (con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo la imagen).",
+            "instrucciones": "La aplicación te pedirá tocar, una por una, cada estructura de la osteona. Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Si te equivocas, verás una pista y podrás intentarlo de nuevo (con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo el modelo).",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
@@ -1992,12 +1987,10 @@
             },
             "concepto": "Osteona y conductos de Havers y de Volkmann",
             "config": {
-              "svg": "/images/m1/m1_osteona_detalle.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m1/m1_osteona_detalle.webp",
-              "alt": "Bloque de hueso cortical (esquema clásico) con una osteona en primer plano.",
+              "modelo": "osteona",
               "modo": "identificar",
-              "capas": [
+              "alt": "Modelo tridimensional de un bloque de hueso cortical: osteonas con su conducto de Havers y sus laminillas concéntricas, lagunas con osteocitos y canalículos, líneas cementantes, laminillas intersticiales, conductos de Volkmann y una osteona en primer plano con sus laminillas escalonadas.",
+              "nodos": [
                 {
                   "id": "conducto_de_havers",
                   "etiqueta": "Conducto de Havers",
@@ -2040,7 +2033,7 @@
                   "pista": "Busca los fragmentos angulosos de hueso que quedan entre las osteonas."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "conducto_de_havers",
                 "laminillas_concentricas",
                 "osteocito_en_laguna",

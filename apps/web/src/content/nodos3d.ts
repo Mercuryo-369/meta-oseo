@@ -28,6 +28,9 @@ export const MODELOS_3D = [
   'hueso_osteoporotico',
   'osteoide',
   'red_lacuno_canalicular',
+  'hueso_capas',
+  'osteona',
+  'hueso_entretejido_laminar',
 ] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
@@ -75,6 +78,40 @@ const NODOS_HUESO_LARGO: readonly NodoCatalogo[] = [
   { id: 'diafisis', etiqueta: 'Diáfisis' },
   { id: 'cavidad_medular', etiqueta: 'Cavidad medular' },
   { id: 'arteria_nutricia', etiqueta: 'Arteria nutricia' },
+];
+
+/**
+ * Modelos que sustituyen a las ilustraciones de las multicapa del módulo 1 (2026-10-18: las ilustraciones hechas por
+ * IA tenían errores histológicos). Se construyen por código, como el hueso largo; cada región es un grupo con este
+ * nombre:
+ *  - `hueso_capas` (`scenes/hueso_capas/`): extremo de un hueso largo serrado, del periostio a la médula (m1_4).
+ *  - `osteona` (`scenes/osteona/`): bloque de hueso cortical con sus osteonas (m1_4).
+ *  - `hueso_entretejido_laminar` (`scenes/hueso_entretejido_laminar/`): un bloque de cada tipo de hueso, a la misma
+ *    escala (m1_3).
+ */
+const NODOS_HUESO_CAPAS: readonly NodoCatalogo[] = [
+  { id: 'periostio', etiqueta: 'Periostio' },
+  { id: 'hueso_cortical', etiqueta: 'Hueso cortical' },
+  { id: 'endostio', etiqueta: 'Endostio' },
+  { id: 'hueso_trabecular', etiqueta: 'Hueso trabecular' },
+  { id: 'medula_osea', etiqueta: 'Médula ósea' },
+];
+
+const NODOS_OSTEONA: readonly NodoCatalogo[] = [
+  { id: 'conducto_de_havers', etiqueta: 'Conducto de Havers' },
+  { id: 'laminillas_concentricas', etiqueta: 'Laminillas concéntricas' },
+  { id: 'osteocito_en_laguna', etiqueta: 'Osteocito en su laguna' },
+  { id: 'canaliculos', etiqueta: 'Canalículos' },
+  { id: 'linea_cementante', etiqueta: 'Línea cementante' },
+  { id: 'conducto_de_volkmann', etiqueta: 'Conducto de Volkmann' },
+  { id: 'laminillas_intersticiales', etiqueta: 'Laminillas intersticiales' },
+];
+
+const NODOS_HUESO_ENTRETEJIDO_LAMINAR: readonly NodoCatalogo[] = [
+  { id: 'fibras_entretejidas', etiqueta: 'Fibras entrecruzadas al azar' },
+  { id: 'osteocitos_entretejido', etiqueta: 'Osteocitos del hueso entretejido' },
+  { id: 'laminillas_paralelas', etiqueta: 'Laminillas paralelas' },
+  { id: 'osteocitos_laminares', etiqueta: 'Osteocitos del hueso laminar' },
 ];
 
 /**
@@ -184,6 +221,9 @@ export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>>
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
   hueso_largo: NODOS_HUESO_LARGO,
+  hueso_capas: NODOS_HUESO_CAPAS,
+  osteona: NODOS_OSTEONA,
+  hueso_entretejido_laminar: NODOS_HUESO_ENTRETEJIDO_LAMINAR,
   frente_mineralizacion: NODOS_FRENTE_MINERALIZACION,
   ligamento_periodontal: NODOS_LIGAMENTO_PERIODONTAL,
   tejido_oseo_envejecido: NODOS_TEJIDO_OSEO_ENVEJECIDO,

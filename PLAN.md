@@ -147,7 +147,7 @@ componente genérico que recibe su configuración desde `content.json`:
 | Relación de columnas | `ActivityMatch` | Dos listas y pares correctos | Tap-tap o arrastre | Por pares |
 | Quiz | `ActivityQuiz` | Preguntas estáticas o generadas por IA | Opción múltiple con feedback | Por acierto |
 | Video + texto | `ActivityMedia` | URL de video, texto, hitos | `<video>`, scroll sincronizado | Por completar |
-| Exploración 3D | `ActivityScene3D` | GLB, nodos, textos | TresJS | Por nodos visitados |
+| Exploración 3D | `ActivityScene3D` | GLB o modelo por código, nodos, textos (y pistas en modo identificar) | TresJS | Por nodos visitados o, en modo identificar, aciertos / (aciertos + fallos) |
 
 Cada actividad emite `completada(puntaje)`; la store de gamificación acumula y desbloquea logros.
 

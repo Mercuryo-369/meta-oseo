@@ -1,9 +1,9 @@
 /**
  * Modelos de la exploración 3D que se construyen por código (sin GLB ni descarga): el hueso largo de m1_1 y los que
- * sustituyen a las ilustraciones de las multicapa (docs/realismo-3d.md), como la raíz con su ligamento periodontal de
- * m2. Cada modelo es un grupo de three.js cuyas regiones son grupos con el id de su nodo del catálogo
- * (`content/nodos3d.ts`); la exploración los encuentra por nombre, los resalta y pone la etiqueta en el punto que da
- * `puntoDeRegion`.
+ * sustituyen a las ilustraciones de las multicapa (docs/realismo-3d.md). Las piezas comunes están en
+ * `piezasPorCodigo.ts`, `corte2d.ts` y `histologia/piezas.ts`. Cada modelo es un grupo de three.js cuyas
+ * regiones son grupos con el id de su nodo del catálogo (`content/nodos3d.ts`); la exploración los encuentra por
+ * nombre, los resalta y pone la etiqueta en el punto que da `puntoDeRegion`.
  *
  * Para añadir un modelo: su carpeta en `scenes/` con `crear`, `esRegion` y `puntoDeRegion`, su id en `MODELOS_3D`,
  * sus nodos en `CATALOGO_NODOS` y una línea en `MODELOS_POR_CODIGO`. Se cargan bajo demanda (`import()`), así cada
@@ -35,6 +35,30 @@ export const MODELOS_POR_CODIGO: Readonly<Partial<Record<Modelo3d, Cargador>>> =
     return {
       crear: m.crearHuesoLargo,
       esRegion: m.esRegionHuesoLargo,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  hueso_capas: async () => {
+    const m = await import('./hueso_capas/modeloHuesoCapas');
+    return {
+      crear: m.crearHuesoCapas,
+      esRegion: m.esRegionHuesoCapas,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  osteona: async () => {
+    const m = await import('./osteona/modeloOsteona');
+    return {
+      crear: m.crearOsteona,
+      esRegion: m.esRegionOsteona,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  hueso_entretejido_laminar: async () => {
+    const m = await import('./hueso_entretejido_laminar/modeloEntretejidoLaminar');
+    return {
+      crear: m.crearEntretejidoLaminar,
+      esRegion: m.esRegionEntretejidoLaminar,
       puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
     };
   },

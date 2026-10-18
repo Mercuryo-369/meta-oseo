@@ -1240,6 +1240,18 @@ en hueso cortical cortado, con su red y el conducto de Havers
 (`apps/web/src/scenes/red_lacuno_canalicular/modeloRedLacunoCanalicular.ts`), construido por código. **No admite
 `ancla`**.
 
+**Modelos de m1 que sustituyen a dibujos de las multicapa** (2026-10-18). Se construyen por código (carpeta
+`apps/web/src/scenes/<modelo>/`), sin GLB; como en `hueso_largo`, cada nodo es una región del modelo y **no admiten
+`ancla`**:
+- **`hueso_capas`** (actividad m1_4_corte_capas, modo identificar): `periostio`, `hueso_cortical`, `endostio`,
+  `hueso_trabecular`, `medula_osea`. El extremo de un hueso largo serrado a lo largo, de la superficie al interior.
+- **`osteona`** (actividad m1_4_osteona, modo identificar): `conducto_de_havers`, `laminillas_concentricas`,
+  `osteocito_en_laguna`, `canaliculos`, `linea_cementante`, `conducto_de_volkmann`, `laminillas_intersticiales`. Un
+  bloque de hueso cortical con sus osteonas y una en primer plano.
+- **`hueso_entretejido_laminar`** (actividad m1_3_entretejido_laminar): `fibras_entretejidas`,
+  `osteocitos_entretejido`, `laminillas_paralelas`, `osteocitos_laminares`. Un bloque de cada tipo de hueso, a la
+  misma escala.
+
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del
 cóndilo; `z` 0 es atrás y 1 adelante (el mentón). Por ejemplo, el mentón está cerca de `{ x: 0.5, y: 0.2, z: 1 }`.

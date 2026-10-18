@@ -26,7 +26,7 @@ actividades interactivas obligatorias, mentor de IA, gamificación y certificado
 - El tipo `ContextoPedagogico` (PLAN §3) está congelado desde F1-09. Cambiarlo exige actualizar PLAN.md, la store Pinia y el schema de FastAPI a la vez.
 - Antes de crear un componente 3D o de RAG, revisar referencias.md por si ya existe algo portable.
 - El contenido de cada módulo vive en `content.json`, no en código. Los componentes de actividad (`activities/`) son genéricos y se reutilizan en los seis módulos.
-- 3D en la mandíbula, las células, el hueso largo de m1_1 y las escenas procedurales con línea de tiempo (`scenes/procedural/`, base en `docs/realismo-3d.md`). Imágenes multicapa, arrastre molecular y relación de columnas van en SVG/2D y deben funcionar con touch.
+- 3D en la mandíbula, las células, el hueso largo de m1_1, los modelos por código que sustituyen a multicapa (`scenes/modelosPorCodigo.ts`) y las escenas procedurales con línea de tiempo (`scenes/procedural/`, base en `docs/realismo-3d.md`). Toda ilustración debe ser anatómicamente exacta. Imágenes multicapa, arrastre molecular y relación de columnas van en SVG/2D y deben funcionar con touch.
 - Toda entrega al docente se registra en `docs/revisiones.md` con fecha, versión, cambios pedidos y aprobación.
 - Nombres de nodos GLB, ids de capas SVG, rutas y tablas en snake_case en español. Código en inglés, comentarios y docs en español.
 
