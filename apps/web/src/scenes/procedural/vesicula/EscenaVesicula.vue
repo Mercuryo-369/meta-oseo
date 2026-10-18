@@ -24,6 +24,7 @@ import type { EventosEscenaProcedural, PropsEscenaProcedural } from '../registro
 import CamaraBmu from '../bmu/CamaraBmu.vue';
 import { FOV_GRADOS } from '../bmu/vistas';
 import ContenidoVesicula from './ContenidoVesicula.vue';
+import EntornoRealista from '../EntornoRealista.vue';
 import { estadoDeVistaVesicula } from './vistas';
 
 const props = defineProps<PropsEscenaProcedural>();
@@ -94,12 +95,14 @@ const listo = computed(() => estado.value === 'listo');
         @ready="alEstarListo"
         @error="fallar"
       >
-        <!-- La luz principal es hija de la cámara: ilumina siempre lo que se ve, gire como gire. -->
-        <TresPerspectiveCamera :position="posicionInicial" :fov="FOV_GRADOS" :near="0.1" :far="80">
-          <TresDirectionalLight :position-x="3" :position-y="4" :position-z="2" :intensity="3.2" />
-        </TresPerspectiveCamera>
-        <TresAmbientLight color="#ffffff" :intensity="0.6" />
-        <TresHemisphereLight color="#ffffff" ground-color="#a48fbd" :intensity="0.9" />
+        <TresPerspectiveCamera
+          :position="posicionInicial"
+          :fov="FOV_GRADOS"
+          :near="0.1"
+          :far="80"
+        />
+        <!-- Luces, entorno y sombras: el esquema común de iluminacion.ts, que sigue a la cámara. -->
+        <EntornoRealista />
         <CamaraBmu
           :vista="vista"
           :orden="ordenVista"

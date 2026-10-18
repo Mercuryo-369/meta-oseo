@@ -4,15 +4,19 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  IRREGULAR,
   celulasInflamatorias,
   celulasMadre,
   desplazamientoEn,
   enCuna,
   gotasDeSangre,
+  grumo,
+  normalSobreCallo,
   osteoblastosDelCallo,
   osteoclastosDelCallo,
   perfilSolido,
   puntoSobreCallo,
+  puntoSobreHematoma,
   radioCallo,
   radioHematoma,
   vasosNuevos,
@@ -158,14 +162,42 @@ describe('células sobre el callo', () => {
     for (const a of oc) for (const b of ob) expect(a.radio).toBeGreaterThan(b.radio);
   });
 
-  it('puntoSobreCallo sigue la superficie del callo a la escala pedida', () => {
-    const c = osteoclastosDelCallo()[0]!;
-    for (const escala of [1, 0.74, 0.565]) {
-      const p = puntoSobreCallo(c, escala);
-      const radio = Math.hypot(p[0] - desplazamientoEn(p[1]), p[2]);
-      expect(p[1]).toBeCloseTo(c.y * escala, 9);
-      expect(radio).toBeGreaterThan(radioCallo(c.y) * escala);
-      expect(radio).toBeLessThan(radioCallo(c.y) * escala + c.radio);
+  it('puntoSobreCallo sigue la superficie (irregular) del callo a la escala pedida, alrededor del eje x = 0', () => {
+    const { amplitud, semilla } = IRREGULAR.callo;
+    for (const c of [...osteoclastosDelCallo(), ...osteoblastosDelCallo()]) {
+      for (const escala of [1, 0.74, 0.565]) {
+        const p = puntoSobreCallo(c, escala);
+        // El callo es un torno centrado en x = 0: sin el desplazamiento del fragmento distal (antes, en y > 0, las
+        // células quedaban 0,12 apartadas: flotaban).
+        const superficie = escala * radioCallo(c.y) * (1 + amplitud * grumo(c.theta, c.y, semilla));
+        expect(p[1]).toBeCloseTo(c.y * escala, 9);
+        expect(Math.hypot(p[0], p[2])).toBeCloseTo(superficie + 0.2 * c.radio, 9);
+      }
+      // Con presencia parcial, la separación encoge con la célula.
+      const radio = (p: readonly number[]) => Math.hypot(p[0]!, p[2]!);
+      expect(radio(puntoSobreCallo(c, 1, 0.5))).toBeLessThan(radio(puntoSobreCallo(c, 1)));
+      const n = normalSobreCallo(c);
+      expect(Math.hypot(...n)).toBeCloseTo(1, 9);
+      // Hacia fuera, y tumbada hacia el extremo del manguito (el perfil baja al alejarse del centro).
+      expect(n[0] * Math.sin(c.theta) + n[2] * Math.cos(c.theta)).toBeGreaterThan(0.8);
+      expect(n[1] * c.y).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it('puntoSobreHematoma sigue la superficie del hematoma a su escala, alrededor del eje x = 0', () => {
+    const { neutrofilos, macrofagos } = celulasInflamatorias();
+    const { amplitud, semilla } = IRREGULAR.hematoma;
+    const deSuperficie = [...neutrofilos, ...macrofagos].filter((c) => c.superficie);
+    expect(deSuperficie.length).toBeGreaterThan(15);
+    for (const c of deSuperficie) {
+      const y = c.p[1];
+      for (const s of [1, 0.61, 0.09]) {
+        const p = puntoSobreHematoma(c, s);
+        const superficie = s * radioHematoma(y) * (1 + amplitud * grumo(c.theta, y, semilla));
+        expect(p[1]).toBeCloseTo(s * y, 9);
+        // Asoma el 65 % de su diámetro: centro a 0,3 radios por fuera de la superficie.
+        expect(Math.hypot(p[0], p[2])).toBeCloseTo(superficie + 0.3 * c.radio, 9);
+      }
     }
   });
 });

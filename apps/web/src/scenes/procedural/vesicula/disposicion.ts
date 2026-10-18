@@ -24,9 +24,7 @@ import {
   PERIODO_D,
   PLACA,
   R_FIBRILLA,
-  R_VESICULA,
   X_VESICULA,
-  Y_VESICULA_FINAL,
   Z_VESICULA,
 } from './estado';
 
@@ -59,7 +57,10 @@ export function girarY(v: Vec3, yaw: number): [number, number, number] {
  * Membrana del osteoblasto y sus enzimas
  * ----------------------------------------------------------------------------------------- */
 
-/** Altura (Y, absoluta) de la membrana basal del osteoblasto en (x, z): una ondulación suave de dos frecuencias. */
+/**
+ * Altura (Y, absoluta) de la membrana del polo secretor del osteoblasto en (x, z): una ondulación suave de dos
+ * frecuencias.
+ */
 export function alturaMembrana(x: number, z: number): number {
   const a = MEMBRANA.amplitud;
   return (
@@ -663,14 +664,4 @@ export function ppiJuntoAEnpp1(
 export function corteDePpi(hidrolisis: number): { separacion: number; libre: number } {
   const k = suave(hidrolisis);
   return { separacion: mezclar(0.05, 0.3, k), libre: suave(fraccion(hidrolisis, 0.35, 0.8)) };
-}
-
-/** Posición final (absoluta) del centro de la vesícula, útil para las pruebas de contacto con la fibrilla. */
-export function centroFinalDeVesicula(): [number, number, number] {
-  return [X_VESICULA, Y_VESICULA_FINAL, Z_VESICULA];
-}
-
-/** Radio efectivo del hueco de la escena para las pruebas: nada del racimo sobresale más de `R_VESICULA` * (1 + largo). */
-export function alcanceDelRacimo(): number {
-  return R_VESICULA * (R_NUCLEACION + Math.max(LARGO_CRISTAL.primero, LARGO_CRISTAL.resto));
 }

@@ -10,26 +10,35 @@
  *
  * No calculan nada de la biología: reciben `EstadoHueso` (puro) y solo mueven, escalan y aclaran piezas.
  * Materiales compartidos por capa; al liberar se libera todo lo creado.
+ *
+ * Revisión de diseño (2026-10-17): relieve con la repetición POR UNIDAD (las formas traen UV en unidades,
+ * `geometria.ts`); periostio que sigue la silueta del hueso; osteonas del corte ovaladas, giradas y con su línea de
+ * cemento; piezas pequeñas repetidas de una sola pasada (`forceSinglePass`) y vasos cerrados de una cara; vasos sin
+ * emisivo; cada material recibe su opacidad una sola vez por fotograma.
  */
-import type { Material } from 'three';
+import type { Material, MeshStandardMaterial } from 'three';
 import {
   BufferGeometry,
   Color,
   CylinderGeometry,
   DoubleSide,
   Float32BufferAttribute,
+  FrontSide,
   Group,
   InstancedMesh,
   LineBasicMaterial,
   LineSegments,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   SphereGeometry,
   Vector3,
 } from 'three';
 import {
+  METAFISIS,
+  POLAR_CARTILAGO,
+  R_METAFISIS,
   THETA_CUNA_CENTRO,
   THETA_RETIRO,
   arcoConservadoDeLamina,
@@ -38,6 +47,7 @@ import {
   grados,
   lagunasDeOsteocitos,
   osteonasDelCorte,
+  perfilPeriostio,
   radiosDeLamina,
   trabeculasDeEpifisis,
 } from './disposicion';
@@ -57,33 +67,57 @@ import {
   X_EPIFISIS,
 } from './estado';
 import type { EstadoHueso } from './estado';
-import { DOS_PI, anillo, cascaraElipsoide } from './geometria';
-import { HEX } from './paleta';
+import {
+  DOS_PI,
+  anillo,
+  cascaraElipsoide,
+  revolucion,
+  tronco,
+  unir,
+  uvCilindro,
+} from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad, veloFresnel } from '../realismo';
 
 const EJE_Y = new Vector3(0, 1, 0);
+const EJE_Z = new Vector3(0, 0, 1);
 
-/** Material estándar de doble cara: las cáscaras abiertas se ven por dentro. */
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara
+ * (las cáscaras abiertas se ven por dentro).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: DoubleSide, ...extra });
+}
+
+/**
+ * Repetición del relieve POR UNIDAD de la geometría (las formas de `geometria.ts` traen UV en unidades) y filtrado
+ * anisótropo (los cantos y las paredes que se ven de lado no se emborronan). Devuelve el material.
+ */
+function relieve(m: MeshPhysicalMaterial, u: number, v = u): MeshPhysicalMaterial {
+  if (m.bumpMap) {
+    m.bumpMap.repeat.set(u, v);
+    m.bumpMap.anisotropy = 4;
+  }
+  return m;
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
 }
 
 /** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
 function poner(materiales: readonly Material[], opacidad: number, base = 1): void {
-  const o = Math.max(0, Math.min(1, opacidad * base));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
-  }
+  ponerOpacidad(materiales, opacidad * base);
 }
 
 /** Interfaz común de las tres escalas. */
@@ -97,14 +131,19 @@ export interface EscalaHueso {
  * Hueso largo
  * ----------------------------------------------------------------------------------------- */
 
+/** Repetición del relieve por unidad de cada tejido del hueso largo (y, multiplicada por el tamaño, del corte). */
+const REPETIR = { hueso: 1.4, cartilago: 1.4, medula: 1.2, membrana: 0.6 } as const;
+
 export class HuesoLargo implements EscalaHueso {
   /** Raíz (el hueso tumbado a lo largo de X). */
   readonly grupo = new Group();
   private readonly cuerpo = new Group();
   private readonly cuna = new Group();
   private readonly geometrias: BufferGeometry[] = [];
+  /** Los materiales que siguen la opacidad del hueso (el periostio va aparte: tiene la suya). */
   private readonly materiales: Material[] = [];
-  private readonly matPeriostio: MeshStandardMaterial;
+  private readonly matPeriostio: MeshPhysicalMaterial;
+  private readonly periostio: Mesh;
   private readonly instanciados: InstancedMesh[] = [];
   private readonly direccionCuna: Vector3;
 
@@ -118,12 +157,15 @@ export class HuesoLargo implements EscalaHueso {
     const restoTheta0 = theta0 + arco;
     const restoArco = DOS_PI - arco;
 
-    const cortical = material(HEX.cortical);
-    const cartilago = material(HEX.cartilago, { roughness: 0.3 });
-    const esponjoso = material(HEX.esponjoso, { roughness: 0.75 });
-    const medula = material(HEX.medulaAmarilla, { roughness: 0.5 });
-    this.matPeriostio = material(HEX.periostio, { roughness: 0.8 });
-    this.materiales.push(cortical, cartilago, esponjoso, medula, this.matPeriostio);
+    const cortical = relieve(material(COLOR.cortical), REPETIR.hueso);
+    const cartilago = relieve(material(COLOR.cartilago, 'cartilago'), REPETIR.cartilago);
+    // Trabéculas: barras finas instanciadas, de una sola pasada (su orden interno no se percibe).
+    const esponjoso = material(COLOR.esponjoso, 'hueso_esponjoso', { forceSinglePass: true });
+    const medula = relieve(material(COLOR.medulaAmarilla, 'medula'), REPETIR.medula);
+    this.matPeriostio = relieve(material(COLOR.periostio, 'membrana'), REPETIR.membrana);
+    // Lámina fina: casi transparente de frente y más densa de canto (con opacidad constante parecía vidrio).
+    veloFresnel(this.matPeriostio, 0.7, 1.6);
+    this.materiales.push(cortical, cartilago, esponjoso, medula);
 
     const pieza = (
       geometria: BufferGeometry,
@@ -151,33 +193,61 @@ export class HuesoLargo implements EscalaHueso {
       'diafisis_cortical_cuna',
     );
 
-    // Epífisis: cáscara fina de cortical y casquete de cartílago articular en el extremo.
-    for (const signo of [1, -1] as const) {
-      const y = signo * X_EPIFISIS;
-      for (const [padre, t0, a] of [
-        [this.cuerpo, restoTheta0, restoArco],
-        [this.cuna, theta0, arco],
-      ] as const) {
-        pieza(
-          cascaraElipsoide(EPIFISIS_RADIO, EPIFISIS_LARGO, y, t0, a),
-          cortical,
-          padre,
-          'epifisis_cortical',
-        );
-        const desde = signo === 1 ? 0 : Math.PI - 0.95;
-        pieza(
-          cascaraElipsoide(EPIFISIS_RADIO * 1.035, EPIFISIS_LARGO * 1.035, y, t0, a, desde, 0.95),
-          cartilago,
-          padre,
-          'cartilago_articular',
-        );
-      }
+    // Epífisis (cáscara fina de cortical y casquete de cartílago articular en el extremo) y metáfisis (la diáfisis se
+    // ensancha hacia cada epífisis, sin escalón, y su cortical se adelgaza). Las dos de cada pieza (una por extremo)
+    // van en una sola geometría: la mitad de llamadas de dibujo.
+    for (const [padre, t0, a] of [
+      [this.cuerpo, restoTheta0, restoArco],
+      [this.cuna, theta0, arco],
+    ] as const) {
+      const extremos = (crear: (signo: 1 | -1) => BufferGeometry) => unir([crear(1), crear(-1)]);
+      pieza(
+        extremos((signo) =>
+          cascaraElipsoide(EPIFISIS_RADIO, EPIFISIS_LARGO, signo * X_EPIFISIS, t0, a),
+        ),
+        cortical,
+        padre,
+        'epifisis_cortical',
+      );
+      pieza(
+        extremos((signo) =>
+          cascaraElipsoide(
+            EPIFISIS_RADIO * 1.035,
+            EPIFISIS_LARGO * 1.035,
+            signo * X_EPIFISIS,
+            t0,
+            a,
+            signo === 1 ? 0 : Math.PI - POLAR_CARTILAGO,
+            POLAR_CARTILAGO,
+          ),
+        ),
+        cartilago,
+        padre,
+        'cartilago_articular',
+      );
+      pieza(
+        extremos((signo) =>
+          tronco(
+            R_MEDULAR,
+            R_CORTICAL,
+            1.24,
+            R_METAFISIS,
+            signo * METAFISIS.desde,
+            signo * METAFISIS.hasta,
+            t0,
+            a,
+          ),
+        ),
+        cortical,
+        padre,
+        'metafisis_cortical',
+      );
     }
 
     // Hueso esponjoso: trabéculas. Las que caen en el sector de la cuña viajan con ella.
     const todas: Trabecula[] = [
-      ...trabeculasDeEpifisis(120, 11, 1, X_EPIFISIS),
-      ...trabeculasDeEpifisis(120, 23, -1, -X_EPIFISIS),
+      ...trabeculasDeEpifisis(170, 11, 1, X_EPIFISIS),
+      ...trabeculasDeEpifisis(170, 23, -1, -X_EPIFISIS),
     ];
     const mitadArco = arco / 2;
     const enCuna = todas.filter((t) => distanciaAngular(t.theta, THETA_CUNA_CENTRO) < mitadArco);
@@ -185,31 +255,49 @@ export class HuesoLargo implements EscalaHueso {
     this.anadirTrabeculas(enCuerpo, esponjoso, this.cuerpo);
     this.anadirTrabeculas(enCuna, esponjoso, this.cuna);
 
-    // Médula ósea amarilla llenando la cavidad medular (la cuña se aparta y la deja a la vista).
-    const geoMedula = new CylinderGeometry(
-      R_MEDULAR - 0.012,
-      R_MEDULAR - 0.012,
-      LARGO_DIAFISIS + 1.2,
-      40,
-    );
+    // Médula ósea amarilla: llena la cavidad medular (la cuña se aparta y la deja a la vista) y, en cada epífisis,
+    // los huecos entre las trabéculas (una cáscara por dentro de la cortical; las trabéculas, que caben en el 0,86 del
+    // radio, quedan delante al abrir la cuña). En el adulto la médula de las epífisis es amarilla, como la de la
+    // diáfisis. La de las epífisis va solo en el cuerpo (la cuña, apartada, se ve por fuera): así es la misma malla,
+    // que no se mueve, y no cuesta otra llamada de dibujo. Costura de la vuelta del cilindro, detrás (θ = π).
+    const polarMedula = 2.3;
+    const geoMedula = unir([
+      uvCilindro(
+        new CylinderGeometry(
+          R_MEDULAR - 0.012,
+          R_MEDULAR - 0.012,
+          LARGO_DIAFISIS + 1.2,
+          40,
+          1,
+          false,
+          Math.PI,
+        ),
+        Math.PI,
+      ),
+      ...([1, -1] as const).map((signo) =>
+        cascaraElipsoide(
+          EPIFISIS_RADIO * 0.9,
+          EPIFISIS_LARGO * 0.9,
+          signo * X_EPIFISIS,
+          restoTheta0,
+          restoArco,
+          signo === 1 ? 0 : Math.PI - polarMedula,
+          polarMedula,
+        ),
+      ),
+    ]);
     this.geometrias.push(geoMedula);
     const mallaMedula = new Mesh(geoMedula, medula);
     mallaMedula.name = 'medula_osea';
     this.grupo.add(mallaMedula);
 
-    // Periostio: vaina fibrosa que envuelve la diáfisis.
-    const geoPeriostio = new CylinderGeometry(
-      R_PERIOSTIO,
-      R_PERIOSTIO,
-      LARGO_DIAFISIS,
-      48,
-      1,
-      true,
-    );
+    // Periostio: vaina fibrosa que sigue la silueta del hueso (diáfisis, metáfisis y epífisis) hasta el borde del
+    // cartílago articular. Costura detrás (θ = π).
+    const geoPeriostio = revolucion(perfilPeriostio(), Math.PI, DOS_PI, 48);
     this.geometrias.push(geoPeriostio);
-    const mallaPeriostio = new Mesh(geoPeriostio, this.matPeriostio);
-    mallaPeriostio.name = 'periostio';
-    this.grupo.add(mallaPeriostio);
+    this.periostio = new Mesh(geoPeriostio, this.matPeriostio);
+    this.periostio.name = 'periostio';
+    this.grupo.add(this.periostio);
 
     this.grupo.add(this.cuerpo, this.cuna);
     this.direccionCuna = new Vector3(Math.sin(THETA_CUNA_CENTRO), 0, Math.cos(THETA_CUNA_CENTRO));
@@ -217,17 +305,22 @@ export class HuesoLargo implements EscalaHueso {
 
   private anadirTrabeculas(lista: readonly Trabecula[], mat: Material, padre: Group): void {
     if (lista.length === 0) return;
-    const geo = new CylinderGeometry(0.03, 0.03, 1, 5, 1);
+    // Sin tapas: los extremos quedan dentro de la red y así cabe el doble de trabéculas en el presupuesto.
+    const geo = new CylinderGeometry(0.028, 0.034, 1, 6, 1, true);
     this.geometrias.push(geo);
     const malla = new InstancedMesh(geo, mat, lista.length);
     malla.name = 'trabeculas';
     const m = new Matrix4();
     const q = new Quaternion();
     const dir = new Vector3();
+    const pos = new Vector3();
+    const esc = new Vector3();
     lista.forEach((t, i) => {
       dir.set(t.dx, t.dy, t.dz);
       q.setFromUnitVectors(EJE_Y, dir);
-      m.compose(new Vector3(t.x, t.y, t.z), q, new Vector3(1, t.largo, 1));
+      // Grosor algo distinto en cada trabécula (determinista): una red real no es de barras iguales.
+      const grosor = 0.75 + 0.6 * Math.abs(Math.sin(i * 12.9898 + t.x * 78.233));
+      m.compose(pos.set(t.x, t.y, t.z), q, esc.set(grosor, t.largo, grosor));
       malla.setMatrixAt(i, m);
     });
     malla.instanceMatrix.needsUpdate = true;
@@ -244,14 +337,16 @@ export class HuesoLargo implements EscalaHueso {
     // La cuña se aparta hacia el lado por el que mira la cámara.
     this.cuna.position.copy(this.direccionCuna).multiplyScalar(estado.apertura * 2.8);
     poner(this.materiales, estado.hueso.opacidad);
-    // El periostio tiene su propia opacidad, además de la del hueso.
+    // El periostio tiene su propia opacidad, además de la del hueso; apagado del todo, no se dibuja.
     poner([this.matPeriostio], estado.hueso.opacidad, estado.periostio);
     this.matPeriostio.depthWrite = false;
+    this.periostio.visible = estado.hueso.opacidad * estado.periostio > 0.004;
   }
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
+    liberarMateriales([this.matPeriostio]);
     for (const i of this.instanciados) i.dispose();
   }
 }
@@ -266,6 +361,23 @@ export const TAMANO_CORTE = 2.4;
 /** Separación (en el eje del corte) de cada capa cuando se separan. */
 const SEPARACION = { periostio: 1.25, cortical: 0, endostio: -0.8, medula: -1.7 } as const;
 
+/**
+ * Niveles concéntricos de cada osteona del corte (radios con la osteona a escala 1): conducto, tres láminas y la
+ * línea de cemento. El borde (0,085 × 1,08 de escala máxima × 1,08 de ovalización = 0,099) no pasa del radio que
+ * `osteonasDelCorte` deja libre (0,1): no tocan el endostio ni la lámina circunferencial externa.
+ */
+export const NIVELES_OSTEONA = {
+  conducto: [0, 0.026],
+  laminas: [
+    [0.026, 0.047],
+    [0.047, 0.064],
+    [0.064, 0.08],
+  ],
+  cemento: [0.08, 0.085],
+} as const;
+/** Ovalización de las osteonas del corte (fracción del radio). */
+export const OVALIZACION_OSTEONA = 0.08;
+
 export class CorteTransversal implements EscalaHueso {
   readonly grupo = new Group();
   private readonly capas: Record<keyof typeof SEPARACION, Group> = {
@@ -278,7 +390,7 @@ export class CorteTransversal implements EscalaHueso {
   private readonly materiales: Material[] = [];
   private readonly matOsteonas: MeshStandardMaterial[] = [];
   private readonly instanciados: InstancedMesh[] = [];
-  private readonly resalte = new Color(HEX.resalte);
+  private readonly resalte = new Color(COLOR.resalte);
 
   constructor() {
     this.grupo.name = 'corte_transversal';
@@ -293,17 +405,23 @@ export class CorteTransversal implements EscalaHueso {
       capa.add(malla);
     };
 
-    const periostio = material(HEX.periostio, { roughness: 0.8 });
-    const cortical = material(HEX.intersticial);
-    const lineas = material(HEX.laminaOscura);
-    const endostio = material(HEX.endostio);
-    const medula = material(HEX.medulaAmarilla, { roughness: 0.5 });
-    const vaso = material(HEX.vaso, { emissive: '#7a2a24', emissiveIntensity: 0.4 });
+    // El corte se dibuja a TAMANO_CORTE: la repetición por unidad de la geometría se multiplica por él, así el grano
+    // mide en la escena lo mismo que en el hueso largo (y queda más fino que las osteonas).
+    const porUnidad = (r: number): number => r * TAMANO_CORTE;
+    const periostio = relieve(material(COLOR.periostio, 'membrana'), porUnidad(REPETIR.membrana));
+    const cortical = relieve(material(COLOR.intersticial), porUnidad(REPETIR.hueso));
+    const lineas = relieve(material(COLOR.laminaOscura), porUnidad(REPETIR.hueso));
+    const endostio = relieve(material(COLOR.endostio, 'membrana'), porUnidad(REPETIR.membrana));
+    const medula = relieve(material(COLOR.medulaAmarilla, 'medula'), porUnidad(REPETIR.medula));
+    // Esfera cerrada: de una cara (una sola pasada); sin emisivo (la sangre no emite luz).
+    const vaso = material(COLOR.vaso, 'vaso', { side: FrontSide });
     this.materiales.push(periostio, cortical, lineas, endostio, medula, vaso);
 
+    // Membranas: vetas que dan la vuelta al anillo en las caras del corte, sin corte en la costura.
+    const polares = { tapasPolares: true, periodoTapas: 1 / porUnidad(REPETIR.membrana) };
     anadir(
       this.capas.periostio,
-      anillo(R_CORTICAL, R_PERIOSTIO, GROSOR_CORTE),
+      anillo(R_CORTICAL, R_PERIOSTIO, GROSOR_CORTE, 0, DOS_PI, undefined, polares),
       periostio,
       'periostio',
     );
@@ -328,7 +446,7 @@ export class CorteTransversal implements EscalaHueso {
     );
     anadir(
       this.capas.endostio,
-      anillo(R_MEDULAR, R_MEDULAR + 0.03, GROSOR_CORTE),
+      anillo(R_MEDULAR, R_MEDULAR + 0.03, GROSOR_CORTE, 0, DOS_PI, undefined, polares),
       endostio,
       'endostio',
     );
@@ -342,27 +460,51 @@ export class CorteTransversal implements EscalaHueso {
     vasoMalla.name = 'vaso_medular';
     this.capas.medula.add(vasoMalla);
 
-    // Osteonas: cuatro niveles concéntricos que se repiten en cada una (instancias).
+    // Osteonas: niveles concéntricos que se repiten en cada una (instancias). Cada osteona va algo ovalada y girada
+    // (las de un corte real no son círculos iguales), con su línea de cemento, que la separa del hueso intersticial.
     const osteonas = osteonasDelCorte();
     const alto = GROSOR_CORTE + 0.022;
     const nivel = (
-      interior: number,
-      exterior: number,
+      [interior, exterior]: readonly [number, number],
       color: string,
       nombre: string,
       resaltable = true,
+      paredExterior = false,
     ): void => {
-      const mat = material(color, { emissive: HEX.resalte, emissiveIntensity: 0 });
+      // Anillos diminutos repetidos: de una sola pasada (su orden interno no se percibe).
+      const mat = relieve(
+        material(color, 'hueso', {
+          emissive: COLOR.resalte,
+          emissiveIntensity: 0,
+          forceSinglePass: true,
+        }),
+        porUnidad(REPETIR.hueso),
+      );
       // El conducto de Havers sigue rojo cuando se destacan las osteonas: es el «punto rojo» del texto.
       if (resaltable) this.matOsteonas.push(mat);
       this.materiales.push(mat);
-      const geo = tumbar(anillo(interior, exterior, alto, 0, DOS_PI, 20));
+      // Los niveles se tocan: sus paredes comunes quedan dentro de la osteona. Solo la de fuera de la línea de
+      // cemento asoma (la osteona sobresale un poco de las caras de la cortical).
+      const geo = tumbar(
+        anillo(interior, exterior, alto, 0, DOS_PI, 20, {
+          paredInterior: false,
+          paredExterior,
+        }),
+      );
       const malla = new InstancedMesh(geo, mat, osteonas.length);
       malla.name = nombre;
       const m = new Matrix4();
       const q = new Quaternion();
+      const pos = new Vector3();
+      const esc = new Vector3();
       osteonas.forEach((o, i) => {
-        m.compose(new Vector3(o.x, o.y, 0), q, new Vector3(o.escala, o.escala, 1));
+        const oval = OVALIZACION_OSTEONA * Math.sin(i * 2.1);
+        q.setFromAxisAngle(EJE_Z, i * 0.9);
+        m.compose(
+          pos.set(o.x, o.y, 0),
+          q,
+          esc.set(o.escala * (1 + oval), o.escala * (1 - oval), 1),
+        );
         malla.setMatrixAt(i, m);
       });
       malla.instanceMatrix.needsUpdate = true;
@@ -370,10 +512,12 @@ export class CorteTransversal implements EscalaHueso {
       this.instanciados.push(malla);
       this.capas.cortical.add(malla);
     };
-    nivel(0.03, 0.055, HEX.laminaClara, 'osteona_lamina_1');
-    nivel(0.055, 0.074, HEX.laminaOscura, 'osteona_lamina_2');
-    nivel(0.074, 0.092, HEX.laminaClara, 'osteona_lamina_3');
-    nivel(0, 0.03, HEX.vaso, 'osteona_conducto_havers', false);
+    const [lamina1, lamina2, lamina3] = NIVELES_OSTEONA.laminas;
+    nivel(lamina1, COLOR.laminaClara, 'osteona_lamina_1');
+    nivel(lamina2, COLOR.laminaOscura, 'osteona_lamina_2');
+    nivel(lamina3, COLOR.laminaClara, 'osteona_lamina_3');
+    nivel(NIVELES_OSTEONA.conducto, COLOR.vaso, 'osteona_conducto_havers', false);
+    nivel(NIVELES_OSTEONA.cemento, COLOR.cemento, 'osteona_linea_cemento', false, true);
 
     for (const capa of Object.values(this.capas)) this.grupo.add(capa);
   }
@@ -396,7 +540,7 @@ export class CorteTransversal implements EscalaHueso {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of this.instanciados) i.dispose();
   }
 }
@@ -419,22 +563,23 @@ export class OsteonaAmpliada implements EscalaHueso {
   private readonly canaliculos: LineSegments;
   private readonly matCanaliculos: LineBasicMaterial;
   private ultimoEnfasis = -1;
+  /** Auxiliares de `ponerLagunas` (sin objetos nuevos en cada fotograma). */
+  private readonly m = new Matrix4();
+  private readonly salida = new Vector3();
+  private readonly esc = new Vector3();
 
   constructor() {
     this.grupo.name = 'osteona_ampliada';
     // Eje de la osteona en Y local; se tumba a lo largo de X como el hueso.
     this.grupo.rotation.z = -Math.PI / 2;
 
-    const clara = material(HEX.laminaClara);
-    const oscura = material(HEX.laminaOscura);
-    const cemento = material(HEX.cemento, { roughness: 0.9 });
-    const pared = material(HEX.endostio);
-    const vaso = material(HEX.vaso, {
-      roughness: 0.35,
-      emissive: '#7a2a24',
-      emissiveIntensity: 0.45,
-    });
-    const vena = material('#5b6fb5', { roughness: 0.35 });
+    const clara = relieve(material(COLOR.laminaClara), REPETIR.hueso);
+    const oscura = relieve(material(COLOR.laminaOscura), REPETIR.hueso);
+    const cemento = material(COLOR.cemento, 'cavidad');
+    const pared = relieve(material(COLOR.endostio, 'membrana'), REPETIR.membrana);
+    // Vasos: cilindros cerrados, de una cara (una sola pasada); sin emisivo (la sangre no emite luz).
+    const vaso = material(COLOR.vaso, 'vaso', { side: FrontSide });
+    const vena = material('#5b6fb5', 'vaso', { side: FrontSide });
     this.materiales.push(clara, oscura, cemento, pared, vaso, vena);
 
     // Láminas concéntricas, cada una cortada por un sector distinto (corte "en escalera").
@@ -490,16 +635,17 @@ export class OsteonaAmpliada implements EscalaHueso {
     // Fibras de colágeno: rayas oblicuas que cambian de sentido de una lámina a la siguiente.
     const geoFibras = this.fibras();
     this.geometrias.push(geoFibras);
-    const matFibras = new LineBasicMaterial({ color: '#8e4470', transparent: true });
+    const matFibras = new LineBasicMaterial({ color: '#b39468', transparent: true });
     this.matLineas.push(matFibras);
     this.grupo.add(new LineSegments(geoFibras, matFibras));
 
-    // Osteocitos: la laguna (halo claro) y la célula (azul) dentro de ella, a la vista en los peldaños.
+    // Osteocitos: la laguna (halo claro) y la célula (azul) dentro de ella, a la vista en los peldaños. Piezas
+    // pequeñas repetidas: de una sola pasada.
     const lagunasDatos = lagunasDeOsteocitos();
     const geoEsfera = new SphereGeometry(1, 12, 9);
     this.geometrias.push(geoEsfera);
-    const matLaguna = material(HEX.laguna, { roughness: 0.5 });
-    const matCelula = material(HEX.osteocito, { roughness: 0.4 });
+    const matLaguna = material(COLOR.laguna, 'cavidad', { forceSinglePass: true });
+    const matCelula = material(COLOR.osteocito, 'celula', { forceSinglePass: true });
     this.materiales.push(matLaguna, matCelula);
     this.lagunas = new InstancedMesh(geoEsfera, matLaguna, lagunasDatos.length);
     this.cuerpos = new InstancedMesh(geoEsfera, matCelula, lagunasDatos.length);
@@ -509,18 +655,17 @@ export class OsteonaAmpliada implements EscalaHueso {
     this.cuerpos.frustumCulled = false;
     const qY = new Quaternion();
     const qZ = new Quaternion();
-    const eZ = new Vector3(0, 0, 1);
     for (const l of lagunasDatos) {
       const pos = new Vector3(l.radio * Math.sin(l.theta), l.y, l.radio * Math.cos(l.theta));
       qY.setFromAxisAngle(EJE_Y, l.theta);
-      qZ.setFromAxisAngle(eZ, l.giro);
+      qZ.setFromAxisAngle(EJE_Z, l.giro);
       this.posicionesLagunas.push({ pos, q: qY.clone().multiply(qZ) });
     }
     this.grupo.add(this.lagunas, this.cuerpos);
 
     // Canalículos: prolongaciones finas que salen de cada osteocito y lo comunican con sus vecinos.
     this.matCanaliculos = new LineBasicMaterial({
-      color: HEX.canaliculo,
+      color: COLOR.canaliculo,
       transparent: true,
       opacity: 0,
     });
@@ -624,18 +769,16 @@ export class OsteonaAmpliada implements EscalaHueso {
     if (Math.abs(enfasis - this.ultimoEnfasis) < 1e-4) return;
     this.ultimoEnfasis = enfasis;
     const k = 1 + 0.9 * enfasis;
-    const m = new Matrix4();
-    const salida = new Vector3();
     this.posicionesLagunas.forEach(({ pos, q }, i) => {
       // La laguna es una cavidad aplanada; la célula asoma un poco de ella, hacia fuera.
-      m.compose(pos, q, new Vector3(0.16 * k, 0.1 * k, 0.03 * k));
-      this.lagunas.setMatrixAt(i, m);
-      salida
+      this.m.compose(pos, q, this.esc.set(0.16 * k, 0.1 * k, 0.03 * k));
+      this.lagunas.setMatrixAt(i, this.m);
+      this.salida
         .set(0, 0, 0.02 * k)
         .applyQuaternion(q)
         .add(pos);
-      m.compose(salida, q, new Vector3(0.11 * k, 0.068 * k, 0.05 * k));
-      this.cuerpos.setMatrixAt(i, m);
+      this.m.compose(this.salida, q, this.esc.set(0.11 * k, 0.068 * k, 0.05 * k));
+      this.cuerpos.setMatrixAt(i, this.m);
     });
     this.lagunas.instanceMatrix.needsUpdate = true;
     this.cuerpos.instanceMatrix.needsUpdate = true;
@@ -656,7 +799,7 @@ export class OsteonaAmpliada implements EscalaHueso {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const l of this.matLineas) l.dispose();
     this.lagunas.dispose();
     this.cuerpos.dispose();

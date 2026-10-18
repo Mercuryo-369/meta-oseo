@@ -11,12 +11,15 @@ import {
   CUNA,
   EPIFISIS_LARGO,
   EPIFISIS_RADIO,
+  LARGO_DIAFISIS,
   LARGO_OSTEONA,
   N_LAMINAS,
   N_OSTEOCITOS,
   N_OSTEONAS_CORTE,
+  R_CORTICAL,
   R_HAVERS,
   R_OSTEONA,
+  X_EPIFISIS,
 } from './estado';
 
 const DOS_PI = Math.PI * 2;
@@ -33,6 +36,67 @@ export function distanciaAngular(a: number, b: number): number {
   let d = Math.abs(a - b) % DOS_PI;
   if (d > Math.PI) d = DOS_PI - d;
   return d;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Silueta del hueso largo y periostio
+ * ----------------------------------------------------------------------------------------- */
+
+/** Metáfisis: la cortical se ensancha de `R_CORTICAL` a `R_METAFISIS` entre |y| = `METAFISIS.desde` y `.hasta`. */
+export const METAFISIS = {
+  desde: LARGO_DIAFISIS / 2 - 0.95,
+  hasta: LARGO_DIAFISIS / 2 - 0.15,
+} as const;
+export const R_METAFISIS = 1.36;
+/** Ángulo polar (desde el polo del extremo) que cubre el cartílago articular de cada epífisis. */
+export const POLAR_CARTILAGO = 0.95;
+/** Altura |y| donde empieza el cartílago articular: ahí termina el periostio. */
+export const Y_CARTILAGO = X_EPIFISIS + EPIFISIS_LARGO * Math.cos(POLAR_CARTILAGO);
+
+/**
+ * Radio exterior del hueso largo (diáfisis, metáfisis o epífisis, la que sobresalga) a la altura `y` de su eje.
+ * Las tres piezas se solapan: la silueta es el máximo de las tres.
+ */
+export function radioExteriorHueso(y: number): number {
+  const a = Math.abs(y);
+  let r = 0;
+  if (a <= LARGO_DIAFISIS / 2) r = R_CORTICAL;
+  if (a >= METAFISIS.desde && a <= METAFISIS.hasta) {
+    const k = (a - METAFISIS.desde) / (METAFISIS.hasta - METAFISIS.desde);
+    r = Math.max(r, R_CORTICAL + (R_METAFISIS - R_CORTICAL) * k);
+  }
+  const e = (a - X_EPIFISIS) / EPIFISIS_LARGO;
+  if (Math.abs(e) < 1) r = Math.max(r, EPIFISIS_RADIO * Math.sqrt(1 - e * e));
+  return r;
+}
+
+/** Separación entre el periostio y la superficie del hueso. */
+export const HOLGURA_PERIOSTIO = 0.02;
+
+/**
+ * Perfil `[radio, y]` de la vaina de periostio del hueso largo: sigue la silueta del hueso (a `HOLGURA_PERIOSTIO`)
+ * desde el borde del cartílago articular de un extremo hasta el del otro, así cubre también metáfisis y epífisis
+ * (el periostio recubre todo el hueso salvo las superficies articulares). Más puntos donde la silueta se curva.
+ */
+export function perfilPeriostio(): [number, number][] {
+  const alturas = [
+    METAFISIS.desde,
+    2.7,
+    2.85,
+    3.0,
+    3.15,
+    METAFISIS.hasta,
+    3.55,
+    3.8,
+    X_EPIFISIS,
+    4.3,
+    4.55,
+    Y_CARTILAGO,
+  ];
+  const lado = alturas.map(
+    (a) => [radioExteriorHueso(a) + HOLGURA_PERIOSTIO, a] as [number, number],
+  );
+  return [...lado.map(([r, a]) => [r, -a] as [number, number]).reverse(), ...lado];
 }
 
 /* -------------------------------------------------------------------------------------------

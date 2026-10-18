@@ -12,6 +12,7 @@
  * que solo cambian de posición.
  */
 import { generadorDeterminista } from '../interpolacion';
+import { CRESTA_A_CUELLO } from '../alveolar/disposicion';
 import {
   ALTO_CORONA,
   ALTO_ENCIA,
@@ -227,14 +228,22 @@ export function siluetaRaiz(): Punto2[] {
 }
 
 /**
- * Perfil de la corona para un torno (`LatheGeometry`): `[radio, y]` desde el cuello hasta la cúspide. Canino
- * esquemático: un bulbo bajo y una cúspide puntiaguda.
+ * Altura del cuello del diente (límite amelocementario), por encima de la cresta: la misma distancia que en la escena
+ * `hueso_alveolar` (`CRESTA_A_CUELLO`, unos 1,5 mm; fidelidad-02). Antes la corona empezaba 0,05 unidades por DEBAJO
+ * de la cresta y el hueso tocaba el esmalte. Entre la cresta y el cuello queda la raíz cervical, cubierta de cemento
+ * y, por fuera, de la encía, cuyo margen queda 0,1 unidades (unos 0,7 mm) por encima del cuello.
+ */
+export const Y_CUELLO = Y_CRESTA + CRESTA_A_CUELLO;
+
+/**
+ * Perfil de la corona para un torno (`LatheGeometry`): `[radio, y]` desde el cuello (del ancho de la raíz) hasta la
+ * cúspide. Canino esquemático: un bulbo bajo y una cúspide puntiaguda.
  */
 export function perfilCorona(): readonly (readonly [radio: number, y: number])[] {
-  const y0 = Y_CRESTA - 0.05;
+  const y0 = Y_CUELLO;
   const h = ALTO_CORONA;
   return [
-    [SEMIANCHO_RAIZ - 0.02, y0],
+    [SEMIANCHO_RAIZ, y0],
     [SEMIANCHO_RAIZ + 0.02, y0 + 0.12],
     [SEMIANCHO_CORONA, y0 + h * 0.38],
     [SEMIANCHO_CORONA * 0.92, y0 + h * 0.6],
@@ -254,14 +263,21 @@ export function siluetaCorona(): Punto2[] {
   return sinRepetidos(puntos);
 }
 
-/** Silueta de la pulpa: conducto radicular estrecho y cámara pulpar en la corona. Antihoraria. */
+/** Fondo del conducto radicular: el foramen apical, a unos 0,07 mm del ápice (fidelidad-12). */
+export const Y_FORAMEN = Y_APICE + 0.01;
+
+/**
+ * Silueta de la pulpa: conducto radicular estrecho, que llega al ápice (el foramen apical; antes se cerraba 1,7 mm
+ * antes), y cámara pulpar en la corona, sobre el cuello. Antihoraria.
+ */
 export function siluetaPulpa(): Punto2[] {
   const derecha: Punto2[] = [];
-  for (const y of alturasMuestreadas(Y_CENTRO_APICE + 0.2, Y_CRESTA, 12)) {
+  for (const y of alturasMuestreadas(Y_APICE + 0.06, Y_CUELLO, 12)) {
     derecha.push([0.3 * semianchoRaiz(y), y]);
   }
-  derecha.push([0.15, Y_CRESTA + 0.3], [0.08, Y_CRESTA + 0.58]);
-  const puntos: Punto2[] = [[0, Y_CENTRO_APICE + 0.12], ...derecha, [0, Y_CRESTA + 0.72]];
+  // La cámara, como antes respecto del cuello (entonces 0,05 bajo la cresta).
+  derecha.push([0.15, Y_CUELLO + 0.35], [0.08, Y_CUELLO + 0.63]);
+  const puntos: Punto2[] = [[0, Y_FORAMEN], ...derecha, [0, Y_CUELLO + 0.77]];
   for (let i = derecha.length - 1; i >= 0; i--) puntos.push([-derecha[i]![0], derecha[i]![1]]);
   return sinRepetidos(puntos);
 }
@@ -349,11 +365,24 @@ export interface PerfilesAlveolo {
 /** Contorno base de la raíz, calculado una vez. */
 const BASE = contornoRaiz();
 
+/** El último estado pedido y sus perfiles: las piezas los piden varias veces por fotograma con el mismo estado. */
+let ultimoEstado: EstadoOrtodoncia | null = null;
+let ultimos: PerfilesAlveolo | null = null;
+
 /**
  * Los contornos del alvéolo en un estado. El ALVÉOLO (pared y lámina) sigue la pose del diente (avance por
- * remodelado e inclinación); la RAÍZ, además, se corre dentro de él hacia el lado de compresión.
+ * remodelado e inclinación); la RAÍZ, además, se corre dentro de él hacia el lado de compresión. Con el mismo
+ * objeto de estado devuelve los mismos arreglos (rendimiento-15: el diente, el alvéolo y las células lo calculaban
+ * tres veces por fotograma); nadie los modifica.
  */
 export function perfilesAlveolo(estado: EstadoOrtodoncia): PerfilesAlveolo {
+  if (estado === ultimoEstado && ultimos) return ultimos;
+  ultimos = calcularPerfiles(estado);
+  ultimoEstado = estado;
+  return ultimos;
+}
+
+function calcularPerfiles(estado: EstadoOrtodoncia): PerfilesAlveolo {
   const pose = poseDiente(estado);
   const raiz = contornoDiente(BASE.puntos, estado);
   const normales = BASE.normales.map((n) => girarVector(n, pose));
@@ -517,9 +546,22 @@ export function indicesVasos(): number[] {
   return [...izquierda, ...izquierda.map((i) => N_MUESTRAS_RAIZ - 1 - i)];
 }
 
-/** Muestras de la pared de compresión (derecha) donde se posan los osteoclastos. */
+/**
+ * Muestras de la pared de compresión (derecha) donde se posan los osteoclastos de la resorción FRONTAL, desde el
+ * propio ligamento: en los bordes de la zona hialinizada, en ligamento vivo, cada uno en una laguna de Howship
+ * honda. La zona hialinizada no tiene células (fidelidad-04: antes dos de los cuatro caían dentro de ella).
+ */
 export function indicesOsteoclastos(): number[] {
-  return [61, 69, 77, 85];
+  return [57, 88];
+}
+
+/**
+ * Muestras de la pared de compresión detrás de la zona hialinizada donde trabajan los osteoclastos de la resorción
+ * SOCAVANTE: llegan desde los espacios medulares y reabsorben la lámina por su cara exterior (Reitan; Proffit,
+ * cap. 8). Se dibujan sobre el borde externo de la lámina.
+ */
+export function indicesOsteoclastosSocavantes(): number[] {
+  return [68, 74];
 }
 
 /** Muestras de la pared de tensión (izquierda) donde se alinean los osteoblastos. */

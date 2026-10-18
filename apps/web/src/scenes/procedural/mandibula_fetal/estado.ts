@@ -34,18 +34,26 @@ export const R_LIGAMENTO = 0.022;
 export const R_NERVIO = 0.045;
 /** Semiejes de la masa de mesénquima alrededor del arco (lateral y vertical). */
 export const MESENQUIMA = { ancho: 0.95, alto: 0.72 } as const;
-/** Parámetro `u` del arco (0 = oído, 1 = línea media) donde aparece el primer centro de osificación. */
-export const U_CENTRO = 0.7;
+/**
+ * Parámetro `u` del arco (0 = oído, 1 = línea media) donde aparece el primer centro de osificación: lateral al
+ * Meckel, en el ángulo entre el nervio alveolar inferior y su rama mentoniana, justo por delante de la bifurcación
+ * (`NERVIO.uBifurcacion`), es decir, cerca del futuro foramen mentoniano (Nanci, Ten Cate's Oral Histology). Al
+ * nacer ese foramen se abre bajo el primer molar temporal (Gray's Anatomy): queda entre el germen del primer molar
+ * y el del canino. Antes estaba en 0,7, entre el canino y el incisivo lateral (2026-10-17, fidelidad-05).
+ */
+export const U_CENTRO = 0.55;
 /** Tramo del arco que ocupa el cuerpo óseo (más atrás está la rama, que es otra pieza). */
 export const U_CUERPO = { inicio: 0.14, fin: 0.985 } as const;
 /** Parámetro `u` donde se inserta la rama en el cuerpo. */
 export const U_RAMA = 0.16;
 /** Cuántos gérmenes dentarios hay por lado. */
 export const N_GERMENES = 5;
-/** Ancho del cuerpo óseo a tamaño 1 (unidades de escena); el perfil se define para este ancho. */
-export const ANCHO_CUERPO = 0.76;
-/** Cuánto se separa del cartílago de Meckel el centro del cuerpo óseo (hacia lateral). */
-export const N_CUERPO = 0.42;
+/**
+ * Cuánto se separa del cartílago de Meckel el centro del cuerpo óseo (hacia lateral). Con 0,42 la cara externa de
+ * la lámina lingual se metía unas 0,04 u en la varilla entre `t` 0,55 y 0,8; con 0,5 el Meckel queda aparte y
+ * medial, como en la realidad (2026-10-17, fidelidad-18).
+ */
+export const N_CUERPO = 0.5;
 /** Alcance del hueso (en `u`) desde el centro con el que llega a los dos extremos del cuerpo. */
 export const ALCANCE_COMPLETO = 0.62;
 

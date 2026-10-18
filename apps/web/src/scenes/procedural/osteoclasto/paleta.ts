@@ -38,3 +38,34 @@ export const HEX = {
   /** Fragmentos de colágeno (CTX): el trazo del hueso en el SVG. */
   colageno: '#a8748c',
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo): el hueso fresco es marfil, no el rosa de la
+ * tinción, y el fondo de la laguna de Howship, pardo (más oscuro, como pide el texto); las células, en tonos
+ * suaves. Se mantienen, algo más sobrias, las familias de color que nombran los textos: H+ naranja, Cl- verde,
+ * catepsina K ámbar, calcio claro, fosfato azul, colágeno (CTX) rosa, capilar rojo, precursores lila (pálidos) y
+ * anillo de sellado claro. Mismas claves que `HEX` (que no cambia).
+ *
+ * Revisión de diseño (2026-10-17): la paleta unificada entre escenas (el mismo tejido, el mismo color). Hueso maduro
+ * marfil (#e6d8bc la superficie y #eadfc8, un punto más clara, la cara de corte), pared reabsorbida como en la BMU,
+ * osteoclasto #b893cf (lila), núcleos #4b408f, vaso #c9473e y precursores en la versión pálida del osteoclasto (la
+ * misma de la BMU; antes eran más oscuros que la célula que forman).
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  hueso: '#e6d8bc',
+  huesoResorbido: '#b4956f',
+  corteHueso: '#eadfc8',
+  capilar: '#c9473e',
+  precursor: '#cbb7da',
+  osteoclasto: '#b893cf',
+  bordeFestoneado: '#8a66aa',
+  nucleo: '#4b408f',
+  zonaClara: '#efe9f1',
+  cuerpoApoptotico: '#a78cb8',
+  proton: '#e4733f',
+  cloruro: '#37a07b',
+  catepsina: '#d99b35',
+  calcio: '#f3eee4',
+  fosfato: '#4a8fc8',
+  colageno: '#c97f99',
+};

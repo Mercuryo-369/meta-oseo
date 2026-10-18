@@ -22,7 +22,7 @@ export const HEX = {
   endostio: '#f6d8e2',
   /** Médula amarilla (grasa) de la diáfisis. */
   medulaAmarilla: '#f0d067',
-  /** Médula roja de las epífisis. */
+  /** Médula roja (en el adulto, en las metáfisis proximales del fémur y del húmero; no en las epífisis). */
   medulaRoja: '#c7605a',
   /** Cartílago articular hialino. */
   cartilago: '#cfe6ef',
@@ -35,3 +35,34 @@ export const HEX = {
   /** Destello con el que se destacan las osteonas del corte. */
   resalte: '#ffd166',
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo paso a paso): el hueso fresco es marfil, no
+ * rosa. Las otras escenas que importan `HEX` (osificación, fractura, mandíbula fetal, osteocito, trabecular)
+ * no cambian hasta que les toque. Mismas claves que `HEX`; se mantienen los colores que nombran los textos
+ * (médula amarilla, conducto de Havers rojo).
+ *
+ * Revisión de diseño (2026-10-17): la paleta unificada entre escenas (el mismo tejido, el mismo color). Hueso maduro
+ * marfil (#e6d8bc a #eadfc8), con las dos tintas de las láminas y la línea de cemento ocre de la BMU; médula amarilla
+ * #e8c561 y roja #9e3f33; cartílago hialino #d9e8ef; vaso #c9473e; osteocito #8a9ad2 (azul: antes era el violeta de
+ * los osteoblastos). El periostio pasa del tostado (se leía como cuero) a un blanco rosado: en fresco es una
+ * membrana fibrosa blanquecina y brillante, algo rosada por sus vasos.
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  cortical: '#eadfc8',
+  laminaClara: '#eadfc8',
+  laminaOscura: '#d8c6a3',
+  intersticial: '#e6d8bc',
+  esponjoso: '#e6d8bc',
+  cemento: '#8c6b45',
+  periostio: '#e6cfc4',
+  endostio: '#f1e3cf',
+  medulaAmarilla: '#e8c561',
+  medulaRoja: '#9e3f33',
+  cartilago: '#d9e8ef',
+  vaso: '#c9473e',
+  osteocito: '#8a9ad2',
+  laguna: '#3b2c22',
+  canaliculo: '#6e4c2f',
+  resalte: HEX.resalte,
+};

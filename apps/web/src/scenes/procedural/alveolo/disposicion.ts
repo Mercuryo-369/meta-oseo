@@ -218,8 +218,29 @@ export interface CarrilesEncia {
 }
 
 /**
- * Carriles de la encía de un lado: bajan por la cara del cuerpo desde `ENCIA.caida` bajo la cresta, doblan la
- * esquina y siguen sobre la cresta hasta su borde libre. `PUNTOS_ENCIA` puntos cada uno, siempre.
+ * Cuánto baja la encía por la cara del cuerpo desde la cresta con una pérdida `reborde` (fidelidad-11): en el reborde
+ * atrófico la banda de encía insertada se estrecha sobre la cresta, y el foramen mentoniano queda bajo una mucosa
+ * alveolar fina, que no se dibuja (como el resto de tejidos blandos). Con 0,55 en toda pérdida la encía tapaba el
+ * foramen en la vista `reborde`.
+ */
+export function caidaEncia(reborde: number): number {
+  return mezclar(ENCIA.caida, ENCIA.caidaFinal, acotar(reborde));
+}
+
+/**
+ * Altura del borde libre de la encía sobre la cresta junto al diente (fidelidad-02): mientras el alvéolo está
+ * abierto, la encía sube por el cuello hasta `ENCIA.margen` sobre la cresta, unos 0,8 mm por encima del límite
+ * amelocementario, como en la boca (con el grosor de siempre, el margen quedaba bajo el cuello: parecía una
+ * recesión); al cerrar, baja al grosor de la encía sobre el reborde.
+ */
+export function margenEncia(cierre: number): number {
+  return mezclar(ENCIA.margen, ENCIA.grosor, acotar(cierre));
+}
+
+/**
+ * Carriles de la encía de un lado: bajan por la cara del cuerpo desde `caidaEncia` bajo la cresta, doblan la
+ * esquina y siguen sobre la cresta hasta su borde libre; el carril libre sube hacia el borde hasta `margenEncia`.
+ * `PUNTOS_ENCIA` puntos cada uno, siempre.
  */
 export function carrilesEncia(lado: Lado, cierre: number, reborde: number): CarrilesEncia {
   const signo = signoDeLado(lado);
@@ -227,7 +248,7 @@ export function carrilesEncia(lado: Lado, cierre: number, reborde: number): Carr
   const g = ENCIA.grosor;
   const interior: Punto2[] = [];
   const exterior: Punto2[] = [];
-  const alturas = alturasMuestreadas(yC - ENCIA.caida, yC, PASOS_ENCIA.lado);
+  const alturas = alturasMuestreadas(yC - caidaEncia(reborde), yC, PASOS_ENCIA.lado);
   for (const y of alturas) {
     const z = zSuperficie(y, lado, reborde);
     interior.push([z, y]);
@@ -237,10 +258,13 @@ export function carrilesEncia(lado: Lado, cierre: number, reborde: number): Carr
   interior.push([zEsquina, yC]);
   exterior.push([zEsquina + signo * g * Math.SQRT1_2, yC + g * Math.SQRT1_2]);
   const zBorde = bordeEncia(lado, cierre, reborde);
+  const margen = margenEncia(cierre);
   for (let i = 0; i <= PASOS_ENCIA.techo; i++) {
-    const z = mezclar(zEsquina, zBorde, i / PASOS_ENCIA.techo);
+    const f = i / PASOS_ENCIA.techo;
+    const z = mezclar(zEsquina, zBorde, f);
     interior.push([z, yC]);
-    exterior.push([z, yC + g]);
+    // Sube suave hacia el borde libre (una curva en S): la encía se engruesa junto al diente.
+    exterior.push([z, yC + g + (margen - g) * f * f * (3 - 2 * f)]);
   }
   return { interior, exterior };
 }
@@ -379,19 +403,38 @@ export interface Punto3 {
 }
 
 /**
+ * Normal exterior unitaria `[z, y]` de la superficie de la tabla `lado` a la altura `y` con una pérdida `reborde`
+ * (diferencias centrales): hacia +Z en la vestibular y hacia −Z en la lingual, inclinada hacia arriba donde la
+ * cresta se estrecha.
+ */
+export function normalSuperficie(y: number, lado: Lado, reborde: number): Punto2 {
+  const h = 0.01;
+  const dz = zSuperficie(y + h, lado, reborde) - zSuperficie(y - h, lado, reborde);
+  const dy = 2 * h;
+  const s = signoDeLado(lado);
+  const largo = Math.hypot(dz, dy) || 1;
+  return [(s * dy) / largo, (-s * dz) / largo];
+}
+
+/** Un osteoclasto del reborde: su centro y la normal `[z, y]` de la superficie sobre la que se aplana. */
+export interface OsteoclastoReborde extends Punto3 {
+  normal: Punto2;
+}
+
+/**
  * Osteoclastos sobre la superficie del reborde mientras se reabsorbe: cerca de la cresta, repartidos a lo largo
  * de la mitad del segmento que se dibuja (`largo`, de x = 0 a −largo) y más por vestibular (dos de cada tres).
- * Siguen a la superficie según la pérdida.
+ * Siguen a la superficie según la pérdida, con su normal (se dibujan aplanados contra ella).
  */
-export function osteoclastosReborde(reborde: number, largo: number): Punto3[] {
+export function osteoclastosReborde(reborde: number, largo: number): OsteoclastoReborde[] {
   const yC = yCresta(reborde);
-  const puntos: Punto3[] = [];
+  const puntos: OsteoclastoReborde[] = [];
   for (let j = 0; j < N_OSTEOCLASTOS_REBORDE; j++) {
     const lado: Lado = j % 3 === 2 ? 'lingual' : 'vestibular';
     const y = yC - 0.08 - 0.14 * (j % 4);
     const z = zSuperficie(y, lado, reborde) + signoDeLado(lado) * 0.04;
     const x = -0.3 - ((largo - 0.6) * (j + 0.5)) / N_OSTEOCLASTOS_REBORDE;
-    puntos.push({ x, y, z });
+    puntos.push({ x, y, z, normal: normalSuperficie(y, lado, reborde) });
   }
   return puntos;
 }

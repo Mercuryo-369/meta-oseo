@@ -2875,14 +2875,14 @@
                     "t": 0,
                     "titulo": "Reposo: el canino en su alvéolo",
                     "vista": "general",
-                    "texto": "Corte a lo largo de la arcada (mesiodistal) del proceso alveolar. La raíz del canino está separada del hueso por el **ligamento periodontal** (verde), de grosor uniforme, con sus fibras oblicuas y sus vasos. La lámina que reviste el alvéolo es el [hueso alveolar propio](glosario:hueso_alveolar_propio); alrededor, el hueso esponjoso de soporte. Todo va exagerado en grosor para que se vea en el teléfono."
+                    "texto": "Corte a lo largo de la arcada (mesiodistal) del proceso alveolar. La raíz del canino está separada del hueso por el **ligamento periodontal** (rosado), de grosor uniforme, con sus fibras oblicuas y sus vasos. La lámina que reviste el alvéolo es el [hueso alveolar propio](glosario:hueso_alveolar_propio); alrededor, el hueso esponjoso de soporte. Todo va exagerado en grosor para que se vea en el teléfono."
                   },
                   {
                     "id": "paso_fuerza",
                     "t": 0.16,
                     "titulo": "Se aplica una fuerza ligera",
                     "vista": "general",
-                    "texto": "Un bracket transmite a la corona una fuerza continua hacia la derecha (distal). El diente apenas se mueve todavía: el hueso no se dobla. El diente apenas se mueve todavía: lo primero que ocurrirá es que la raíz se corra dentro del alvéolo y el ligamento la amortigüe (siguiente paso)."
+                    "texto": "Un bracket transmite a la corona una fuerza continua hacia la derecha (distal). El diente apenas se mueve todavía: lo primero que ocurrirá es que la raíz se corra dentro del alvéolo y el ligamento la amortigüe (siguiente paso)."
                   },
                   {
                     "id": "paso_ligamento",
@@ -2896,14 +2896,14 @@
                     "t": 0.5,
                     "titulo": "Lado de compresión: resorción",
                     "vista": "compresion",
-                    "texto": "En el lado comprimido sube [RANKL](glosario:rank_y_rankl), baja la OPG y se liberan prostaglandina E2 e interleucinas. Llegan **osteoclastos** (lila) y excavan la pared alveolar en [lagunas de Howship](glosario:laguna_de_howship): la pared se festonea y adelgaza. Con fuerza ligera actúan desde el propio ligamento (resorción frontal) y retiran también la zona hialinizada."
+                    "texto": "En el lado comprimido sube [RANKL](glosario:rank_y_rankl), baja la OPG y se liberan prostaglandina E2 e interleucinas. Llegan **osteoclastos** (lila) y excavan la pared alveolar en [lagunas de Howship](glosario:laguna_de_howship): la pared se festonea y adelgaza. Con fuerza ligera actúan desde el propio ligamento (resorción frontal). La zona hialinizada no tiene células: la retiran macrófagos y la pared que hay detrás se reabsorbe desde la médula (resorción socavante)."
                   },
                   {
                     "id": "paso_aposicion",
                     "t": 0.66,
                     "titulo": "Lado de tensión: aposición",
                     "vista": "tension",
-                    "texto": "En el lado estirado sube la OPG y bajan las señales de resorción. Progenitores del ligamento se diferencian en **osteoblastos** (azules), que se alinean sobre la pared y depositan un ribete de [osteoide](glosario:osteoide) que se mineraliza como hueso fascicular, atravesado por las fibras del ligamento. Así, aunque ahora esté estirado, el ligamento recuperará su grosor cuando la pared avance."
+                    "texto": "En el lado estirado sube la OPG y bajan las señales de resorción. Progenitores del ligamento se diferencian en **osteoblastos** (violeta), que se alinean sobre la pared y depositan un ribete de [osteoide](glosario:osteoide) que se mineraliza como hueso fascicular, atravesado por las fibras del ligamento. Así, aunque ahora esté estirado, el ligamento recuperará su grosor cuando la pared avance."
                   },
                   {
                     "id": "paso_desplazamiento",
@@ -3218,7 +3218,7 @@
             "config": {
               "modelo": "procedural",
               "escena": "reparacion_fractura",
-              "alt": "Escena 3D esquemática de una diáfisis fracturada, rosa, con periostio y médula. La brecha se llena de un coágulo rojo, llegan células y vasos, un manguito celeste de cartílago rodea la fractura, se vuelve hueso rosado, encoge con osteoclastos y al final la cortical queda continua.",
+              "alt": "Escena 3D esquemática de una diáfisis fracturada, de color marfil, con periostio y médula. La brecha se llena de un coágulo rojo, llegan células y vasos, un manguito blanco azulado de cartílago rodea la fractura, se vuelve hueso rosado, encoge con osteoclastos y al final la cortical queda continua.",
               "linea_de_tiempo": {
                 "pasos": [
                   {
@@ -3233,7 +3233,7 @@
                     "t": 0.15,
                     "titulo": "Hematoma: el primer molde",
                     "vista": "corte",
-                    "texto": "En horas la sangre coagula: un **hematoma** con plaquetas y fibrina llena la brecha, entra en el canal medular y rodea los extremos. El hueso de los bordes, sin riego, se oscurece: muere. El coágulo no es hueso, pero es el primer andamio de la reparación."
+                    "texto": "En horas la sangre coagula: un **hematoma** con plaquetas y fibrina llena la brecha, entra en el canal medular y rodea los extremos. El hueso de los bordes, sin riego, muere: queda pálido y no sangra. El coágulo no es hueso, pero es el primer andamio de la reparación."
                   },
                   {
                     "id": "paso_inflamacion",
@@ -3247,7 +3247,7 @@
                     "t": 0.45,
                     "titulo": "Callo blando: cartílago y tejido fibroso",
                     "vista": "callo",
-                    "texto": "Hacia la 1.ª a 3.ª semana las células madre se vuelven condrocitos y fibroblastos. Forman un [callo blando](glosario:callo_blando): un manguito fusiforme de fibrocartílago (celeste) y tejido fibroso que rodea la fractura por fuera (callo externo) y tapa la brecha y el canal por dentro (callo interno). Estabiliza, pero es débil y no se ve en la radiografía."
+                    "texto": "Hacia la 1.ª a 3.ª semana las células madre se vuelven condrocitos y fibroblastos. Forman un [callo blando](glosario:callo_blando): un manguito fusiforme de fibrocartílago (blanco azulado) y tejido fibroso que rodea la fractura por fuera (callo externo) y tapa la brecha y el canal por dentro (callo interno). Estabiliza, pero es débil y no se ve en la radiografía."
                   },
                   {
                     "id": "paso_callo_duro",

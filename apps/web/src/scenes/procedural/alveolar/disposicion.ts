@@ -1,14 +1,14 @@
 /**
  * Disposición de la escena del hueso alveolar: los PERFILES en 2D de la sección vestibulolingual (contorno del
- * cuerpo, región trabecular, raíz, corona, pulpa) y las piezas repetidas (trabéculas, perforaciones de la
- * lámina cribiforme, fibras del ligamento). Lógica PURA: solo números, deterministas (misma semilla, misma
- * disposición), sin three ni Vue, para poder probarla y para que el dibujo no cambie entre cargas.
- * `geometria.ts` convierte estos polígonos en formas de three.
+ * cuerpo, región trabecular, raíz, corona, dentina, cemento, pulpa), los meridianos de la corona en 3D y las
+ * piezas repetidas (trabéculas, perforaciones de la lámina cribiforme, fibras del ligamento). Lógica PURA: solo
+ * números, deterministas (misma semilla, misma disposición), sin three ni Vue, para poder probarla y para que el
+ * dibujo no cambie entre cargas. `geometria.ts` convierte estos polígonos en formas de three.
  *
  * Convención: cada punto es `[z, y]` en el plano de corte (x = 0). +Z es vestibular (hacia la mejilla), −Z
  * lingual; +Y hacia la cresta alveolar. El polígono del cuerpo se recorre en sentido antihorario visto desde +X.
  */
-import { generadorDeterminista } from '../interpolacion';
+import { acotar, generadorDeterminista } from '../interpolacion';
 import {
   ALTO_CORONA,
   CONDUCTO,
@@ -127,7 +127,7 @@ function sinRepetidos(puntos: readonly Punto2[]): Punto2[] {
  * Raíz, corona y pulpa
  * ----------------------------------------------------------------------------------------- */
 
-/** Semiancho de la raíz a la altura `y` (0 en el ápice, `SEMIANCHO_RAIZ` en la cresta). */
+/** Semiancho de la raíz a la altura `y` (0 en el ápice, `SEMIANCHO_RAIZ` en la cresta y de ahí al cuello). */
 export function semianchoRaiz(y: number): number {
   const k = (Math.min(Y_CRESTA, y) - Y_APICE) / (Y_CRESTA - Y_APICE);
   return k <= 0 ? 0 : SEMIANCHO_RAIZ * Math.pow(k, 0.65);
@@ -174,42 +174,378 @@ export function bandaAlrededorDeRaiz(interior: number, exterior: number): Punto2
   return sinRepetidos([...fuera, ...dentro]);
 }
 
+/* -------------------------------------------------------------------------------------------
+ * Corona del premolar: esmalte y dentina (realismo, 2026-10-14)
+ * ----------------------------------------------------------------------------------------- */
+
+/** Punto de un perfil de la corona: radio desde el eje del diente y altura. */
+type PuntoPerfil = readonly [radio: number, y: number];
+
 /**
- * Perfil de la corona para un torno (`LatheGeometry`): `[radio, y]` desde el cuello, en la cresta, hasta la
- * cúspide. Premolar esquemático: un bulbo con una cúspide redondeada.
+ * Distancia de la cresta alveolar al límite amelocementario (revisión de diseño, 2026-10-17, fidelidad-02): en un
+ * periodonto sano la cresta queda 1,5 a 2 mm por debajo del cuello del diente, el espacio de la inserción
+ * supracrestal (epitelio de unión e inserción conectiva). Con la escala de la corona (1 unidad ≈ 7,8 mm), 0,2
+ * unidades son unos 1,6 mm. La misma distancia en las tres escenas dentales.
  */
-export function perfilCorona(): readonly (readonly [radio: number, y: number])[] {
-  const y0 = Y_CRESTA - 0.04;
-  const h = ALTO_CORONA;
-  return [
-    [SEMIANCHO_RAIZ - 0.02, y0],
-    [SEMIANCHO_RAIZ, y0 + 0.08],
-    [RADIO_CORONA, y0 + h * 0.34],
-    [RADIO_CORONA * 0.97, y0 + h * 0.6],
-    [RADIO_CORONA * 0.78, y0 + h * 0.8],
-    [RADIO_CORONA * 0.48, y0 + h * 0.93],
-    [RADIO_CORONA * 0.18, y0 + h * 0.99],
-    [0, y0 + h],
-  ];
+export const CRESTA_A_CUELLO = 0.2;
+
+/**
+ * Altura del cuello del diente (límite amelocementario): donde acaba el esmalte y empieza el cemento. Por encima de
+ * la cresta: entre ambos queda una franja de raíz cubierta de cemento (en la boca la cubre la encía). Antes estaba
+ * 0,04 unidades por DEBAJO de la cresta y el hueso tocaba el esmalte.
+ */
+export const Y_CUELLO = Y_CRESTA + CRESTA_A_CUELLO;
+
+/** Puntos que se intercalan en cada tramo entre dos puntos de control de un perfil (curva suave). */
+const PUNTOS_POR_TRAMO = 2;
+
+/*
+ * La corona es la de un primer premolar inferior. En el corte vestibulolingual la corona se inclina hacia
+ * lingual, así que la cúspide vestibular, alta, cae sobre el eje de la raíz; la lingual es baja (unos dos tercios
+ * de la altura) y entre ambas corre el surco central, de mesial a distal. El contorno vestibular es más
+ * prominente en el tercio cervical y el lingual en el medio.
+ *
+ * Se construye por meridianos (`meridianoCorona`), del cuello al eje: primero la CARA del diente (la mezcla,
+ * según el ángulo, de una plantilla vestibular y otra lingual) hasta el borde de la superficie oclusal, y después
+ * la SUPERFICIE OCLUSAL, que es un relieve: el perfil del corte (`PERFIL_OCLUSAL`) prolongado de mesial a distal,
+ * que sube hacia los rebordes marginales. Así la cúspide vestibular tiene sus aristas mesial y distal, el surco es
+ * recto y queda cerrado por los rebordes, y el borde de la corona en el plano de corte es, por construcción, la
+ * silueta del corte. Todas las medidas, en fracciones: radio / RADIO_CORONA y altura sobre el cuello /
+ * ALTO_CORONA.
+ */
+
+/**
+ * Plantillas de la cara de la corona, del cuello al borde de la superficie oclusal: en vestibular, la vertiente
+ * de la cúspide vestibular; en lingual, la punta de la cúspide lingual. El primer punto (el cuello) se sustituye
+ * por el ancho exacto de la raíz a esa altura. Mismo número de puntos: se mezclan según el ángulo.
+ */
+const CONTROL_CARA: Readonly<Record<Lado, readonly PuntoPerfil[]>> = {
+  vestibular: [
+    [0, 0],
+    [0.906, 0.09],
+    [0.979, 0.19],
+    [1, 0.29],
+    [0.983, 0.41],
+    [0.9375, 0.54],
+    [0.854, 0.66],
+    [0.729, 0.77],
+    [0.542, 0.88],
+  ],
+  lingual: [
+    [0, 0],
+    [0.885, 0.12],
+    [0.958, 0.26],
+    [1, 0.4],
+    [0.979, 0.51],
+    [0.93, 0.58],
+    [0.85, 0.64],
+    [0.74, 0.68],
+    [0.625, 0.695],
+  ],
+};
+
+/**
+ * Perfil de la superficie oclusal en el corte: `[posición vestibulolingual / RADIO_CORONA (+ vestibular),
+ * altura]`, de la punta de la cúspide lingual al borde vestibular, pasando por el surco central y por la punta de
+ * la cúspide vestibular, sobre el eje.
+ */
+const PERFIL_OCLUSAL: readonly PuntoPerfil[] = [
+  [-0.625, 0.695],
+  [-0.4375, 0.625],
+  [-0.208, 0.76],
+  [0, 1],
+  [0.292, 0.965],
+  [0.542, 0.88],
+];
+
+/** Altura de los rebordes marginales (mesial y distal), que cierran el surco y reciben las aristas de las cúspides. */
+const ALTURA_REBORDES = 0.78;
+
+/** Pasos de la superficie oclusal en cada meridiano, del borde al eje. */
+const PASOS_OCLUSAL = 8;
+
+/**
+ * La dentina de la corona, bajo el esmalte: el esmalte es nulo en el cuello y más grueso en las cúspides; la
+ * dentina hace un cuerno bajo cada cúspide.
+ */
+const CONTROL_DENTINA: Readonly<Record<Lado, readonly PuntoPerfil[]>> = {
+  vestibular: [
+    [0, 0],
+    [0.833, 0.09],
+    [0.823, 0.19],
+    [0.802, 0.29],
+    [0.771, 0.41],
+    [0.719, 0.53],
+    [0.635, 0.63],
+    [0.521, 0.71],
+    [0.375, 0.78],
+    [0.1875, 0.82],
+    [0, 0.84],
+  ],
+  lingual: [
+    [0, 0],
+    [0.833, 0.12],
+    [0.823, 0.24],
+    [0.802, 0.37],
+    [0.771, 0.47],
+    [0.71, 0.53],
+    [0.63, 0.57],
+    [0.54, 0.585],
+    [0.42, 0.55],
+    [0.2, 0.64],
+    [0, 0.84],
+  ],
+};
+
+/**
+ * Curva de Catmull-Rom uniforme que pasa por los puntos de control, con `porTramo` puntos por tramo. Incluye
+ * exactamente cada punto de control (también el primero y el último); en los extremos se repiten.
+ */
+function curvaSuave(control: readonly PuntoPerfil[], porTramo: number): PuntoPerfil[] {
+  const salida: PuntoPerfil[] = [];
+  const n = control.length;
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = control[Math.max(0, i - 1)]!;
+    const p1 = control[i]!;
+    const p2 = control[i + 1]!;
+    const p3 = control[Math.min(n - 1, i + 2)]!;
+    salida.push(p1);
+    for (let k = 1; k < porTramo; k++) {
+      const t = k / porTramo;
+      const t2 = t * t;
+      const t3 = t2 * t;
+      const f = (a: number, b: number, c: number, d: number): number =>
+        0.5 *
+        (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+      salida.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+    }
+  }
+  salida.push(control[n - 1]!);
+  return salida;
 }
 
-/** Silueta de la corona en el plano de corte (el perfil del torno y su reflejo). */
-export function siluetaCorona(): Punto2[] {
-  const perfil = perfilCorona();
+/** Perfil `[radio, y]` (del cuello a la punta) a partir de puntos de control en fracciones de la corona. */
+function perfilDeControl(control: readonly PuntoPerfil[]): PuntoPerfil[] {
+  const absolutos: PuntoPerfil[] = control.map(([r, y], i) => [
+    i === 0 ? semianchoRaiz(Y_CUELLO) : RADIO_CORONA * r,
+    Y_CUELLO + ALTO_CORONA * y,
+  ]);
+  // Sin pasarse del radio de la corona ni del eje: la curva puede desbordar un poco entre puntos de control.
+  return curvaSuave(absolutos, PUNTOS_POR_TRAMO).map(([r, y]) => [
+    Math.max(0, Math.min(RADIO_CORONA, r)),
+    y,
+  ]);
+}
+
+/**
+ * Interpolación cúbica monótona (Fritsch-Carlson) por puntos ordenados en x: no crea máximos ni mínimos entre
+ * ellos, así que la punta de la cúspide y el fondo del surco quedan exactamente en sus puntos. Fuera del tramo
+ * devuelve el extremo.
+ */
+function interpolarMonotona(puntos: readonly PuntoPerfil[], x: number): number {
+  const n = puntos.length;
+  if (x <= puntos[0]![0]) return puntos[0]![1];
+  if (x >= puntos[n - 1]![0]) return puntos[n - 1]![1];
+  const pendiente = (i: number): number =>
+    (puntos[i + 1]![1] - puntos[i]![1]) / (puntos[i + 1]![0] - puntos[i]![0]);
+  const tangente = (i: number): number => {
+    if (i === 0) return pendiente(0);
+    if (i === n - 1) return pendiente(n - 2);
+    const a = pendiente(i - 1);
+    const b = pendiente(i);
+    if (a * b <= 0) return 0;
+    // Media armónica ponderada: monótona sin desbordes.
+    return (3 * a * b) / (2 * Math.max(a, b) + Math.min(a, b));
+  };
+  let k = 0;
+  while (x > puntos[k + 1]![0]) k++;
+  const [x0, y0] = puntos[k]!;
+  const [x1, y1] = puntos[k + 1]!;
+  const h = x1 - x0;
+  const t = (x - x0) / h;
+  if (t === 0) return y0;
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return (
+    (2 * t3 - 3 * t2 + 1) * y0 +
+    (t3 - 2 * t2 + t) * h * tangente(k) +
+    (-2 * t3 + 3 * t2) * y1 +
+    (t3 - t2) * h * tangente(k + 1)
+  );
+}
+
+/** Caras de la corona ya en `[radio, y]`, con los puntos intermedios de la curva suave. */
+const CARA: Readonly<Record<Lado, readonly PuntoPerfil[]>> = {
+  vestibular: perfilDeControl(CONTROL_CARA.vestibular),
+  lingual: perfilDeControl(CONTROL_CARA.lingual),
+};
+
+/** Mezcla `a` (peso 0) y `b` (peso 1); exacta en los extremos. */
+function entre(a: number, b: number, peso: number): number {
+  if (peso <= 0) return a;
+  if (peso >= 1) return b;
+  return a + (b - a) * peso;
+}
+
+/**
+ * Altura de la superficie oclusal en un punto a `u` (mesiodistal) y `v` (vestibulolingual, + vestibular) del eje
+ * del diente, en un meridiano cuyo borde oclusal está a `radioBorde`: el perfil del corte, que sube hacia los
+ * rebordes marginales al alejarse de él hacia mesial o distal.
+ */
+function alturaOclusal(u: number, v: number, radioBorde: number): number {
+  const corte = interpolarMonotona(PERFIL_OCLUSAL, v / RADIO_CORONA);
+  const haciaReborde = Math.min(1, (u / radioBorde) ** 2);
+  return Y_CUELLO + ALTO_CORONA * (corte + (ALTURA_REBORDES - corte) * haciaReborde);
+}
+
+/**
+ * Meridiano de la corona en el ángulo `theta` (convención de three: x = sen θ, z = cos θ; 0 mira a vestibular,
+ * PI a lingual): puntos `[radio, y]` del cuello al eje, siempre el mismo número. La cara se ajusta suavemente
+ * (nada en el cuello) para llegar a la altura del relieve oclusal en el borde.
+ */
+export function meridianoCorona(theta: number): PuntoPerfil[] {
+  const peso = (1 + Math.cos(theta)) / 2;
+  const seno = Math.sin(theta);
+  const coseno = Math.cos(theta);
+  const vestibular = CARA.vestibular;
+  const lingual = CARA.lingual;
+  const n = Math.min(vestibular.length, lingual.length);
+  const radioBorde = entre(lingual[n - 1]![0], vestibular[n - 1]![0], peso);
+  const alturaBorde = alturaOclusal(radioBorde * seno, radioBorde * coseno, radioBorde);
+  const ajuste = alturaBorde - entre(lingual[n - 1]![1], vestibular[n - 1]![1], peso);
+  const puntos: PuntoPerfil[] = [];
+  for (let k = 0; k < n; k++) {
+    const f = k / (n - 1);
+    puntos.push([
+      entre(lingual[k]![0], vestibular[k]![0], peso),
+      entre(lingual[k]![1], vestibular[k]![1], peso) + ajuste * f * f,
+    ]);
+  }
+  for (let j = 1; j <= PASOS_OCLUSAL; j++) {
+    const r = radioBorde * (1 - j / PASOS_OCLUSAL);
+    puntos.push([r, alturaOclusal(r * seno, r * coseno, radioBorde)]);
+  }
+  return puntos;
+}
+
+/**
+ * Perfil VESTIBULAR de la corona: `[radio, y]` desde el cuello, en la cresta, hasta la punta de la cúspide
+ * vestibular, sobre el eje. Es el meridiano de la corona que mira a +Z y el borde vestibular de su silueta.
+ */
+export function perfilCorona(): PuntoPerfil[] {
+  return meridianoCorona(0);
+}
+
+/**
+ * Perfil LINGUAL de la corona: del cuello sube por la cara lingual hasta la cúspide lingual, baja al surco
+ * central y vuelve a subir por la vertiente lingual de la cúspide vestibular hasta su punta. Mismo número de
+ * puntos que `perfilCorona`.
+ */
+export function perfilCoronaLingual(): PuntoPerfil[] {
+  return meridianoCorona(Math.PI);
+}
+
+/** Perfil de la dentina de la corona de un lado (del cuello al techo, bajo la punta de la cúspide vestibular). */
+export function perfilDentina(lado: Lado): PuntoPerfil[] {
+  return perfilDeControl(CONTROL_DENTINA[lado]);
+}
+
+/** Polígono cerrado de un par de perfiles: el vestibular hacia +Z, de abajo arriba, y el lingual de vuelta. */
+function siluetaDePerfiles(
+  vestibular: readonly PuntoPerfil[],
+  lingual: readonly PuntoPerfil[],
+): Punto2[] {
   const puntos: Punto2[] = [];
-  for (const [r, y] of perfil) puntos.push([Z_ALVEOLO + r, y]);
-  for (let i = perfil.length - 2; i >= 0; i--)
-    puntos.push([Z_ALVEOLO - perfil[i]![0], perfil[i]![1]]);
+  for (const [r, y] of vestibular) puntos.push([Z_ALVEOLO + r, y]);
+  for (let i = lingual.length - 2; i >= 0; i--) {
+    puntos.push([Z_ALVEOLO - lingual[i]![0], lingual[i]![1]]);
+  }
+  return puntos;
+}
+
+/**
+ * Silueta de la corona (el esmalte) en el plano de corte: perfil vestibular hacia +Z y lingual hacia −Z, con
+ * sus dos cúspides y el surco central. Coincide con el borde de las medias coronas en 3D (`mediaCorona`).
+ */
+export function siluetaCorona(): Punto2[] {
+  return sinRepetidos(siluetaDePerfiles(perfilCorona(), perfilCoronaLingual()));
+}
+
+/**
+ * Silueta de la DENTINA en el plano de corte, en un solo polígono: la de la corona (bajo el esmalte, con un
+ * cuerno bajo cada cúspide) y la de la raíz, del cuello al ápice.
+ */
+export function siluetaDentina(pasos = 24): Punto2[] {
+  const puntos = siluetaDePerfiles(perfilDentina('vestibular'), perfilDentina('lingual'));
+  // Raíz: lado lingual del cuello al ápice y vestibular del ápice al cuello (el cuello ya está en la corona).
+  const alturas = alturasMuestreadas(Y_APICE, Y_CUELLO, pasos);
+  for (let i = alturas.length - 2; i >= 0; i--) {
+    puntos.push([Z_ALVEOLO - semianchoRaiz(alturas[i]!), alturas[i]!]);
+  }
+  for (let i = 1; i < alturas.length - 1; i++) {
+    puntos.push([Z_ALVEOLO + semianchoRaiz(alturas[i]!), alturas[i]!]);
+  }
   return sinRepetidos(puntos);
 }
 
-/** Silueta de la pulpa: conducto radicular estrecho y cámara pulpar en la corona. */
+/** Grosor del cemento radicular a la altura `y`: fino en el cuello y más grueso hacia el ápice (cemento celular). */
+export function grosorCemento(y: number): number {
+  const k = acotar((y - Y_APICE) / (Y_CUELLO - Y_APICE));
+  return 0.022 + 0.05 * (1 - k) * (1 - k);
+}
+
+/**
+ * Cemento radicular: banda que reviste la raíz por dentro de su silueta, del cuello al ápice, donde es tan
+ * grueso que llena la punta (el conducto de la pulpa, que se dibuja delante, la atraviesa hasta el foramen). Polígono
+ * en U sin agujeros: la superficie de la raíz (vestibular del cuello al ápice y lingual de vuelta) y el borde
+ * interior, que se cierra en el eje donde el cemento ocupa toda la raíz. Va EXAGERADO para que se vea: unos 0,17 mm
+ * en el cuello (el real, 0,02 a 0,05: de 4 a 8 veces más) y 0,56 mm en el ápice (el real, 0,15 a 0,2).
+ */
+export function bandaCemento(pasos = 24): Punto2[] {
+  const alturas = alturasMuestreadas(Y_APICE, Y_CUELLO, pasos);
+  const puntos: Punto2[] = [];
+  for (let i = alturas.length - 1; i >= 0; i--) {
+    puntos.push([Z_ALVEOLO + semianchoRaiz(alturas[i]!), alturas[i]!]);
+  }
+  for (let i = 1; i < alturas.length; i++) {
+    puntos.push([Z_ALVEOLO - semianchoRaiz(alturas[i]!), alturas[i]!]);
+  }
+  // Borde interior: lingual del cuello hacia el ápice, el punto donde se cierra y vestibular de vuelta.
+  const minimo = 0.003;
+  const vestibular: Punto2[] = [];
+  let anterior: { y: number; w: number } | null = null;
+  for (let i = alturas.length - 1; i >= 0; i--) {
+    const y = alturas[i]!;
+    const w = semianchoRaiz(y) - grosorCemento(y);
+    if (w <= minimo) {
+      const yCierre = anterior
+        ? y + ((anterior.y - y) * (minimo - w)) / (anterior.w - w)
+        : Y_CUELLO;
+      puntos.push([Z_ALVEOLO, yCierre]);
+      break;
+    }
+    puntos.push([Z_ALVEOLO - w, y]);
+    vestibular.push([Z_ALVEOLO + w, y]);
+    anterior = { y, w };
+  }
+  puntos.push(...vestibular.reverse());
+  return sinRepetidos(puntos);
+}
+
+/** Fondo del conducto radicular: el foramen apical, a unos 0,08 mm del ápice (fidelidad-12). */
+export const Y_FORAMEN = Y_APICE + 0.01;
+
+/**
+ * Silueta de la pulpa: conducto radicular estrecho, que llega al ápice (el foramen apical, por donde entran los vasos
+ * y los nervios del ligamento; antes se cerraba 1,7 mm antes, en cemento macizo), y cámara pulpar en la corona, a la
+ * altura del cuello.
+ */
 export function siluetaPulpa(): Punto2[] {
   const derecha: Punto2[] = [];
-  const alturas = alturasMuestreadas(Y_APICE + 0.3, Y_CRESTA, 16);
+  const alturas = alturasMuestreadas(Y_APICE + 0.06, Y_CUELLO, 16);
   for (const y of alturas) derecha.push([Z_ALVEOLO + 0.3 * semianchoRaiz(y), y]);
-  derecha.push([Z_ALVEOLO + 0.16, Y_CRESTA + 0.2], [Z_ALVEOLO + 0.09, Y_CRESTA + 0.42]);
-  const puntos: Punto2[] = [[Z_ALVEOLO, Y_APICE + 0.22], ...derecha, [Z_ALVEOLO, Y_CRESTA + 0.47]];
+  derecha.push([Z_ALVEOLO + 0.16, Y_CUELLO + 0.24], [Z_ALVEOLO + 0.09, Y_CUELLO + 0.46]);
+  const puntos: Punto2[] = [[Z_ALVEOLO, Y_FORAMEN], ...derecha, [Z_ALVEOLO, Y_CUELLO + 0.51]];
   for (let i = derecha.length - 1; i >= 0; i--) {
     const [z, y] = derecha[i]!;
     puntos.push([2 * Z_ALVEOLO - z, y]);

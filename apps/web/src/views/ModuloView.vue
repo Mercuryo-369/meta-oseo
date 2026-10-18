@@ -254,6 +254,22 @@ function alIntentarSeccionBloqueada(i: number): void {
       : '');
 }
 
+/** Texto del botón de la flecha en la portada: a qué sección lleva. */
+const textoContinuar = computed(() => {
+  const s = secciones.value[indice.value];
+  if (!s) return 'Ir a la sección';
+  const verbo = indice.value === 0 && estados.value[0] !== 'completada' ? 'Empezar' : 'Continuar';
+  return `${verbo}: ${textoPlanoDeMarkdown(s.titulo)}`;
+});
+
+/** La flecha de la portada lleva al título de la sección que se está leyendo. */
+function alContinuar(): void {
+  const el = tituloSeccion.value;
+  if (!el) return;
+  el.focus({ preventScroll: true });
+  desplazarA(el);
+}
+
 function irAlPrimeroPendiente(): void {
   const primera = pendientes.value[0];
   if (!primera) return;
@@ -404,7 +420,7 @@ onBeforeUnmount(() => {
   <!-- El padding inferior deja el final del contenido por encima de los botones flotantes del menú
        circular y del mentor en móvil (el <main> del shell reserva otro tanto). -->
   <div
-    class="mx-auto w-full max-w-6xl px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:pt-10 md:pb-10"
+    class="mx-auto w-full max-w-[96rem] px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8 md:pt-10 md:pb-10"
     :style="estiloAcento(n)"
     :aria-busy="fase === 'cargando' ? 'true' : undefined"
     :data-modulo="n"
@@ -483,7 +499,20 @@ onBeforeUnmount(() => {
         :avance="avance"
         :puntaje-obtenido="puntajeObtenido"
         :revision="esDocente"
-      />
+        :texto-continuar="textoContinuar"
+        @continuar="alContinuar"
+      >
+        <template #pasos>
+          <NavegacionSecciones
+            :secciones="secciones"
+            :estados="estados"
+            :indice="indice"
+            :numero-modulo="n"
+            @ir="irA"
+            @bloqueada="alIntentarSeccionBloqueada"
+          />
+        </template>
+      </CabeceraModulo>
 
       <p
         v-if="store.errorEnvio"
@@ -495,26 +524,17 @@ onBeforeUnmount(() => {
         <span>{{ store.errorEnvio }}</span>
       </p>
 
-      <div class="mt-8 gap-8 md:grid md:grid-cols-[16rem_minmax(0,1fr)] md:items-start">
-        <div class="mb-6 md:sticky md:top-20 md:mb-0">
-          <NavegacionSecciones
-            :secciones="secciones"
-            :estados="estados"
-            :indice="indice"
-            @ir="irA"
-            @bloqueada="alIntentarSeccionBloqueada"
-          />
-          <p
-            v-if="avisoBloqueo"
-            class="bg-accent text-accent-foreground mt-3 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-            role="status"
-            data-testid="aviso-seccion-bloqueada"
-          >
-            <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <span>{{ avisoBloqueo }}</span>
-          </p>
-        </div>
+      <p
+        v-if="avisoBloqueo"
+        class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+        role="status"
+        data-testid="aviso-seccion-bloqueada"
+      >
+        <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+        <span>{{ avisoBloqueo }}</span>
+      </p>
 
+      <div class="mx-auto mt-8 max-w-4xl">
         <div class="min-w-0">
           <!-- Sección bloqueada: se explica qué falta -->
           <section

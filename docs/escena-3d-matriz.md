@@ -42,14 +42,17 @@ para completar la actividad.
   como en el dibujo plano. Los cristales tienen la proporción de una placa real (unos 50 x 25 x 3 nm) y las
   proteínas son pocas, porque regulan y no forman la masa de la matriz.
 - **Piezas repetidas en `InstancedMesh`**: fibras de las laminillas, moléculas, fibrillas vecinas, huecos,
-  cristales, proteínas y flechas (color por instancia para los dos tonos de fila, las tres proteínas y los dos
+  cristales, proteínas y flechas (las ocho laminillas del fragmento, desde 2026-10-17, son dos mallas fusionadas, una
+  por tono) (color por instancia para los dos tonos de fila, las tres proteínas y los dos
   tipos de flecha). Las fibras de cada laminilla se recortan a su huella (Liang-Barsky) para que ninguna
   sobresalga.
 - **La cámara es la de la BMU** (`bmu/CamaraBmu.vue`) con la prop `resolverVista` y las vistas de esta
   escena (`matriz/vistas.ts`). Un dedo gira, dos acercan, sin paneo.
-- **Colores** (`paleta.ts`): los del grupo correspondiente del SVG (`fragmento_hueso`, `fibrilla_colageno`,
-  `zonas_hueco` celeste, `cristales_hidroxiapatita` crema, los tres de `proteinas_no_colagenas`,
-  `fuerza_traccion` naranja y `fuerza_compresion` azul) y el rosa del hueso de la BMU.
+- **Colores** (`paleta.ts`): `HEX` guarda los del grupo correspondiente del SVG (`fragmento_hueso`,
+  `fibrilla_colageno`, `zonas_hueco` celeste, `cristales_hidroxiapatita` crema, los tres de
+  `proteinas_no_colagenas`, `fuerza_traccion` naranja y `fuerza_compresion` azul); los que se dibujan son los de
+  `NATURAL` (hueso marfil, colágeno blanquecino, cristal casi blanco y los didácticos algo más sobrios; ver
+  «Realismo» y «Revisión de diseño (2026-10-17)»).
 
 ## 3. Límites y honestidad
 
@@ -64,8 +67,9 @@ para completar la actividad.
   principal del hueso es axial. El estiramiento bajo tracción (5 %) es un gesto didáctico, no una deformación
   real (la del colágeno óseo es de un orden de magnitud menor).
 - **Sin revisión del docente** del texto de los pasos ni de la forma de las estructuras.
-- **Sin medir en un teléfono real.** Presupuesto comprobado por pruebas en memoria: menos de 8 600 triángulos
-  y 6 llamadas de dibujo en el peor instante (t = 0,875). La escena pesa 16 kB (6,2 kB gzip); three va en el
+- **Sin medir en un teléfono real.** Presupuesto comprobado por pruebas en memoria: unos 8 600 triángulos y 6
+  llamadas de dibujo en el peor instante (t ≈ 0,9); contando la doble pasada de las transparencias de doble cara,
+  unos 12 900 y 9 (el fundido de las laminillas a la fibrilla); topes de 40 000 y 40. La escena pesa 16 kB (6,2 kB gzip); three va en el
   chunk `webgl` compartido con las otras escenas.
 - Verificada en Chrome con WebGL, con emulación táctil de 390 × 844 px (`t` = 0; 0,17; 0,34; 0,5; 0,64;
   0,78 y 1) y a 1280 × 800 px (`t` = 0,34 y 1). No se probó el pellizco ni el giro con el dedo, ni la línea de
@@ -85,3 +89,44 @@ para completar la actividad.
 | Pruebas | `.../matriz/estado.test.ts`, `disposicion.test.ts`, `geometria.test.ts` |
 | Registro y catálogo | `scenes/procedural/registro.ts`, `content/nodos3d.ts` |
 | Contenido | `modules/m1_conociendo_el_hueso/content.json`, actividad `m1_3_matriz_3d` |
+
+## Realismo (2026-10-14)
+
+Segunda escena de la mejora de realismo «paso por paso» (la primera fue `escena-3d-hueso.md`), con la misma base
+(`scenes/procedural/realismo.ts` y `EntornoRealista.vue`):
+
+- **Paleta natural** propia (`NATURAL` en `matriz/paleta.ts`): fragmento de hueso marfil, colágeno blanquecino y
+  cristal casi blanco. Se mantienen, algo más sobrios, los colores didácticos de los huecos, las tres proteínas
+  no colágenas y las flechas de tracción y compresión. Los textos de los pasos no nombran colores.
+- **Materiales por pieza**: laminillas con relieve de poros; fibras de colágeno con estrías a lo largo y brillo
+  sedoso (tejido nuevo `fibra`); moléculas de tropocolágeno y huecos lisos y satinados (`molecula`); cristales de
+  hidroxiapatita con brillo vítreo (`cristal`); proteínas con el material de célula.
+- **Luz de entorno** y contraluz, como en la escena del hueso.
+
+Geometría y tiempos sin cambios. No se ha visto en pantalla.
+
+## Revisión de diseño (2026-10-17)
+
+Correcciones de una revisión de render, rendimiento, fidelidad y realismo (ids de `.verify/agentes/hallazgos/`):
+
+- **Laminillas del fragmento (realismo-08).** Eran una caja instanciada ocho veces con las UV de 0 a 1 por cara: en
+  la cara frontal, la que se ve primero (paso `fragmento`), el grano iba a 0,94 × 25,4 repeticiones por unidad
+  (27:1), la GPU usaba un mip muy bajo y la cara salía lisa con rayas, y las ocho laminillas tenían el mismo dibujo
+  de poros. Ahora las cajas se colocan y se unen en dos geometrías (una por tono, con los mismos nombres,
+  `laminillas_claras` y `laminillas_oscuras`) con UV en unidades por cara (`uvPorCaras`): repetición 1 por unidad,
+  filtrado anisótropo 4 y cada laminilla con su parte de la textura. Siguen siendo 2 llamadas y 96 triángulos.
+- **Opacidad una vez por fotograma (rendimiento-08).** En la fibrilla, las vecinas, los huecos, los cristales, las
+  proteínas y las flechas recibían la opacidad dos veces (sin su factor y con él) y cruzaban el umbral de
+  transparencia dos veces en cada llamada; ahora cada material la recibe una sola vez (`conFactor` aparte).
+- **Paleta unificada** (`NATURAL`): las laminillas toman las dos tintas de marfil de las láminas de la escena del
+  hueso y de la BMU (`#eadfc8` y `#d8c6a3`; antes `#efe4cf` y `#dccaa7`). El cristal no cambia (lo usa también la
+  escena de la vesícula); los colores didácticos (huecos, proteínas, flechas, resalte) tampoco.
+- **Pruebas:** el presupuesto de la escena cuenta también la doble pasada; pruebas nuevas de las UV de las
+  laminillas y de que cada material cambie de versión como mucho una vez por fotograma. Higiene: alias local `COLOR`
+  en `mallas.ts` (rendimiento-16) y sin un `Vector3` nuevo por fotograma en las flechas.
+
+Presupuesto en el peor instante, antes y después: unos 8 600 triángulos y 6 llamadas; 12 880 y 9 con la doble
+pasada; como mucho 4 llamadas en el pase de sombras. Ningún texto cambia.
+
+No se ha visto en pantalla. Conviene mirar la cara frontal del fragmento en el paso `fragmento` (el grano y que las
+laminillas se distingan entre sí) y el contraste de las dos tintas de marfil.

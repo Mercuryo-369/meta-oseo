@@ -5,7 +5,7 @@ se forma, se mineraliza, se renueva y envejece) con la mandíbula como ejemplo. 
 
 > **Estado, sin adornos.** Es una **primera entrega en borrador** (versión 0.1.0). El contenido pedagógico lo
 > redactamos nosotros y **nadie lo ha validado**; el mentor de IA nunca se ha probado con una clave real; nada se ha
-> probado en un teléfono real; Docker nunca se ha construido; no hay videos reales. Todo el detalle está en
+> probado en un teléfono real; Docker solo se ha probado en local (2026-10-14), no en un servidor; no hay videos reales. Todo el detalle está en
 > [docs/entrega.md](docs/entrega.md).
 
 ## Qué incluye

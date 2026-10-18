@@ -16,7 +16,8 @@ import {
   TorusGeometry,
 } from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { FRACCION_POLAR_CUPULA } from './estado';
+import { acotar, suave } from '../interpolacion';
+import { BASE_CUPULA, FRACCION_POLAR_CUPULA } from './estado';
 
 export type Mitad = 'trasera' | 'delantera';
 
@@ -46,7 +47,8 @@ export function mediaCupula(mitad: Mitad, segmentos = 22): SphereGeometry {
 
 /**
  * Tapa de la sección de la cúpula: el segmento circular que queda al cortar la esfera unidad por z = 0 (el
- * arco por encima del borde inferior de la cúpula más la cuerda). Abanico desde el centro; mira a +Z.
+ * arco por encima del borde inferior de la cúpula más la cuerda). Abanico desde el centro; mira a +Z. Lleva UV
+ * planas (x e y de -1..1 a 0..1) para el relieve del material.
  */
 export function tapaCupula(segmentos = 28): BufferGeometry {
   // El borde inferior de la cúpula (y = cos(0,6·π)) corresponde al ángulo -(0,6 - 0,5)·π sobre la circunferencia.
@@ -54,10 +56,12 @@ export function tapaCupula(segmentos = 28): BufferGeometry {
   const fin = Math.PI - inicio;
   const posiciones: number[] = [0, 0, 0];
   const normales: number[] = [0, 0, 1];
+  const uv: number[] = [0.5, 0.5];
   for (let i = 0; i <= segmentos; i++) {
     const a = inicio + ((fin - inicio) * i) / segmentos;
     posiciones.push(Math.cos(a), Math.sin(a), 0);
     normales.push(0, 0, 1);
+    uv.push((Math.cos(a) + 1) / 2, (Math.sin(a) + 1) / 2);
   }
   const indices: number[] = [];
   for (let i = 1; i <= segmentos; i++) indices.push(0, i, i + 1);
@@ -66,8 +70,71 @@ export function tapaCupula(segmentos = 28): BufferGeometry {
   const g = new BufferGeometry();
   g.setAttribute('position', new Float32BufferAttribute(posiciones, 3));
   g.setAttribute('normal', new Float32BufferAttribute(normales, 3));
+  g.setAttribute('uv', new Float32BufferAttribute(uv, 2));
   g.setIndex(indices);
   return g;
+}
+
+/** Cuánto sobresalen como mucho los lóbulos de la cúpula (fracción del radio). */
+export const AMPLITUD_LOBULOS = 0.05;
+
+/**
+ * Relieve orgánico de la cúpula en el punto (x, y, z) de la esfera unidad: cuánto sale hacia fuera, de 0 a
+ * `AMPLITUD_LOBULOS` del radio. Lóbulos suaves de baja frecuencia (una célula real no es una esfera perfecta) que
+ * solo empujan hacia fuera, para que los núcleos sigan dentro, y que se anulan en el borde inferior, para que la
+ * célula siga apoyada en el anillo de sellado. Función pura y continua: las dos medias cúpulas y la tapa de la
+ * sección la evalúan en los mismos puntos del corte, así que casan.
+ */
+export function lobulosCupula(x: number, y: number, z: number): number {
+  const ondas =
+    0.5 * Math.sin(2.3 * x + 0.7) * Math.cos(1.9 * z - 0.4) +
+    0.3 * Math.sin(3.7 * z + 1.3 * x + 2.1) +
+    0.2 * Math.sin(5.9 * x - 4.1 * z + 2.7 * y + 0.5);
+  const peso = suave(acotar((y - BASE_CUPULA) / 0.4));
+  return AMPLITUD_LOBULOS * peso * (0.5 + 0.5 * ondas);
+}
+
+/**
+ * Empuja cada vértice de una pieza de la esfera unidad (sus posiciones están sobre ella) hasta el radio
+ * 1 + `lobulosCupula`. Con `normales`, las recalcula exactas: en una superficie r(p)·p la normal es
+ * r·p − ∇r tangencial (gradiente por diferencias centrales); `computeVertexNormals` dejaría una costura entre las
+ * dos mitades y una estrella en el polo. `desde` salta vértices (el centro de la tapa).
+ */
+function lobular(g: BufferGeometry, normales: boolean, desde = 0): BufferGeometry {
+  const pos = g.getAttribute('position');
+  const nor = g.getAttribute('normal');
+  const h = 1e-3;
+  for (let i = desde; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    const r = 1 + lobulosCupula(x, y, z);
+    if (normales) {
+      const gx = (lobulosCupula(x + h, y, z) - lobulosCupula(x - h, y, z)) / (2 * h);
+      const gy = (lobulosCupula(x, y + h, z) - lobulosCupula(x, y - h, z)) / (2 * h);
+      const gz = (lobulosCupula(x, y, z + h) - lobulosCupula(x, y, z - h)) / (2 * h);
+      const radial = gx * x + gy * y + gz * z;
+      const nx = r * x - (gx - radial * x);
+      const ny = r * y - (gy - radial * y);
+      const nz = r * z - (gz - radial * z);
+      const largo = Math.hypot(nx, ny, nz) || 1;
+      nor.setXYZ(i, nx / largo, ny / largo, nz / largo);
+    }
+    pos.setXYZ(i, x * r, y * r, z * r);
+  }
+  pos.needsUpdate = true;
+  nor.needsUpdate = true;
+  return g;
+}
+
+/** Media cúpula con lóbulos (`lobulosCupula`): la que dibuja la escena. */
+export function cupulaLobulada(mitad: Mitad, segmentos = 22): BufferGeometry {
+  return lobular(mediaCupula(mitad, segmentos), true);
+}
+
+/** Tapa de la sección con el mismo contorno lobulado que las medias cúpulas (sigue plana, en z = 0). */
+export function tapaLobulada(segmentos = 28): BufferGeometry {
+  return lobular(tapaCupula(segmentos), false, 1);
 }
 
 /**
@@ -164,4 +231,31 @@ export function tubo(radio: number, largo: number, segmentos = 18): CylinderGeom
 /** Esfera unidad de pocos polígonos para instanciar (células pequeñas, núcleos, partículas, pliegues). */
 export function esferaSencilla(anchoSegmentos = 10, altoSegmentos = 7): SphereGeometry {
   return new SphereGeometry(1, anchoSegmentos, altoSegmentos);
+}
+
+/**
+ * UV en unidades de escena: cada vértice se proyecta en el plano de su normal dominante (x-z si mira arriba o
+ * abajo, z-y si mira a los lados en X, x-y si mira en Z) y se divide por `grano`. Así el relieve del material
+ * tiene el mismo tamaño en la superficie del hueso, en la cara de corte y en los lados del bloque, midan lo que
+ * midan (con la repetición de la textura a 1). Escribe el atributo `uv` en su sitio.
+ */
+export function uvPlanar<G extends BufferGeometry>(g: G, grano: number): G {
+  const pos = g.getAttribute('position');
+  const nor = g.getAttribute('normal');
+  const uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i++) {
+    const ax = Math.abs(nor.getX(i));
+    const ay = Math.abs(nor.getY(i));
+    const az = Math.abs(nor.getZ(i));
+    const [u, v] =
+      ay >= ax && ay >= az
+        ? [pos.getX(i), pos.getZ(i)]
+        : ax >= az
+          ? [pos.getZ(i), pos.getY(i)]
+          : [pos.getX(i), pos.getY(i)];
+    uv[i * 2] = u / grano;
+    uv[i * 2 + 1] = v / grano;
+  }
+  g.setAttribute('uv', new BufferAttribute(uv, 2));
+  return g;
 }

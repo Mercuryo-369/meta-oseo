@@ -11,7 +11,8 @@
  * los estados (sin WebGL, error, contexto perdido) son los de la BMU.
  *
  * Rendimiento móvil: DPR entre 1 y 2, `render-mode="on-demand"` (solo se dibuja cuando cambia `t` o la cámara)
- * y piezas fusionadas o instanciadas (unas 24 llamadas de dibujo en el peor instante).
+ * y piezas fusionadas o instanciadas (unas 18 llamadas de dibujo en el peor instante, 19 con la doble pasada de
+ * las transparencias de doble cara).
  */
 import { computed, onMounted, shallowRef, watch } from 'vue';
 import { TresCanvas } from '@tresjs/core';
@@ -24,6 +25,7 @@ import type { EventosEscenaProcedural, PropsEscenaProcedural } from '../registro
 import CamaraBmu from '../bmu/CamaraBmu.vue';
 import { FOV_GRADOS } from '../bmu/vistas';
 import ContenidoFractura from './ContenidoFractura.vue';
+import EntornoRealista from '../EntornoRealista.vue';
 import { estadoDeVistaFractura, vistaAbierta } from './vistas';
 
 const props = defineProps<PropsEscenaProcedural>();
@@ -96,12 +98,14 @@ const abierta = computed(() => vistaAbierta(props.vista));
         @ready="alEstarListo"
         @error="fallar"
       >
-        <!-- La luz principal es hija de la cámara: ilumina siempre lo que se ve, gire como gire. -->
-        <TresPerspectiveCamera :position="posicionInicial" :fov="FOV_GRADOS" :near="0.1" :far="80">
-          <TresDirectionalLight :position-x="3" :position-y="4" :position-z="2" :intensity="3.4" />
-        </TresPerspectiveCamera>
-        <TresAmbientLight color="#ffffff" :intensity="0.55" />
-        <TresHemisphereLight color="#ffffff" ground-color="#a48fbd" :intensity="0.9" />
+        <TresPerspectiveCamera
+          :position="posicionInicial"
+          :fov="FOV_GRADOS"
+          :near="0.1"
+          :far="80"
+        />
+        <!-- Luces, entorno y sombras: el esquema común de iluminacion.ts, que sigue a la cámara. -->
+        <EntornoRealista />
         <CamaraBmu
           :vista="vista"
           :orden="ordenVista"

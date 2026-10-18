@@ -7,7 +7,7 @@ import { createMemoryHistory } from 'vue-router';
 import { RouterView } from 'vue-router';
 import { h } from 'vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
-import MenuCircular from '@/components/MenuCircular.vue';
+import MenuModulos from '@/components/navegacion/MenuModulos.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
 import { crearRouter } from '@/router';
 import { useAuthStore } from '@/stores/auth';
@@ -49,7 +49,7 @@ async function montarApp(ruta: string) {
       // el layout del shell, no su contenido, y sigue valiendo cuando ellos los reescriban.
       global: {
         plugins: [pinia, router],
-        stubs: { MenuCircular: true, HudPuntaje: true, MentorPanel: true },
+        stubs: { MenuModulos: true, HudPuntaje: true, MentorPanel: true },
       },
       attachTo: document.body,
     },
@@ -79,7 +79,7 @@ describe('AppShell', () => {
 
     expect(wrapper.find('header').exists()).toBe(true);
     expect(wrapper.get('header').findComponent(HudPuntaje).exists()).toBe(true);
-    expect(wrapper.findComponent(MenuCircular).exists()).toBe(true);
+    expect(wrapper.findComponent(MenuModulos).exists()).toBe(true);
     expect(wrapper.findComponent(MentorPanel).exists()).toBe(true);
     const main = wrapper.get('main#contenido');
     expect(main.attributes('tabindex')).toBe('-1');
@@ -98,11 +98,14 @@ describe('AppShell', () => {
 
   it('Home lista los 6 módulos con enlaces reales a /modulo/n y marca el completado', async () => {
     const { wrapper } = await montarApp('/');
-    const enlaces = wrapper.findAll('ol a').map((a) => a.attributes('href'));
+    // Las tarjetas de módulo (la portada del inicio repite los seis enlaces como pasos).
+    const enlaces = wrapper
+      .findAll('[data-testid="tarjeta-modulo"] a')
+      .map((a) => a.attributes('href'));
     expect(enlaces).toEqual([1, 2, 3, 4, 5, 6].map((n) => `/modulo/${n}`));
-    const primero = wrapper.findAll('ol li')[0]!;
-    expect(primero.text()).toContain('Completado');
-    expect(wrapper.findAll('ol li')[1]!.text()).not.toContain('Completado');
+    const tarjetas = wrapper.findAll('[data-testid="tarjeta-modulo"]');
+    expect(tarjetas[0]!.text()).toContain('Completado');
+    expect(tarjetas[1]!.text()).not.toContain('Completado');
     expect(wrapper.text()).toContain('1 de 6 completados');
     wrapper.unmount();
   });

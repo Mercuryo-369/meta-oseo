@@ -4,15 +4,30 @@
  * de recursos y visibilidad por fase.
  */
 import { describe, expect, it } from 'vitest';
-import type { BufferGeometry, Group, Mesh, Object3D } from 'three';
+import { DoubleSide } from 'three';
+import type { BufferGeometry, Group, InstancedMesh, Material, Mesh, Object3D } from 'three';
 import { HITOS_OSTEOBLASTO, DESTINOS, CELULA_FOCO, estadoOsteoblasto } from './estado';
-import { caja, cuerpoCelular, disco, esfera, tubo } from './geometria';
+import {
+  caja,
+  cajaEnEscala,
+  cisterna,
+  cuerpoCelular,
+  disco,
+  esfera,
+  ribosoma,
+  tubo,
+} from './geometria';
 import { FilaCelular, SuperficieOsea, formaDeCelula } from './mallas';
 import type { PiezaOsteoblasto } from './mallas';
 
 const TIEMPOS = Array.from({ length: 41 }, (_, i) => i / 40);
-/** Presupuesto de la escena completa en el peor instante. */
-const PRESUPUESTO = { triangulos: 40_000, llamadas: 40 } as const;
+/** Presupuesto de la escena completa en el peor instante (pase principal y pase de sombras). */
+const PRESUPUESTO = {
+  triangulos: 40_000,
+  llamadas: 40,
+  triangulosSombra: 40_000,
+  llamadasSombra: 40,
+} as const;
 
 function sinNaN(datos: ArrayLike<number>): boolean {
   for (let i = 0; i < datos.length; i++) if (!Number.isFinite(datos[i]!)) return false;
@@ -37,23 +52,41 @@ function esVisible(o: Object3D): boolean {
   return true;
 }
 
-/** Triángulos dibujados y llamadas de dibujo (objetos con geometría visibles; las instancias cuentan todas). */
-function medir(grupos: readonly Group[]): { triangulos: number; llamadas: number } {
-  let triangulos = 0;
-  let llamadas = 0;
+interface Dibujo {
+  llamadas: number;
+  triangulos: number;
+  llamadasSombra: number;
+  triangulosSombra: number;
+}
+
+/**
+ * Lo que se dibuja de verdad (revisión de diseño, 2026-10-17): una llamada por objeto visible (mallas y líneas) y
+ * dos si su material es transparente y de doble cara sin `forceSinglePass` (three lo parte en dos pasadas, cara
+ * de atrás y cara de delante); los triángulos de cada malla por TODAS sus instancias (las ocultas, de matriz
+ * nula, también pasan por la GPU) y por sus pasadas. Las líneas no suman triángulos. Aparte, el pase de sombras:
+ * las mallas que las proyectan según la regla de `EntornoRealista` (opacas o con opacidad > 0,9 y sin
+ * `userData.sinSombra`).
+ */
+function medir(grupos: readonly Group[]): Dibujo {
+  const d: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
   for (const grupo of grupos) {
     grupo.traverse((o) => {
       const g = (o as Mesh).geometry as BufferGeometry | undefined;
       if (!g || !esVisible(o)) return;
-      llamadas++;
+      const m = (o as Mesh).material as Material;
+      const pasadas = m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+      d.llamadas += pasadas;
+      if (!(o as Mesh).isMesh) return;
       const porInstancia = (g.getIndex()?.count ?? g.getAttribute('position').count) / 3;
-      const instancias = (o as { isInstancedMesh?: boolean; count?: number }).isInstancedMesh
-        ? ((o as { count?: number }).count ?? 1)
-        : 1;
-      triangulos += porInstancia * instancias;
+      const instancias = (o as InstancedMesh).isInstancedMesh ? (o as InstancedMesh).count : 1;
+      d.triangulos += porInstancia * instancias * pasadas;
+      if (!o.userData.sinSombra && (!m.transparent || m.opacity > 0.9)) {
+        d.llamadasSombra++;
+        d.triangulosSombra += porInstancia * instancias;
+      }
     });
   }
-  return { triangulos, llamadas };
+  return d;
 }
 
 function buscar(grupo: Group, nombre: string): Object3D {
@@ -69,9 +102,15 @@ describe('formas básicas', () => {
     ['esfera', () => esfera()],
     ['tubo', () => tubo(0.2, 8)],
     ['disco', () => disco()],
-  ])('%s es válida, sin NaN y con índices dentro de rango', (_, crear) => {
+    ['cajaEnEscala', () => cajaEnEscala([8, 1.5, 3], true)],
+    ['cisterna', () => cisterna()],
+    ['ribosoma', () => ribosoma()],
+  ])('%s es válida, sin NaN, con UV y con índices dentro de rango', (_, crear) => {
     const g = crear();
     expect(sinNaN(g.getAttribute('position').array)).toBe(true);
+    // El relieve de los materiales orgánicos necesita UV.
+    expect(g.getAttribute('uv')?.count).toBe(g.getAttribute('position').count);
+    expect(sinNaN(g.getAttribute('uv').array)).toBe(true);
     const indices = g.getIndex()?.array;
     if (indices) {
       const vertices = g.getAttribute('position').count;
@@ -89,6 +128,25 @@ describe('formas básicas', () => {
     t.computeBoundingBox();
     expect(t.boundingBox!.max.x).toBeCloseTo(4, 5);
     expect(t.boundingBox!.max.y).toBeCloseTo(0.2, 1);
+  });
+
+  it('las UV de cajaEnEscala van en unidades de escena: la cara de 8 de ancho recorre 8 en U', () => {
+    const g = cajaEnEscala([8, 1.5, 3]);
+    const uv = g.getAttribute('uv');
+    const normal = g.getAttribute('normal');
+    let minU = Infinity;
+    let maxU = -Infinity;
+    for (let i = 0; i < uv.count; i++) {
+      if (normal.getZ(i) < 0.9) continue; // cara de corte (+Z)
+      minU = Math.min(minU, uv.getX(i));
+      maxU = Math.max(maxU, uv.getX(i));
+    }
+    expect(maxU - minU).toBeCloseTo(8, 5);
+    // Girada, la U recorre el alto y la V el ancho (vetas a lo largo de X).
+    const girada = cajaEnEscala([8, 1.5, 3], true).getAttribute('uv');
+    let maxV = -Infinity;
+    for (let i = 0; i < girada.count; i++) maxV = Math.max(maxV, girada.getY(i));
+    expect(maxV).toBeCloseTo(4, 5);
   });
 });
 
@@ -184,23 +242,63 @@ describe.each<[string, () => PiezaOsteoblasto]>([
 });
 
 describe('presupuesto de la escena completa', () => {
-  it('cabe en el presupuesto de triángulos y de llamadas de dibujo en el peor instante', () => {
+  it('cabe en el presupuesto de triángulos y de llamadas de dibujo en el peor instante (con sombras)', () => {
     const superficie = new SuperficieOsea();
     const fila = new FilaCelular();
-    let peor = { triangulos: 0, llamadas: 0 };
+    const peor: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
+    // Más fino que TIEMPOS: los desvanecidos duran poco.
+    for (let i = 0; i <= 200; i++) {
+      const e = estadoOsteoblasto(i / 200);
+      superficie.actualizar(e);
+      fila.actualizar(e);
+      const m = medir([superficie.grupo, fila.grupo]);
+      for (const k of Object.keys(peor) as (keyof Dibujo)[]) peor[k] = Math.max(peor[k], m[k]);
+    }
+    expect(peor.triangulos).toBeGreaterThan(1000);
+    for (const k of Object.keys(peor) as (keyof Dibujo)[]) {
+      expect(peor[k], k).toBeLessThan(PRESUPUESTO[k]);
+    }
+    superficie.liberar();
+    fila.liberar();
+  });
+
+  it('nada se dibuja en dos pasadas: las piezas que se desvanecen son de una cara', () => {
+    const superficie = new SuperficieOsea();
+    const fila = new FilaCelular();
+    for (let i = 0; i <= 200; i++) {
+      const e = estadoOsteoblasto(i / 200);
+      superficie.actualizar(e);
+      fila.actualizar(e);
+      for (const grupo of [superficie.grupo, fila.grupo]) {
+        grupo.traverse((o) => {
+          const m = (o as Mesh).material as Material | undefined;
+          if (!m || !esVisible(o)) return;
+          expect(m.transparent && m.side === DoubleSide, `t = ${i / 200}, ${o.name}`).toBe(false);
+        });
+      }
+    }
+    superficie.liberar();
+    fila.liberar();
+  });
+
+  it('nada emite luz propia (el frente de mineralización es la línea oscura)', () => {
+    const superficie = new SuperficieOsea();
+    const fila = new FilaCelular();
     for (const t of TIEMPOS) {
       const e = estadoOsteoblasto(t);
       superficie.actualizar(e);
       fila.actualizar(e);
-      const m = medir([superficie.grupo, fila.grupo]);
-      peor = {
-        triangulos: Math.max(peor.triangulos, m.triangulos),
-        llamadas: Math.max(peor.llamadas, m.llamadas),
-      };
+      for (const grupo of [superficie.grupo, fila.grupo]) {
+        grupo.traverse((o) => {
+          const m = (o as Mesh).material as {
+            emissiveIntensity?: number;
+            emissive?: { getHex(): number };
+          };
+          if (!m?.emissive) return;
+          expect(m.emissive.getHex() === 0 || m.emissiveIntensity === 0, o.name).toBe(true);
+        });
+      }
     }
-    expect(peor.triangulos).toBeGreaterThan(1000);
-    expect(peor.triangulos).toBeLessThan(PRESUPUESTO.triangulos);
-    expect(peor.llamadas).toBeLessThan(PRESUPUESTO.llamadas);
     superficie.liberar();
     fila.liberar();
   });
@@ -224,12 +322,14 @@ describe('visibilidad por fase', () => {
     expect(buscar(superficie.grupo, 'osteoide').visible).toBe(true);
     expect(buscar(superficie.grupo, 'corte_laguna').visible).toBe(false);
     expect(buscar(fila.grupo, 'reticulo_y_golgi').visible).toBe(false);
+    expect(buscar(fila.grupo, 'ribosomas').visible).toBe(false);
     expect(buscar(fila.grupo, 'cuerpos_apoptoticos').visible).toBe(false);
   });
 
-  it('organulos: retículo, Golgi y mitocondrias a la vista dentro de la protagonista', () => {
+  it('organulos: retículo con ribosomas, Golgi y mitocondrias a la vista dentro de la protagonista', () => {
     poner(HITOS_OSTEOBLASTO.organulos);
     expect(buscar(fila.grupo, 'reticulo_y_golgi').visible).toBe(true);
+    expect(buscar(fila.grupo, 'ribosomas').visible).toBe(true);
     expect(buscar(fila.grupo, 'mitocondrias_y_vesiculas').visible).toBe(true);
     for (let k = 0; k < 5; k++) expect(buscar(fila.grupo, `celula_${k}`).visible).toBe(true);
   });

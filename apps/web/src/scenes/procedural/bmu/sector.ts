@@ -16,8 +16,3 @@ export const SECTOR_FIN = 370 * GRADOS;
 export function anguloDeFraccion(u: number): number {
   return SECTOR_INICIO + u * (SECTOR_FIN - SECTOR_INICIO);
 }
-
-/** Punto (x, y, z) en coordenadas cilíndricas (x, r, fi). */
-export function puntoCilindrico(x: number, r: number, fi: number): [number, number, number] {
-  return [x, r * Math.cos(fi), r * Math.sin(fi)];
-}

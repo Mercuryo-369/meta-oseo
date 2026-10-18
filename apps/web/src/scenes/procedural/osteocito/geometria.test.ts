@@ -1,13 +1,14 @@
 /**
  * Pruebas de las formas de la escena del osteocito sin WebGL (three crea las geometrías en memoria): geometrías
- * válidas, sin NaN en todo el recorrido del tiempo, presupuesto de triángulos (CONTANDO las instancias) y de
- * llamadas de dibujo, liberación de recursos y visibilidad por fase.
+ * válidas, sin NaN en todo el recorrido del tiempo, presupuesto de lo que se dibuja de verdad (todas las
+ * instancias, la doble pasada de los transparentes de doble cara y el pase de sombras), liberación de recursos,
+ * visibilidad por fase y sombras y orden de dibujo.
  */
 import { describe, expect, it } from 'vitest';
-import type { BufferGeometry, Group, Mesh } from 'three';
-import { InstancedMesh, Matrix4, Vector3 } from 'three';
+import type { BufferGeometry, Group, Material, Mesh, Object3D } from 'three';
+import { DoubleSide, InstancedMesh, Matrix4, Vector3 } from 'three';
 import { HITOS_OSTEOCITO, estadoOsteocito } from './estado';
-import { esfera, flecha, tramo, tuboEnZ } from './geometria';
+import { cajaEnEscala, celulaDesdeBase, esfera, flecha, tramo, tuboEnZ } from './geometria';
 import { BloqueMatriz, Dinamica, RedCelular, Superficie, crearPiezas } from './mallas';
 import type { PiezaOsteocito } from './mallas';
 
@@ -34,13 +35,45 @@ function triangulosDe(g: BufferGeometry): number {
   return (g.getIndex()?.count ?? g.getAttribute('position').count) / 3;
 }
 
-/** Triángulos dibujados en el estado actual: los de cada malla, por el número de instancias visibles. */
-function triangulos(grupo: Group): number {
-  return mallasDe(grupo).reduce((suma, m) => {
-    const base = triangulosDe(m.geometry as BufferGeometry);
-    if (m instanceof InstancedMesh) return suma + base * instanciasVisibles(m);
-    return suma + base;
-  }, 0);
+function esVisible(o: Object3D): boolean {
+  for (let p: Object3D | null = o; p; p = p.parent) if (!p.visible) return false;
+  return true;
+}
+
+interface Dibujo {
+  llamadas: number;
+  triangulos: number;
+  llamadasSombra: number;
+  triangulosSombra: number;
+}
+
+/**
+ * Lo que se dibuja de verdad (revisión de diseño, 2026-10-17): una llamada por objeto visible (mallas y líneas) y
+ * dos si su material es transparente y de doble cara sin `forceSinglePass` (three lo parte en dos pasadas); los
+ * triángulos de cada malla por TODAS sus instancias (las ocultas, de matriz nula, también pasan por la GPU) y por
+ * sus pasadas. Antes se contaban solo las instancias a la vista y una pasada (35 987 en el peor instante; con
+ * este criterio eran 41 682). Las líneas no suman triángulos. Aparte, el pase de sombras: las mallas que las
+ * proyectan según la regla de `EntornoRealista` (opacas o con opacidad > 0,9 y sin `userData.sinSombra`).
+ */
+function medirDibujo(grupos: readonly Group[]): Dibujo {
+  const d: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
+  for (const grupo of grupos) {
+    grupo.traverse((o) => {
+      const g = (o as Mesh).geometry as BufferGeometry | undefined;
+      if (!g || !esVisible(o)) return;
+      const m = (o as Mesh).material as Material;
+      const pasadas = m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+      d.llamadas += pasadas;
+      if (!(o as Mesh).isMesh) return;
+      const tri = triangulosDe(g) * (o instanceof InstancedMesh ? o.count : 1);
+      d.triangulos += tri * pasadas;
+      if (!o.userData.sinSombra && (!m.transparent || m.opacity > 0.9)) {
+        d.llamadasSombra++;
+        d.triangulosSombra += tri;
+      }
+    });
+  }
+  return d;
 }
 
 const aux = new Matrix4();
@@ -53,13 +86,6 @@ function instanciasVisibles(m: InstancedMesh): number {
     if (escala.x > 1e-6 || escala.y > 1e-6 || escala.z > 1e-6) n++;
   }
   return n;
-}
-
-function llamadasDeDibujo(grupo: Group): number {
-  return mallasDe(grupo).filter((m) => {
-    if (m instanceof InstancedMesh) return instanciasVisibles(m) > 0;
-    return true;
-  }).length;
 }
 
 describe('formas básicas', () => {
@@ -81,6 +107,41 @@ describe('formas básicas', () => {
     expect(t.boundingBox!.max.z).toBeCloseTo(1, 6);
     expect(t.boundingBox!.max.x).toBeCloseTo(0.4, 6);
     for (const g of [f, t, esfera()]) expect(sinNaN(g.getAttribute('position').array)).toBe(true);
+  });
+
+  it('la célula de la superficie crece desde su base, de y = 0 a y = 1, con aristas redondeadas', () => {
+    const g = celulaDesdeBase();
+    g.computeBoundingBox();
+    expect(g.boundingBox!.min.y).toBeCloseTo(0, 6);
+    expect(g.boundingBox!.max.y).toBeCloseTo(1, 6);
+    expect(g.boundingBox!.max.x).toBeCloseTo(0.5, 6);
+    // Redondeada: más vértices que una caja de 24.
+    expect(g.getAttribute('position').count).toBeGreaterThan(24);
+  });
+
+  it('todas las formas llevan UV (el relieve de los materiales la necesita) y sin NaN', () => {
+    for (const g of [
+      tramo(),
+      esfera(),
+      celulaDesdeBase(),
+      flecha(),
+      tuboEnZ(0.4, 2),
+      cajaEnEscala(7.4, 5, 2.2),
+    ]) {
+      expect(g.getAttribute('uv')?.count).toBe(g.getAttribute('position').count);
+      expect(sinNaN(g.getAttribute('uv').array)).toBe(true);
+    }
+  });
+
+  it('las UV de cajaEnEscala van en unidades de escena: la cara de 7,4 de ancho recorre 7,4 en U', () => {
+    const uv = cajaEnEscala(7.4, 5, 2.2).getAttribute('uv');
+    let minU = Infinity;
+    let maxU = -Infinity;
+    for (let i = 0; i < uv.count; i++) {
+      minU = Math.min(minU, uv.getX(i));
+      maxU = Math.max(maxU, uv.getX(i));
+    }
+    expect(maxU - minU).toBeCloseTo(7.4, 5);
   });
 });
 
@@ -131,22 +192,101 @@ describe.each<[string, () => PiezaOsteocito]>([
 });
 
 describe('presupuesto de la escena completa', () => {
-  it('menos de 40 000 triángulos y de 40 llamadas de dibujo en el peor instante', () => {
+  it('menos de 40 000 triángulos y de 40 llamadas en el peor instante, también en las sombras', () => {
     const piezas = crearPiezas();
-    let peorTriangulos = 0;
-    let peorLlamadas = 0;
+    const peor: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
+    for (let i = 0; i <= 200; i++) {
+      const e = estadoOsteocito(i / 200);
+      for (const p of piezas) p.actualizar(e);
+      const m = medirDibujo(piezas.map((p) => p.grupo));
+      for (const k of Object.keys(peor) as (keyof Dibujo)[]) peor[k] = Math.max(peor[k], m[k]);
+    }
+    expect(peor.triangulos).toBeGreaterThan(1000);
+    expect(peor.triangulos).toBeLessThan(40_000);
+    expect(peor.llamadas).toBeLessThan(40);
+    expect(peor.triangulosSombra).toBeLessThan(40_000);
+    expect(peor.llamadasSombra).toBeLessThan(40);
+    for (const p of piezas) p.liberar();
+  });
+
+  it('una pieza instanciada sin nada a la vista no se dibuja', () => {
+    const piezas = crearPiezas();
     for (const t of TIEMPOS) {
       const e = estadoOsteocito(t);
       for (const p of piezas) p.actualizar(e);
-      const tri = piezas.reduce((s, p) => s + triangulos(p.grupo), 0);
-      const llamadas = piezas.reduce((s, p) => s + llamadasDeDibujo(p.grupo), 0);
-      peorTriangulos = Math.max(peorTriangulos, tri);
-      peorLlamadas = Math.max(peorLlamadas, llamadas);
+      for (const p of piezas) {
+        for (const m of mallasDe(p.grupo)) {
+          if (m instanceof InstancedMesh && m.visible) {
+            expect(instanciasVisibles(m), `t = ${t}, ${m.name}`).toBeGreaterThan(0);
+          }
+        }
+      }
     }
-    expect(peorTriangulos).toBeGreaterThan(1000);
-    expect(peorTriangulos).toBeLessThan(40_000);
-    expect(peorLlamadas).toBeLessThan(40);
     for (const p of piezas) p.liberar();
+  });
+});
+
+describe('sombras, orden de dibujo y materiales', () => {
+  it('el borde de osteoide no proyecta sombra sobre el interior del bloque', () => {
+    const bloque = new BloqueMatriz();
+    const osteoide = mallasDe(bloque.grupo).find((m) => m.name === 'osteoide_superficie')!;
+    expect(osteoide.userData.sinSombra).toBe(true);
+    bloque.liberar();
+  });
+
+  it('el líquido y los pulsos se dibujan después de los canalículos', () => {
+    const red = new RedCelular();
+    const dinamica = new Dinamica(red.red);
+    const canaliculos = mallasDe(red.grupo).find((m) => m.name === 'canaliculos')!;
+    const matCanaliculos = canaliculos.material as Material;
+    expect(matCanaliculos.transparent).toBe(true);
+    // Una sola pasada (tubos finos sin escribir profundidad) y un velo que cambia con el ángulo.
+    expect(matCanaliculos.forceSinglePass).toBe(true);
+    expect(matCanaliculos.userData.velo).toBeDefined();
+    for (const nombre of ['liquido_intersticial', 'pulsos_senal']) {
+      const m = mallasDe(dinamica.grupo).find((x) => x.name === nombre)!;
+      const mat = m.material as Material;
+      // three dibuja lo opaco antes que lo transparente: solo así cuenta el renderOrder frente a los canalículos.
+      expect(mat.transparent, nombre).toBe(true);
+      expect(mat.opacity, nombre).toBe(1);
+      expect(mat.depthWrite, nombre).toBe(true);
+      expect(mat.side, nombre).not.toBe(DoubleSide);
+      expect(m.renderOrder, nombre).toBeGreaterThan(canaliculos.renderOrder);
+    }
+    red.liberar();
+    dinamica.liberar();
+  });
+
+  it('solo emiten luz las señales (líquido, sensores y pulsos), no el capilar ni las uniones', () => {
+    const piezas = crearPiezas();
+    for (const p of piezas) p.actualizar(estadoOsteocito(HITOS_OSTEOCITO.senal));
+    const emisivas = piezas
+      .flatMap((p) => mallasDe(p.grupo))
+      .filter((m) => {
+        const mat = m.material as { emissive?: { getHex(): number }; emissiveIntensity?: number };
+        return !!mat.emissive && mat.emissive.getHex() !== 0 && (mat.emissiveIntensity ?? 0) > 0;
+      })
+      .map((m) => m.name)
+      .sort();
+    expect(emisivas).toEqual([
+      'cilio_primario',
+      'integrinas',
+      'liquido_intersticial',
+      'pulsos_senal',
+    ]);
+    for (const p of piezas) p.liberar();
+  });
+
+  it('las instancias ocultas no dejan la esfera envolvente en NaN', () => {
+    const red = new RedCelular();
+    red.actualizar(estadoOsteocito(HITOS_OSTEOCITO.laguna));
+    for (const m of mallasDe(red.grupo)) {
+      if (!(m instanceof InstancedMesh)) continue;
+      m.computeBoundingSphere();
+      const c = m.boundingSphere!.center;
+      expect(Number.isFinite(c.x + c.y + c.z), m.name).toBe(true);
+    }
+    red.liberar();
   });
 });
 

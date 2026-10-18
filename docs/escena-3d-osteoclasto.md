@@ -53,9 +53,9 @@ para completar la actividad.
   célula que crece, para que se vean como bultos que se absorben y no desaparezcan dentro.
 - **La cámara es la de la BMU** (`bmu/CamaraBmu.vue`) con la prop `resolverVista` y las vistas de
   `osteoclasto/vistas.ts`. En un lienzo estrecho la cámara se aleja sola (`estadoDeEsferica`).
-- **Colores:** los del dibujo `m2_osteoclasto_resorcion.svg` (núcleos `#3b2f86`, zona clara `#f1ecfb`, H+
-  `#f2745e`, Cl- `#2fa88c`, catepsina K `#e2a12e`) y de la BMU para el hueso, el capilar, el precursor y el
-  citoplasma, para que cada estructura se reconozca del dibujo a la escena.
+- **Colores:** las familias de color del dibujo `m2_osteoclasto_resorcion.svg` (`HEX` de `osteoclasto/paleta.ts`) y
+  de la BMU, para que cada estructura se reconozca del dibujo a la escena. Lo que se dibuja es la paleta natural
+  (`NATURAL` del mismo archivo; ver «Realismo» y «Revisión de diseño», abajo).
 
 ## 3. Límites y honestidad
 
@@ -82,8 +82,8 @@ para completar la actividad.
   relativa de las fases, y que las células de inversión lleguen después de la apoptosis (en la BMU real se
   solapan).
 - **Sin medir en un teléfono real.** Presupuesto medido por prueba en el peor instante (`t` = 0,43, durante el
-  corte, con las dos mitades a la vista): 16 217 triángulos y 15 llamadas de dibujo (tope: 40 000 y 40). three
-  va en el chunk `webgl` compartido.
+  corte, con las dos mitades a la vista): 17 697 triángulos y 15 llamadas de dibujo (tope: 40 000 y 40), más
+  como mucho 10 llamadas en el pase de sombras. three va en el chunk `webgl` compartido.
 - Verificada en Chrome con WebGL y emulación táctil de 390 × 844 px (`t` = 0; 0,16; 0,32; 0,48; 0,64; 0,8 y 1
   en vista automática, más las vistas `celula`, `borde` y `laguna` en sus hitos) y a 1280 × 800 px (`t` = 0,48 y
   1); capturas en `.verify/osteoclasto/`. No se probó el pellizco ni el giro con el dedo, ni la reproducción
@@ -104,3 +104,73 @@ para completar la actividad.
 | Registro y catálogo | `scenes/procedural/registro.ts`, `content/nodos3d.ts` |
 | Contenido | `modules/m2_descubriendo_sus_celulas/content.json`, actividad `m2_4_osteoclasto_3d` |
 | Dibujo hermano en 2D | `public/images/m2/m2_osteoclasto_resorcion.svg`, actividad `m2_multicapa_osteoclasto` |
+
+## Realismo (2026-10-14)
+
+Mejora de realismo con la base compartida (`scenes/procedural/realismo.ts` y `EntornoRealista.vue`), la misma de
+[escena-3d-hueso.md](escena-3d-hueso.md) y [escena-3d-matriz.md](escena-3d-matriz.md):
+
+- **Paleta natural** propia (`NATURAL` en `osteoclasto/paleta.ts`, que tiene los valores vigentes; `HEX` no
+  cambia): el hueso fresco es marfil (no el rosa de la tinción), la cara de corte un punto más clara y el fondo de
+  la laguna de Howship pardo, más oscuro, como dice el texto. Células en tonos suaves: citoplasma lila, precursores
+  lila pálido (desde el 2026-10-17; antes morados), núcleos índigo, pliegues violeta y zona clara casi blanca. Se
+  mantienen, algo más sobrios, los colores que nombran los textos: H+ naranja, Cl- verde, catepsina K ámbar, calcio
+  claro, fosfato azul, CTX rosa y capilar rojo. El texto alternativo de la actividad ya dice «un bloque de hueso
+  marfil».
+- **Color por vértice y por instancia con base blanca**: la superficie del hueso y las células mononucleares
+  multiplicaban el color del material por el de cada vértice o instancia (salían más oscuras de lo previsto);
+  ahora se ve el color de la paleta.
+- **Tejido de cada pieza**: superficie, cara de corte y lados del bloque `hueso` (relieve de poros con UV en
+  unidades de escena, una repetición cada 1,6 unidades: a esta escala recuerdan las bocas de los canalículos y miden
+  lo mismo en todas las caras); capilar `vaso`; citoplasma, zona clara, cuerpos apoptóticos y células mononucleares
+  `celula`; núcleos `nucleo`; pliegues del borde festoneado `organulo`; partículas `molecula`. Se conservan las
+  opacidades y los materiales de una sola cara (las cúpulas translúcidas se ven mejor sin sus caras interiores).
+  Los brillos propios (emisivos) se quitaron o se tiñeron el 2026-10-17 (ver abajo). La tapa de la sección lleva
+  ahora UV.
+- **Forma**: la cúpula tiene lóbulos suaves (`lobulosCupula`: hasta un 5 % del radio, solo hacia fuera y nulos en
+  el borde, para que la célula siga sobre el anillo y los núcleos dentro; normales exactas, sin costura entre las
+  dos mitades ni estrella en el polo; la tapa de la sección sigue el mismo contorno). Núcleos ovalados y algo
+  aplanados; precursores y células de inversión de 12 × 8 lados (antes 10 × 7) y un poco ovalados; pliegues de
+  10 × 7 (antes 8 × 6); cuerpos apoptóticos con su propia esfera de 12 × 8; capilar de 28 lados (antes 18);
+  partículas de tamaño según lo que son (protón y calcio menores; catepsina K y CTX mayores). Posiciones, tiempos,
+  hitos, vistas y nombres, sin cambios.
+- **Luces**: el bloque de la escena del hueso (principal 2,6, contraluz frío 1,1, ambiental 0,18, hemisférica
+  cálida 0,45) y la luz de entorno con sombras suaves. Desde el 2026-10-15 la escena no lleva luces propias: las
+  pone el esquema común de `iluminacion.ts` (`EntornoRealista.vue`).
+- **Presupuesto** (sustituye a las cifras de la sección 3): en el peor instante (`t` ≈ 0,43, durante el corte)
+  17 697 triángulos (antes 16 217) y 15 llamadas de dibujo (sin cambios; no se añadió ninguna malla); tope 40 000
+  y 40. En los 41 instantes de las pruebas, 15 423 (antes 13 943); por pieza: bloque 7 328, célula 7 767,
+  mononucleares 3 696 (su tope de prueba pasa de 3 000 a 4 000) y partículas 5 280.
+
+No se ha visto en pantalla (el usuario prueba en local).
+
+## Revisión de diseño (2026-10-17)
+
+Correcciones de la revisión de diseño y realismo, con el hallazgo de cada una:
+
+- **Emisivos (realismo-03).** Fuera los del capilar (#7a2a24 × 0,35: la sangre no da luz), la zona clara (su propio
+  color × 0,25: sumaba casi un cuarto de blanco y parecía un aro de neón), los núcleos (× 0,3) y los pliegues del
+  borde festoneado (× 0,2): con la luz común ya tienen volumen sin brillar por dentro.
+- **Partículas desteñidas (render-09).** Su emisivo era blanco × 0,18, y three lo suma igual a todas las instancias
+  (no lo multiplica por el color de cada una): cada color subía hacia el blanco, el Cl- verde salía verde menta, el
+  fosfato azul celeste y el H+ naranja, salmón. Se conserva el emisivo (sin él se apagarían en la penumbra, dentro
+  de la célula), pero teñido con el color de cada instancia (`inyectar`, de `realismo.ts`: `totalEmissiveRadiance
+  *= vColor.rgb`). El brillo de terciopelo de su material blanco ya es gris desde la base común. La verificación de
+  realismo-03 proponía quitarlo del todo; la de render-09, teñirlo: se aplica esta, que conserva los colores que
+  nombra el texto también en la penumbra.
+- **Paleta unificada entre escenas (fidelidad-06).** En `NATURAL`: hueso `#e6d8bc` y cara de corte `#eadfc8` (los
+  dos extremos del marfil del hueso maduro; antes `#e8dbc3` y `#efe5d1`, casi el blanco del hueso nuevo), fondo de
+  la laguna `#b4956f` (el de la pared reabsorbida de la BMU; antes `#b1906f`), osteoclasto `#b893cf` (antes
+  `#bfa2cd`), núcleos `#4b408f` (antes `#40357f`), capilar `#c9473e` (el vaso; antes `#d9574a`) y precursores
+  `#cbb7da` (la versión pálida del osteoclasto, la misma de la BMU; antes `#ab8dc3`, más oscuros que la célula que
+  forman). Partículas, zona clara, pliegues y cuerpos apoptóticos, sin cambios.
+- **Pruebas que cuentan lo que se dibuja (rendimiento-09).** Los contadores cuentan dos veces las mallas de doble
+  pasada (transparentes de doble cara; aquí no hay ninguna, y una prueba lo comprueba) y aparte el pase de sombras
+  (tope 40 llamadas). Nueva prueba de los emisivos, con la sustitución comprobada en el sombreador real de three.
+- **Higiene (rendimiento-16).** El alias engañoso `NATURAL as HEX` de `mallas.ts` pasa a `NATURAL as COLOR`, y el
+  envoltorio local `poner` (que solo llamaba a `ponerOpacidad`) desaparece.
+
+Presupuesto: sin cambios. Antes y después, en el peor instante (`t` ≈ 0,43), 17 697 triángulos y 15 llamadas de
+dibujo; el pase de sombras, como mucho 10 llamadas. Todos los materiales son de una cara: no hay doble pasada.
+
+No se ha visto en pantalla (la usuaria prueba en su equipo).

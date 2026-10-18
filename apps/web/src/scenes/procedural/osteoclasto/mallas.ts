@@ -11,7 +11,13 @@
  *    atraviesan la célula hacia el capilar; su avance sale de `t`, sin relojes propios.
  *
  * No calculan nada de la biología: reciben `EstadoOsteoclasto` (puro) y solo mueven, escalan y aclaran piezas.
- * Materiales compartidos por tipo; `InstancedMesh` para todo lo repetido; al liberar se libera todo.
+ * Materiales compartidos por tipo, físicos y con el relieve de su tejido (`realismo.ts`); `InstancedMesh` para
+ * todo lo repetido; al liberar se libera todo.
+ *
+ * Revisión de diseño (2026-10-17): sin emisivos en el capilar, la zona clara, los núcleos y los pliegues
+ * (realismo-03: se veían iluminados por dentro; la zona clara, como un aro de neón). Las partículas conservan un
+ * emisivo tenue, pero teñido con el color de cada instancia (render-09): el blanco las desteñía hacia el pastel
+ * (el Cl- verde salía verde menta, el H+ naranja, salmón). Colores de la paleta unificada (`paleta.ts`).
  */
 import type { BufferGeometry, Material } from 'three';
 import {
@@ -22,13 +28,15 @@ import {
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
 import { acotar, mezclar, suave } from '../interpolacion';
 import { lineal, mezclarRgb } from '../bmu/paleta';
 import type { Rgb } from '../bmu/paleta';
+import type { TipoTejido } from '../realismo';
+import { inyectar, liberarMaterialOrganico, materialOrganico, ponerOpacidad } from '../realismo';
 import {
   celulasInversion,
   fragmentos,
@@ -38,7 +46,7 @@ import {
   pliegues,
   precursores,
 } from './disposicion';
-import type { Punto3 } from './disposicion';
+import type { Punto3, TipoAcido, TipoProducto } from './disposicion';
 import {
   ALTURA_PLIEGUES,
   BASE_CUPULA,
@@ -62,39 +70,62 @@ import {
 import type { EstadoOsteoclasto } from './estado';
 import {
   caraCorte,
+  cupulaLobulada,
   esferaSencilla,
   ladosBloque,
-  mediaCupula,
   medioAnillo,
   superficieHueso,
-  tapaCupula,
+  tapaLobulada,
   tubo,
+  uvPlanar,
 } from './geometria';
 import type { Mitad } from './geometria';
-import { HEX } from './paleta';
+import { NATURAL as COLOR } from './paleta';
 
-/** Material estándar de una cara (las cúpulas translúcidas se ven mejor sin sus caras interiores). */
+/**
+ * Material de un tejido (`realismo.ts`): físico y con relieve de superficie hecho por código. De una sola cara
+ * en esta escena, como antes: las cúpulas translúcidas y la mitad del bloque que se desvanece se ven mejor sin
+ * sus caras interiores.
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.6,
-    metalness: 0,
-    side: FrontSide,
-    ...extra,
-  });
+  tipo: TipoTejido,
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: FrontSide, ...extra });
 }
 
-/** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
-function poner(materiales: readonly Material[], opacidad: number): void {
-  const o = acotar(opacidad);
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
   }
+}
+
+/**
+ * Cambia cuántas veces se repite el relieve del material en las UV de su pieza (el clon de la textura es propio
+ * de cada material y hace también de mapa de rugosidad).
+ */
+function repetir(m: MeshPhysicalMaterial, u: number, v: number): MeshPhysicalMaterial {
+  m.bumpMap?.repeat.set(u, v);
+  return m;
+}
+
+/**
+ * Multiplica el emisivo del material por el color de cada instancia (o de cada vértice): sin esto three lo suma
+ * igual a todas, y un emisivo blanco las aclara hacia el blanco. `USE_COLOR` se define con `instanceColor`.
+ */
+function emisivoPorInstancia(m: MeshPhysicalMaterial): void {
+  inyectar(m, 'emisivo_instancia', (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <emissivemap_fragment>',
+      `#include <emissivemap_fragment>
+#ifdef USE_COLOR
+  totalEmissiveRadiance *= vColor.rgb;
+#endif`,
+    );
+  });
 }
 
 /** Fracción decimal de `x` (0 a 1). */
@@ -136,9 +167,14 @@ function esfera(
 
 const NX = 72;
 const NZ = 24;
-const COLOR_HUESO = lineal(HEX.hueso);
-const COLOR_RESORBIDO = lineal(HEX.huesoResorbido);
+const COLOR_HUESO = lineal(COLOR.hueso);
+const COLOR_RESORBIDO = lineal(COLOR.huesoResorbido);
 const AUX_RGB: Rgb = [0, 0, 0];
+/**
+ * Lado (en unidades de escena) de una repetición del relieve del hueso: a esta escala sus poros recuerdan las
+ * bocas de los canalículos de una superficie ósea vista al microscopio electrónico.
+ */
+const GRANO_HUESO = 1.6;
 
 /** Una mitad del bloque: superficie deformable, cara de corte que la sigue y lados fijos. */
 class MitadBloque {
@@ -156,24 +192,26 @@ class MitadBloque {
     const zLejano = (signo * BLOQUE.fondo) / 2;
     this.grupo.name = `hueso_${mitad}`;
 
-    const matSuperficie = material(HEX.hueso, { vertexColors: true, roughness: 0.7 });
-    const matLados = material(HEX.corteHueso, { roughness: 0.75 });
+    // Base blanca: el color lo dan los vértices (hueso intacto a hueso resorbido); con la base del color del
+    // hueso, los dos se multiplicaban y el tono salía más oscuro de lo previsto.
+    const matSuperficie = repetir(material('#ffffff', 'hueso', { vertexColors: true }), 1, 1);
+    const matLados = repetir(material(COLOR.corteHueso, 'hueso'), 1, 1);
     this.materiales.push(matSuperficie, matLados);
 
-    const geoSuperficie = superficieHueso(
-      NX,
-      NZ,
-      x0,
-      x1,
-      Math.min(0, zLejano),
-      Math.max(0, zLejano),
+    // UV en unidades de escena (`uvPlanar`): el grano del relieve mide lo mismo en todas las caras del bloque.
+    const geoSuperficie = uvPlanar(
+      superficieHueso(NX, NZ, x0, x1, Math.min(0, zLejano), Math.max(0, zLejano)),
+      GRANO_HUESO,
     );
     this.superficie = new Mesh(geoSuperficie, matSuperficie);
     this.superficie.name = 'superficie_osea';
-    const geoCara = caraCorte(NX, x0, x1, -BLOQUE.alto, mitad === 'trasera' ? 1 : -1);
+    const geoCara = uvPlanar(
+      caraCorte(NX, x0, x1, -BLOQUE.alto, mitad === 'trasera' ? 1 : -1),
+      GRANO_HUESO,
+    );
     this.cara = new Mesh(geoCara, matLados);
     this.cara.name = 'cara_de_corte';
-    const geoLados = ladosBloque(x0, x1, zLejano, -BLOQUE.alto);
+    const geoLados = uvPlanar(ladosBloque(x0, x1, zLejano, -BLOQUE.alto), GRANO_HUESO);
     const lados = new Mesh(geoLados, matLados);
     lados.name = 'lados_bloque';
     this.geometrias.push(geoSuperficie, geoCara, geoLados);
@@ -210,14 +248,14 @@ class MitadBloque {
       this.grupo.visible = opacidad > 0.004;
       if (!this.grupo.visible) return;
       this.grupo.position.z = estado.corte * DESPLAZAMIENTO_CORTE;
-      poner(this.materiales, opacidad);
+      ponerOpacidad(this.materiales, opacidad);
     }
     this.excavar(estado.excavacion);
   }
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
   }
 }
 
@@ -232,12 +270,10 @@ export class EntornoOseo implements PiezaOsteoclasto {
     this.mitades = [new MitadBloque('trasera'), new MitadBloque('delantera')];
     for (const m of this.mitades) this.grupo.add(m.grupo);
 
-    const matCapilar = material(HEX.capilar, {
-      roughness: 0.35,
-      emissive: '#7a2a24',
-      emissiveIntensity: 0.35,
-    });
-    const geoCapilar = tubo(CAPILAR.radio, CAPILAR.largo);
+    // Sin emisivo (antes #7a2a24 × 0,35): la sangre no da luz.
+    const matCapilar = material(COLOR.capilar, 'vaso');
+    // Más lados que antes (18): es largo y se ve de cerca en la vista de la célula.
+    const geoCapilar = tubo(CAPILAR.radio, CAPILAR.largo, 28);
     const capilar = new Mesh(geoCapilar, matCapilar);
     capilar.position.set(0, CAPILAR.y, CAPILAR.z);
     capilar.name = 'capilar';
@@ -253,7 +289,7 @@ export class EntornoOseo implements PiezaOsteoclasto {
   liberar(): void {
     for (const m of this.mitades) m.liberar();
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
   }
 }
 
@@ -264,6 +300,18 @@ export class EntornoOseo implements PiezaOsteoclasto {
 /** Opacidad del citoplasma sano: translúcido para ver los núcleos y los pliegues. */
 const OPACIDAD_CITOPLASMA = 0.8;
 const GROSOR_SELLADO = 0.07;
+/**
+ * Núcleos ovalados y algo aplanados, como en los cortes (no esferas iguales): factor de cada semieje (x, y, z)
+ * por núcleo, fijo.
+ */
+const FORMA_NUCLEOS: readonly (readonly [number, number, number])[] = [
+  [1.16, 0.8, 0.98],
+  [0.96, 0.84, 1.16],
+  [1.12, 0.78, 1.06],
+  [1.0, 0.86, 1.14],
+  [1.18, 0.82, 0.94],
+  [1.04, 0.8, 1.1],
+];
 
 export class Osteoclasto implements PiezaOsteoclasto {
   readonly grupo = new Group();
@@ -273,10 +321,10 @@ export class Osteoclasto implements PiezaOsteoclasto {
   private readonly frente = new Group();
   private readonly anilloTrasero: Mesh;
   private readonly anilloDelantero: Mesh;
-  private readonly matCuerpo: MeshStandardMaterial;
-  private readonly matFrente: MeshStandardMaterial;
-  private readonly matAnilloTrasero: MeshStandardMaterial;
-  private readonly matAnilloDelantero: MeshStandardMaterial;
+  private readonly matCuerpo: MeshPhysicalMaterial;
+  private readonly matFrente: MeshPhysicalMaterial;
+  private readonly matAnilloTrasero: MeshPhysicalMaterial;
+  private readonly matAnilloDelantero: MeshPhysicalMaterial;
   private readonly nucleos: InstancedMesh;
   private readonly pliegues: InstancedMesh;
   private readonly fragmentos: InstancedMesh;
@@ -288,15 +336,18 @@ export class Osteoclasto implements PiezaOsteoclasto {
 
   constructor() {
     this.grupo.name = 'osteoclasto';
-    this.matCuerpo = material(HEX.osteoclasto, { roughness: 0.45, transparent: true });
-    this.matFrente = material(HEX.osteoclasto, { roughness: 0.45, transparent: true });
-    this.matAnilloTrasero = material(HEX.zonaClara, {
-      roughness: 0.4,
-      emissive: HEX.zonaClara,
-      emissiveIntensity: 0.25,
-      transparent: true,
-    });
-    this.matAnilloDelantero = this.matAnilloTrasero.clone();
+    // Citoplasma: superficie blanda y húmeda; el relieve, repetido para que su grano no salga estirado en la
+    // cúpula aplanada (las UV de cada media cúpula abarcan media vuelta a lo ancho).
+    const citoplasma = (): MeshPhysicalMaterial =>
+      repetir(material(COLOR.osteoclasto, 'celula', { transparent: true }), 4, 1.5);
+    this.matCuerpo = citoplasma();
+    this.matFrente = citoplasma();
+    // Zona clara: citoplasma sin orgánulos, rico en actina. Un material por mitad (antes, un clon). Sin emisivo
+    // (antes, su propio color × 0,25: parecía un aro de neón); su claridad es la del color.
+    const zonaClara = (): MeshPhysicalMaterial =>
+      material(COLOR.zonaClara, 'celula', { transparent: true });
+    this.matAnilloTrasero = zonaClara();
+    this.matAnilloDelantero = zonaClara();
     this.materiales.push(
       this.matCuerpo,
       this.matFrente,
@@ -304,9 +355,10 @@ export class Osteoclasto implements PiezaOsteoclasto {
       this.matAnilloDelantero,
     );
 
-    const geoTrasera = mediaCupula('trasera');
-    const geoDelantera = mediaCupula('delantera');
-    const geoTapa = tapaCupula();
+    // Cúpula con lóbulos suaves (`lobulosCupula`): una célula real no es una esfera perfecta.
+    const geoTrasera = cupulaLobulada('trasera');
+    const geoDelantera = cupulaLobulada('delantera');
+    const geoTapa = tapaLobulada();
     this.geometrias.push(geoTrasera, geoDelantera, geoTapa);
     const trasera = new Mesh(geoTrasera, this.matCuerpo);
     trasera.name = 'citoplasma_trasero';
@@ -326,26 +378,23 @@ export class Osteoclasto implements PiezaOsteoclasto {
     this.anilloDelantero = new Mesh(geoAnilloD, this.matAnilloDelantero);
     this.anilloDelantero.name = 'zona_clara_delantera';
 
-    const matNucleo = material(HEX.nucleo, {
-      roughness: 0.4,
-      emissive: HEX.nucleo,
-      emissiveIntensity: 0.3,
-    });
-    const matPliegue = material(HEX.bordeFestoneado, {
-      roughness: 0.5,
-      emissive: HEX.bordeFestoneado,
-      emissiveIntensity: 0.2,
-    });
-    const matFragmento = material(HEX.cuerpoApoptotico, { roughness: 0.5 });
+    // Núcleos: cromatina granulosa. Pliegues del borde festoneado: membrana lisa y húmeda. Cuerpos apoptóticos:
+    // trozos de célula. Sin emisivos (antes 0,3 y 0,2): con luz de verdad tienen volumen.
+    const matNucleo = material(COLOR.nucleo, 'nucleo');
+    const matPliegue = material(COLOR.bordeFestoneado, 'organulo');
+    const matFragmento = material(COLOR.cuerpoApoptotico, 'celula');
     this.materiales.push(matNucleo, matPliegue, matFragmento);
+    // Pliegues con 10 × 7 lados (antes 8 × 6): se ven de cerca en la vista del borde. Los cuerpos apoptóticos
+    // tienen su propia esfera de 12 × 8 (antes compartían la de los pliegues).
     const geoNucleo = esferaSencilla(12, 8);
-    const geoPliegue = esferaSencilla(8, 6);
-    this.geometrias.push(geoNucleo, geoPliegue);
+    const geoPliegue = esferaSencilla(10, 7);
+    const geoFragmento = esferaSencilla(12, 8);
+    this.geometrias.push(geoNucleo, geoPliegue, geoFragmento);
     this.nucleos = new InstancedMesh(geoNucleo, matNucleo, N_NUCLEOS);
     this.nucleos.name = 'nucleos';
     this.pliegues = new InstancedMesh(geoPliegue, matPliegue, N_PLIEGUES);
     this.pliegues.name = 'borde_festoneado';
-    this.fragmentos = new InstancedMesh(geoPliegue, matFragmento, N_FRAGMENTOS);
+    this.fragmentos = new InstancedMesh(geoFragmento, matFragmento, N_FRAGMENTOS);
     this.fragmentos.name = 'cuerpos_apoptoticos';
     for (const m of [this.nucleos, this.pliegues, this.fragmentos]) {
       m.instanceMatrix.setUsage(DynamicDrawUsage);
@@ -377,8 +426,11 @@ export class Osteoclasto implements PiezaOsteoclasto {
       this.cuerpo.scale.set(rx, ry, rx);
       this.frente.position.set(0, centroY, avanceFrente);
       this.frente.scale.set(rx, ry, rx);
-      poner([this.matCuerpo], OPACIDAD_CITOPLASMA * estado.celula.opacidad);
-      poner([this.matFrente], OPACIDAD_CITOPLASMA * estado.celula.opacidad * (1 - estado.corte));
+      ponerOpacidad([this.matCuerpo], OPACIDAD_CITOPLASMA * estado.celula.opacidad);
+      ponerOpacidad(
+        [this.matFrente],
+        OPACIDAD_CITOPLASMA * estado.celula.opacidad * (1 - estado.corte),
+      );
       // El citoplasma nunca escribe profundidad: los núcleos y los pliegues se ven a través.
       this.matCuerpo.depthWrite = false;
       this.matFrente.depthWrite = false;
@@ -396,8 +448,8 @@ export class Osteoclasto implements PiezaOsteoclasto {
       this.anilloTrasero.scale.set(radial, aplastado, radial);
       this.anilloDelantero.position.set(0, y, avanceFrente);
       this.anilloDelantero.scale.set(radial, aplastado, radial);
-      poner([this.matAnilloTrasero], estado.sellado);
-      poner([this.matAnilloDelantero], estado.sellado * (1 - estado.corte));
+      ponerOpacidad([this.matAnilloTrasero], estado.sellado);
+      ponerOpacidad([this.matAnilloDelantero], estado.sellado * (1 - estado.corte));
     }
 
     this.ponerNucleos(estado, rx, ry, centroY, hayCelula);
@@ -423,15 +475,16 @@ export class Osteoclasto implements PiezaOsteoclasto {
         this.nucleos.setMatrixAt(i, OCULTA);
         return;
       }
+      const [fx, fy, fz] = FORMA_NUCLEOS[i % FORMA_NUCLEOS.length]!;
       esfera(
         this.nucleos,
         i,
         n.local[0] * rx,
         centroY + n.local[1] * ry,
         n.local[2] * rx,
-        radio,
-        radio,
-        radio,
+        radio * fx,
+        radio * fy,
+        radio * fz,
       );
     });
     this.nucleos.instanceMatrix.needsUpdate = true;
@@ -485,7 +538,7 @@ export class Osteoclasto implements PiezaOsteoclasto {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.nucleos.dispose();
     this.pliegues.dispose();
     this.fragmentos.dispose();
@@ -502,22 +555,25 @@ export class CelulasMononucleares implements PiezaOsteoclasto {
   readonly grupo = new Group();
   private readonly malla: InstancedMesh;
   private readonly geometria: BufferGeometry;
-  private readonly material: MeshStandardMaterial;
+  private readonly material: MeshPhysicalMaterial;
   private readonly datosPrecursores = precursores();
   private readonly datosInversion = celulasInversion();
 
   constructor() {
     this.grupo.name = 'celulas_mononucleares';
-    this.geometria = esferaSencilla(10, 7);
-    this.material = material(HEX.precursor, { roughness: 0.45 });
+    // 12 × 8 lados (antes 10 × 7): son células a la vista desde el primer paso.
+    this.geometria = esferaSencilla(12, 8);
+    // Base blanca: el color de cada instancia (cuerpo o núcleo) es el que se ve; con la base del color del
+    // precursor, los dos se multiplicaban. El brillo de terciopelo, del color de la célula y no blanco.
+    this.material = material('#ffffff', 'celula', { sheenColor: COLOR.precursor });
     // Dos instancias por célula: cuerpo y núcleo (el núcleo asoma por arriba, como en la BMU).
     this.malla = new InstancedMesh(this.geometria, this.material, N_MONONUCLEARES * 2);
     this.malla.instanceMatrix.setUsage(DynamicDrawUsage);
     this.malla.frustumCulled = false;
     this.malla.name = 'mononucleares';
     const colores = new Float32Array(N_MONONUCLEARES * 2 * 3);
-    const cuerpo = lineal(HEX.precursor);
-    const nucleo = lineal(HEX.nucleo);
+    const cuerpo = lineal(COLOR.precursor);
+    const nucleo = lineal(COLOR.nucleo);
     for (let i = 0; i < N_MONONUCLEARES; i++) {
       colores.set(cuerpo, i * 6);
       colores.set(nucleo, i * 6 + 3);
@@ -526,14 +582,19 @@ export class CelulasMononucleares implements PiezaOsteoclasto {
     this.grupo.add(this.malla);
   }
 
-  /** Célula `i` en `p` con radio `r`; con `r` casi nulo se oculta. */
+  /**
+   * Célula `i` en `p` con radio `r`; con `r` casi nulo se oculta. Cada cuerpo es un poco ovalado en el plano
+   * del hueso (fijo por célula): no son bolas idénticas. El alto no cambia, así que sigue apoyada igual.
+   */
   private celula(i: number, p: Punto3, r: number): void {
     if (r < 0.01) {
       this.malla.setMatrixAt(i * 2, OCULTA);
       this.malla.setMatrixAt(i * 2 + 1, OCULTA);
       return;
     }
-    esfera(this.malla, i * 2, p[0], p[1], p[2], r, r, r);
+    const fx = 1 + 0.08 * Math.sin(i * 2.3 + 0.5);
+    const fz = 1 + 0.08 * Math.cos(i * 1.7 + 1.1);
+    esfera(this.malla, i * 2, p[0], p[1], p[2], r * fx, r, r * fz);
     const rn = r * 0.55;
     esfera(this.malla, i * 2 + 1, p[0], p[1] + r * 0.6, p[2], rn, rn, rn);
   }
@@ -592,7 +653,7 @@ export class CelulasMononucleares implements PiezaOsteoclasto {
   liberar(): void {
     this.malla.dispose();
     this.geometria.dispose();
-    this.material.dispose();
+    liberarMaterialOrganico(this.material);
   }
 }
 
@@ -607,33 +668,50 @@ const CICLOS_PRODUCTOS = 10;
 const Y_VESICULAS = 0.34;
 
 const COLOR_ACIDO = {
-  proton: lineal(HEX.proton),
-  cloruro: lineal(HEX.cloruro),
-  catepsina: lineal(HEX.catepsina),
+  proton: lineal(COLOR.proton),
+  cloruro: lineal(COLOR.cloruro),
+  catepsina: lineal(COLOR.catepsina),
 } as const;
 const COLOR_PRODUCTO = {
-  calcio: lineal(HEX.calcio),
-  fosfato: lineal(HEX.fosfato),
-  colageno: lineal(HEX.colageno),
+  calcio: lineal(COLOR.calcio),
+  fosfato: lineal(COLOR.fosfato),
+  colageno: lineal(COLOR.colageno),
 } as const;
+/**
+ * Tamaño relativo de cada partícula según lo que es (todas exageradas): el protón y el calcio, iones diminutos;
+ * la catepsina K y los fragmentos de colágeno, proteínas mucho mayores.
+ */
+const TAMANO_ACIDO: Readonly<Record<TipoAcido, number>> = {
+  proton: 0.8,
+  cloruro: 1,
+  catepsina: 1.3,
+};
+const TAMANO_PRODUCTO: Readonly<Record<TipoProducto, number>> = {
+  calcio: 0.85,
+  fosfato: 1,
+  colageno: 1.3,
+};
 
 export class Particulas implements PiezaOsteoclasto {
   readonly grupo = new Group();
   private readonly acido: InstancedMesh;
   private readonly productos: InstancedMesh;
   private readonly geometria: BufferGeometry;
-  private readonly material: MeshStandardMaterial;
+  private readonly material: MeshPhysicalMaterial;
   private readonly datosAcido = particulasAcido();
   private readonly datosProductos = particulasProductos();
 
   constructor() {
     this.grupo.name = 'particulas';
     this.geometria = esferaSencilla(8, 6);
-    this.material = material('#ffffff', {
-      roughness: 0.35,
+    // Moléculas e iones: lisos y satinados; base blanca para que se vea el color de cada instancia. Un emisivo tenue
+    // para que se lean dentro de la célula, teñido con el color de la instancia (three suma el emisivo igual a
+    // todas: blanco, desteñía los colores que nombra el texto). El brillo de terciopelo ya es gris (`realismo.ts`).
+    this.material = material('#ffffff', 'molecula', {
       emissive: '#ffffff',
       emissiveIntensity: 0.18,
     });
+    emisivoPorInstancia(this.material);
     this.acido = this.crear(
       N_PARTICULAS_ACIDO,
       'salida_acida',
@@ -665,7 +743,7 @@ export class Particulas implements PiezaOsteoclasto {
         const s = fraccionDecimal(estado.t * CICLOS_ACIDO + p.desfase);
         const suelo = -profundidadLaguna(p.x, p.z, estado.excavacion) - 0.02;
         const y = mezclar(Y_VESICULAS, suelo, s);
-        const r = 0.048 * estado.bombeo * Math.sqrt(Math.sin(Math.PI * s));
+        const r = 0.048 * TAMANO_ACIDO[p.tipo] * estado.bombeo * Math.sqrt(Math.sin(Math.PI * s));
         esfera(this.acido, i, p.x, y, p.z, r, r, r);
       });
       this.acido.instanceMatrix.needsUpdate = true;
@@ -685,7 +763,8 @@ export class Particulas implements PiezaOsteoclasto {
         const x = a * p.x + b * p.x * 0.2 + c * p.destino[0];
         const y = a * y0 + b * cima + c * p.destino[1];
         const z = a * p.z + b * p.z * 0.2 + c * p.destino[2];
-        const r = 0.052 * estado.liberacion * Math.sqrt(Math.sin(Math.PI * s));
+        const r =
+          0.052 * TAMANO_PRODUCTO[p.tipo] * estado.liberacion * Math.sqrt(Math.sin(Math.PI * s));
         esfera(this.productos, i, x, y, z, r, r, r);
       });
       this.productos.instanceMatrix.needsUpdate = true;
@@ -696,6 +775,6 @@ export class Particulas implements PiezaOsteoclasto {
     this.acido.dispose();
     this.productos.dispose();
     this.geometria.dispose();
-    this.material.dispose();
+    liberarMaterialOrganico(this.material);
   }
 }

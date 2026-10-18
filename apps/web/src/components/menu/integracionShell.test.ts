@@ -69,12 +69,14 @@ afterEach(() => {
   wrapper = undefined;
 });
 
-describe('menú circular + HUD dentro del AppShell', () => {
+describe('menú de módulos + HUD dentro del AppShell', () => {
   it('el HUD va en la cabecera y el menú fuera de ella, y el progreso se pide una sola vez', async () => {
     await montarShell('/');
     const w = wrapper!;
     expect(w.find('header [data-testid="hud"]').exists()).toBe(true);
+    // El menú es una barra lateral fuera de la cabecera; en la cabecera solo va su botón (pantallas estrechas).
     expect(w.find('header nav').exists()).toBe(false);
+    expect(w.find('header [data-testid="menu-control"]').exists()).toBe(true);
     expect(w.find('nav[aria-label="Módulos"]').exists()).toBe(true);
     // Shell + HUD piden el progreso al montarse: el store comparte la misma petición.
     const progreso = fetchMock.mock.calls.filter(([u]) => String(u).endsWith('/progress'));
@@ -88,9 +90,9 @@ describe('menú circular + HUD dentro del AppShell', () => {
     const w = wrapper!;
     await w.get('[data-testid="menu-control"]').trigger('click');
     await flushPromises();
-    expect(w.findAll('nav a')).toHaveLength(6);
+    expect(w.findAll('nav[aria-label="Módulos"] a[data-modulo]')).toHaveLength(6);
 
-    await w.get('nav a[href="/modulo/3"]').trigger('click');
+    await w.get('nav[aria-label="Módulos"] a[href="/modulo/3"]').trigger('click');
     await flushPromises();
     await vi.waitFor(() => expect(router.currentRoute.value.fullPath).toBe('/modulo/3'));
     await flushPromises();
@@ -103,6 +105,8 @@ describe('menú circular + HUD dentro del AppShell', () => {
     // Al reabrirlo, el módulo 3 está marcado como el actual.
     await w.get('[data-testid="menu-control"]').trigger('click');
     await flushPromises();
-    expect(w.get('nav [aria-current="page"]').attributes('href')).toBe('/modulo/3');
+    expect(w.get('nav[aria-label="Módulos"] [aria-current="page"]').attributes('href')).toBe(
+      '/modulo/3',
+    );
   });
 });

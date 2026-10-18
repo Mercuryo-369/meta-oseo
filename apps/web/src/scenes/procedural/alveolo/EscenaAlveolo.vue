@@ -10,8 +10,8 @@
  * perdido) son los mismos de la escena de la BMU.
  *
  * Rendimiento móvil: DPR entre 1 y 2, `render-mode="on-demand"` (solo se dibuja cuando cambia `t` o la cámara),
- * mallas de topología fija que se reescriben, e instancias para las piezas repetidas (24 llamadas de dibujo en el
- * peor instante).
+ * mallas de topología fija que se reescriben, e instancias para las piezas repetidas (en el peor instante, 26
+ * llamadas de dibujo contando la doble pasada de los transparentes de doble cara, y 18 más del pase de sombras).
  */
 import { computed, onMounted, shallowRef, watch } from 'vue';
 import { TresCanvas } from '@tresjs/core';
@@ -24,6 +24,7 @@ import type { EventosEscenaProcedural, PropsEscenaProcedural } from '../registro
 import CamaraBmu from '../bmu/CamaraBmu.vue';
 import { FOV_GRADOS } from '../bmu/vistas';
 import ContenidoAlveolo from './ContenidoAlveolo.vue';
+import EntornoRealista from '../EntornoRealista.vue';
 import { estadoDeVistaAlveolo } from './vistas';
 
 const props = defineProps<PropsEscenaProcedural>();
@@ -94,12 +95,14 @@ const listo = computed(() => estado.value === 'listo');
         @ready="alEstarListo"
         @error="fallar"
       >
-        <!-- La luz principal es hija de la cámara: ilumina siempre lo que se ve, gire como gire. -->
-        <TresPerspectiveCamera :position="posicionInicial" :fov="FOV_GRADOS" :near="0.1" :far="80">
-          <TresDirectionalLight :position-x="3" :position-y="4" :position-z="2" :intensity="3.2" />
-        </TresPerspectiveCamera>
-        <TresAmbientLight color="#ffffff" :intensity="0.6" />
-        <TresHemisphereLight color="#ffffff" ground-color="#a48fbd" :intensity="0.9" />
+        <TresPerspectiveCamera
+          :position="posicionInicial"
+          :fov="FOV_GRADOS"
+          :near="0.1"
+          :far="80"
+        />
+        <!-- Luces, entorno y sombras: el esquema común de iluminacion.ts, que sigue a la cámara. -->
+        <EntornoRealista />
         <CamaraBmu
           :vista="vista"
           :orden="ordenVista"

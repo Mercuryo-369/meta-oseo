@@ -71,7 +71,22 @@ async function montarConVisor(actividad?: ActividadExploracion3d): Promise<VueWr
 const lista = (w: VueWrapper, id: string) =>
   w.findAll('[data-nodo]').find((b) => b.attributes('data-nodo') === id)!;
 
+/**
+ * La parte sobre el modelo: el número (pantallas estrechas) o, con la mandíbula desde `lg`, su etiqueta
+ * lateral. Las dos hacen lo mismo y llevan los mismos atributos de estado.
+ */
+const enModelo = (w: VueWrapper, id: string) =>
+  w.get(`[data-punto="${id}"], [data-etiqueta="${id}"]`);
+
+/** Ancho de la ventana simulada (happy-dom), para probar el modo de pantalla estrecha y el ancho. */
+function ventana(ancho: number): void {
+  (
+    window as unknown as { happyDOM: { setViewport(v: { width: number; height: number }): void } }
+  ).happyDOM.setViewport({ width: ancho, height: 900 });
+}
+
 beforeEach(() => {
+  ventana(1280);
   document.body.innerHTML = '';
   vi.mocked(hayWebGL2).mockReturnValue(true);
   fetchMock.mockReset();
@@ -106,17 +121,17 @@ describe('actividad con la escena real', () => {
       })),
     );
     await flushPromises();
-    await w.get('[data-punto="condilo"]').trigger('click');
+    await enModelo(w, 'condilo').trigger('click');
     expect(lista(w, 'condilo').attributes('data-visitado')).toBe('true');
     expect(w.get('[data-testid="ficha"]').text()).toContain('Cóndilo');
     expect(w.emitted('interaccion')).toEqual([[{ accion: 'selecciona_nodo', objeto: 'condilo' }]]);
     // La cámara recibe la orden de enfocar el nodo.
     expect(camara.props('orden')).toMatchObject({ tipo: 'estado' });
     // El punto seleccionado queda marcado en el modelo.
-    expect(w.get('[data-punto="condilo"]').attributes('data-seleccionado')).toBe('true');
+    expect(enModelo(w, 'condilo').attributes('data-seleccionado')).toBe('true');
     // Y se completa alternando lista y modelo.
     await lista(w, 'angulo').trigger('click');
-    await w.get('[data-punto="cuerpo"]').trigger('click');
+    await enModelo(w, 'cuerpo').trigger('click');
     expect(w.emitted('completada')).toHaveLength(1);
   });
 
@@ -127,7 +142,49 @@ describe('actividad con la escena real', () => {
       { id: 'rama', x: 50, y: 50, enPantalla: true, detras: false },
     ]);
     await flushPromises();
-    expect(w.get('[data-punto="rama"]').attributes('data-visitado')).toBe('true');
+    expect(enModelo(w, 'rama').attributes('data-visitado')).toBe('true');
+  });
+
+  it('mandíbula en pantalla ancha: etiquetas a los dos lados con una línea a cada punto visible', async () => {
+    const w = await montarConVisor();
+    w.findComponent({ name: 'CamaraExploracion' }).vm.$emit(
+      'proyeccion',
+      mandibula.config.nodos.map((n, i) => ({
+        id: n.id,
+        x: 200 + i * 30,
+        y: 80 + i * 20,
+        enPantalla: i !== 0,
+        detras: false,
+      })),
+    );
+    await flushPromises();
+    expect(w.find('[data-testid="puntos-de-interes"]').exists()).toBe(false);
+    const etiquetas = w.findAll('[data-etiqueta]');
+    expect(etiquetas).toHaveLength(mandibula.config.nodos.length);
+    // Las partes de cada lado del modelo van a su lado (la mandíbula tiene partes en los dos).
+    expect(new Set(etiquetas.map((e) => e.attributes('data-lado')))).toEqual(
+      new Set(['izq', 'der']),
+    );
+    // Una línea por punto en pantalla: el primero está fuera.
+    expect(w.findAll('[data-testid="lineas-etiquetas"] line')).toHaveLength(
+      mandibula.config.nodos.length - 1,
+    );
+    // Ayuda visual, no un segundo índice: fuera del árbol de accesibilidad y del orden de Tab.
+    for (const e of etiquetas) {
+      expect(e.attributes('aria-hidden')).toBe('true');
+      expect(e.attributes('tabindex')).toBe('-1');
+    }
+  });
+
+  it('en pantalla estrecha la mandíbula conserva los números sobre el modelo', async () => {
+    ventana(390);
+    const w = await montarConVisor();
+    w.findComponent({ name: 'CamaraExploracion' }).vm.$emit('proyeccion', [
+      { id: 'rama', x: 50, y: 50, enPantalla: true, detras: false },
+    ]);
+    await flushPromises();
+    expect(w.find('[data-testid="etiquetas-laterales"]').exists()).toBe(false);
+    expect(w.find('[data-punto="rama"]').exists()).toBe(true);
   });
 
   it('sin WebGL 2 no descarga el modelo y la actividad se completa con la lista', async () => {

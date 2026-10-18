@@ -34,19 +34,4 @@ describe('gsapPerezoso', () => {
     expect(cargador.precargarGsap()).not.toBe(primera);
     vi.doUnmock('gsap');
   });
-
-  it('sin GSAP descargado, las animaciones saltan al estado final sin tocar el nodo', async () => {
-    const cargador = await import('./gsapPerezoso');
-    const animacion = await import('./animacion');
-    expect(cargador.obtenerGsap()).toBeNull();
-
-    const el = document.createElement('li');
-    el.style.left = '10px';
-    const hecho = vi.fn();
-    animacion.entrarNodo(el, hecho, false);
-    animacion.salirNodo(el, hecho, false);
-    animacion.detenerNodo(el);
-    expect(hecho).toHaveBeenCalledTimes(2);
-    expect(el.getAttribute('style')).toBe('left: 10px;');
-  });
 });

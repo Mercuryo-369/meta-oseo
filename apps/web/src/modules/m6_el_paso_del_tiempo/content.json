@@ -1934,7 +1934,7 @@
                     "t": 0,
                     "titulo": "Diente en su alvéolo",
                     "vista": "general",
-                    "texto": "Un premolar inferior en su alvéolo, en un corte vestibulolingual del cuerpo de la mandíbula. El ligamento periodontal (verde) une la raíz al [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) (banda rosa oscuro), rodeado de hueso trabecular y de las tablas corticales: la vestibular, más delgada. Abajo, el conducto mandibular con el nervio y los vasos; en la cara vestibular, el foramen mentoniano. Las formas son esquemáticas y no están a escala."
+                    "texto": "Un premolar inferior en su alvéolo, en un corte vestibulolingual del cuerpo de la mandíbula. El ligamento periodontal (rosado) une la raíz al [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) (banda blanca y densa), rodeado de hueso trabecular y de las tablas corticales: la vestibular, más delgada. Abajo, el conducto mandibular con el nervio y los vasos; en la cara vestibular, el foramen mentoniano. Las formas son esquemáticas y no están a escala."
                   },
                   {
                     "id": "paso_extraccion",
@@ -1962,7 +1962,7 @@
                     "t": 0.56,
                     "titulo": "Semanas: hueso entretejido",
                     "vista": "alveolo",
-                    "texto": "En las primeras semanas crece **hueso entretejido**, inmaduro y claro, desde el fondo y las paredes. Al mismo tiempo los osteoclastos (violeta claro) reabsorben el [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) que sostenía al diente, sobre todo en la tabla vestibular, más delgada: es la primera pérdida del reborde."
+                    "texto": "En las primeras semanas crece **hueso entretejido**, inmaduro y rosa pálido (muy vascular), desde el fondo y las paredes. Al mismo tiempo los osteoclastos (lila) reabsorben el [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) que sostenía al diente, sobre todo en la tabla vestibular, más delgada: es la primera pérdida del reborde."
                   },
                   {
                     "id": "paso_maduracion",

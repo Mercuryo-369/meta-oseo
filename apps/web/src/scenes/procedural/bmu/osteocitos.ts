@@ -1,34 +1,44 @@
 /**
  * Osteocitos de la escena de la BMU. Quedan atrapados en la matriz, así que solo se ven donde el hueso está
- * cortado: se dibujan como "cortes" planos sobre las dos caras de la cuña, con el mismo lenguaje que los SVG
- * (halo claro de la laguna, cuerpo azul #6f93e2, núcleo #3b2f86 y canalículos radiales). Cada osteocito son
- * tres discos superpuestos (un InstancedMesh) y seis canalículos (otro InstancedMesh): dos llamadas de
- * dibujo en total.
+ * cortado: se dibujan como "cortes" planos sobre las dos caras de la cuña: la laguna alrededor, el cuerpo, el
+ * núcleo y los canalículos radiales. Cada osteocito son tres discos superpuestos (un InstancedMesh) y seis
+ * canalículos (otro InstancedMesh): dos llamadas de dibujo en total.
  *
  * Aparecen de forma gradual (`estado.osteocitos.progreso`, de 0 a `N_OSTEOCITOS`) y se colocan dentro del
  * grosor de la pared en su momento, a una profundidad fija de cada osteocito, de modo que el estado es
  * función pura de `t`.
+ *
+ * Realismo (2026-10-14): paleta natural, como en un corte de hueso sin teñir: la laguna es un hueco oscuro
+ * alrededor de la célula y los canalículos, líneas pardas oscuras. Materiales de `realismo.ts` (célula para los
+ * discos; cavidad, mate, para los canalículos) y discos de 24 lados (antes 16).
+ *
+ * Revisión de diseño (2026-10-17): en la cara 0 la base de cada disco y de cada canalículo era zurda (ex × ey =
+ * −normal). three decide la cara delantera por objeto, no por instancia: esos osteocitos se iluminaban desde el lado
+ * contrario y salían oscuros frente a los de la cara 1 (render-03). Ahora el segundo eje cambia de signo en la cara
+ * 0 y la base es directa en las dos. Las instancias ocultas, con escala cero y m[15] = 1 (render-13).
  */
+import type { MeshPhysicalMaterial } from 'three';
 import {
   BoxGeometry,
   CircleGeometry,
-  DoubleSide,
   DynamicDrawUsage,
   InstancedBufferAttribute,
   InstancedMesh,
-  MeshStandardMaterial,
 } from 'three';
 import { acotar, suave } from '../interpolacion';
+import { liberarMaterialOrganico, materialOrganico } from '../realismo';
+import { BRILLO_CELULAS } from './celulas';
 import { N_OSTEOCITOS, espesorEn, radioExcavado } from './estado';
 import type { EstadoBmu } from './estado';
-import { HEX, lineal } from './paleta';
+import { NATURAL as COLOR, lineal } from './paleta';
 import { SECTOR_FIN, SECTOR_INICIO } from './sector';
 
 const CANALICULOS = 6;
-const COLOR_LAGUNA = lineal(HEX.lagunaOsteocito);
-const COLOR_CUERPO = lineal(HEX.osteocito);
-const COLOR_NUCLEO = lineal(HEX.nucleo);
-const COLOR_CANALICULO = lineal('#7d4a8a');
+const COLOR_LAGUNA = lineal(COLOR.lagunaOsteocito);
+const COLOR_CUERPO = lineal(COLOR.osteocito);
+const COLOR_NUCLEO = lineal(COLOR.nucleo);
+/** Canalículo: pardo oscuro, como en la escena del hueso (`hueso/paleta.ts`, `NATURAL.canaliculo`). */
+const COLOR_CANALICULO = lineal('#6e4c2f');
 
 /** Posición de cada osteocito: cara de corte (0 o 1), x y profundidad (0 = fuera, 1 = junto a la luz). */
 const SITIOS: readonly { cara: 0 | 1; x: number; profundidad: number; giro: number }[] = [
@@ -49,18 +59,15 @@ const SITIOS: readonly { cara: 0 | 1; x: number; profundidad: number; giro: numb
 export class OsteocitosBmu {
   readonly discos: InstancedMesh;
   readonly canaliculos: InstancedMesh;
-  private readonly geometriaDisco = new CircleGeometry(1, 16);
+  private readonly geometriaDisco = new CircleGeometry(1, 24);
   private readonly geometriaBarra = new BoxGeometry(1, 0.03, 0.004);
-  private readonly material = new MeshStandardMaterial({
-    roughness: 0.55,
-    side: DoubleSide,
+  private readonly material: MeshPhysicalMaterial = materialOrganico('#ffffff', 'celula', {
+    sheenColor: BRILLO_CELULAS,
     polygonOffset: true,
     polygonOffsetFactor: -2,
     polygonOffsetUnits: -2,
   });
-  private readonly materialBarra = new MeshStandardMaterial({
-    roughness: 0.6,
-    side: DoubleSide,
+  private readonly materialBarra: MeshPhysicalMaterial = materialOrganico('#ffffff', 'cavidad', {
     polygonOffset: true,
     polygonOffsetFactor: -3,
     polygonOffsetUnits: -3,
@@ -128,9 +135,11 @@ export class OsteocitosBmu {
     m[o + 15] = 1;
   }
 
+  /** Escala cero, con m[15] = 1: con la matriz entera a cero, la esfera envolvente de la malla saldría NaN. */
   private ocultar(malla: InstancedMesh, i: number): void {
     const m = malla.instanceMatrix.array as Float32Array;
-    for (let k = 0; k < 16; k++) m[16 * i + k] = 0;
+    for (let k = 0; k < 15; k++) m[16 * i + k] = 0;
+    m[16 * i + 15] = 1;
   }
 
   actualizar(estado: EstadoBmu): void {
@@ -173,14 +182,18 @@ export class OsteocitosBmu {
         -eje[1] * sg + radial[1] * cg,
         -eje[2] * sg + radial[2] * cg,
       ];
-      this.poner(this.discos, 3 * i, centro(0.004), ex, ey, normal, ancho * 1.55, alto * 1.7);
-      this.poner(this.discos, 3 * i + 1, centro(0.008), ex, ey, normal, ancho, alto);
+      // ex × ey = eje × radial, que es la normal de la cara 1 y la opuesta de la de la cara 0: en la cara 0 el
+      // segundo eje cambia de signo para que la base (ex, eyS, normal) sea directa. Los discos son simétricos: se
+      // ven igual.
+      const eyS: readonly [number, number, number] = signo === 1 ? ey : [-ey[0], -ey[1], -ey[2]];
+      this.poner(this.discos, 3 * i, centro(0.004), ex, eyS, normal, ancho * 1.55, alto * 1.7);
+      this.poner(this.discos, 3 * i + 1, centro(0.008), ex, eyS, normal, ancho, alto);
       this.poner(
         this.discos,
         3 * i + 2,
         centro(0.012, 0.02, 0),
         ex,
-        ey,
+        eyS,
         normal,
         ancho * 0.48,
         alto * 0.62,
@@ -190,15 +203,17 @@ export class OsteocitosBmu {
         const dx = Math.cos(a);
         const dy = Math.sin(a);
         const largo = 0.2 * aparicion;
+        // Misma dirección que antes en las dos caras (el dibujo de los canalículos no cambia); el eje
+        // perpendicular, con el signo de la cara, para que dir × perp = normal.
         const dir: [number, number, number] = [
           ex[0] * dx + ey[0] * dy,
           ex[1] * dx + ey[1] * dy,
           ex[2] * dx + ey[2] * dy,
         ];
         const perp: [number, number, number] = [
-          -ex[0] * dy + ey[0] * dx,
-          -ex[1] * dy + ey[1] * dx,
-          -ex[2] * dy + ey[2] * dx,
+          -ex[0] * dy * signo + eyS[0] * dx,
+          -ex[1] * dy * signo + eyS[1] * dx,
+          -ex[2] * dy * signo + eyS[2] * dx,
         ];
         const base = centro(0.014);
         const separacion = 0.17 * aparicion + largo * 0.5;
@@ -219,7 +234,7 @@ export class OsteocitosBmu {
     this.canaliculos.dispose();
     this.geometriaDisco.dispose();
     this.geometriaBarra.dispose();
-    this.material.dispose();
-    this.materialBarra.dispose();
+    liberarMaterialOrganico(this.material);
+    liberarMaterialOrganico(this.materialBarra);
   }
 }

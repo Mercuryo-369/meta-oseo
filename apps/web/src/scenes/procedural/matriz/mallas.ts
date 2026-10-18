@@ -13,7 +13,7 @@
  * No calculan nada de la biología: reciben `EstadoMatriz` (puro) y solo mueven, escalan y aclaran piezas.
  * Materiales compartidos por tipo de pieza; `InstancedMesh` para todo lo repetido; al liberar se libera todo.
  */
-import type { Material } from 'three';
+import type { Material, MeshStandardMaterial } from 'three';
 import {
   BufferGeometry,
   Color,
@@ -25,7 +25,7 @@ import {
   LineSegments,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
@@ -55,34 +55,46 @@ import {
   SEPARACION_LAMINILLAS,
 } from './estado';
 import type { EstadoMatriz } from './estado';
-import { baston, flecha, globulo, placa } from './geometria';
-import { HEX } from './paleta';
+import { baston, flecha, globulo, placa, unir, uvPorCaras } from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad } from '../realismo';
 
 const EJE_X = new Vector3(1, 0, 0);
 const EJE_Y = new Vector3(0, 1, 0);
 
-/** Material estándar de doble cara. */
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara
+ * (las cáscaras abiertas se ven por dentro).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: DoubleSide, ...extra });
+}
+
+/** Repetición del relieve por unidad (UV en unidades de escena) y filtrado anisótropo. Devuelve el material. */
+function relieve(m: MeshPhysicalMaterial, u: number, v = u): MeshPhysicalMaterial {
+  if (m.bumpMap) {
+    m.bumpMap.repeat.set(u, v);
+    m.bumpMap.anisotropy = 4;
+  }
+  return m;
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
 }
 
 /** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
 function poner(materiales: readonly Material[], opacidad: number, base = 1): void {
-  const o = Math.max(0, Math.min(1, opacidad * base));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
-  }
+  ponerOpacidad(materiales, opacidad * base);
 }
 
 /** Interfaz común de las tres escalas. */
@@ -115,40 +127,40 @@ export class FragmentoLaminar implements EscalaMatriz {
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
   private readonly matRayas: LineBasicMaterial;
-  private readonly instanciados: InstancedMesh[] = [];
 
   constructor() {
     this.grupo.name = 'fragmento_laminar';
-    const clara = material(HEX.laminillaClara);
-    const oscura = material(HEX.laminillaOscura);
+    // Relieve por unidad (las laminillas traen UV en unidades) y filtrado anisótropo: la cara frontal se ve de lado.
+    const clara = relieve(material(COLOR.laminillaClara), 1);
+    const oscura = relieve(material(COLOR.laminillaOscura), 1);
     this.materiales.push(clara, oscura);
 
-    // Laminillas: cajas apiladas en Y, alternando el tono (dos InstancedMesh, uno por tono).
-    const geo = placa(FRAGMENTO.ancho, GROSOR_LAMINILLA * 0.985, FRAGMENTO.fondo);
-    this.geometrias.push(geo);
-    const porTono: [InstancedMesh, InstancedMesh] = [
-      new InstancedMesh(geo, clara, Math.ceil(N_LAMINILLAS_FRAGMENTO / 2)),
-      new InstancedMesh(geo, oscura, Math.floor(N_LAMINILLAS_FRAGMENTO / 2)),
-    ];
-    porTono[0].name = 'laminillas_claras';
-    porTono[1].name = 'laminillas_oscuras';
-    const m = new Matrix4();
-    const cuenta = [0, 0];
+    // Laminillas: cajas apiladas en Y, alternando el tono; una geometría por tono (dos llamadas de dibujo). Antes eran
+    // instancias de una caja con UV de 0 a 1 por cara: grano comprimido 27:1 en la cara frontal y el mismo dibujo en
+    // las ocho. Con las cajas ya colocadas y UV en unidades, cada laminilla muestra su parte de la textura.
+    const porTono: [BufferGeometry[], BufferGeometry[]] = [[], []];
     for (let i = 0; i < N_LAMINILLAS_FRAGMENTO; i++) {
-      const tono = i % 2;
-      m.makeTranslation(0, this.alturaDeLaminilla(i), 0);
-      porTono[tono]!.setMatrixAt(cuenta[tono]!, m);
-      cuenta[tono]!++;
+      porTono[i % 2]!.push(
+        placa(FRAGMENTO.ancho, GROSOR_LAMINILLA * 0.985, FRAGMENTO.fondo).translate(
+          0,
+          this.alturaDeLaminilla(i),
+          0,
+        ),
+      );
     }
-    for (const malla of porTono) {
-      malla.instanceMatrix.needsUpdate = true;
-      malla.frustumCulled = false;
-      this.instanciados.push(malla);
+    for (const [tono, mat, nombre] of [
+      [0, clara, 'laminillas_claras'],
+      [1, oscura, 'laminillas_oscuras'],
+    ] as const) {
+      const geo = uvPorCaras(unir(porTono[tono]));
+      this.geometrias.push(geo);
+      const malla = new Mesh(geo, mat);
+      malla.name = nombre;
       this.grupo.add(malla);
     }
 
     // Rayas en la cara frontal y en la de arriba: la dirección de las fibras alterna de una laminilla a otra.
-    this.matRayas = new LineBasicMaterial({ color: HEX.contornoHueso, transparent: true });
+    this.matRayas = new LineBasicMaterial({ color: COLOR.contornoHueso, transparent: true });
     const geoRayas = this.rayas();
     this.geometrias.push(geoRayas);
     const rayas = new LineSegments(geoRayas, this.matRayas);
@@ -201,9 +213,8 @@ export class FragmentoLaminar implements EscalaMatriz {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.matRayas.dispose();
-    for (const i of this.instanciados) i.dispose();
   }
 }
 
@@ -217,14 +228,13 @@ export class LaminillasAmpliadas implements EscalaMatriz {
   private readonly materiales: Material[] = [];
   private readonly fibras: InstancedMesh;
   private readonly matResalte: MeshStandardMaterial;
-  private readonly resalte = new Color(HEX.resalte);
+  private readonly resalte = new Color(COLOR.resalte);
 
   constructor() {
     this.grupo.name = 'laminillas_ampliadas';
-    const matFibra = material('#ffffff', { roughness: 0.55 });
-    this.matResalte = material(HEX.fibraOscura, {
-      roughness: 0.4,
-      emissive: HEX.resalte,
+    const matFibra = material('#ffffff', 'fibra');
+    this.matResalte = material(COLOR.fibraOscura, 'fibra', {
+      emissive: COLOR.resalte,
       emissiveIntensity: 0,
     });
     this.materiales.push(matFibra, this.matResalte);
@@ -245,8 +255,8 @@ export class LaminillasAmpliadas implements EscalaMatriz {
     const m = new Matrix4();
     const q = new Quaternion();
     const pos = new Vector3();
-    const clara = new Color(HEX.fibraClara);
-    const oscura = new Color(HEX.fibraOscura);
+    const clara = new Color(COLOR.fibraClara);
+    const oscura = new Color(COLOR.fibraOscura);
     comunes.forEach((f, i) => {
       pos.set(f.x, this.alturaDeLaminilla(f.laminilla), f.z);
       // Giro alrededor de Y: el ángulo se mide de X hacia Z, y girar +θ alrededor de Y lleva X hacia -Z.
@@ -285,7 +295,7 @@ export class LaminillasAmpliadas implements EscalaMatriz {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.fibras.dispose();
   }
 }
@@ -299,7 +309,10 @@ export class FibrillaAbierta implements EscalaMatriz {
   /** Lo que se estira con la tracción: moléculas, huecos, cristales y proteínas. */
   private readonly cuerpo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
+  /** Materiales que solo siguen la opacidad de la fibrilla (las moléculas). */
   private readonly materiales: Material[] = [];
+  /** Materiales que además llevan su propio factor (vecinas, huecos, cristales, proteínas y flechas). */
+  private readonly conFactor: Material[] = [];
   private readonly matVecinas: MeshStandardMaterial;
   private readonly matHuecos: MeshStandardMaterial;
   private readonly matCristales: MeshStandardMaterial;
@@ -322,23 +335,25 @@ export class FibrillaAbierta implements EscalaMatriz {
   private readonly q = new Quaternion();
   private readonly pos = new Vector3();
   private readonly esc = new Vector3();
+  private readonly dir = new Vector3();
 
   constructor() {
     this.grupo.name = 'fibrilla_abierta';
     this.cuerpo.name = 'fibrilla_cuerpo';
 
-    const matMoleculas = material('#ffffff', { roughness: 0.5 });
-    this.matVecinas = material(HEX.fibrillaVecina, { roughness: 0.7 });
-    this.matHuecos = material(HEX.hueco, {
-      roughness: 0.4,
-      emissive: HEX.hueco,
+    const matMoleculas = material('#ffffff', 'molecula');
+    this.matVecinas = material(COLOR.fibrillaVecina, 'fibra');
+    this.matHuecos = material(COLOR.hueco, 'molecula', {
+      emissive: COLOR.hueco,
       emissiveIntensity: 0.35,
     });
-    this.matCristales = material(HEX.cristal, { roughness: 0.25 });
-    this.matProteinas = material('#ffffff', { roughness: 0.45 });
-    this.matFlechas = material('#ffffff', { roughness: 0.5 });
-    this.materiales.push(
-      matMoleculas,
+    this.matCristales = material(COLOR.cristal, 'cristal');
+    this.matProteinas = material('#ffffff', 'celula');
+    this.matFlechas = material('#ffffff', 'molecula');
+    // Cada material recibe su opacidad UNA vez por fotograma: antes los cinco con factor la recibían dos veces (sin
+    // él y con él) y cruzaban el umbral de transparencia dos veces en cada llamada.
+    this.materiales.push(matMoleculas);
+    this.conFactor.push(
       this.matVecinas,
       this.matHuecos,
       this.matCristales,
@@ -352,8 +367,8 @@ export class FibrillaAbierta implements EscalaMatriz {
     this.geometrias.push(geoMolecula);
     this.moleculas = new InstancedMesh(geoMolecula, matMoleculas, moleculas.length);
     this.moleculas.name = 'moleculas_tropocolageno';
-    const tonoA = new Color(HEX.molecula);
-    const tonoB = new Color(HEX.moleculaClara);
+    const tonoA = new Color(COLOR.molecula);
+    const tonoB = new Color(COLOR.moleculaClara);
     moleculas.forEach((mol, i) => {
       this.pos.set(mol.x, mol.y, mol.z);
       this.q.identity();
@@ -396,7 +411,7 @@ export class FibrillaAbierta implements EscalaMatriz {
     this.geometrias.push(geoProteina);
     this.proteinas = new InstancedMesh(geoProteina, this.matProteinas, this.datosProteinas.length);
     this.proteinas.name = 'proteinas_no_colagenas';
-    const colores = HEX.proteinas.map((h) => new Color(h));
+    const colores = COLOR.proteinas.map((h) => new Color(h));
     this.datosProteinas.forEach((p, i) => this.proteinas.setColorAt(i, colores[p.tipo]!));
     if (this.proteinas.instanceColor) this.proteinas.instanceColor.needsUpdate = true;
     this.cuerpo.add(this.proteinas);
@@ -407,8 +422,8 @@ export class FibrillaAbierta implements EscalaMatriz {
     this.geometrias.push(geoFlecha);
     this.flechas = new InstancedMesh(geoFlecha, this.matFlechas, flechas.length);
     this.flechas.name = 'flechas_carga';
-    const traccion = new Color(HEX.traccion);
-    const compresion = new Color(HEX.compresion);
+    const traccion = new Color(COLOR.traccion);
+    const compresion = new Color(COLOR.compresion);
     flechas.forEach((f, i) =>
       this.flechas.setColorAt(i, f.tipo === 'traccion' ? traccion : compresion),
     );
@@ -481,11 +496,10 @@ export class FibrillaAbierta implements EscalaMatriz {
     this.ultimasFlechas = clave;
     const k = Math.max(1e-3, aparicion);
     const lista: Flecha[] = flechasDeCarga(estiramiento);
-    const dir = new Vector3();
     lista.forEach((f, i) => {
       this.pos.set(f.x, f.y, f.z);
-      dir.set(f.dx, f.dy, f.dz);
-      this.q.setFromUnitVectors(EJE_X, dir);
+      this.dir.set(f.dx, f.dy, f.dz);
+      this.q.setFromUnitVectors(EJE_X, this.dir);
       this.esc.set(f.largo * k, k, k);
       this.m.compose(this.pos, this.q, this.esc);
       this.flechas.setMatrixAt(i, this.m);
@@ -520,7 +534,8 @@ export class FibrillaAbierta implements EscalaMatriz {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
+    liberarMateriales(this.conFactor);
     for (const i of [
       this.moleculas,
       this.vecinas,

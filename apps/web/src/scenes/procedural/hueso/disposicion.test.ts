@@ -4,12 +4,17 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  HOLGURA_PERIOSTIO,
+  METAFISIS,
   THETA_RETIRO,
+  Y_CARTILAGO,
   arcoConservadoDeLamina,
   arcoRetiradoDeLamina,
   distanciaAngular,
   lagunasDeOsteocitos,
   osteonasDelCorte,
+  perfilPeriostio,
+  radioExteriorHueso,
   radiosDeLamina,
   trabeculasDeEpifisis,
 } from './disposicion';
@@ -22,6 +27,37 @@ import {
   R_HAVERS,
   R_OSTEONA,
 } from './estado';
+
+describe('silueta del hueso largo y periostio', () => {
+  it('la silueta es la diáfisis, se ensancha en la metáfisis y sigue la epífisis', () => {
+    expect(radioExteriorHueso(0)).toBe(1);
+    expect(radioExteriorHueso(METAFISIS.desde)).toBeCloseTo(1, 9);
+    expect(radioExteriorHueso(METAFISIS.hasta)).toBeGreaterThan(1.35);
+    expect(radioExteriorHueso(4.05)).toBeCloseTo(EPIFISIS_RADIO, 9);
+    expect(radioExteriorHueso(-4.05)).toBeCloseTo(EPIFISIS_RADIO, 9);
+  });
+
+  it('el periostio va de un cartílago articular al otro, siempre por fuera del hueso y pegado a él', () => {
+    const perfil = perfilPeriostio();
+    expect(perfil).toHaveLength(24);
+    expect(perfil[0]![1]).toBeCloseTo(-Y_CARTILAGO, 9);
+    expect(perfil[perfil.length - 1]![1]).toBeCloseTo(Y_CARTILAGO, 9);
+    expect(Y_CARTILAGO).toBeCloseTo(4.78, 2);
+    for (let i = 1; i < perfil.length; i++)
+      expect(perfil[i]![1]).toBeGreaterThan(perfil[i - 1]![1]);
+    // Entre dos puntos del perfil (un segmento recto) el hueso no asoma por encima de la vaina.
+    for (let i = 1; i < perfil.length; i++) {
+      const [r0, y0] = perfil[i - 1]!;
+      const [r1, y1] = perfil[i]!;
+      for (let k = 0; k <= 10; k++) {
+        const y = y0 + ((y1 - y0) * k) / 10;
+        const r = r0 + ((r1 - r0) * k) / 10;
+        expect(r, `y = ${y}`).toBeGreaterThan(radioExteriorHueso(y) - 0.012);
+        expect(r - radioExteriorHueso(y), `y = ${y}`).toBeLessThan(HOLGURA_PERIOSTIO + 0.06);
+      }
+    }
+  });
+});
 
 describe('osteonasDelCorte', () => {
   it('da el número previsto, siempre las mismas, dentro de la cortical y sin solaparse', () => {

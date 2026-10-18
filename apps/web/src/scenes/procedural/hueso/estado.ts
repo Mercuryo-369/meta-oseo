@@ -46,8 +46,6 @@ export const CUNA = { inicio: -160, arco: 140 } as const;
 
 /** Número de osteonas dibujadas en la cortical del corte transversal. */
 export const N_OSTEONAS_CORTE = 16;
-/** Radio de cada osteona en el corte (con la cortical de radio 1). */
-export const R_OSTEONA_CORTE = 0.092;
 
 /** Radio del conducto de Havers en la osteona ampliada. */
 export const R_HAVERS = 0.3;

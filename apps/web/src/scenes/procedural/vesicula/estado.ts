@@ -5,11 +5,11 @@
  * (`EscenaVesicula.vue`) solo DIBUJAN este estado.
  *
  * ── Qué representa el tiempo ──────────────────────────────────────────────────────────────────
- * Aquí `t` SÍ es tiempo: la vida de una vesícula de matriz. Brota de la membrana basal de un osteoblasto, cae al
- * osteoide junto a una fibrilla de colágeno, concentra calcio y fosfato, forma un núcleo de fosfato de calcio
- * amorfo que se ordena en el primer cristal de hidroxiapatita, el cristal rompe la membrana, el mineral se
- * propaga por las fibrillas vecinas (y otras vesículas hacen lo mismo) y, al final, el pirofosfato frena el
- * crecimiento mientras la TNAP lo hidroliza. La escala de tiempo es pedagógica, no proporcional.
+ * Aquí `t` SÍ es tiempo: la vida de una vesícula de matriz. Brota de la membrana del polo secretor de un
+ * osteoblasto, cae al osteoide junto a una fibrilla de colágeno, concentra calcio y fosfato, forma un núcleo de
+ * fosfato de calcio amorfo que se ordena en el primer cristal de hidroxiapatita, el cristal rompe la membrana, el
+ * mineral se propaga por las fibrillas vecinas (y otras vesículas hacen lo mismo) y, al final, el pirofosfato
+ * frena el crecimiento mientras la TNAP lo hidroliza. La escala de tiempo es pedagógica, no proporcional.
  *
  * ── Fases y tiempo ────────────────────────────────────────────────────────────────────────────
  * Siete fases con un hito cada una (`HITOS_VESICULA`, el instante que mejor la muestra). Una fase abarca desde el
@@ -30,7 +30,10 @@ import type { Fotograma } from '../interpolacion';
  * osteoblasto), Z hacia la cámara.
  * ----------------------------------------------------------------------------------------- */
 
-/** Membrana basal del osteoblasto: altura media (Y), extensión en X y en Z, amplitud de su ondulación. */
+/**
+ * Membrana del polo secretor del osteoblasto (no es una membrana basal: el osteoblasto no la tiene): altura media
+ * (Y), extensión en X y en Z, amplitud de su ondulación.
+ */
 export const MEMBRANA = { y: 2.3, ancho: 11, fondo: 6.4, amplitud: 0.22 } as const;
 /** Grosor del citoplasma que se dibuja sobre la membrana. */
 export const GROSOR_CITOPLASMA = 1.1;

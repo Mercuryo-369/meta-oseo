@@ -2,7 +2,7 @@
  * Las piezas de la escena del hueso trabecular, como objetos de three con `actualizar(estado)` y `liberar()`:
  *
  *  - `RedTrabecular`: todas las placas (cuatro tiras instanciadas por placa, que se separan para abrir el agujero
- *    de la perforación) y todas las barras (cilindros instanciados que se acortan hasta un muñón al cortarse).
+ *    de la perforación) y todas las barras (instanciadas, que se acortan hasta un muñón al cortarse).
  *  - `CorticalSuperior`: la lámina de cortical que tapa el cubo y sus poros.
  *  - `Medula`: el relleno translúcido entre las trabéculas, que se vuelve graso con los años.
  *  - `BmuTrabeculares`: dos o tres unidades de remodelado sobre placas de la cara frontal (hoyo con osteoclastos,
@@ -13,19 +13,30 @@
  * No calculan nada de la biología: reciben `EstadoTrabecular` (puro) y las reglas por trabécula de
  * `disposicion.ts`, y solo colocan, escalan, colorean y aclaran instancias. Materiales compartidos por pieza; al
  * liberar se libera todo lo creado. Cada `actualizar` recoloca ~1 000 instancias solo si cambió algún factor.
+ *
+ * Realismo (2026-10-14): materiales orgánicos por tejido (`realismo.ts`) con la paleta natural de una pieza de hueso
+ * esponjoso (`NATURAL`: marfil, médula roja que se vuelve amarilla), tiras de canto biselado y barras con cintura
+ * (`geometria.ts`) y un tono algo distinto en cada trabécula.
+ *
+ * Revisión de diseño (2026-10-17): oclusión ambiental por instancia en las placas y las barras (las del centro del
+ * cubo reciben menos luz indirecta que las de las caras); la lámina cortical no proyecta sombra sobre la red (es la
+ * tapa del cubo) y lleva UV en unidades de escena (el mismo grano arriba y en los cantos).
  */
-import type { Material, BufferGeometry } from 'three';
+import type { BufferGeometry, Material } from 'three';
 import {
   BackSide,
   Color,
+  FrontSide,
   Group,
+  InstancedBufferAttribute,
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
+import { suave } from '../interpolacion';
 import {
   AGUJERO_MAXIMO,
   agujeroDePlaca,
@@ -38,8 +49,24 @@ import {
 import type { Barra, Placa, RedTrabecularDatos } from './disposicion';
 import { APLASTAMIENTO, GROSOR_CORTICAL, LADO, N_BMU, RED_JOVEN } from './estado';
 import type { EstadoTrabecular, FactoresRed } from './estado';
-import { cajaUnidad, cilindroUnidad, discoUnidad, esferaUnidad, flecha } from './geometria';
-import { HEX } from './paleta';
+import {
+  barraUnidad,
+  cajaBiselada,
+  cajaUnidad,
+  cilindroUnidad,
+  discoUnidad,
+  esferaUnidad,
+  flecha,
+  losa,
+} from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import {
+  liberarMaterialOrganico,
+  materialOrganico,
+  oclusionPorVertice,
+  ponerOpacidad,
+} from '../realismo';
 
 const MITAD = LADO / 2;
 const EJE_X = new Vector3(1, 0, 0);
@@ -50,21 +77,52 @@ const OCULTA = 1e-4;
 /** Radio del hoyo de una BMU trabecular. */
 const R_HOYO = 0.135;
 
+/**
+ * Material de un tejido (`realismo.ts`): físico y con relieve de superficie hecho por código. De UNA cara, como
+ * antes (a diferencia del hueso largo, que tiene cáscaras abiertas): aquí todas las piezas son sólidos cerrados y el
+ * cubo joven translúcido se vería con doble capa si también se dibujaran sus caras de dentro.
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-): MeshStandardMaterial {
-  return new MeshStandardMaterial({ color, roughness: 0.62, metalness: 0, ...extra });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: FrontSide, ...extra });
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
+}
+
+/**
+ * Cuántas veces se repite el relieve sobre las UV de una pieza (el mismo mapa da el relieve y la rugosidad). Las
+ * tiras miden la mitad de alto que de ancho: así el grano sale del mismo tamaño en los dos sentidos.
+ */
+function repetirRelieve(m: MeshPhysicalMaterial, x: number, y: number): void {
+  m.bumpMap?.repeat.set(x, y);
 }
 
 /** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
 function poner(materiales: readonly Material[], opacidad: number, base = 1): void {
-  const o = Math.max(0, Math.min(1, opacidad * base));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
-  }
+  ponerOpacidad(materiales, opacidad * base);
+}
+
+/** Oclusión ambiental en el centro del cubo (1 al aire libre). */
+const OCLUSION_CENTRO = 0.4;
+
+/**
+ * Oclusión ambiental de una trabécula según su sitio en el cubo (realismo-06): 1 en las caras abiertas (los cuatro
+ * lados y la base; arriba está la cortical) y `OCLUSION_CENTRO` en el centro, donde la red que la rodea tapa casi
+ * toda la luz que llega de fuera. Solo apaga la luz indirecta (entorno y hemisferio, que three no ocluye): la directa
+ * ya la ocultan las sombras. Antes las trabéculas del centro salían tan claras como las de las caras.
+ */
+export function oclusionTrabecula(x: number, y: number, z: number): number {
+  const hondura = Math.max(0, Math.min(MITAD - Math.abs(x), MITAD - Math.abs(z), MITAD + y));
+  return 1 - (1 - OCLUSION_CENTRO) * suave(hondura / (0.3 * LADO));
 }
 
 /** Interfaz común de las piezas. */
@@ -88,6 +146,7 @@ const qA = new Quaternion();
 const qC = new Quaternion();
 const vA = new Vector3();
 const vB = new Vector3();
+const vE = new Vector3();
 const colorA = new Color();
 const colorB = new Color();
 
@@ -116,6 +175,14 @@ function colocar(
  * ----------------------------------------------------------------------------------------- */
 
 const TIRAS_POR_PLACA = 4;
+/** Bisel del canto de las tiras (fracción de su ancho y de su alto). */
+const BISEL_TIRA = { x: 0.06, y: 0.08 } as const;
+/**
+ * Cuánto se meten las tiras superior e inferior una en la otra cuando la placa está entera (unidades de escena):
+ * más que la profundidad del bisel, para que no quede un surco a media placa. Se anula al abrirse el agujero, y las
+ * tiras laterales se alargan lo mismo hacia arriba y hacia abajo para esconder sus extremos en las otras dos.
+ */
+const SOLAPE = 0.035;
 
 export class RedTrabecular {
   readonly grupo = new Group();
@@ -123,7 +190,7 @@ export class RedTrabecular {
   readonly barras: InstancedMesh;
   readonly datos: RedTrabecularDatos;
   private readonly geometrias: BufferGeometry[] = [];
-  readonly materiales: MeshStandardMaterial[] = [];
+  readonly materiales: MeshPhysicalMaterial[] = [];
   private readonly fantasma: boolean;
   private readonly orientaciones: Quaternion[];
   private readonly orientacionesBarras: Quaternion[];
@@ -134,18 +201,23 @@ export class RedTrabecular {
     this.datos = datos;
     this.grupo.name = fantasma ? 'red_trabecular_joven' : 'red_trabecular';
 
-    const geoCaja = cajaUnidad();
-    const geoBarra = cilindroUnidad(7);
-    this.geometrias.push(geoCaja, geoBarra);
+    const geoTira = losa(BISEL_TIRA.x, BISEL_TIRA.y);
+    const geoBarra = barraUnidad(10);
+    this.geometrias.push(geoTira, geoBarra);
 
+    // Hueso esponjoso: mate y granuloso. El color va por instancia en el cubo que envejece (material blanco).
     const matPlacas = fantasma
-      ? material(HEX.fantasma, { roughness: 0.5, transparent: true, depthWrite: false })
-      : material('#ffffff', { roughness: 0.68 });
-    const matBarras = fantasma ? matPlacas : material(HEX.barra, { roughness: 0.7 });
+      ? material(COLOR.fantasma, 'hueso_esponjoso', { transparent: true, depthWrite: false })
+      : material('#ffffff', 'hueso_esponjoso');
+    const matBarras = fantasma ? matPlacas : material('#ffffff', 'hueso_esponjoso');
+    repetirRelieve(matPlacas, 1.2, 0.6);
     this.materiales.push(matPlacas);
-    if (matBarras !== matPlacas) this.materiales.push(matBarras);
+    if (matBarras !== matPlacas) {
+      repetirRelieve(matBarras, 0.6, 1.2);
+      this.materiales.push(matBarras);
+    }
 
-    this.placas = new InstancedMesh(geoCaja, matPlacas, datos.placas.length * TIRAS_POR_PLACA);
+    this.placas = new InstancedMesh(geoTira, matPlacas, datos.placas.length * TIRAS_POR_PLACA);
     this.placas.name = 'placas';
     this.placas.frustumCulled = false;
     this.barras = new InstancedMesh(geoBarra, matBarras, datos.barras.length);
@@ -167,14 +239,37 @@ export class RedTrabecular {
       return q;
     });
 
-    // Colores base por placa (solo el cubo que envejece: el fantasma es de un solo color translúcido).
+    // Colores base por trabécula (solo el cubo que envejece: el fantasma es de un solo color translúcido). Una
+    // pieza real no es de un marfil uniforme: las de menos vida, algo más amarillentas. Y oclusión ambiental por
+    // instancia (un atributo `ao` por instancia: las posiciones de la red no cambian, se escribe una vez).
     if (!fantasma) {
-      colorA.set(HEX.placa);
-      colorB.set(HEX.barra);
+      const aoPlacas = new Float32Array(datos.placas.length * TIRAS_POR_PLACA);
+      datos.placas.forEach((p, i) => {
+        aoPlacas.fill(
+          oclusionTrabecula(p.x, p.y, p.z),
+          i * TIRAS_POR_PLACA,
+          (i + 1) * TIRAS_POR_PLACA,
+        );
+      });
+      geoTira.setAttribute('ao', new InstancedBufferAttribute(aoPlacas, 1));
+      geoBarra.setAttribute(
+        'ao',
+        new InstancedBufferAttribute(
+          Float32Array.from(datos.barras, (b) => oclusionTrabecula(b.x, b.y, b.z)),
+          1,
+        ),
+      );
+      oclusionPorVertice(matPlacas);
+      oclusionPorVertice(matBarras);
+      colorA.set(COLOR.placa);
+      colorB.set(COLOR.barra);
       datos.placas.forEach((p, i) => {
         const c = colorA.clone().lerp(colorB, 0.45 * (1 - p.vida));
         for (let k = 0; k < TIRAS_POR_PLACA; k++)
           this.placas.setColorAt(i * TIRAS_POR_PLACA + k, c);
+      });
+      datos.barras.forEach((b, i) => {
+        this.barras.setColorAt(i, colorB.clone().lerp(colorA, 0.6 * b.vida));
       });
     }
 
@@ -210,7 +305,12 @@ export class RedTrabecular {
     const base = i * TIRAS_POR_PLACA;
     vA.set(p.x, p.y, p.z);
 
-    // Tiras superior e inferior: enteras cuando no hay agujero; al romperse se quiebran hacia fuera del plano.
+    // Tiras superior e inferior: enteras cuando no hay agujero (y solapadas en el centro); al romperse se quiebran
+    // hacia fuera del plano. La inferior es un 2 % más fina y las laterales, un 4 %: así sus caras no coinciden
+    // donde se solapan.
+    const borde = altoAgujero / 2 - SOLAPE * (1 - h);
+    const altoTira = p.alto / 2 - borde;
+    const centroTira = (p.alto / 2 + borde) / 2;
     for (const signo of [1, -1] as const) {
       const qExtra = rota ? qA.setFromAxisAngle(EJE_X, signo * angulo) : null;
       colocar(
@@ -219,12 +319,14 @@ export class RedTrabecular {
         vA,
         q,
         qExtra,
-        vB.set(0, (signo * (p.alto + altoAgujero)) / 4, rota ? signo * 0.05 * rotura : 0),
-        new Vector3(p.ancho, (p.alto - altoAgujero) / 2, g),
+        vB.set(0, signo * centroTira, rota ? signo * 0.05 * rotura : 0),
+        vE.set(p.ancho, altoTira, signo === 1 ? g : g * 0.98),
       );
     }
-    // Tiras laterales: solo existen cuando hay agujero (antes quedan escondidas dentro de la placa).
-    const altoLateral = Math.max(altoAgujero, OCULTA);
+    // Tiras laterales: solo existen cuando hay agujero (antes quedan escondidas dentro de la placa); sus extremos
+    // se meten en las tiras superior e inferior.
+    const extension = SOLAPE * Math.min(1, h * 20);
+    const altoLateral = Math.max(altoAgujero + 2 * extension, OCULTA);
     for (const signo of [1, -1] as const) {
       colocar(
         this.placas,
@@ -233,13 +335,13 @@ export class RedTrabecular {
         q,
         null,
         vB.set((signo * (p.ancho + anchoAgujero)) / 4, 0, 0),
-        new Vector3((p.ancho - anchoAgujero) / 2, altoLateral, g * 0.98),
+        vE.set((p.ancho - anchoAgujero) / 2, altoLateral, g * 0.96),
       );
     }
     if (!this.fantasma && p.microfractura) {
       // La placa rota se enciende en rojo a medida que se rompe.
-      colorA.set(HEX.placa).lerp(colorB.set(HEX.barra), 0.45 * (1 - p.vida));
-      colorA.lerp(colorB.set(HEX.microfractura), rotura);
+      colorA.set(COLOR.placa).lerp(colorB.set(COLOR.barra), 0.45 * (1 - p.vida));
+      colorA.lerp(colorB.set(COLOR.microfractura), rotura);
       for (let k = 0; k < TIRAS_POR_PLACA; k++) this.placas.setColorAt(base + k, colorA);
     }
   }
@@ -263,7 +365,7 @@ export class RedTrabecular {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.placas.dispose();
     this.barras.dispose();
   }
@@ -275,7 +377,7 @@ export class RedTrabecular {
 
 export class CorticalSuperior {
   readonly grupo = new Group();
-  readonly materiales: MeshStandardMaterial[] = [];
+  readonly materiales: MeshPhysicalMaterial[] = [];
   private readonly geometrias: BufferGeometry[] = [];
   private readonly lamina: Mesh;
   private readonly poros: InstancedMesh;
@@ -285,16 +387,22 @@ export class CorticalSuperior {
 
   constructor(fantasma: boolean) {
     this.grupo.name = fantasma ? 'cortical_joven' : 'cortical_superior';
-    const geoCaja = cajaUnidad();
-    const geoPoro = cilindroUnidad(8);
-    this.geometrias.push(geoCaja, geoPoro);
+    // Lámina de hueso compacto con el borde redondeado (bisel de unos 0,05 en el plano y de un 30 % del grosor), con
+    // UV en unidades a su tamaño: con UV de 0 a 1 por cara, el grano salía 25 veces más fino en los cantos.
+    const geoLamina = cajaBiselada(0.016, 0.3, 0.016, [LADO + 0.02, GROSOR_CORTICAL, LADO + 0.02]);
+    const geoPoro = cilindroUnidad(12);
+    this.geometrias.push(geoLamina, geoPoro);
     const mat = fantasma
-      ? material(HEX.fantasma, { roughness: 0.5, transparent: true, depthWrite: false })
-      : material(HEX.cortical, { roughness: 0.6 });
-    const matPoro = material(HEX.poro, { roughness: 0.9 });
+      ? material(COLOR.fantasma, 'hueso', { transparent: true, depthWrite: false })
+      : material(COLOR.cortical, 'hueso');
+    repetirRelieve(mat, 1.4, 1.4);
+    // Poro: la boca oscura de un conducto vascular.
+    const matPoro = material(COLOR.poro, 'cavidad');
     this.materiales.push(mat, matPoro);
-    this.lamina = new Mesh(geoCaja, mat);
+    this.lamina = new Mesh(geoLamina, mat);
     this.lamina.name = 'lamina_cortical';
+    // Es la tapa del cubo: su sombra caía sobre el 7-12 % de las placas de dentro (render-05).
+    this.lamina.userData.sinSombra = true;
     this.poros = new InstancedMesh(geoPoro, matPoro, this.datosPoros.length);
     this.poros.name = 'poros_corticales';
     this.poros.frustumCulled = false;
@@ -320,7 +428,7 @@ export class CorticalSuperior {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.poros.dispose();
   }
 }
@@ -331,17 +439,16 @@ export class CorticalSuperior {
 
 export class Medula {
   readonly grupo = new Group();
-  readonly materiales: MeshStandardMaterial[] = [];
+  readonly materiales: MeshPhysicalMaterial[] = [];
   private readonly geometria: BufferGeometry;
-  private readonly joven = new Color(HEX.medula);
-  private readonly grasa = new Color(HEX.medulaGrasa);
+  private readonly joven = new Color(COLOR.medula);
+  private readonly grasa = new Color(COLOR.medulaGrasa);
 
   constructor() {
     this.grupo.name = 'medula';
     this.geometria = cajaUnidad();
     // Solo las caras de atrás: la médula se ve como el fondo de la biopsia, sin velar las trabéculas de delante.
-    const mat = material(HEX.medula, {
-      roughness: 0.95,
+    const mat = material(COLOR.medula, 'medula', {
       side: BackSide,
       transparent: true,
       opacity: 0.55,
@@ -361,7 +468,7 @@ export class Medula {
 
   liberar(): void {
     this.geometria.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
   }
 }
 
@@ -375,7 +482,7 @@ const OSTEOBLASTOS_POR_HOYO = 5;
 
 export class BmuTrabeculares {
   readonly grupo = new Group();
-  readonly materiales: MeshStandardMaterial[] = [];
+  readonly materiales: MeshPhysicalMaterial[] = [];
   private readonly geometrias: BufferGeometry[] = [];
   private readonly hoyos: InstancedMesh;
   private readonly osteoide: InstancedMesh;
@@ -391,9 +498,10 @@ export class BmuTrabeculares {
     const geoDisco = discoUnidad();
     const geoEsfera = esferaUnidad();
     this.geometrias.push(geoDisco, geoEsfera);
-    const matHoyo = material(HEX.hoyo, { roughness: 0.85 });
-    const matOsteoide = material(HEX.osteoide, { roughness: 0.5 });
-    const matCelulas = material('#ffffff', { roughness: 0.45 });
+    // Hoyo de resorción: hueso excavado, más oscuro y picado. Osteoide: colágeno sin mineralizar, con estrías.
+    const matHoyo = material(COLOR.hoyo, 'hueso');
+    const matOsteoide = material(COLOR.osteoide, 'fibra');
+    const matCelulas = material('#ffffff', 'celula');
     this.materiales.push(matHoyo, matOsteoide, matCelulas);
 
     this.hoyos = new InstancedMesh(geoDisco, matHoyo, Math.max(1, this.sitios.length));
@@ -426,7 +534,7 @@ export class BmuTrabeculares {
           const cx = p.x + (k - 0.5) * r * 0.95;
           const cy = p.y + (k === 0 ? -0.02 : 0.03);
           m4.compose(vA.set(cx, cy, cara + 0.035), qA, vB.set(r * 0.5, r * 0.36, 0.04));
-          this.celulas.setColorAt(iCelula, colorA.set(HEX.osteoclasto));
+          this.celulas.setColorAt(iCelula, colorA.set(COLOR.osteoclasto));
           this.celulas.setMatrixAt(iCelula++, m4);
           for (let n = 0; n < NUCLEOS_POR_OSTEOCLASTO; n++) {
             const a = (n / NUCLEOS_POR_OSTEOCLASTO) * Math.PI * 2 + k;
@@ -435,7 +543,7 @@ export class BmuTrabeculares {
               qA,
               vB.set(0.014, 0.014, 0.012),
             );
-            this.celulas.setColorAt(iCelula, colorA.set(HEX.nucleo));
+            this.celulas.setColorAt(iCelula, colorA.set(COLOR.nucleo));
             this.celulas.setMatrixAt(iCelula++, m4);
           }
         }
@@ -451,7 +559,7 @@ export class BmuTrabeculares {
             qA,
             vB.set(0.04, 0.032, 0.03),
           );
-          this.celulas.setColorAt(iCelula, colorA.set(HEX.osteoblasto));
+          this.celulas.setColorAt(iCelula, colorA.set(COLOR.osteoblasto));
           this.celulas.setMatrixAt(iCelula++, m4);
         }
       }
@@ -464,7 +572,7 @@ export class BmuTrabeculares {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.hoyos.dispose();
     this.osteoide.dispose();
     this.celulas.dispose();
@@ -479,15 +587,15 @@ const LARGO_FLECHA = 1.3;
 
 export class FlechaCarga {
   readonly grupo = new Group();
-  readonly materiales: MeshStandardMaterial[] = [];
+  readonly materiales: MeshPhysicalMaterial[] = [];
   private readonly geometria: BufferGeometry;
 
   constructor() {
     this.grupo.name = 'flecha_carga';
     this.geometria = flecha(LARGO_FLECHA, 0.075);
-    const mat = material(HEX.flecha, {
-      roughness: 0.4,
-      emissive: HEX.flecha,
+    // Flecha didáctica (no es tejido): lisa y satinada, con un poco de brillo propio para que destaque.
+    const mat = material(COLOR.flecha, 'molecula', {
+      emissive: COLOR.flecha,
       emissiveIntensity: 0.25,
     });
     this.materiales.push(mat);
@@ -505,7 +613,7 @@ export class FlechaCarga {
 
   liberar(): void {
     this.geometria.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
   }
 }
 

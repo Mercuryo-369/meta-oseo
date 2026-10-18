@@ -13,21 +13,38 @@
  *
  * Todo sale del `EstadoBmu`: no hay animaciones acumuladas ni relojes. La "vibración" de los osteoclastos
  * viene ya calculada en el estado.
+ *
+ * Realismo (2026-10-14): material de célula de `realismo.ts` (superficie blanda y húmeda, con relieve fino),
+ * esferas de 12 × 8 (antes 9 × 6, se veían las facetas) y los colores de la paleta natural.
+ *
+ * Revisión de diseño (2026-10-17):
+ *  - render-03: el marco de cada célula era zurdo (t × f = −n). three decide qué cara es la delantera por objeto,
+ *    no por instancia, así que las células se dibujaban con la cara trasera y la normal invertida: se iluminaban
+ *    desde el lado contrario y parecían hoyos en la pared. Ahora f = n × t y la base es directa.
+ *  - realismo-03: el emisivo violeta (que tapaba ese fallo) baja de 0,55 a 0,15: con él, núcleos y células se
+ *    veían iluminados por dentro y sin volumen.
+ *  - realismo-06: oclusión ambiental por instancia (atributo `ao` de la esfera, uno por instancia): las células
+ *    del fondo del túnel reciben la misma luz indirecta reducida que la pared en que se apoyan.
+ *  - render-13: las instancias ocultas tienen escala cero pero m[15] = 1 (con toda la matriz a cero, la esfera
+ *    envolvente de la malla salía NaN).
  */
-import {
-  DynamicDrawUsage,
-  InstancedBufferAttribute,
-  InstancedMesh,
-  MeshStandardMaterial,
-  SphereGeometry,
-} from 'three';
+import type { MeshPhysicalMaterial } from 'three';
+import { DynamicDrawUsage, InstancedBufferAttribute, InstancedMesh, SphereGeometry } from 'three';
 import { acotar, generadorDeterminista, mezclar, suave } from '../interpolacion';
+import { liberarMaterialOrganico, materialOrganico, oclusionPorVertice } from '../realismo';
 import { LARGO, N_OSTEOCLASTOS, N_PRECURSORES, R_CANAL, X_INICIO, radioExcavado } from './estado';
 import type { EstadoBmu } from './estado';
+import { oclusionLuz } from './malla';
 import type { MallaHueso } from './malla';
-import { HEX, lineal, mezclarRgb } from './paleta';
+import { NATURAL, lineal, mezclarRgb } from './paleta';
 import type { Rgb } from './paleta';
 import { SECTOR_FIN, SECTOR_INICIO, anguloDeFraccion } from './sector';
+
+/**
+ * Brillo aterciopelado de las células: un lila grisáceo neutro. El material es blanco (el color de cada célula
+ * va por instancia) y el brillo de `realismo.ts` toma el color del material, así que sin esto sería blanco.
+ */
+export const BRILLO_CELULAS = '#c4b8d4';
 
 /** Celdas de la rejilla de la pared. */
 const CELDAS_X = 20;
@@ -43,14 +60,20 @@ const INICIO_PARED = INICIO_LOBULOS + N_OSTEOCLASTOS * LOBULOS_POR_OSTEOCLASTO;
 export const TOTAL_INSTANCIAS = INICIO_PARED + CELDAS_X * CELDAS_FI;
 
 const COLOR = {
-  precursor: lineal(HEX.precursor),
-  cuerpoOc: lineal(HEX.osteoclasto),
-  nucleo: lineal(HEX.nucleo),
-  borde: lineal(HEX.bordeFestoneado),
-  revestimiento: lineal(HEX.revestimiento),
-  inversion: lineal(HEX.celulaInversion),
-  osteoblasto: lineal(HEX.osteoblasto),
+  precursor: lineal(NATURAL.precursor),
+  cuerpoOc: lineal(NATURAL.osteoclasto),
+  nucleo: lineal(NATURAL.nucleo),
+  borde: lineal(NATURAL.bordeFestoneado),
+  revestimiento: lineal(NATURAL.revestimiento),
+  inversion: lineal(NATURAL.celulaInversion),
+  osteoblasto: lineal(NATURAL.osteoblasto),
 } as const;
+
+/**
+ * Cuánto de la oclusión de la pared recibe una célula apoyada en ella: algo menos que la pared, porque asoma hacia
+ * el eje y ve más de la ventana de la cuña.
+ */
+const OCLUSION_CELULA = 0.8;
 
 /** Semiejes (tangente x, tangente fi, altura) de cada tipo de célula de la pared. */
 const DIMENSIONES = {
@@ -67,7 +90,7 @@ interface Marco {
   p: V3;
   /** Tangente al perfil (sigue el eje X y la pendiente del radio). */
   t: V3;
-  /** Tangente circunferencial. */
+  /** Tangente circunferencial, f = n × t: la base (t, f, n) es directa (t × f = n). */
   f: V3;
   /** Normal que sale hacia el hueso (lejos del eje). */
   n: V3;
@@ -83,7 +106,7 @@ function marco(x: number, fi: number, radio: (x: number) => number): Marco {
   return {
     p: [x, r * c, r * s],
     t: [1 / norma, (pendiente * c) / norma, (pendiente * s) / norma],
-    f: [0, -s, c],
+    f: [0, s, -c],
     n: [-pendiente / norma, c / norma, s / norma],
   };
 }
@@ -104,18 +127,26 @@ const AUX_COLOR_2: Rgb = [0, 0, 0];
 export class CelulasBmu {
   readonly malla: InstancedMesh;
   private readonly geometria: SphereGeometry;
-  private readonly material: MeshStandardMaterial;
+  private readonly material: MeshPhysicalMaterial;
   private readonly matrices: Float32Array;
   private readonly colores: Float32Array;
+  /** Oclusión ambiental de cada instancia (atributo `ao` de la esfera, uno por instancia). */
+  private readonly oclusion: InstancedBufferAttribute;
 
   constructor(private readonly hueso: MallaHueso) {
-    this.geometria = new SphereGeometry(1, 9, 6);
-    this.material = new MeshStandardMaterial({
-      roughness: 0.4,
-      metalness: 0,
+    this.geometria = new SphereGeometry(1, 12, 8);
+    // Un emisivo violeta muy tenue (antes 0,55): con la oclusión del túnel, solo evita negros en la sombra.
+    this.material = materialOrganico('#ffffff', 'celula', {
       emissive: '#3a3266',
-      emissiveIntensity: 0.55,
+      emissiveIntensity: 0.15,
+      sheenColor: BRILLO_CELULAS,
     });
+    // Oclusión ambiental (`realismo.ts`): el atributo `ao` es por instancia (InstancedBufferAttribute en la
+    // geometría), así que cada célula tiene un solo valor para todos sus vértices.
+    this.oclusion = new InstancedBufferAttribute(new Float32Array(TOTAL_INSTANCIAS).fill(1), 1);
+    this.oclusion.setUsage(DynamicDrawUsage);
+    this.geometria.setAttribute('ao', this.oclusion);
+    oclusionPorVertice(this.material);
     this.malla = new InstancedMesh(this.geometria, this.material, TOTAL_INSTANCIAS);
     this.malla.instanceMatrix.setUsage(DynamicDrawUsage);
     this.colores = new Float32Array(TOTAL_INSTANCIAS * 3);
@@ -138,6 +169,7 @@ export class CelulasBmu {
     sy: number,
     sz: number,
     color: Rgb,
+    ao: number,
   ): void {
     const m = this.matrices;
     const o = 16 * i;
@@ -161,11 +193,17 @@ export class CelulasBmu {
     this.colores[c] = color[0];
     this.colores[c + 1] = color[1];
     this.colores[c + 2] = color[2];
+    this.oclusion.setX(i, ao);
   }
 
+  /**
+   * Escala cero: la instancia no se ve. m[15] = 1 (no 0): con la matriz entera a cero, three divide entre cero al
+   * calcular la esfera envolvente de la malla (centro NaN: sin raycast y sin orden de transparencias).
+   */
   private ocultar(i: number): void {
     const o = 16 * i;
-    for (let k = 0; k < 16; k++) this.matrices[o + k] = 0;
+    for (let k = 0; k < 15; k++) this.matrices[o + k] = 0;
+    this.matrices[o + 15] = 1;
   }
 
   actualizar(estado: EstadoBmu): void {
@@ -174,6 +212,12 @@ export class CelulasBmu {
     this.pared(estado);
     this.malla.instanceMatrix.needsUpdate = true;
     if (this.malla.instanceColor) this.malla.instanceColor.needsUpdate = true;
+    this.oclusion.needsUpdate = true;
+  }
+
+  /** Oclusión de una célula apoyada en la pared del túnel en (x, u). */
+  private static oclusionEn(x: number, u: number): number {
+    return mezclar(1, oclusionLuz(x, u), OCLUSION_CELULA);
   }
 
   private posicionOsteoclasto(estado: EstadoBmu, k: number): { x: number; fi: number } | null {
@@ -198,7 +242,8 @@ export class CelulasBmu {
         0.2 * Math.cos(2.4 * i),
         0.2 * Math.sin(2.4 * i),
       ];
-      const fi = anguloDeFraccion((par + 0.5) / (N_PRECURSORES / 2));
+      const uDestino = (par + 0.5) / (N_PRECURSORES / 2);
+      const fi = anguloDeFraccion(uDestino);
       const xDestino = X_INICIO - 0.55 - 0.42 * (i % 2) - 0.12 * par;
       const rDestino = R_CANAL - 0.02;
       const destino: V3 = [xDestino, rDestino * Math.cos(fi), rDestino * Math.sin(fi)];
@@ -232,6 +277,8 @@ export class CelulasBmu {
         tamano,
         tamano,
         COLOR.precursor,
+        // Desde el eje se ve más de la ventana de la cuña: de la oclusión del centro a la de su destino.
+        CelulasBmu.oclusionEn(p[0], mezclar(0.5, uDestino, marcha)),
       );
     }
   }
@@ -260,13 +307,15 @@ export class CelulasBmu {
         m.p[1] - m.n[1] * semi[2] * 0.85,
         m.p[2] - m.n[2] * semi[2] * 0.85,
       ];
-      this.poner(cuerpo, centro, m.t, m.f, m.n, semi[0], semi[1], semi[2], COLOR.cuerpoOc);
+      const ao = CelulasBmu.oclusionEn(c.x, c.u);
+      this.poner(cuerpo, centro, m.t, m.f, m.n, semi[0], semi[1], semi[2], COLOR.cuerpoOc, ao);
 
-      // Núcleos: esferas oscuras que asoman por la cara que mira a la luz del túnel.
+      // Núcleos: esferas oscuras que asoman por la cara que mira a la luz del túnel. El desfase en f lleva el
+      // signo cambiado desde que f es (0, sen, −cos): los núcleos quedan donde estaban.
       const desfases: readonly [number, number][] = [
-        [-0.17, 0.02],
-        [0.13, 0.19],
-        [0.11, -0.2],
+        [-0.17, -0.02],
+        [0.13, -0.19],
+        [0.11, 0.2],
       ];
       for (let j = 0; j < NUCLEOS_POR_OSTEOCLASTO; j++) {
         const [dt, df] = desfases[j]!;
@@ -277,7 +326,7 @@ export class CelulasBmu {
           centro[2] + m.t[2] * dt * e * 2 + m.f[2] * df * e * 2 + m.n[2] * alto,
         ];
         const nr = 0.115 * e;
-        this.poner(nucleos + j, p, m.t, m.f, m.n, nr, nr, nr * 0.8, COLOR.nucleo);
+        this.poner(nucleos + j, p, m.t, m.f, m.n, nr, nr, nr * 0.8, COLOR.nucleo, ao);
       }
 
       // Borde festoneado: anillo de lóbulos en el lado que toca el hueso.
@@ -291,7 +340,7 @@ export class CelulasBmu {
           centro[2] + m.t[2] * ct + m.f[2] * cf + m.n[2] * semi[2] * 0.72,
         ];
         const lr = 0.1 * e;
-        this.poner(lobulos + j, p, m.t, m.f, m.n, lr, lr, lr * 0.6, COLOR.borde);
+        this.poner(lobulos + j, p, m.t, m.f, m.n, lr, lr, lr * 0.6, COLOR.borde, ao);
       }
     }
   }
@@ -357,7 +406,7 @@ export class CelulasBmu {
           m.p[1] - m.n[1] * h * 0.55,
           m.p[2] - m.n[2] * h * 0.55,
         ];
-        this.poner(indice, p, m.t, m.f, m.n, t, f, h, AUX_COLOR_2);
+        this.poner(indice, p, m.t, m.f, m.n, t, f, h, AUX_COLOR_2, CelulasBmu.oclusionEn(x, u));
       }
     }
   }
@@ -365,6 +414,6 @@ export class CelulasBmu {
   liberar(): void {
     this.malla.dispose();
     this.geometria.dispose();
-    this.material.dispose();
+    liberarMaterialOrganico(this.material);
   }
 }

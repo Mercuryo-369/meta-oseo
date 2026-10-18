@@ -15,22 +15,65 @@
  *    Howship) donde solo hay hueso resorbido, y de color según su estado (hueso, línea de cemento, osteoide,
  *    hueso mineralizado).
  *
+ * Realismo (2026-10-14): colores de la paleta natural (`RGB_NATURAL`: hueso marfil) y coordenadas UV EN
+ * UNIDADES DE ESCENA para el relieve de superficie del material (`materialHuesoBmu`): planas en las caras de
+ * corte (x, radio) y en las tapas (y, z), cilíndricas en la superficie exterior y en la luz (arco, x). Se
+ * escriben con las posiciones, así que la textura queda fija en el hueso aunque el túnel cambie.
+ *
+ * Oclusión ambiental (2026-10-17, realismo-06): la luz de entorno y el hemisferio no saben que la luz del conducto
+ * está dentro de un cilindro abierto solo por una ventana de 90°, así que el fondo del túnel salía tan claro como la
+ * cara exterior. La geometría lleva un atributo `ao` (1 al aire libre) que apaga solo la luz indirecta
+ * (`oclusionPorVertice`): las sombras ya ocultan la directa. Es estático (depende solo de la posición en la rejilla
+ * de la luz) y se escribe una vez.
+ *
  * Presupuesto: unos 13 000 triángulos.
  */
+import type { MeshPhysicalMaterial } from 'three';
 import { BufferAttribute, BufferGeometry, DynamicDrawUsage } from 'three';
 import { acotar, mezclar, suave } from '../interpolacion';
+import { materialOrganico, oclusionPorVertice } from '../realismo';
 import {
   LARGO,
   R_CANAL,
+  R_CAVIDAD,
   R_EXTERIOR,
   R_LUMEN_FINAL,
   avanceLocalFormacion,
   radioExcavado,
 } from './estado';
 import type { EstadoBmu } from './estado';
-import { RGB, mezclarRgb } from './paleta';
+import { RGB_NATURAL as RGB, mezclarRgb } from './paleta';
 import type { Rgb } from './paleta';
 import { SECTOR_FIN, SECTOR_INICIO } from './sector';
+
+/**
+ * Material del hueso de la BMU (`realismo.ts`, tejido `hueso`): blanco, porque el color lo pone cada vértice, con
+ * el relieve de poros. Sus UV van en unidades de escena (no de 0 a 1 por pieza): una repetición de la textura
+ * por unidad (100 µm) da un grano que se ve desde todas las vistas; la repetición del tejido (6 × 10, pensada
+ * para UV de 0 a 1 en un cilindro entero) lo haría invisible. Con oclusión ambiental por vértice (atributo `ao`
+ * de `MallaHueso`).
+ */
+export function materialHuesoBmu(): MeshPhysicalMaterial {
+  const material = materialOrganico('#ffffff', 'hueso', { vertexColors: true });
+  material.bumpMap?.repeat.set(1, 1);
+  oclusionPorVertice(material);
+  return material;
+}
+
+/**
+ * Oclusión ambiental (0 a 1) de la luz del conducto en `x` y en la fracción `u` del sector (0 y 1 = junto a las
+ * caras de corte). Desde la pared, la ventana de 90° de la cuña se ve siempre bajo 45° (ángulo inscrito): el factor
+ * de vista, con los rebotes en el hueso claro, queda en ~0,75 frente a la ventana (u = 0,5) y ~0,4 junto a las
+ * caras de corte. Hacia los extremos del fragmento el túnel se abre y vuelve a 1. Lo usan también las células que
+ * tapizan la pared (`celulas.ts`).
+ */
+export function oclusionLuz(x: number, u: number): number {
+  return mezclar(
+    1,
+    0.4 + 0.35 * Math.sin(Math.PI * acotar(u)),
+    suave((LARGO / 2 - Math.abs(x)) / R_CAVIDAD),
+  );
+}
 
 /** Columnas a lo largo del eje X y del ángulo. */
 const NX = 80;
@@ -55,11 +98,12 @@ const COLORES_VIEJO: readonly Rgb[] = [
   RGB.hueso,
 ];
 
-/** Escribe vértices, normales y colores en los arreglos compartidos. */
+/** Escribe vértices, normales, colores y coordenadas UV en los arreglos compartidos. */
 class Escritor {
   readonly pos: Float32Array;
   readonly nor: Float32Array;
   readonly col: Float32Array;
+  readonly uv: Float32Array;
   readonly indices: number[] = [];
   private siguiente = 0;
 
@@ -67,6 +111,7 @@ class Escritor {
     this.pos = new Float32Array(capacidad * 3);
     this.nor = new Float32Array(capacidad * 3);
     this.col = new Float32Array(capacidad * 3);
+    this.uv = new Float32Array(capacidad * 2);
   }
 
   get vertices(): number {
@@ -111,6 +156,12 @@ class Escritor {
     this.col[3 * i] = c[0];
     this.col[3 * i + 1] = c[1];
     this.col[3 * i + 2] = c[2];
+  }
+
+  /** Coordenadas UV del vértice `i` (en unidades de escena). */
+  coordenada(i: number, u: number, v: number): void {
+    this.uv[2 * i] = u;
+    this.uv[2 * i + 1] = v;
   }
 }
 
@@ -234,12 +285,23 @@ export class MallaHueso {
 
     this.iniciarEstaticas();
 
+    // Oclusión ambiental: 1 en todas las piezas exteriores y menos en la luz del conducto (estática).
+    const ao = new Float32Array(capacidad).fill(1);
+    for (let i = 0; i <= NX; i++) {
+      for (let j = 0; j <= NFI; j++) {
+        ao[this.baseLuz + i * (NFI + 1) + j] = oclusionLuz(this.perfil.x[i]!, j / NFI);
+      }
+    }
+
     const posAttr = new BufferAttribute(e.pos, 3).setUsage(DynamicDrawUsage);
     const norAttr = new BufferAttribute(e.nor, 3).setUsage(DynamicDrawUsage);
     const colAttr = new BufferAttribute(e.col, 3).setUsage(DynamicDrawUsage);
+    const uvAttr = new BufferAttribute(e.uv, 2).setUsage(DynamicDrawUsage);
     this.geometria.setAttribute('position', posAttr);
     this.geometria.setAttribute('normal', norAttr);
     this.geometria.setAttribute('color', colAttr);
+    this.geometria.setAttribute('uv', uvAttr);
+    this.geometria.setAttribute('ao', new BufferAttribute(ao, 1));
     this.geometria.setIndex(e.indices);
     // Caja fija: el cilindro exterior no cambia, y así no hay que recalcularla en cada fotograma.
     this.geometria.boundingSphere = null;
@@ -258,6 +320,8 @@ export class MallaHueso {
         e.vertice(i, x, R_EXTERIOR * Math.cos(fi), R_EXTERIOR * Math.sin(fi));
         e.normal(i, 0, Math.cos(fi), Math.sin(fi));
         e.color(i, RGB.hueso);
+        // Cilíndricas: arco recorrido y x.
+        e.coordenada(i, R_EXTERIOR * fi, x);
       }
     }
     // Tapa izquierda
@@ -296,6 +360,9 @@ export class MallaHueso {
       e.normal(vb + 1, normalX, 0, 0);
       e.color(vb, color);
       e.color(vb + 1, color);
+      // Planas en el plano de la tapa (y, z).
+      e.coordenada(vb, rb * c, rb * s);
+      e.coordenada(vb + 1, ra * c, ra * s);
     }
   }
 
@@ -329,7 +396,7 @@ export class MallaHueso {
     this.escribirCaras(estado);
     this.escribirTapaDerecha(estado);
     this.escribirLuz(estado);
-    for (const nombre of ['position', 'normal', 'color'] as const) {
+    for (const nombre of ['position', 'normal', 'color', 'uv'] as const) {
       this.geometria.getAttribute(nombre).needsUpdate = true;
     }
   }
@@ -362,6 +429,9 @@ export class MallaHueso {
           e.normal(vb + 1, nx, ny, nz);
           e.color(vb, color);
           e.color(vb + 1, color);
+          // Planas en el plano de la cara de corte (x, radio).
+          e.coordenada(vb, x, rb);
+          e.coordenada(vb + 1, x, ra);
         }
       };
 
@@ -488,6 +558,8 @@ export class MallaHueso {
         // Las depresiones (más radio) un poco más oscuras.
         const sombra = 1 - 0.14 * (amplitud > 0 ? laguna * borde : 0);
         e.color(v, [AUX_A[0] * sombra, AUX_A[1] * sombra, AUX_A[2] * sombra]);
+        // Cilíndricas con un radio fijo (el del túnel): la textura no resbala al estrecharse la luz.
+        e.coordenada(v, R_CAVIDAD * fi, x);
       }
     }
 

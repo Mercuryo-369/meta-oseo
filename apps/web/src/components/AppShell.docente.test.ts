@@ -29,7 +29,7 @@ async function montarApp(rol: Rol, ruta = '/') {
     {
       global: {
         plugins: [pinia, router],
-        stubs: { MenuCircular: true, HudPuntaje: true, MentorPanel: true },
+        stubs: { MenuModulos: true, HudPuntaje: true, MentorPanel: true },
       },
       attachTo: document.body,
     },

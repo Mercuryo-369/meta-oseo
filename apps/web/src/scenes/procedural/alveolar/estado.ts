@@ -63,8 +63,11 @@ export const CONDUCTO = { z: -0.02, y: -1.08, radio: 0.3 } as const;
 
 /** Profundidad del hueco entre la cara de corte y la cara del hueso trabecular (allí van las trabéculas). */
 export const PROFUNDIDAD_TRABECULAR = 0.16;
-/** Número de trabéculas instanciadas en la sección. */
-export const N_TRABECULAS = 110;
+/**
+ * Número de trabéculas instanciadas en la sección (eran 110 hasta la mejora de realismo del 2026-10-14: la red
+ * se ve más tupida; las 110 primeras siguen en su sitio porque la semilla es la misma).
+ */
+export const N_TRABECULAS = 200;
 /** Cuánto se aparta la mitad anterior del bloque (unidades, a lo largo de +X). */
 export const DESPLAZAMIENTO_MITAD = 3.4;
 

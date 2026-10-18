@@ -15,6 +15,17 @@
  * No calculan nada de la biología: reciben `EstadoFractura` (puro) y solo colocan, escalan y colorean piezas.
  * Materiales compartidos por tejido; `InstancedMesh` para todo lo repetido (una instancia oculta tiene matriz
  * cero); al liberar se libera todo lo creado.
+ *
+ * Realismo (2026-10-14): cada material es el de su tejido (`realismo.ts`) con la paleta natural (`NATURAL`); los
+ * bordes de la fractura y del periostio desgarrado son dentados; el hematoma y el callo, algo irregulares (no
+ * husos perfectos); el callo cambia de acabado con su tejido (liso y húmedo de cartílago, mate de tejido fibroso,
+ * poroso de hueso reticular, el de la cortical al final) y el hueso muerto se vuelve más mate; células de 12 × 8
+ * (antes 8 × 6).
+ *
+ * Revisión de diseño (2026-10-17): relieve con la repetición POR UNIDAD (las formas traen UV en unidades); las
+ * células se apoyan en la superficie que se dibuja del hematoma y del callo (sin el desplazamiento del fragmento
+ * distal, con su irregularidad y su escala; las del callo, aplanadas contra él); el periostio es opaco mientras está
+ * engrosado (una sola pasada); la sangre no emite luz; las instancias ocultas tienen escala 0 (no matriz nula).
  */
 import type { Material, BufferGeometry } from 'three';
 import {
@@ -25,20 +36,25 @@ import {
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
 import { acotar, suave } from '../interpolacion';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad } from '../realismo';
 import {
+  IRREGULAR,
   celulasInflamatorias,
   celulasMadre,
   enCuna,
   gotasDeSangre,
+  normalSobreCallo,
   osteoblastosDelCallo,
   osteoclastosDelCallo,
   perfilSolido,
   puntoSobreCallo,
+  puntoSobreHematoma,
   radioCallo,
   radioHematoma,
   vasosNuevos,
@@ -61,24 +77,130 @@ import {
   R_MEDULAR,
 } from './estado';
 import type { EstadoFractura } from './estado';
-import { anillo, arcoDeCuerpo, arcoDeCuna, esfera, fusiforme, tramo, unir } from './geometria';
-import { HEX } from './paleta';
+import {
+  abollar,
+  anillo,
+  arcoDeCuerpo,
+  arcoDeCuna,
+  esfera,
+  fracturar,
+  fusiforme,
+  tramo,
+  unir,
+} from './geometria';
+import { NATURAL as COLOR } from './paleta';
 
 const EJE_Y = new Vector3(0, 1, 0);
-const MATRIZ_CERO = new Matrix4().set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+/**
+ * Matriz de una instancia oculta: escala 0 con la componente homogénea a 1 (con las 16 a 0, three divide entre 0
+ * al calcular la esfera envolvente de la malla y la deja en NaN: sin orden de transparencias ni raycast).
+ */
+const MATRIZ_CERO = new Matrix4().makeScale(0, 0, 0);
 
-/** Material estándar de doble cara (las caras de corte y los sólidos abiertos se ven por dentro). */
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara (las
+ * caras de corte y los sólidos abiertos se ven por dentro).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: DoubleSide, ...extra });
+}
+
+/**
+ * Repetición del relieve POR UNIDAD de la geometría (las formas traen UV en unidades) y filtrado anisótropo (los
+ * cantos y las paredes que se ven de lado no se emborronan). Devuelve el material.
+ */
+function relieve(m: MeshPhysicalMaterial, u: number, v = u): MeshPhysicalMaterial {
+  if (m.bumpMap) {
+    m.bumpMap.repeat.set(u, v);
+    m.bumpMap.anisotropy = 4;
+  }
+  return m;
+}
+
+/** Repetición del relieve por unidad de cada tejido (la de la escena del hueso; el callo y el coágulo, 1,5). */
+const REPETIR = { hueso: 1.4, medula: 1.2, membrana: 0.6, blando: 1.5 } as const;
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
+}
+
+/**
+ * Acabado de superficie (rugosidad, barniz húmedo y relieve) de los tejidos por los que pasa una parte del callo,
+ * con los números de `realismo.ts`. Cada parte del callo es UNA malla cuyo tejido cambia con el tiempo
+ * (cartílago o tejido fibroso → hueso reticular → hueso laminar): además del color se mezcla el acabado. El
+ * barniz nunca llega a 0 (pasar de 0 a más obligaría a recompilar el sombreador).
+ */
+interface Acabado {
+  roughness: number;
+  clearcoat: number;
+  clearcoatRoughness: number;
+  relieve: number;
+}
+
+const ACABADO = {
+  /** Fibrocartílago del callo blando: liso, húmedo y algo brillante. */
+  cartilago: { roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.25, relieve: 0.15 },
+  /** Cartílago calcificado: más mate y granuloso. */
+  calcificado: { roughness: 0.6, clearcoat: 0.25, clearcoatRoughness: 0.5, relieve: 0.6 },
+  /** Tejido fibroso del callo periférico: mate, apenas húmedo. */
+  fibroso: { roughness: 0.7, clearcoat: 0.1, clearcoatRoughness: 0.5, relieve: 0.5 },
+  /** Hueso reticular (callo duro): poroso y vascular. */
+  reticular: { roughness: 0.72, clearcoat: 0.12, clearcoatRoughness: 0.6, relieve: 1.3 },
+  /** Hueso laminar: el de la cortical. */
+  laminar: { roughness: 0.78, clearcoat: 0.08, clearcoatRoughness: 0.7, relieve: 0.9 },
+} as const satisfies Record<string, Acabado>;
+
+/**
+ * Aplica a `m` el acabado que resulta de partir de `desde` y mezclarlo, en orden, con cada `[acabado, k]` (como
+ * los colores del callo). Determinista: solo depende de los `k` del estado.
+ */
+function aplicarAcabado(
+  m: MeshPhysicalMaterial,
+  desde: Acabado,
+  tramos: readonly (readonly [Acabado, number])[],
+): void {
+  let { roughness, clearcoat, clearcoatRoughness, relieve } = desde;
+  for (const [hasta, k] of tramos) {
+    roughness += (hasta.roughness - roughness) * k;
+    clearcoat += (hasta.clearcoat - clearcoat) * k;
+    clearcoatRoughness += (hasta.clearcoatRoughness - clearcoatRoughness) * k;
+    relieve += (hasta.relieve - relieve) * k;
+  }
+  m.roughness = roughness;
+  m.clearcoat = clearcoat;
+  m.clearcoatRoughness = clearcoatRoughness;
+  m.bumpScale = relieve;
+}
+
+/** Borde roto de un anillo (ver `fracturar`): amplitud del dentado y su dibujo. */
+interface BordeRoto {
+  amplitud: number;
+  fase: number;
+}
+
+/** Superficie de fractura de la cortical (el tramo necrótico) y borde desgarrado del periostio. */
+const BORDE_FRACTURA: BordeRoto = { amplitud: 0.06, fase: 0 };
+const BORDE_PERIOSTIO: BordeRoto = { amplitud: 0.1, fase: 1.3 };
+
+/**
+ * Los vasos rotos nacen en el plano de fractura (o en el extremo del periostio) de `disposicion.ts`; con el borde
+ * dentado, ese plano puede quedar delante o detrás de la superficie real. Se alargan hacia dentro del fragmento
+ * lo que el dentado puede hundirse: así siempre salen del hueso (o de debajo del periostio) y nunca flotan
+ * delante de un diente del borde. El tramo nuevo queda dentro del hueso, oculto.
+ */
+function hundirEnFragmento(v: Tramo): Tramo {
+  const signo = v.a[1] < 0 ? -1 : 1;
+  const delPeriostio = Math.abs(v.a[1]) > BRECHA / 2 + 1e-6;
+  const fondo = delPeriostio ? BORDE_PERIOSTIO.amplitud : BORDE_FRACTURA.amplitud;
+  return { ...v, a: [v.a[0], v.a[1] + signo * fondo, v.a[2]] };
 }
 
 /** Instancia lista para colocar: `frustumCulled` apagado (las matrices cambian con `t`). */
@@ -107,6 +229,23 @@ const auxEsc = new Vector3();
 const auxQ = new Quaternion();
 const auxM = new Matrix4();
 const auxDir = new Vector3();
+
+/**
+ * Escribe en `malla` la instancia `i`: una esfera unitaria en `p` de radio `r` aplanada a lo largo de la normal `n`
+ * de la superficie en la que se apoya (1,15 r de ancho y 0,6 r de grosor), como una célula adherida.
+ */
+function ponerAplanada(malla: InstancedMesh, i: number, p: Punto3, n: Punto3, r: number): void {
+  if (r < 0.002) {
+    malla.setMatrixAt(i, MATRIZ_CERO);
+    return;
+  }
+  auxPos.set(p[0], p[1], p[2]);
+  auxDir.set(n[0], n[1], n[2]);
+  auxQ.setFromUnitVectors(EJE_Y, auxDir);
+  auxEsc.set(1.15 * r, 0.6 * r, 1.15 * r);
+  auxM.compose(auxPos, auxQ, auxEsc);
+  malla.setMatrixAt(i, auxM);
+}
 
 /** Escribe en `malla` la instancia `i`: una esfera unitaria en `p` de radio `r` (oculta si `r` es ínfimo). */
 function ponerEsfera(malla: InstancedMesh, i: number, p: Punto3, r: number): void {
@@ -190,7 +329,7 @@ abstract class PiezaConTapa implements PiezaFractura {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of this.instanciados) i.dispose();
   }
 }
@@ -205,7 +344,10 @@ function alFragmento(g: BufferGeometry, signo: 1 | -1, yCentro: number): BufferG
   return g;
 }
 
-/** Un anillo con grosor repetido en los dos fragmentos, de largo `largo`, que empieza a `desde` del extremo. */
+/**
+ * Un anillo con grosor repetido en los dos fragmentos, de largo `largo`, que empieza a `desde` del extremo. Con
+ * `borde`, el extremo que mira a la brecha queda dentado (`fracturar`), con el mismo dibujo en los dos fragmentos.
+ */
 function anilloEnFragmentos(
   interior: number,
   exterior: number,
@@ -213,22 +355,33 @@ function anilloEnFragmentos(
   largo: number,
   theta0: number,
   arco: number,
+  borde?: BordeRoto,
 ): BufferGeometry {
   const yCentro = BRECHA / 2 + desde + largo / 2;
-  return unir([
-    alFragmento(anillo(interior, exterior, largo, theta0, arco), -1, yCentro),
-    alFragmento(anillo(interior, exterior, largo, theta0, arco), 1, yCentro),
-  ]);
+  const fragmento = (signo: 1 | -1): BufferGeometry => {
+    // V = la altura a la que queda la pieza: el tramo sano y el necrótico siguen el mismo dibujo en su unión.
+    const g = anillo(interior, exterior, largo, theta0, arco, undefined, {
+      desplazamientoV: signo * yCentro,
+    });
+    // El extremo que mira a la brecha: abajo en el distal (+1) y arriba en el proximal (−1).
+    if (borde) fracturar(g, (-signo * largo) / 2, borde.amplitud, borde.fase);
+    return alFragmento(g, signo, yCentro);
+  };
+  return unir([fragmento(-1), fragmento(1)]);
 }
 
+/** Acabado del hueso cortical sano (el del tejido `hueso`) y cuánto se apaga el muerto: seco, mate y sin brillo. */
+const CORTICAL_VIVA = { roughness: 0.78, clearcoat: 0.08 } as const;
+const CORTICAL_MUERTA = { roughness: 0.9, clearcoat: 0.02 } as const;
+
 export class HuesoFracturado extends PiezaConTapa {
-  private readonly matNecrosis: MeshStandardMaterial;
-  private readonly matPeriostio: MeshStandardMaterial;
+  private readonly matNecrosis: MeshPhysicalMaterial;
+  private readonly matPeriostio: MeshPhysicalMaterial;
   private readonly periostio: Mesh[];
   private readonly medulaCentral: Mesh[];
   private readonly colores = {
-    cortical: new Color(HEX.cortical),
-    necrotico: new Color(HEX.huesoNecrotico),
+    cortical: new Color(COLOR.cortical),
+    necrotico: new Color(COLOR.huesoNecrotico),
   };
 
   constructor() {
@@ -238,10 +391,11 @@ export class HuesoFracturado extends PiezaConTapa {
 
     const cuerpo = arcoDeCuerpo();
     const cuna = arcoDeCuna();
-    const cortical = material(HEX.cortical);
-    this.matNecrosis = material(HEX.cortical);
-    const medula = material(HEX.medula, { roughness: 0.5 });
-    this.matPeriostio = material(HEX.periostio, { roughness: 0.85, transparent: true });
+    const cortical = relieve(material(COLOR.cortical, 'hueso'), REPETIR.hueso);
+    this.matNecrosis = relieve(material(COLOR.cortical, 'hueso'), REPETIR.hueso);
+    const medula = relieve(material(COLOR.medula, 'medula'), REPETIR.medula);
+    // Translúcido (0,7) mientras es fino; opaco (y de una sola pasada) mientras está engrosado: `actualizar`.
+    this.matPeriostio = relieve(material(COLOR.periostio, 'membrana'), REPETIR.membrana);
     this.materiales.push(cortical, this.matNecrosis, medula, this.matPeriostio);
 
     const par = (
@@ -251,10 +405,11 @@ export class HuesoFracturado extends PiezaConTapa {
       largo: number,
       mat: Material,
       nombre: string,
+      borde?: BordeRoto,
     ): [Mesh, Mesh] =>
       this.partida(
-        anilloEnFragmentos(interior, exterior, desde, largo, cuerpo.theta0, cuerpo.arco),
-        anilloEnFragmentos(interior, exterior, desde, largo, cuna.theta0, cuna.arco),
+        anilloEnFragmentos(interior, exterior, desde, largo, cuerpo.theta0, cuerpo.arco, borde),
+        anilloEnFragmentos(interior, exterior, desde, largo, cuna.theta0, cuna.arco, borde),
         mat,
         nombre,
       );
@@ -268,7 +423,16 @@ export class HuesoFracturado extends PiezaConTapa {
       cortical,
       'cortical',
     );
-    par(R_MEDULAR, R_CORTICAL, 0, LARGO_NECROSIS, this.matNecrosis, 'hueso_necrotico');
+    // La superficie de fractura es dentada (no un corte de sierra) y encaja con la del otro fragmento.
+    par(
+      R_MEDULAR,
+      R_CORTICAL,
+      0,
+      LARGO_NECROSIS,
+      this.matNecrosis,
+      'hueso_necrotico',
+      BORDE_FRACTURA,
+    );
     // Médula amarilla, retirada del extremo (ahí habrá sangre, hematoma y callo interno).
     par(
       0,
@@ -278,7 +442,7 @@ export class HuesoFracturado extends PiezaConTapa {
       medula,
       'medula_osea',
     );
-    // Periostio roto: no llega al extremo.
+    // Periostio roto: no llega al extremo y su borde está desgarrado.
     this.periostio = par(
       PERIOSTIO.interior,
       PERIOSTIO.exterior,
@@ -286,6 +450,7 @@ export class HuesoFracturado extends PiezaConTapa {
       LARGO_FRAGMENTO - RETIRO_PERIOSTIO,
       this.matPeriostio,
       'periostio',
+      BORDE_PERIOSTIO,
     );
 
     // Médula central: recanaliza la brecha al remodelarse (crece a lo largo desde el centro).
@@ -300,14 +465,20 @@ export class HuesoFracturado extends PiezaConTapa {
 
   actualizar(estado: EstadoFractura, abierta: boolean): void {
     this.tapa.visible = !abierta;
-    // El hueso de los bordes se oscurece al morir y recupera el color al ser sustituido.
+    // El hueso de los bordes se oscurece al morir (y queda seco y mate) y recupera el color al ser sustituido.
     this.matNecrosis.color
       .copy(this.colores.cortical)
       .lerp(this.colores.necrotico, estado.necrosis);
+    this.matNecrosis.roughness =
+      CORTICAL_VIVA.roughness +
+      (CORTICAL_MUERTA.roughness - CORTICAL_VIVA.roughness) * estado.necrosis;
+    this.matNecrosis.clearcoat =
+      CORTICAL_VIVA.clearcoat +
+      (CORTICAL_MUERTA.clearcoat - CORTICAL_VIVA.clearcoat) * estado.necrosis;
     // El periostio se engruesa (y se vuelve más denso) con la respuesta perióstica.
     const engrosado = 1 + 0.06 * estado.periostio;
     for (const m of this.periostio) m.scale.set(engrosado, 1, engrosado);
-    this.matPeriostio.opacity = 0.7 + 0.3 * estado.periostio;
+    ponerOpacidad([this.matPeriostio], 0.7 + 0.3 * estado.periostio);
     // Médula central.
     const medula = suave(estado.medula);
     for (const m of this.medulaCentral) {
@@ -323,10 +494,10 @@ export class HuesoFracturado extends PiezaConTapa {
 
 export class Reparacion extends PiezaConTapa {
   private readonly hematoma: Group;
-  private readonly matHematoma: MeshStandardMaterial;
+  private readonly matHematoma: MeshPhysicalMaterial;
   private readonly callo: Group;
-  private readonly matCalloCentro: MeshStandardMaterial;
-  private readonly matCalloPeriferia: MeshStandardMaterial;
+  private readonly matCalloCentro: MeshPhysicalMaterial;
+  private readonly matCalloPeriferia: MeshPhysicalMaterial;
   private readonly vasosRotos: InstancedMesh;
   private readonly gotas: InstancedMesh;
   private readonly neutrofilos: InstancedMesh;
@@ -336,7 +507,7 @@ export class Reparacion extends PiezaConTapa {
   private readonly osteoclastos: InstancedMesh;
   private readonly osteoblastos: InstancedMesh;
   private readonly datos = {
-    vasosRotos: vasosRotos(),
+    vasosRotos: vasosRotos().map(hundirEnFragmento),
     gotas: gotasDeSangre(),
     ...celulasInflamatorias(),
     celulasMadre: celulasMadre(),
@@ -345,13 +516,13 @@ export class Reparacion extends PiezaConTapa {
     osteoblastos: osteoblastosDelCallo(),
   };
   private readonly colores = {
-    coagulo: new Color(HEX.coagulo),
-    granulacion: new Color(HEX.granulacion),
-    fibroso: new Color(HEX.fibroso),
-    cartilago: new Color(HEX.cartilago),
-    calcificado: new Color(HEX.cartilagoCalcificado),
-    huesoNuevo: new Color(HEX.huesoNuevo),
-    cortical: new Color(HEX.cortical),
+    coagulo: new Color(COLOR.coagulo),
+    granulacion: new Color(COLOR.granulacion),
+    fibroso: new Color(COLOR.fibroso),
+    cartilago: new Color(COLOR.cartilago),
+    calcificado: new Color(COLOR.cartilagoCalcificado),
+    huesoNuevo: new Color(COLOR.huesoNuevo),
+    cortical: new Color(COLOR.cortical),
   };
 
   constructor() {
@@ -361,16 +532,20 @@ export class Reparacion extends PiezaConTapa {
     // Hematoma: fusiforme sólido centrado en la brecha, cortado con la cuña más retirada.
     const cuerpoH = arcoDeCuerpo(RETIRO_CUNA.hematoma);
     const cunaH = arcoDeCuna(RETIRO_CUNA.hematoma);
-    this.matHematoma = material(HEX.coagulo, { roughness: 0.55 });
+    // Coágulo y, después, tejido de granulación: grumosos y muy húmedos los dos.
+    this.matHematoma = relieve(material(COLOR.coagulo, 'coagulo'), REPETIR.blando);
     this.materiales.push(this.matHematoma);
     this.hematoma = new Group();
     this.hematoma.name = 'hematoma';
     const tapaHematoma = new Group();
     tapaHematoma.name = 'hematoma_tapa';
     const perfilH = perfilSolido(radioHematoma, -HEMATOMA.medioLargo, HEMATOMA.medioLargo, 20);
+    const abollarHematoma = (g: BufferGeometry): BufferGeometry =>
+      abollar(g, IRREGULAR.hematoma.amplitud, IRREGULAR.hematoma.semilla);
+    // Un coágulo no es un huso perfecto: superficie algo irregular (la misma en el cuerpo y en la tapa).
     this.partida(
-      fusiforme(perfilH, cuerpoH.theta0, cuerpoH.arco),
-      fusiforme(perfilH, cunaH.theta0, cunaH.arco),
+      abollarHematoma(fusiforme(perfilH, cuerpoH.theta0, cuerpoH.arco)),
+      abollarHematoma(fusiforme(perfilH, cunaH.theta0, cunaH.arco)),
       this.matHematoma,
       'coagulo',
       this.hematoma,
@@ -384,8 +559,12 @@ export class Reparacion extends PiezaConTapa {
     // Callo: manguito fusiforme en tres piezas (centro endocondral y dos periferias intramembranosas).
     const cuerpoC = arcoDeCuerpo(RETIRO_CUNA.callo);
     const cunaC = arcoDeCuna(RETIRO_CUNA.callo);
-    this.matCalloCentro = material(HEX.cartilago, { roughness: 0.45 });
-    this.matCalloPeriferia = material(HEX.fibroso, { roughness: 0.7 });
+    // Relieve de poros del hueso inmaduro: casi liso con el acabado del cartílago o del tejido fibroso, y poroso
+    // cuando el callo ya es hueso (`aplicarAcabado` en `actualizar`).
+    this.matCalloCentro = relieve(material(COLOR.cartilago, 'hueso_inmaduro'), REPETIR.blando);
+    this.matCalloPeriferia = relieve(material(COLOR.fibroso, 'hueso_inmaduro'), REPETIR.blando);
+    aplicarAcabado(this.matCalloCentro, ACABADO.cartilago, []);
+    aplicarAcabado(this.matCalloPeriferia, ACABADO.fibroso, []);
     this.materiales.push(this.matCalloCentro, this.matCalloPeriferia);
     this.callo = new Group();
     this.callo.name = 'callo';
@@ -393,9 +572,12 @@ export class Reparacion extends PiezaConTapa {
     tapaCallo.name = 'callo_tapa';
     const c = CALLO.medioLargoCentro;
     const perfilCentro = perfilSolido(radioCallo, -c, c, 16);
+    // Superficie algo irregular, con el mismo dibujo en las tres piezas (siguen encajando entre sí).
+    const irregular = (g: BufferGeometry): BufferGeometry =>
+      abollar(g, IRREGULAR.callo.amplitud, IRREGULAR.callo.semilla);
     this.partida(
-      fusiforme(perfilCentro, cuerpoC.theta0, cuerpoC.arco),
-      fusiforme(perfilCentro, cunaC.theta0, cunaC.arco),
+      irregular(fusiforme(perfilCentro, cuerpoC.theta0, cuerpoC.arco)),
+      irregular(fusiforme(perfilCentro, cunaC.theta0, cunaC.arco)),
       this.matCalloCentro,
       'callo_central',
       this.callo,
@@ -406,8 +588,8 @@ export class Reparacion extends PiezaConTapa {
       perfilSolido(radioCallo, -CALLO.medioLargo, -c - 0.01, 14),
     ];
     this.partida(
-      unir(perfiles.map((p) => fusiforme(p, cuerpoC.theta0, cuerpoC.arco))),
-      unir(perfiles.map((p) => fusiforme(p, cunaC.theta0, cunaC.arco))),
+      irregular(unir(perfiles.map((p) => fusiforme(p, cuerpoC.theta0, cuerpoC.arco)))),
+      irregular(unir(perfiles.map((p) => fusiforme(p, cunaC.theta0, cunaC.arco)))),
       this.matCalloPeriferia,
       'callo_periferico',
       this.callo,
@@ -417,22 +599,23 @@ export class Reparacion extends PiezaConTapa {
     this.cuerpo.add(this.callo);
     this.tapaCallo = tapaCallo;
 
-    // Piezas repetidas.
-    const geoTramo = tramo(6);
-    const geoEsfera = esfera(8, 6);
-    this.geometrias.push(geoTramo, geoEsfera);
-    const matSangre = material(HEX.sangre, {
-      roughness: 0.4,
-      emissive: '#7a2a24',
-      emissiveIntensity: 0.35,
-    });
-    const matNeutrofilo = material(HEX.neutrofilo, { roughness: 0.5 });
-    const matMacrofago = material(HEX.macrofago, { roughness: 0.5 });
-    const matCelulaMadre = material(HEX.celulaMadre, { roughness: 0.5 });
-    const matOsteoclasto = material(HEX.osteoclasto, { roughness: 0.5 });
-    const matOsteoblasto = material(HEX.osteoblasto, { roughness: 0.5 });
+    // Piezas repetidas: células de 12 × 8 (se ven de cerca); gotas de 8 × 6 (pequeñas).
+    const geoTramo = tramo(8);
+    const geoCelula = esfera(12, 8);
+    const geoGota = esfera(8, 6);
+    this.geometrias.push(geoTramo, geoCelula, geoGota);
+    // Sangre de los vasos rotos y gotas, y pared de los vasos nuevos: lisas y húmedas, sin emisivo (la sangre no
+    // emite luz: con la luz de la base, el emisivo la aclaraba por dentro).
+    const matSangre = material(COLOR.sangre, 'vaso');
+    const matVaso = material(COLOR.vaso, 'vaso');
+    const matNeutrofilo = material(COLOR.neutrofilo, 'celula');
+    const matMacrofago = material(COLOR.macrofago, 'celula');
+    const matCelulaMadre = material(COLOR.celulaMadre, 'celula');
+    const matOsteoclasto = material(COLOR.osteoclasto, 'celula');
+    const matOsteoblasto = material(COLOR.osteoblasto, 'celula');
     this.materiales.push(
       matSangre,
+      matVaso,
       matNeutrofilo,
       matMacrofago,
       matCelulaMadre,
@@ -441,24 +624,24 @@ export class Reparacion extends PiezaConTapa {
     );
     const d = this.datos;
     this.vasosRotos = instanciar(geoTramo, matSangre, d.vasosRotos.length, 'vasos_rotos');
-    this.gotas = instanciar(geoEsfera, matSangre, d.gotas.length, 'gotas_de_sangre');
-    this.neutrofilos = instanciar(geoEsfera, matNeutrofilo, d.neutrofilos.length, 'neutrofilos');
-    this.macrofagos = instanciar(geoEsfera, matMacrofago, d.macrofagos.length, 'macrofagos');
+    this.gotas = instanciar(geoGota, matSangre, d.gotas.length, 'gotas_de_sangre');
+    this.neutrofilos = instanciar(geoCelula, matNeutrofilo, d.neutrofilos.length, 'neutrofilos');
+    this.macrofagos = instanciar(geoCelula, matMacrofago, d.macrofagos.length, 'macrofagos');
     this.celulasMadre = instanciar(
-      geoEsfera,
+      geoCelula,
       matCelulaMadre,
       d.celulasMadre.length,
       'celulas_madre',
     );
-    this.vasosNuevos = instanciar(geoTramo, matSangre, d.vasosNuevos.length, 'vasos_nuevos');
+    this.vasosNuevos = instanciar(geoTramo, matVaso, d.vasosNuevos.length, 'vasos_nuevos');
     this.osteoclastos = instanciar(
-      geoEsfera,
+      geoCelula,
       matOsteoclasto,
       d.osteoclastos.length,
       'osteoclastos',
     );
     this.osteoblastos = instanciar(
-      geoEsfera,
+      geoCelula,
       matOsteoblasto,
       d.osteoblastos.length,
       'osteoblastos',
@@ -479,24 +662,31 @@ export class Reparacion extends PiezaConTapa {
   private readonly tapaHematoma: Group;
   private readonly tapaCallo: Group;
 
-  /** Coloca una lista de células (esferas) con presencia global `p`; con la cuña abierta oculta las del sector. */
+  /**
+   * Coloca una lista de células (esferas) con presencia global `p`; con la cuña abierta oculta las del sector. Las
+   * que se apoyan en el hematoma van sobre su superficie a su escala `hematoma` (la que se dibuja) y desaparecen con
+   * él (`soporte`): antes tenían una posición fija y quedaban en el aire cuando el hematoma encogía.
+   */
   private ponerCelulas(
     malla: InstancedMesh,
     lista: readonly Celula[],
     p: number,
     abierta: boolean,
+    hematoma = 1,
+    soporte = 1,
   ) {
     let alguna = false;
     lista.forEach((c, i) => {
-      const k = abierta && enCuna(c.theta) ? 0 : presenciaCon(p, c.retraso);
+      let k = abierta && enCuna(c.theta) ? 0 : presenciaCon(p, c.retraso);
+      if (c.superficie) k *= soporte;
       if (k > 0.004) alguna = true;
-      ponerEsfera(malla, i, c.p, c.radio * k);
+      ponerEsfera(malla, i, c.superficie ? puntoSobreHematoma(c, hematoma, k) : c.p, c.radio * k);
     });
     malla.visible = alguna;
     malla.instanceMatrix.needsUpdate = true;
   }
 
-  /** Coloca células sobre la superficie del callo a su escala actual. */
+  /** Coloca células sobre la superficie del callo a su escala actual, aplanadas contra ella. */
   private ponerSobreCallo(
     malla: InstancedMesh,
     lista: readonly CelulaEnCallo[],
@@ -508,7 +698,7 @@ export class Reparacion extends PiezaConTapa {
     lista.forEach((c, i) => {
       const k = abierta && enCuna(c.theta) ? 0 : presenciaCon(p, c.retraso);
       if (k > 0.004) alguna = true;
-      ponerEsfera(malla, i, puntoSobreCallo(c, escala), c.radio * k);
+      ponerAplanada(malla, i, puntoSobreCallo(c, escala, k), normalSobreCallo(c), c.radio * k);
     });
     malla.visible = alguna;
     malla.instanceMatrix.needsUpdate = true;
@@ -566,15 +756,22 @@ export class Reparacion extends PiezaConTapa {
 
     // Hematoma: crece, se organiza (cambia de color) y desaparece bajo el callo.
     const hematoma = suave(estado.hematoma);
+    const escalaHematoma = Math.max(0.001, hematoma);
     this.hematoma.visible = hematoma > 0.004;
-    this.hematoma.scale.setScalar(Math.max(0.001, hematoma));
+    this.hematoma.scale.setScalar(escalaHematoma);
     this.matHematoma.color
       .copy(this.colores.coagulo)
       .lerp(this.colores.granulacion, suave(estado.granulacion));
 
     // Inflamación y células madre.
-    this.ponerCelulas(this.neutrofilos, this.datos.neutrofilos, estado.inflamacion, abierta);
-    this.ponerCelulas(this.macrofagos, this.datos.macrofagos, estado.inflamacion, abierta);
+    // Las de la superficie del hematoma desaparecen con él.
+    const soporte = suave(estado.hematoma / 0.3);
+    for (const [malla, lista] of [
+      [this.neutrofilos, this.datos.neutrofilos],
+      [this.macrofagos, this.datos.macrofagos],
+    ] as const) {
+      this.ponerCelulas(malla, lista, estado.inflamacion, abierta, escalaHematoma, soporte);
+    }
     this.ponerCelulas(this.celulasMadre, this.datos.celulasMadre, estado.celulasMadre, abierta);
 
     // Vasos nuevos.
@@ -586,20 +783,32 @@ export class Reparacion extends PiezaConTapa {
       abierta,
     );
 
-    // Callo: escala y colores de sus dos partes.
+    // Callo: escala, colores y acabado de sus dos partes (el acabado sigue al tejido, como el color).
     const escala = estado.callo;
     this.callo.visible = escala >= ESCALA_CALLO_OCULTO;
     this.callo.scale.setScalar(escala);
     const laminar = suave(estado.laminar);
+    const calcificacion = suave(estado.calcificacion);
+    const huesoCentral = suave(estado.huesoCentral);
+    const huesoPeriferico = suave(estado.huesoPeriferico);
     this.matCalloCentro.color
       .copy(this.colores.cartilago)
-      .lerp(this.colores.calcificado, suave(estado.calcificacion))
-      .lerp(this.colores.huesoNuevo, suave(estado.huesoCentral))
+      .lerp(this.colores.calcificado, calcificacion)
+      .lerp(this.colores.huesoNuevo, huesoCentral)
       .lerp(this.colores.cortical, laminar);
+    aplicarAcabado(this.matCalloCentro, ACABADO.cartilago, [
+      [ACABADO.calcificado, calcificacion],
+      [ACABADO.reticular, huesoCentral],
+      [ACABADO.laminar, laminar],
+    ]);
     this.matCalloPeriferia.color
       .copy(this.colores.fibroso)
-      .lerp(this.colores.huesoNuevo, suave(estado.huesoPeriferico))
+      .lerp(this.colores.huesoNuevo, huesoPeriferico)
       .lerp(this.colores.cortical, laminar);
+    aplicarAcabado(this.matCalloPeriferia, ACABADO.fibroso, [
+      [ACABADO.reticular, huesoPeriferico],
+      [ACABADO.laminar, laminar],
+    ]);
 
     // Células sobre el callo.
     this.ponerSobreCallo(
@@ -617,9 +826,4 @@ export class Reparacion extends PiezaConTapa {
       abierta,
     );
   }
-}
-
-/** Radio del callo a escala `escala` en la altura `y` (para pruebas y encuadres). */
-export function radioCalloEscalado(y: number, escala: number): number {
-  return radioCallo(y / escala) * escala;
 }

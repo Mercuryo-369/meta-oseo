@@ -7,7 +7,8 @@
  *    del antiguo alvéolo aparecen al cicatrizar; las que quedan fuera del hueso que se pierde se ocultan) y el
  *    foramen mentoniano sobre la cara vestibular.
  *  - `Encia`: dos cintas (vestibular y lingual) sobre la cresta que cierran el alvéolo y siguen al reborde.
- *  - `Diente`: la media corona, la cara de corte de la raíz y la pulpa; sube y se desvanece al extraerse.
+ *  - `Diente`: la media corona con la cara de corte del diente (esmalte, dentina, cemento y pulpa); sube y se
+ *    desvanece al extraerse.
  *  - `Alveolo`: el hueso alveolar propio y el ligamento (placas fijas), el fondo oscuro de la cavidad y los
  *    rellenos que se morfan (coágulo, granulación, hueso nuevo, tapa cortical), el sangrado, los vasos y los
  *    osteoclastos instanciados.
@@ -16,6 +17,17 @@
  * No calculan nada de la biología: reciben `EstadoAlveolo` (puro) y escriben, mueven, aclaran o tiñen piezas.
  * La cara de corte está en x = 0 mirando a +X; las capas planas van a profundidades distintas (una centésima
  * entre capas) para no pelearse por el mismo píxel. Materiales compartidos por capa; al liberar se libera todo.
+ *
+ * Realismo (2026-10-14): materiales físicos por tejido (`realismo.ts`, con relieve de superficie hecho por
+ * código) y la paleta natural (`NATURAL` de `paleta.ts`, aquí `COLOR`).
+ *
+ * Revisión de diseño (2026-10-17): las placas importadas de `hueso_alveolar` miran a +X de verdad (render-02); la
+ * cinta de la encía vestibular tenía las normales hacia dentro y se escribe con los carriles al revés (render-07); el
+ * diente es el de `hueso_alveolar` (esmalte con degradado, cresta 0,2 por debajo del cuello con la raíz cervical en
+ * relieve, cemento sin poros, conducto hasta el foramen apical); los osteoclastos son células aplanadas contra la
+ * superficie que reabsorben (realismo-21). Las placas planas del alvéolo y del corte del diente no proyectan sombra
+ * (flotan sobre el hueco de la médula: su sombra parecía la de una lámina despegada) y las que se desvanecen se
+ * dibujan en una sola pasada (`forceSinglePass`: una placa plana no tiene cara interior que ordenar).
  */
 import type { Material, BufferGeometry } from 'three';
 import {
@@ -24,25 +36,27 @@ import {
   CylinderGeometry,
   DoubleSide,
   Group,
-  IcosahedronGeometry,
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   RingGeometry,
+  SphereGeometry,
   Vector3,
 } from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   DESPLAZAMIENTO_LAMINA,
   bandaAlrededorDeRaiz,
+  bandaCemento,
   perforacionesLamina,
   siluetaCorona,
+  siluetaDentina,
   siluetaPulpa,
-  siluetaRaiz,
 } from '../alveolar/disposicion';
 import { CONDUCTO, GROSOR_LIGAMENTO, LARGO_SEGMENTO, Z_ALVEOLO } from '../alveolar/estado';
-import { mediaCorona, placa } from '../alveolar/geometria';
+import { mediaCorona, mediaRaizCervical, pintarUniforme, placa } from '../alveolar/geometria';
 import {
   CENTRO_MEDULA,
   PASOS_CONTORNO,
@@ -67,7 +81,9 @@ import type { Lado, Punto2 } from './disposicion';
 import { ELEVACION_DIENTE, FORAMEN, PROFUNDIDAD_MEDULA } from './estado';
 import type { EstadoAlveolo } from './estado';
 import { abanico, cinta, escribirAbanico, escribirCinta } from './geometria';
-import { HEX } from './paleta';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad } from '../realismo';
 
 const EJE_X = new Vector3(1, 0, 0);
 const MITAD = LARGO_SEGMENTO / 2;
@@ -83,33 +99,78 @@ const CAPA = {
   coagulo: 0.05,
   ligamento: 0.06,
   diente: 0.07,
+  dentina: 0.074,
+  cemento: 0.077,
   pulpa: 0.08,
   discos: 0.09,
   tapa: 0.09,
 } as const;
 
-/** Material estándar de doble cara (las placas se ven por ambos lados). */
+/**
+ * Repeticiones del relieve de superficie por unidad de escena en las piezas con UV en unidades (placas, cintas
+ * y abanicos): las primitivas de three traen UV de 0 a 1 y para ellas vale la repetición de `realismo.ts`.
+ */
+const RELIEVE = { hueso: 1.3, medula: 1.2, membrana: 0.6, dentina: 1, blando: 1.5 } as const;
+
+/** Radio de las trabéculas (el de abajo; arriba se afinan un poco). */
+const RADIO_TRABECULA = 0.031;
+
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara
+ * (las placas se ven por ambos lados).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-): MeshStandardMaterial {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: DoubleSide, ...extra });
+}
+
+/**
+ * Fija las repeticiones del relieve (y su giro) de un material. El mapa de relieve y el de rugosidad son la
+ * misma textura (un clon propio de cada material), así que basta con tocarla una vez.
+ */
+function relieve(
+  m: MeshPhysicalMaterial,
+  repeticiones: number,
+  alto = repeticiones,
+  giro = 0,
+): MeshPhysicalMaterial {
+  const textura = m.bumpMap;
+  if (textura) {
+    textura.repeat.set(repeticiones, alto);
+    textura.rotation = giro;
+  }
+  return m;
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
 }
 
 /** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
 function poner(materiales: readonly Material[], opacidad: number): void {
-  const o = Math.max(0, Math.min(1, opacidad));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
-  }
+  ponerOpacidad(materiales, opacidad);
+}
+
+/** Material de una placa plana de la cara de corte que se desvanece: una sola pasada basta (sin cara interior). */
+function plano(
+  color: string,
+  tipo: TipoTejido,
+  repeticiones: number = RELIEVE.blando,
+): MeshPhysicalMaterial {
+  return relieve(material(color, tipo, { forceSinglePass: true }), repeticiones);
+}
+
+/** Marca una malla para que no proyecte sombra (`EntornoRealista`): placas planas del corte. */
+function sinSombra<T extends Mesh>(m: T): T {
+  m.userData.sinSombra = true;
+  return m;
 }
 
 /** Disco plano que mira a +X (la cara de corte). */
@@ -117,6 +178,14 @@ function disco(radio: number, segmentos: number): CircleGeometry {
   const g = new CircleGeometry(radio, segmentos);
   g.rotateY(Math.PI / 2);
   return g;
+}
+
+/** Une geometrías con los mismos atributos en una (una sola llamada de dibujo) y libera las partes. */
+function unir(partes: BufferGeometry[]): BufferGeometry {
+  const unida = mergeGeometries(partes, false);
+  for (const parte of partes) parte.dispose();
+  if (!unida) throw new Error('No se pudieron unir las geometrías del diente.');
+  return unida;
 }
 
 /** Interfaz común de las piezas. */
@@ -165,7 +234,7 @@ abstract class Pieza implements PiezaAlveolo {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of this.instanciados) i.dispose();
   }
 }
@@ -174,6 +243,8 @@ const matriz = new Matrix4();
 const cuaternion = new Quaternion();
 const posicion = new Vector3();
 const escala = new Vector3();
+const normal = new Vector3();
+const EJE_Y = new Vector3(0, 1, 0);
 
 /** Escribe una instancia como un punto escalado uniformemente (escala mínima en vez de cero: sin matrices singulares). */
 function instanciaPunto(
@@ -189,6 +260,13 @@ function instanciaPunto(
   im.setMatrixAt(i, matriz);
 }
 
+/**
+ * Forma de un osteoclasto activo (realismo-21): una célula grande y aplanada, pegada a la superficie que reabsorbe,
+ * no una bola. Semiejes relativos al radio de la esfera: a lo largo de la superficie (`ancho`, `largo`) y a lo largo
+ * de la normal (`alto`).
+ */
+const OSTEOCLASTO = { ancho: 1.3, alto: 0.5, largo: 1.0 } as const;
+
 /* -------------------------------------------------------------------------------------------
  * Reborde: cortical, médula, trabéculas y foramen
  * ----------------------------------------------------------------------------------------- */
@@ -198,6 +276,8 @@ export class Reborde extends Pieza {
   private readonly medula: BufferGeometry;
   private readonly trabeculas: InstancedMesh;
   private readonly lista = trabeculasReborde();
+  /** Grosor de cada trabécula (determinista, sin asomar por delante de la cara de corte). */
+  private readonly grosores: number[];
   private readonly foramen = new Group();
   private ultimoReborde = -1;
   private ultimasTrabeculas = -1;
@@ -205,12 +285,14 @@ export class Reborde extends Pieza {
   constructor() {
     super();
     this.grupo.name = 'reborde';
-    const matCorte = material(HEX.corteCortical, { roughness: 0.7 });
-    const matCortical = material(HEX.cortical);
-    const matMedula = material(HEX.medula, { roughness: 0.55 });
-    const matTrabecula = material(HEX.trabecula, { roughness: 0.7 });
-    const matForamen = material(HEX.foramen, { roughness: 0.9 });
-    const matNervio = material(HEX.nervio, { roughness: 0.5 });
+    // Cara de corte del hueso compacto (más clara) y superficie del hueso, mates y porosas; médula grasa y
+    // húmeda; trabéculas de hueso esponjoso; el foramen, un agujero en sombra; el nervio, con sus fascículos.
+    const matCorte = relieve(material(COLOR.corteCortical, 'hueso'), RELIEVE.hueso);
+    const matCortical = relieve(material(COLOR.cortical, 'hueso'), RELIEVE.hueso);
+    const matMedula = relieve(material(COLOR.medula, 'medula'), RELIEVE.medula);
+    const matTrabecula = material(COLOR.trabecula, 'hueso_esponjoso');
+    const matForamen = material(COLOR.foramen, 'cavidad');
+    const matNervio = material(COLOR.nervio, 'nervio');
     this.materiales.push(matCorte, matCortical, matMedula, matTrabecula, matForamen, matNervio);
 
     // Cortical: cinta cerrada entre el contorno exterior y el interior; tapas (grupo 0) más claras que las paredes.
@@ -228,18 +310,27 @@ export class Reborde extends Pieza {
     fondo.frustumCulled = false;
     this.grupo.add(fondo);
 
-    // Trabéculas: barras instanciadas dentro del hueco.
-    const barra = new CylinderGeometry(0.028, 0.028, 1, 5, 1, true);
+    // Trabéculas: barras instanciadas dentro del hueco, de seis caras, abiertas por los extremos (quedan dentro
+    // de la red o de la médula), algo más finas por un extremo y de grosor algo distinto cada una.
+    const barra = new CylinderGeometry(RADIO_TRABECULA * 0.84, RADIO_TRABECULA, 1, 6, 1, true);
     this.trabeculas = this.instancias(barra, matTrabecula, this.lista.length, 'trabeculas');
+    this.grosores = this.lista.map((t, i) =>
+      Math.min(
+        0.75 + 0.6 * Math.abs(Math.sin(i * 12.9898 + t.z * 78.233)),
+        (-t.x - 0.004) / RADIO_TRABECULA,
+      ),
+    );
 
-    // Foramen mentoniano: un óvalo oscuro sobre la cara vestibular con el nervio mentoniano asomando.
+    // Foramen mentoniano: un óvalo oscuro sobre la cara vestibular con el nervio mentoniano asomando (un cabo
+    // corto que sale del agujero; los tejidos blandos donde se ramifica no se dibujan).
     this.foramen.name = 'foramen_mentoniano';
     const agujero = new CircleGeometry(FORAMEN.radio, 20);
     agujero.scale(1, 0.8, 1);
     this.malla(agujero, matForamen, 'foramen', this.foramen);
-    const nervio = new CircleGeometry(FORAMEN.radio * 0.5, 14);
+    const nervio = new CylinderGeometry(FORAMEN.radio * 0.46, FORAMEN.radio * 0.52, 0.06, 12);
+    nervio.rotateX(Math.PI / 2);
     nervio.scale(1, 0.8, 1);
-    nervio.translate(0, 0, 0.004);
+    nervio.translate(0, 0, 0.03);
     this.malla(nervio, matNervio, 'nervio_mentoniano', this.foramen);
     this.grupo.add(this.foramen);
   }
@@ -249,9 +340,14 @@ export class Reborde extends Pieza {
       let s = t.enAlveolo ? aparicion : 1;
       if (!dentroDelTrabecular(t.z, t.y, reborde, 0.1)) s = 0;
       const k = Math.max(1e-4, s);
+      const grosor = this.grosores[i]! * k;
       // El eje Y de la barra se gira sobre X hasta la dirección (0, sen a, cos a) del plano de corte.
       cuaternion.setFromAxisAngle(EJE_X, Math.PI / 2 - t.angulo);
-      matriz.compose(posicion.set(t.x, t.y, t.z), cuaternion, escala.set(k, t.largo * k, k));
+      matriz.compose(
+        posicion.set(t.x, t.y, t.z),
+        cuaternion,
+        escala.set(grosor, t.largo * k, grosor),
+      );
       this.trabeculas.setMatrixAt(i, matriz);
     });
     this.trabeculas.instanceMatrix.needsUpdate = true;
@@ -286,7 +382,8 @@ export class Encia extends Pieza {
   constructor() {
     super();
     this.grupo.name = 'encia';
-    const mat = material(HEX.encia, { roughness: 0.5 });
+    // Mucosa blanda y húmeda, con el punteado fino de la encía insertada.
+    const mat = relieve(material(COLOR.encia, 'encia'), RELIEVE.blando);
     this.materiales.push(mat);
     this.cintas = {
       vestibular: cinta(PUNTOS_ENCIA, false),
@@ -309,7 +406,10 @@ export class Encia extends Pieza {
     this.ultimoReborde = estado.reborde;
     for (const lado of ['vestibular', 'lingual'] as const) {
       const c = carrilesEncia(lado, estado.cierreEncia, estado.reborde);
-      escribirCinta(this.cintas[lado], c.exterior, c.interior, MITAD);
+      // render-07: los carriles de la vestibular corren en el sentido opuesto a los de la lingual (la cara del
+      // cuerpo se refleja), así que con el mismo orden su cinta quedaba con las normales hacia dentro.
+      if (lado === 'vestibular') escribirCinta(this.cintas[lado], c.interior, c.exterior, MITAD);
+      else escribirCinta(this.cintas[lado], c.exterior, c.interior, MITAD);
     }
   }
 }
@@ -322,14 +422,26 @@ export class Diente extends Pieza {
   constructor() {
     super();
     this.grupo.name = 'diente';
-    const esmalte = material(HEX.esmalte, { roughness: 0.35 });
-    const dentina = material(HEX.dentina, { roughness: 0.6 });
-    const pulpa = material(HEX.pulpa, { roughness: 0.5 });
-    this.materiales.push(esmalte, dentina, pulpa);
-    this.malla(mediaCorona(-1), esmalte, 'corona');
-    this.malla(placa(siluetaCorona(), [], CAPA.diente), esmalte, 'corte_corona');
-    this.malla(placa(siluetaRaiz(0), [], CAPA.diente), dentina, 'corte_raiz');
-    this.malla(placa(siluetaPulpa(), [], CAPA.pulpa), pulpa, 'pulpa');
+    // El diente de `hueso_alveolar`: esmalte liso y satinado (color por vértice, el material es blanco); dentina
+    // lisa; cemento liso y mate (avascular: sin los poros del hueso); pulpa blanda y húmeda. La dentina y la pulpa
+    // son placas planas: una sola pasada al desvanecerse. El cemento lleva la raíz cervical en relieve (entre la
+    // cresta y el cuello), así que no es plano y conserva las dos pasadas.
+    const esmalte = material('#ffffff', 'esmalte', { vertexColors: true });
+    const dentina = plano(COLOR.dentina, 'dentina', RELIEVE.dentina);
+    const cemento = relieve(material(COLOR.cemento, 'dentina'), RELIEVE.dentina);
+    const pulpa = plano(COLOR.pulpa, 'encia');
+    this.materiales.push(esmalte, dentina, cemento, pulpa);
+    // La media corona en relieve y la cara de corte del esmalte en una sola malla; encima, la dentina (corona
+    // y raíz), el cemento que reviste la raíz y la pulpa, cuyo conducto llega al foramen apical.
+    const caraEsmalte = pintarUniforme(placa(siluetaCorona(), [], CAPA.diente), COLOR.esmalte);
+    this.malla(unir([mediaCorona(-1), caraEsmalte]), esmalte, 'corona');
+    sinSombra(this.malla(placa(siluetaDentina(), [], CAPA.dentina), dentina, 'corte_raiz'));
+    this.malla(
+      unir([placa(bandaCemento(), [], CAPA.cemento), mediaRaizCervical(-1)]),
+      cemento,
+      'cemento',
+    );
+    sinSombra(this.malla(placa(siluetaPulpa(), [], CAPA.pulpa), pulpa, 'pulpa'));
   }
 
   actualizar(estado: EstadoAlveolo): void {
@@ -349,12 +461,12 @@ export class Diente extends Pieza {
 interface Relleno {
   geometria: BufferGeometry;
   malla: Mesh;
-  material: MeshStandardMaterial;
+  material: MeshPhysicalMaterial;
 }
 
 export class Alveolo extends Pieza {
-  private readonly matLamina: MeshStandardMaterial;
-  private readonly matLigamento: MeshStandardMaterial;
+  private readonly matLamina: MeshPhysicalMaterial;
+  private readonly matLigamento: MeshPhysicalMaterial;
   private readonly cavidad: Relleno;
   private readonly coagulo: Relleno;
   private readonly granulacion: Relleno;
@@ -362,66 +474,106 @@ export class Alveolo extends Pieza {
   private readonly tapa: Relleno;
   private readonly sangrado: InstancedMesh;
   private readonly vasos: InstancedMesh;
-  private readonly osteoclastos: InstancedMesh;
+  /** Los osteoclastos: los de las paredes del alvéolo y los del reborde nunca están a la vez. */
+  private readonly osteoclastos = new Group();
+  private readonly osteoclastosAlveolo: InstancedMesh;
+  private readonly osteoclastosReborde: InstancedMesh;
   private readonly puntosSangrado = puntosSangrado();
   private readonly puntosVasos = puntosVasos();
   private readonly puntosLamina = perforacionesLamina();
-  private readonly colorEntretejido = new Color(HEX.huesoEntretejido);
-  private readonly colorLaminar = new Color(HEX.huesoLaminar);
+  private readonly colorEntretejido = new Color(COLOR.huesoEntretejido);
+  private readonly colorLaminar = new Color(COLOR.huesoLaminar);
 
   constructor() {
     super();
     this.grupo.name = 'alveolo';
-    this.matLamina = material(HEX.laminaCribiforme, { roughness: 0.65 });
-    this.matLigamento = material(HEX.ligamento, { roughness: 0.75 });
+    // Hueso alveolar propio: hueso denso. Ligamento: tejido fibroso, con las vetas del relieve atravesando la
+    // banda (giradas un cuarto de vuelta), como sus fibras principales. Placas planas que se desvanecen.
+    this.matLamina = plano(COLOR.laminaCribiforme, 'hueso', RELIEVE.hueso);
+    this.matLigamento = relieve(
+      material(COLOR.ligamento, 'membrana', { forceSinglePass: true }),
+      RELIEVE.membrana,
+      RELIEVE.membrana,
+      Math.PI / 2,
+    );
     this.materiales.push(this.matLamina, this.matLigamento);
 
     // Hueso alveolar propio (fasciculado) y ligamento periodontal: dos bandas fijas alrededor de la raíz.
-    this.malla(
-      placa(bandaAlrededorDeRaiz(GROSOR_LIGAMENTO, DESPLAZAMIENTO_LAMINA), [], CAPA.lamina),
-      this.matLamina,
-      'hueso_alveolar_propio',
+    sinSombra(
+      this.malla(
+        placa(bandaAlrededorDeRaiz(GROSOR_LIGAMENTO, DESPLAZAMIENTO_LAMINA), [], CAPA.lamina),
+        this.matLamina,
+        'hueso_alveolar_propio',
+      ),
     );
-    this.malla(
-      placa(bandaAlrededorDeRaiz(0, GROSOR_LIGAMENTO), [], CAPA.ligamento),
-      this.matLigamento,
-      'ligamento_periodontal',
+    sinSombra(
+      this.malla(
+        placa(bandaAlrededorDeRaiz(0, GROSOR_LIGAMENTO), [], CAPA.ligamento),
+        this.matLigamento,
+        'ligamento_periodontal',
+      ),
     );
 
-    this.cavidad = this.relleno('cavidad', HEX.cavidad, { roughness: 0.95 });
-    this.huesoNuevo = this.relleno('hueso_nuevo', HEX.huesoEntretejido, { roughness: 0.7 });
-    this.granulacion = this.relleno('tejido_granulacion', HEX.granulacion, { roughness: 0.6 });
-    this.coagulo = this.relleno('coagulo', HEX.coagulo, { roughness: 0.45 });
-    this.tapa = this.relleno('tapa_cortical', HEX.corteCortical, { roughness: 0.7 });
+    // Rellenos: el fondo del alvéolo vacío en sombra; el hueso nuevo, entretejido y poroso; el tejido de
+    // granulación y el coágulo, grumosos y muy húmedos; la tapa cortical, hueso compacto.
+    this.cavidad = this.relleno('cavidad', COLOR.cavidad, 'cavidad');
+    this.huesoNuevo = this.relleno('hueso_nuevo', COLOR.huesoEntretejido, 'hueso_inmaduro');
+    this.granulacion = this.relleno('tejido_granulacion', COLOR.granulacion, 'coagulo');
+    this.coagulo = this.relleno('coagulo', COLOR.coagulo, 'coagulo');
+    this.tapa = this.relleno('tapa_cortical', COLOR.corteCortical, 'hueso', RELIEVE.hueso);
 
-    const matSangre = material(HEX.sangre, { roughness: 0.4 });
-    const matVaso = material(HEX.vaso, { roughness: 0.4 });
-    const matOsteoclasto = material(HEX.osteoclasto, { roughness: 0.5 });
+    // Sangre líquida y brillante; vasos lisos y húmedos; osteoclastos con superficie de célula.
+    const matSangre = material(COLOR.sangre, 'liquido');
+    const matVaso = material(COLOR.vaso, 'vaso');
+    const matOsteoclasto = material(COLOR.osteoclasto, 'celula');
     this.materiales.push(matSangre, matVaso, matOsteoclasto);
     this.sangrado = this.instancias(
-      disco(0.05, 10),
+      disco(0.05, 12),
       matSangre,
       this.puntosSangrado.length,
       'sangrado',
     );
     this.vasos = this.instancias(disco(0.055, 12), matVaso, this.puntosVasos.length, 'vasos');
-    this.osteoclastos = this.instancias(
-      new IcosahedronGeometry(0.085, 1),
-      matOsteoclasto,
-      this.puntosLamina.length + osteoclastosReborde(0, MITAD).length,
-      'osteoclastos',
+    sinSombra(this.sangrado);
+    sinSombra(this.vasos);
+
+    // Osteoclastos: células grandes y aplanadas contra la superficie que reabsorben (realismo-21), sin facetas al
+    // acercarse (la resolución de una esfera de 12 × 8 caras). Dos grupos de instancias, uno por fase, para que
+    // solo se dibuje el que trabaja. Los de las paredes del alvéolo están sobre la cara de corte: de ellos solo se
+    // ve la mitad de delante (las placas tapan la otra), así que son cúpulas bajas que miran a +X. Los del reborde,
+    // sobre la superficie del hueso, esferas aplastadas a lo largo de la normal de la superficie.
+    this.osteoclastos.name = 'osteoclastos';
+    const cupula = new SphereGeometry(0.085, 12, 4, 0, Math.PI * 2, 0, Math.PI / 2);
+    cupula.rotateZ(-Math.PI / 2);
+    const esfera = new SphereGeometry(0.085, 12, 8);
+    this.geometrias.push(cupula, esfera);
+    const grupoDe = (geo: BufferGeometry, cantidad: number, nombre: string): InstancedMesh => {
+      const im = new InstancedMesh(geo, matOsteoclasto, cantidad);
+      im.name = nombre;
+      im.frustumCulled = false;
+      this.instanciados.push(im);
+      this.osteoclastos.add(im);
+      return im;
+    };
+    this.osteoclastosAlveolo = grupoDe(cupula, this.puntosLamina.length, 'osteoclastos_alveolo');
+    this.osteoclastosReborde = grupoDe(
+      esfera,
+      osteoclastosReborde(0, MITAD).length,
+      'osteoclastos_reborde',
     );
+    this.grupo.add(this.osteoclastos);
   }
 
   private relleno(
     nombre: string,
     color: string,
-    extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]>,
+    tipo: TipoTejido,
+    repeticiones: number = RELIEVE.blando,
   ): Relleno {
-    const mat = material(color, extra);
+    const mat = plano(color, tipo, repeticiones);
     this.materiales.push(mat);
     const geometria = abanico(PUNTOS_RELLENO);
-    const malla = this.malla(geometria, mat, nombre);
+    const malla = sinSombra(this.malla(geometria, mat, nombre));
     malla.frustumCulled = false;
     return { geometria, malla, material: mat };
   }
@@ -484,14 +636,32 @@ export class Alveolo extends Pieza {
     const b = estado.osteoclastos.reborde;
     this.osteoclastos.visible = a > 0.004 || b > 0.004;
     if (this.osteoclastos.visible) {
+      // Solo se dibuja el grupo que trabaja, pero se escriben los dos (como cuando eran una sola malla).
+      this.osteoclastosAlveolo.visible = a > 0.004;
+      this.osteoclastosReborde.visible = b > 0.004;
+      // En la cara de corte: X es el eje de la cúpula (bajo, 0,038), Y la pared (a lo largo) y Z a través.
       this.puntosLamina.forEach(([z, y], i) => {
-        instanciaPunto(this.osteoclastos, i, CAPA.discos, y, z, a * (z > Z_ALVEOLO ? 1.15 : 0.8));
+        const k = Math.max(1e-4, a * (z > Z_ALVEOLO ? 1.15 : 0.8));
+        matriz.compose(
+          posicion.set(CAPA.discos, y, z),
+          cuaternion.identity(),
+          escala.set(0.45 * k, OSTEOCLASTO.ancho * k, OSTEOCLASTO.largo * k),
+        );
+        this.osteoclastosAlveolo.setMatrixAt(i, matriz);
       });
-      const base = this.puntosLamina.length;
-      osteoclastosReborde(estado.reborde, MITAD).forEach((p, i) => {
-        instanciaPunto(this.osteoclastos, base + i, p.x, p.y, p.z, b);
-      });
-      this.osteoclastos.instanceMatrix.needsUpdate = true;
+      // En el reborde: el eje Y de la esfera, a lo largo de la normal de la superficie (aplastada contra ella).
+      const k = Math.max(1e-4, b);
+      for (const [i, p] of osteoclastosReborde(estado.reborde, MITAD).entries()) {
+        cuaternion.setFromUnitVectors(EJE_Y, normal.set(0, p.normal[1], p.normal[0]));
+        matriz.compose(
+          posicion.set(p.x, p.y, p.z),
+          cuaternion,
+          escala.set(OSTEOCLASTO.ancho * k, OSTEOCLASTO.alto * k, OSTEOCLASTO.largo * k),
+        );
+        this.osteoclastosReborde.setMatrixAt(i, matriz);
+      }
+      this.osteoclastosAlveolo.instanceMatrix.needsUpdate = true;
+      this.osteoclastosReborde.instanceMatrix.needsUpdate = true;
     }
   }
 }
@@ -504,11 +674,13 @@ export class Conducto extends Pieza {
   constructor() {
     super();
     this.grupo.name = 'conducto_mandibular';
-    const luz = material(HEX.conducto, { roughness: 0.8 });
-    const borde = material(HEX.bordeConducto, { roughness: 0.6 });
-    const nervio = material(HEX.nervio, { roughness: 0.5 });
-    const arteria = material(HEX.arteria, { roughness: 0.4 });
-    const vena = material(HEX.vena, { roughness: 0.4 });
+    // La luz del conducto: tejido conjuntivo laxo y grasa alrededor del paquete; su borde, hueso denso; el
+    // nervio, con sus fascículos; los vasos, lisos y húmedos. Los discos traen UV de 0 a 1.
+    const luz = relieve(material(COLOR.conducto, 'medula'), 1);
+    const borde = material(COLOR.bordeConducto, 'hueso');
+    const nervio = relieve(material(COLOR.nervio, 'nervio'), 2);
+    const arteria = material(COLOR.arteria, 'vaso');
+    const vena = material(COLOR.vena, 'vaso');
     this.materiales.push(luz, borde, nervio, arteria, vena);
 
     // Todo sobre la cara de la médula, mirando a +X: la luz del conducto, su borde denso y los tres cortes.

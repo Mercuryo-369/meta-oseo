@@ -24,6 +24,7 @@ import {
   validarNombre,
   validarNumero,
 } from '@/lib/identificacion';
+import SelectorTema from '@/components/SelectorTema.vue';
 import { destinoSeguro } from '@/router/guard';
 import { useAuthStore } from '@/stores/auth';
 
@@ -196,6 +197,13 @@ async function enviar(): Promise<void> {
 </script>
 
 <template>
+  <!-- Cambio de tema también antes de entrar (aquí no hay cabecera). -->
+  <div
+    class="fixed top-2 right-2 z-10"
+    style="margin-top: var(--area-segura-arriba); margin-right: var(--area-segura-derecha)"
+  >
+    <SelectorTema />
+  </div>
   <main
     class="mx-auto grid min-h-dvh w-full max-w-5xl content-center gap-8 px-4 py-8 md:grid-cols-2 md:items-center md:gap-14"
     style="

@@ -2,29 +2,39 @@
  * Las tres piezas de la escena de la vesícula de matriz, como objetos de three con `actualizar(estado)` y
  * `liberar()`:
  *
- *  - `Osteoblasto`: la membrana basal ondulada con parte del citoplasma encima, las enzimas ancladas a su cara
- *    externa (TNAP, ENPP1, ANK) y, al final, las PPi que la TNAP corta en dos Pi y las que ENPP1 acaba de formar.
+ *  - `Osteoblasto`: la membrana plasmática ondulada de su polo secretor (el que mira al osteoide; un osteoblasto no
+ *    tiene membrana basal) con parte del citoplasma encima, las enzimas ancladas a su cara externa (TNAP, ENPP1,
+ *    ANK) y, al final, las PPi que la TNAP corta en dos Pi y las que ENPP1 acaba de formar.
  *  - `Osteoide`: las fibrillas de colágeno con su bandeo, las placas de mineral que se depositan en los huecos del
  *    bandeo, las vesículas vecinas con sus cristales y el pirofosfato pegado a las placas.
  *  - `VesiculaMatriz`: la vesícula (entera o cortada), el cuello de gemación, sus proteínas de membrana, los iones
  *    que entran, el núcleo amorfo, el racimo de cristales que la rompe y el PPi sobre ellos.
  *
  * No calculan nada de la biología: reciben `EstadoVesicula` (puro) y solo mueven, escalan, colorean y aclaran
- * piezas. Materiales compartidos por tipo de pieza; `InstancedMesh` para lo repetido; al liberar se libera todo.
+ * piezas. Materiales compartidos por tipo de pieza, físicos y con el relieve de su tejido (`realismo.ts`);
+ * `InstancedMesh` para lo repetido; al liberar se libera todo.
+ *
+ * Revisión de diseño (2026-10-17): las membranas de las vesículas son un velo (`veloFresnel`: casi transparentes
+ * de frente, más densas de canto, como una pompa) satinado y sin brillo propio, en lugar de una bola de cristal
+ * rosa que brillaba; los cristales del racimo tampoco emiten luz; las estrías de las fibrillas corren a lo largo
+ * del eje (antes salían como anillos); y las moléculas pequeñas que se desvanecen son de una cara (una pasada).
  */
 import type { BufferGeometry, Material } from 'three';
 import {
+  BackSide,
   Color,
-  DoubleSide,
+  FrontSide,
   Group,
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
 import { fraccion, suave } from '../interpolacion';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad, veloFresnel } from '../realismo';
 import {
   N_HIDROLISIS,
   alturaMembrana,
@@ -61,39 +71,68 @@ import {
 import type { EstadoVesicula } from './estado';
 import { R_NUCLEACION } from './disposicion';
 import {
-  caja,
   cilindro,
   cuello,
   esfera,
+  globulo,
   hemisferio,
   laminaOndulada,
   losaOndulada,
   mancuerna,
   placa,
   placaDesdeOrigen,
-  tubo,
+  tramoFibrilla,
 } from './geometria';
-import { HEX } from './paleta';
+import { NATURAL as COLOR } from './paleta';
 
 const EJE_X = new Vector3(1, 0, 0);
 const EJE_Y = new Vector3(0, 1, 0);
+/** Media vuelta alrededor de Y: el último tramo de cada fibrilla pone su tapa en la punta +X. */
+const MEDIA_VUELTA_Y = new Quaternion().setFromAxisAngle(EJE_Y, Math.PI);
+/** Lados de los tramos de las fibrillas (antes 10): sin tapas ocultas caben en menos triángulos que antes. */
+const LADOS_FIBRILLA = 14;
 
-/** Material estándar. */
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara salvo
+ * que `extra` diga otra cosa (las cáscaras abiertas se ven por dentro; `materialOrganico` ya la pone por defecto).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({ color, roughness: 0.62, metalness: 0, ...extra });
+  tipo: TipoTejido,
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, extra);
 }
 
-/** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
-function poner(materiales: readonly Material[], opacidad: number, base = 1): void {
-  const o = Math.max(0, Math.min(1, opacidad * base));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
+/** Moléculas pequeñas y cerradas que se desvanecen (iones, proteínas, PPi): de una cara, una sola pasada. */
+const CERRADA = { side: FrontSide } as const;
+
+/**
+ * Membrana de una vesícula de matriz: una bicapa fina, lisa y satinada (con la rugosidad y el barniz del `liquido`
+ * parecía de cristal) y sin brillo propio. Velo de Fresnel: de frente deja ver casi todo (0,3 veces su opacidad) y
+ * de canto, donde la mirada atraviesa más membrana, se ve más densa (1,8 veces).
+ */
+function materialMembranaVesicula(): MeshPhysicalMaterial {
+  const m = material(COLOR.membranaVesicula, 'liquido', { roughness: 0.35, clearcoat: 0.3 });
+  veloFresnel(m, 0.3, 1.8);
+  return m;
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
   }
+}
+
+/**
+ * Cambia cuántas veces se repite el relieve del material en las UV de su pieza (el clon de la textura es propio
+ * de cada material y hace también de mapa de rugosidad).
+ */
+function repetir(m: MeshPhysicalMaterial, u: number, v: number): MeshPhysicalMaterial {
+  m.bumpMap?.repeat.set(u, v);
+  return m;
 }
 
 /** Opacidad de una membrana translúcida: siempre transparente y sin escribir profundidad, para ver lo de dentro. */
@@ -124,8 +163,8 @@ export class Osteoblasto implements PiezaVesicula {
   readonly grupo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
-  private readonly matPpi: MeshStandardMaterial;
-  private readonly matHidrolisis: MeshStandardMaterial;
+  private readonly matPpi: MeshPhysicalMaterial;
+  private readonly matHidrolisis: MeshPhysicalMaterial;
   private readonly enzimas: InstancedMesh;
   private readonly hidrolisis: InstancedMesh;
   private readonly ppiEnpp1: InstancedMesh;
@@ -136,15 +175,22 @@ export class Osteoblasto implements PiezaVesicula {
   private readonly pos = new Vector3();
   private readonly esc = new Vector3();
   private readonly color = new Color();
-  private readonly colorPpi = new Color(HEX.ppi);
-  private readonly colorPi = new Color(HEX.fosfato);
+  private readonly colorPpi = new Color(COLOR.ppi);
+  private readonly colorPi = new Color(COLOR.fosfato);
 
   constructor() {
     this.grupo.name = 'osteoblasto';
     const relieve = (x: number, z: number) => alturaMembrana(x, z) - MEMBRANA.y;
 
-    // Membrana basal: lámina ondulada, opaca, de doble cara.
-    const matMembrana = material(HEX.membranaCelula, { roughness: 0.7, side: DoubleSide });
+    // Membrana del polo secretor: lámina ondulada, opaca, de doble cara, con la superficie blanda de una célula
+    // (el relieve, repetido para un grano igual a lo ancho y a lo largo). Solo da sombra por su cara de abajo: con
+    // la luz principal por encima, una lámina opaca que lo cubre todo dejaría en sombra la vesícula y el osteoide,
+    // que es lo que hay que ver.
+    const matMembrana = repetir(
+      material(COLOR.membranaCelula, 'celula', { shadowSide: BackSide }),
+      6,
+      3.5,
+    );
     const geoMembrana = laminaOndulada(MEMBRANA.ancho, MEMBRANA.fondo, 40, 22, relieve);
     this.geometrias.push(geoMembrana);
     const membrana = new Mesh(geoMembrana, matMembrana);
@@ -152,8 +198,13 @@ export class Osteoblasto implements PiezaVesicula {
     membrana.position.y = MEMBRANA.y;
     this.grupo.add(membrana);
 
-    // Citoplasma: losa translúcida cuya cara inferior sigue la membrana (un poco por encima, sin z-fighting).
-    const matCitoplasma = material(HEX.citoplasma, { roughness: 0.8 });
+    // Citoplasma: losa translúcida cuya cara inferior sigue la membrana (un poco por encima, sin z-fighting). De
+    // una cara, como antes: translúcida y de doble cara se vería dos veces.
+    const matCitoplasma = repetir(
+      material(COLOR.citoplasma, 'celula', { side: FrontSide }),
+      6,
+      3.5,
+    );
     ponerVelo(matCitoplasma, 0.5);
     const geoCitoplasma = losaOndulada(
       MEMBRANA.ancho,
@@ -169,21 +220,23 @@ export class Osteoblasto implements PiezaVesicula {
     citoplasma.position.y = MEMBRANA.y;
     this.grupo.add(citoplasma);
 
-    // Enzimas colgando de la cara externa: cajitas de tres colores.
-    const matEnzimas = material('#ffffff', { roughness: 0.5 });
-    const geoCaja = caja();
-    this.geometrias.push(geoCaja);
+    // Enzimas colgando de la cara externa: glóbulos (proteínas globulares, antes cajitas) de tres colores, cada
+    // uno girado un ángulo distinto (ángulo áureo) para que no estén todos alineados. Base blanca: el color de
+    // cada instancia es el que se ve.
+    const matEnzimas = material('#ffffff', 'molecula');
+    const geoGlobulo = globulo();
+    this.geometrias.push(geoGlobulo);
     const lista = enzimasDeMembrana();
-    this.enzimas = new InstancedMesh(geoCaja, matEnzimas, lista.length);
+    this.enzimas = new InstancedMesh(geoGlobulo, matEnzimas, lista.length);
     this.enzimas.name = 'enzimas_membrana';
     const colores: Record<TipoEnzima, Color> = {
-      tnap: new Color(HEX.tnap),
-      enpp1: new Color(HEX.enpp1),
-      ank: new Color(HEX.ank),
+      tnap: new Color(COLOR.tnap),
+      enpp1: new Color(COLOR.enpp1),
+      ank: new Color(COLOR.ank),
     };
     lista.forEach((e, i) => {
       this.pos.set(e.x, e.y, e.z);
-      this.q.identity();
+      this.q.setFromAxisAngle(EJE_Y, i * 2.39996);
       this.esc.set(e.sx, e.sy, e.sz);
       this.m.compose(this.pos, this.q, this.esc);
       this.enzimas.setMatrixAt(i, this.m);
@@ -193,7 +246,7 @@ export class Osteoblasto implements PiezaVesicula {
     this.grupo.add(this.enzimas);
 
     // PPi que la TNAP corta: dos esferas por sitio, que se separan y cambian de color.
-    this.matHidrolisis = material('#ffffff', { roughness: 0.45 });
+    this.matHidrolisis = material('#ffffff', 'molecula', CERRADA);
     const geoEsfera = esfera(8, 6);
     this.geometrias.push(geoEsfera);
     this.hidrolisis = new InstancedMesh(geoEsfera, this.matHidrolisis, N_HIDROLISIS * 2);
@@ -201,7 +254,7 @@ export class Osteoblasto implements PiezaVesicula {
     this.grupo.add(this.hidrolisis);
 
     // PPi recién formadas junto a ENPP1.
-    this.matPpi = material(HEX.ppi, { roughness: 0.45 });
+    this.matPpi = material(COLOR.ppi, 'molecula', CERRADA);
     const geoMancuerna = mancuerna();
     this.geometrias.push(geoMancuerna);
     const junto = ppiJuntoAEnpp1();
@@ -245,13 +298,13 @@ export class Osteoblasto implements PiezaVesicula {
     const ppi = estado.ppi;
     this.hidrolisis.visible = ppi > 0.004;
     this.ppiEnpp1.visible = ppi > 0.004;
-    poner([this.matHidrolisis, this.matPpi], Math.min(1, ppi * 2));
+    ponerOpacidad([this.matHidrolisis, this.matPpi], Math.min(1, ppi * 2));
     this.ponerHidrolisis(estado.hidrolisis);
   }
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.enzimas.dispose();
     this.hidrolisis.dispose();
     this.ppiEnpp1.dispose();
@@ -266,9 +319,9 @@ export class Osteoide implements PiezaVesicula {
   readonly grupo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
-  private readonly matCristal: MeshStandardMaterial;
-  private readonly matVecinas: MeshStandardMaterial;
-  private readonly matPpi: MeshStandardMaterial;
+  private readonly matCristal: MeshPhysicalMaterial;
+  private readonly matVecinas: MeshPhysicalMaterial;
+  private readonly matPpi: MeshPhysicalMaterial;
   private readonly huecos: InstancedMesh;
   private readonly solapamientos: InstancedMesh;
   private readonly cristales: InstancedMesh;
@@ -292,11 +345,18 @@ export class Osteoide implements PiezaVesicula {
   constructor() {
     this.grupo.name = 'osteoide';
 
-    // Fibrillas con bandeo: segmentos de hueco (más oscuros y finos) y de solapamiento (más claros).
-    const matHueco = material(HEX.fibrillaOscura, { roughness: 0.75 });
-    const matSolapamiento = material(HEX.fibrillaClara, { roughness: 0.7 });
-    const geoHueco = tubo(R_FIBRILLA * 0.93, 1);
-    const geoSolapamiento = tubo(R_FIBRILLA, 1);
+    // Fibrillas con bandeo: segmentos de hueco (más oscuros y finos) y de solapamiento (más claros). Colágeno:
+    // estrías a lo largo (las microfibrillas) y brillo sedoso. Tramos abiertos (`tramoFibrilla`): solo llevan
+    // tapa los de hueco, en su extremo -X; el bandeo empieza y acaba en hueco (lo comprueban las pruebas), así que
+    // el primer tramo cierra una punta y el último, girado media vuelta, la otra.
+    // Estrías: la U de los tramos da la vuelta a la fibrilla y la V corre a lo largo de un tramo corto (0,37 de
+    // hueco y 0,25 de solapamiento). Con la repetición 1 × 6 del tejido, pensada para fibras largas, las vetas
+    // salían como anillos, perpendiculares a las microfibrillas. U entera (sin costura): 32 vetas por vuelta, de
+    // unas 0,06 unidades; en V, una veta de unas 0,37 unidades en los dos tramos: 6 veces más largas que anchas.
+    const matHueco = repetir(material(COLOR.fibrillaOscura, 'fibra'), 1, 0.33);
+    const matSolapamiento = repetir(material(COLOR.fibrillaClara, 'fibra'), 1, 0.22);
+    const geoHueco = tramoFibrilla(R_FIBRILLA * 0.93, LADOS_FIBRILLA, true);
+    const geoSolapamiento = tramoFibrilla(R_FIBRILLA, LADOS_FIBRILLA);
     this.geometrias.push(geoHueco, geoSolapamiento);
     const fibrillas = fibrillasDelOsteoide();
     const segmentos = segmentosDeBandeo();
@@ -312,36 +372,33 @@ export class Osteoide implements PiezaVesicula {
     const cuenta = { hueco: 0, solapamiento: 0 };
     for (const f of fibrillas) {
       this.q.setFromAxisAngle(EJE_Y, f.yaw);
-      for (const seg of segmentos) {
+      segmentos.forEach((seg, k) => {
         this.pos
           .set(seg.s, 0, 0)
           .applyQuaternion(this.q)
           .add(this.dir.set(f.x, f.y, f.z));
         this.esc.set(seg.largo * 1.02, 1, 1);
-        this.m.compose(this.pos, this.q, this.esc);
+        const giro =
+          k === segmentos.length - 1 ? this.q2.copy(this.q).multiply(MEDIA_VUELTA_Y) : this.q;
+        this.m.compose(this.pos, giro, this.esc);
         if (seg.hueco) this.huecos.setMatrixAt(cuenta.hueco++, this.m);
         else this.solapamientos.setMatrixAt(cuenta.solapamiento++, this.m);
-      }
+      });
     }
     terminar(this.huecos);
     terminar(this.solapamientos);
     this.grupo.add(this.huecos, this.solapamientos);
 
-    // Placas de mineral sobre los huecos del bandeo.
-    this.matCristal = material(HEX.cristal, { roughness: 0.25 });
+    // Placas de mineral sobre los huecos del bandeo: cristal liso con brillo vítreo.
+    this.matCristal = material(COLOR.cristal, 'cristal');
     const geoPlaca = placa(PLACA.largo, PLACA.alto, PLACA.grosor);
     this.geometrias.push(geoPlaca);
     this.cristales = new InstancedMesh(geoPlaca, this.matCristal, this.datosCristales.length);
     this.cristales.name = 'cristales_fibrillas';
     this.grupo.add(this.cristales);
 
-    // Vesículas vecinas y sus cristales.
-    this.matVecinas = material(HEX.membranaVesicula, {
-      roughness: 0.5,
-      side: DoubleSide,
-      emissive: HEX.brilloMembrana,
-      emissiveIntensity: 0.3,
-    });
+    // Vesículas vecinas y sus cristales: la misma membrana que la vesícula principal.
+    this.matVecinas = materialMembranaVesicula();
     ponerVelo(this.matVecinas, 0);
     const geoVecina = esfera(18, 12);
     this.geometrias.push(geoVecina);
@@ -359,7 +416,7 @@ export class Osteoide implements PiezaVesicula {
     this.grupo.add(this.cristalesVecinas);
 
     // Pirofosfato adsorbido a las placas cercanas a la vesícula.
-    this.matPpi = material(HEX.ppi, { roughness: 0.45 });
+    this.matPpi = material(COLOR.ppi, 'molecula', CERRADA);
     const geoMancuerna = mancuerna();
     this.geometrias.push(geoMancuerna);
     this.ppi = new InstancedMesh(geoMancuerna, this.matPpi, this.datosPpi.length);
@@ -437,7 +494,7 @@ export class Osteoide implements PiezaVesicula {
     this.cristalesVecinas.visible = estado.vecinas > 0.004 && estado.propagacion > 0.35;
     this.ppi.visible = estado.ppi > 0.004;
     ponerVelo(this.matVecinas, 0.5 * estado.vecinas);
-    poner([this.matPpi], Math.min(1, estado.ppi * 2));
+    ponerOpacidad([this.matPpi], Math.min(1, estado.ppi * 2));
     this.ponerCristales(estado.propagacion);
     this.ponerVecinas(estado.vecinas, estado.propagacion);
     this.ponerPpi(estado.ppi);
@@ -445,7 +502,7 @@ export class Osteoide implements PiezaVesicula {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of [
       this.huecos,
       this.solapamientos,
@@ -469,15 +526,15 @@ export class VesiculaMatriz implements PiezaVesicula {
   private readonly cuerpo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
-  private readonly matEntera: MeshStandardMaterial;
-  private readonly matCortada: MeshStandardMaterial;
-  private readonly matCuello: MeshStandardMaterial;
-  private readonly matProteinasAtras: MeshStandardMaterial;
-  private readonly matProteinasFrente: MeshStandardMaterial;
-  private readonly matIones: MeshStandardMaterial;
-  private readonly matNucleo: MeshStandardMaterial;
-  private readonly matCristal: MeshStandardMaterial;
-  private readonly matPpi: MeshStandardMaterial;
+  private readonly matEntera: MeshPhysicalMaterial;
+  private readonly matCortada: MeshPhysicalMaterial;
+  private readonly matCuello: MeshPhysicalMaterial;
+  private readonly matProteinasAtras: MeshPhysicalMaterial;
+  private readonly matProteinasFrente: MeshPhysicalMaterial;
+  private readonly matIones: MeshPhysicalMaterial;
+  private readonly matNucleo: MeshPhysicalMaterial;
+  private readonly matCristal: MeshPhysicalMaterial;
+  private readonly matPpi: MeshPhysicalMaterial;
   private readonly entera: Mesh;
   private readonly cortada: Mesh;
   private readonly cuello: Mesh;
@@ -508,18 +565,13 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.cuerpo.name = 'vesicula_cuerpo';
     this.cuerpo.position.set(X_VESICULA, 0, Z_VESICULA);
 
-    // Membrana de la vesícula: la esfera entera y la mitad trasera (para el corte) se turnan por opacidad.
+    // Membrana de la vesícula: la esfera entera y la mitad trasera (para el corte) se turnan por opacidad. Una
+    // bicapa fina: un velo de doble cara (dos pasadas: la pared de atrás y la de delante se ven en su orden).
     const geoEsfera = esfera(28, 18);
     const geoHemisferio = hemisferio(28, 18);
     this.geometrias.push(geoEsfera, geoHemisferio);
-    const velo = {
-      roughness: 0.45,
-      side: DoubleSide,
-      emissive: HEX.brilloMembrana,
-      emissiveIntensity: 0.3,
-    } as const;
-    this.matEntera = material(HEX.membranaVesicula, velo);
-    this.matCortada = material(HEX.membranaVesicula, velo);
+    this.matEntera = materialMembranaVesicula();
+    this.matCortada = materialMembranaVesicula();
     ponerVelo(this.matEntera, 0);
     ponerVelo(this.matCortada, 0);
     this.entera = new Mesh(geoEsfera, this.matEntera);
@@ -528,8 +580,9 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.cortada.name = 'membrana_vesicula_cortada';
     this.cuerpo.add(this.entera, this.cortada);
 
-    // Cuello de gemación, en coordenadas absolutas (une la vesícula con la membrana del osteoblasto).
-    this.matCuello = material(HEX.cuello, { roughness: 0.5, side: DoubleSide });
+    // Cuello de gemación, en coordenadas absolutas (une la vesícula con la membrana del osteoblasto): membrana de
+    // la célula que se estrangula.
+    this.matCuello = material(COLOR.cuello, 'celula');
     const geoCuello = cuello();
     this.geometrias.push(geoCuello);
     this.cuello = new Mesh(geoCuello, this.matCuello);
@@ -539,8 +592,8 @@ export class VesiculaMatriz implements PiezaVesicula {
     // Proteínas de la membrana: canales, transportadores, TNAP fuera y PHOSPHO1 dentro; las de delante se van con el corte.
     const geoCilindro = cilindro(10);
     this.geometrias.push(geoCilindro);
-    this.matProteinasAtras = material('#ffffff', { roughness: 0.5 });
-    this.matProteinasFrente = material('#ffffff', { roughness: 0.5 });
+    this.matProteinasAtras = material('#ffffff', 'molecula', CERRADA);
+    this.matProteinasFrente = material('#ffffff', 'molecula', CERRADA);
     const proteinas = proteinasDeVesicula();
     const atras = proteinas.filter((p) => !p.frente);
     const frente = proteinas.filter((p) => p.frente);
@@ -549,10 +602,10 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.proteinasFrente = new InstancedMesh(geoCilindro, this.matProteinasFrente, frente.length);
     this.proteinasFrente.name = 'proteinas_vesicula_frente';
     const colores: Record<TipoProteinaVesicula, Color> = {
-      anexina: new Color(HEX.anexina),
-      pit: new Color(HEX.pit),
-      tnap: new Color(HEX.tnap),
-      phospho1: new Color(HEX.phospho1),
+      anexina: new Color(COLOR.anexina),
+      pit: new Color(COLOR.pit),
+      tnap: new Color(COLOR.tnap),
+      phospho1: new Color(COLOR.phospho1),
     };
     for (const [malla, lista] of [
       [this.proteinasAtras, atras],
@@ -572,20 +625,21 @@ export class VesiculaMatriz implements PiezaVesicula {
     }
 
     // Iones: esferas pequeñas de dos colores que viajan por su camino.
-    this.matIones = material('#ffffff', { roughness: 0.4 });
+    this.matIones = material('#ffffff', 'molecula', CERRADA);
     const geoIon = esfera(8, 6);
     this.geometrias.push(geoIon);
     this.iones = new InstancedMesh(geoIon, this.matIones, this.datosIones.length);
     this.iones.name = 'iones';
-    const calcio = new Color(HEX.calcio);
-    const fosfato = new Color(HEX.fosfato);
+    const calcio = new Color(COLOR.calcio);
+    const fosfato = new Color(COLOR.fosfato);
     this.datosIones.forEach((ion, i) =>
       this.iones.setColorAt(i, ion.tipo === 'calcio' ? calcio : fosfato),
     );
     this.cuerpo.add(this.iones);
 
-    // Núcleo de fosfato de calcio amorfo: esfera tosca en el sitio de nucleación.
-    this.matNucleo = material(HEX.acp, { roughness: 0.9, flatShading: true });
+    // Núcleo de fosfato de calcio amorfo: esfera tosca en el sitio de nucleación, mate y granulosa como un
+    // mineral sin ordenar (el tejido de hueso esponjoso da ese grano; aún sin el brillo del cristal).
+    this.matNucleo = material(COLOR.acp, 'hueso_esponjoso', { flatShading: true });
     const geoNucleo = esfera(9, 6);
     this.geometrias.push(geoNucleo);
     this.nucleo = new Mesh(geoNucleo, this.matNucleo);
@@ -593,12 +647,8 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.nucleo.position.set(...DIRECCION_NUCLEACION).multiplyScalar(R_NUCLEACION);
     this.cuerpo.add(this.nucleo);
 
-    // Racimo de cristales: placas que crecen desde el anclaje hacia fuera.
-    this.matCristal = material(HEX.cristal, {
-      roughness: 0.25,
-      emissive: HEX.cristal,
-      emissiveIntensity: 0.18,
-    });
+    // Racimo de cristales: placas que crecen desde el anclaje hacia fuera; brillo vítreo, sin luz propia.
+    this.matCristal = material(COLOR.cristal, 'cristal');
     const geoPlaca = placaDesdeOrigen(1, 1);
     this.geometrias.push(geoPlaca);
     this.racimo = new InstancedMesh(geoPlaca, this.matCristal, this.datosRacimo.length);
@@ -606,7 +656,7 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.cuerpo.add(this.racimo);
 
     // Pirofosfato sobre las placas del racimo.
-    this.matPpi = material(HEX.ppi, { roughness: 0.45 });
+    this.matPpi = material(COLOR.ppi, 'molecula', CERRADA);
     const geoMancuerna = mancuerna();
     this.geometrias.push(geoMancuerna);
     this.ppi = new InstancedMesh(geoMancuerna, this.matPpi, this.datosPpi.length);
@@ -707,18 +757,18 @@ export class VesiculaMatriz implements PiezaVesicula {
       const grosor = radio * 0.48 * (0.35 + 0.65 * v.cuello);
       this.cuello.position.set(this.gemacion[0], yArriba, this.gemacion[2]);
       this.cuello.scale.set(grosor, largo, grosor);
-      poner([this.matCuello], v.opacidad);
+      ponerOpacidad([this.matCuello], v.opacidad);
     }
 
     const proteinas = v.opacidad * (1 - 0.7 * v.rota);
-    poner([this.matProteinasAtras], proteinas);
-    poner([this.matProteinasFrente], proteinas * (1 - v.corte));
+    ponerOpacidad([this.matProteinasAtras], proteinas);
+    ponerOpacidad([this.matProteinasFrente], proteinas * (1 - v.corte));
     this.proteinasAtras.visible = proteinas > 0.004;
     this.proteinasFrente.visible = proteinas * (1 - v.corte) > 0.004;
 
     const iones = estado.iones;
     this.iones.visible = iones.opacidad > 0.004 && iones.entrada > 0.004;
-    poner([this.matIones], iones.opacidad);
+    ponerOpacidad([this.matIones], iones.opacidad);
     this.ponerIones(iones.entrada, iones.cumulo);
 
     this.nucleo.visible = estado.nucleo > 0.004;
@@ -728,13 +778,13 @@ export class VesiculaMatriz implements PiezaVesicula {
     this.ponerRacimo(estado.cristal, estado.ruptura);
 
     this.ppi.visible = estado.ppi > 0.004;
-    poner([this.matPpi], Math.min(1, estado.ppi * 2));
+    ponerOpacidad([this.matPpi], Math.min(1, estado.ppi * 2));
     this.ponerPpi(estado.ppi);
   }
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of [
       this.proteinasAtras,
       this.proteinasFrente,

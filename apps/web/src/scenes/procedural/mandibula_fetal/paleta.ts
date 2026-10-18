@@ -34,3 +34,27 @@ export const HEX = {
   /** Órgano del esmalte que cubre el germen: campana azulada. */
   campana: '#d3e6f5',
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo): los tejidos como se ven en un embrión real.
+ * El ectomesénquima es una masa gelatinosa translúcida (no violeta de tinción) y la condensación, una zona más
+ * densa y opaca; el hueso fetal, muy vascular, es rosado; el cartílago, blanco azulado; el nervio, amarillento;
+ * los gérmenes, cremosos bajo una campana azulada (los textos de los pasos nombran estos colores).
+ *
+ * Paleta unificada entre escenas (2026-10-17): el hueso fetal es hueso inmaduro (entretejido), el mismo rosado
+ * `#e2b4a2` de las espículas de las dos rutas y del callo de la fractura; el cartílago hialino, `#d9e8ef`.
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  mesenquima: '#ddd5e3',
+  celulaMesenquimal: '#c4b6cf',
+  condensacion: '#b3a2c2',
+  cartilago: '#d9e8ef',
+  cartilagoOscuro: '#c3d7e2',
+  ligamento: '#dccfb3',
+  hueso: '#e2b4a2',
+  corteHueso: '#d79d8f',
+  centroOsificacion: '#c46a55',
+  nervio: '#f0dc9a',
+  germen: '#f2e3c9',
+  campana: '#d4e6f2',
+};

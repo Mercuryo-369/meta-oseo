@@ -63,3 +63,55 @@ export const RGB = {
   cemento: lineal(HEX.cemento),
   huesoResorbido: lineal(HEX.huesoResorbido),
 } as const;
+
+/**
+ * Paleta NATURAL de la escena de la BMU (2026-10-14, mejora de realismo): la usa SOLO esta escena. `HEX` y `RGB`
+ * no cambian: casi todas las demás escenas construyen sus paletas con `HEX`.
+ *
+ * El hueso fresco es marfil (no el rosa de la tinción H&E), con las láminas viejas en dos tonos de marfil, como en
+ * la escena del hueso (`hueso/paleta.ts`). El osteoide es una franja pálida y algo rosada (colágeno sin
+ * mineralizar) que al mineralizarse se vuelve el marfil claro del hueso nuevo; la línea de cemento, una línea
+ * ocre oscura; la pared recién reabsorbida, un marfil tostado más oscuro que el hueso intacto. Las lagunas de los
+ * osteocitos, oscuras (son huecos). Las células conservan sus colores didácticos, algo más sobrios. El capilar
+ * sigue rojo. Los textos de los pasos no nombran colores.
+ *
+ * Revisión de diseño (2026-10-17): la paleta unificada entre escenas (el mismo tejido, el mismo color). Hueso
+ * maduro marfil (#e6d8bc a #eadfc8; la segunda tinta de las láminas queda más oscura para que se lean), hueso
+ * nuevo #f2e9d8, osteoide #eed4c9; osteoblasto #8d86c6 (violeta), osteocito #8a9ad2 (azul: antes casi igual que
+ * el osteoblasto), osteoclasto #b893cf (lila) y núcleos #4b408f; precursores y revestimiento, versiones pálidas de
+ * su célula (el revestimiento, un osteoblasto en reposo, pasa de rosa grisáceo a lavanda pálido); vaso #c9473e.
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  hueso: '#eadfc8',
+  huesoLamina: '#d8c6a3',
+  huesoIntersticial: '#e6d8bc',
+  osteoide: '#eed4c9',
+  huesoNuevo: '#f2e9d8',
+  cemento: '#8c6b45',
+  huesoResorbido: '#b4956f',
+  osteoblasto: '#8d86c6',
+  osteocito: '#8a9ad2',
+  lagunaOsteocito: '#4d3b2c',
+  nucleo: '#4b408f',
+  brilloNucleo: '#8f86e0',
+  osteoclasto: '#b893cf',
+  bordeFestoneado: '#9a72b8',
+  precursor: '#cbb7da',
+  celulaInversion: '#c9b8d3',
+  // Osteoblasto en reposo: su violeta a medio camino del blanco (L* 80 frente a 89 del hueso, y frío frente al
+  // marfil cálido), para que la capa de revestimiento se vea sobre él.
+  revestimiento: '#c6c2e2',
+  capilar: '#c9473e',
+  contornoOscuro: HEX.contornoOscuro,
+};
+
+/** `RGB` de la paleta natural (espacio lineal de three): el color por vértice del hueso de esta escena. */
+export const RGB_NATURAL = {
+  hueso: lineal(NATURAL.hueso),
+  huesoLamina: lineal(NATURAL.huesoLamina),
+  huesoIntersticial: lineal(NATURAL.huesoIntersticial),
+  osteoide: lineal(NATURAL.osteoide),
+  huesoNuevo: lineal(NATURAL.huesoNuevo),
+  cemento: lineal(NATURAL.cemento),
+  huesoResorbido: lineal(NATURAL.huesoResorbido),
+} as const satisfies Record<keyof typeof RGB, Rgb>;

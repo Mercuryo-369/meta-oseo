@@ -1,9 +1,9 @@
 /**
  * Disposición de las piezas repetidas de la escena del osteoblasto: orgánulos dentro de la célula protagonista
- * (cisternas del retículo, sáculos del Golgi, mitocondrias), vesículas de secreción, fragmentos de la célula
- * apoptótica, canalículos de la laguna y laminillas del hueso viejo. Lógica PURA: solo números, deterministas
- * (misma semilla, misma disposición), sin three ni Vue. Las mallas (`mallas.ts`) convierten estos números en
- * instancias.
+ * (cisternas del retículo con sus ribosomas, sáculos del Golgi, mitocondrias), vesículas de secreción,
+ * fragmentos de la célula apoptótica, canalículos de la laguna y laminillas del hueso viejo. Lógica PURA: solo
+ * números, deterministas (misma semilla, misma disposición), sin three ni Vue. Las mallas (`mallas.ts`)
+ * convierten estos números en instancias.
  *
  * Todas las posiciones de los orgánulos van en coordenadas LOCALES de la célula cúbica (centro en 0, semiejes
  * `FORMA.cubico`): la malla las escala y las traslada con la célula.
@@ -66,6 +66,44 @@ export function cisternasDelReticulo(): Pieza[] {
       sz: 0.16,
       giro: grados(-8),
     });
+  }
+  return resultado;
+}
+
+export interface Ribosoma {
+  /** Índice de la cisterna (en `cisternasDelReticulo()`) a la que está pegado. */
+  cisterna: number;
+  /** Punto de la planta de la cisterna, en fracciones de sus dos semiejes largos (dentro del círculo unidad). */
+  u: number;
+  v: number;
+  /** Cara de la cisterna: a un lado (+1) o al otro (−1) de su eje fino. */
+  cara: 1 | -1;
+}
+
+/**
+ * Ribosomas pegados a las dos caras de cada cisterna del retículo: lo que lo hace «rugoso». En cada cara se
+ * reparten en una espiral de Vogel (ángulo áureo: cubren la planta sin amontonarse), girada al azar de forma
+ * determinista para que las caras no sean copias. El Golgi no lleva: es liso.
+ */
+export function ribosomasDelReticulo(porCara = 12): Ribosoma[] {
+  const azar = generadorDeterminista(1701);
+  const aureo = Math.PI * (3 - Math.sqrt(5));
+  const resultado: Ribosoma[] = [];
+  const n = cisternasDelReticulo().length;
+  for (let cisterna = 0; cisterna < n; cisterna++) {
+    for (const cara of [1, -1] as const) {
+      const giro = azar() * DOS_PI;
+      for (let i = 0; i < porCara; i++) {
+        const radio = 0.86 * Math.sqrt((i + 0.5) / porCara);
+        const angulo = giro + i * aureo;
+        resultado.push({
+          cisterna,
+          u: radio * Math.cos(angulo),
+          v: radio * Math.sin(angulo),
+          cara,
+        });
+      }
+    }
   }
   return resultado;
 }

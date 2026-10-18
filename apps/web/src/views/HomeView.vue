@@ -1,6 +1,9 @@
 <script setup lang="ts">
 /**
- * Inicio de las rutas autenticadas: introducción y tarjetas de los seis módulos.
+ * Inicio de las rutas autenticadas. Arriba, una portada con el diseño de referencia del OVA: saludo,
+ * los seis módulos como recorrido de pasos (el siguiente que toca estudiar va relleno de azul), la
+ * ilustración de ese módulo y un panel de cristal con la flecha para continuar. Debajo, las tarjetas
+ * de los seis módulos.
  * Los módulos forman una secuencia (el briefing los ordena de la célula al envejecimiento),
  * por eso van numerados y en una lista ordenada. Cada tarjeta lleva la identidad de su módulo
  * (acento, ilustración de portada, rótulo) y dice su estado con icono Y texto, nunca solo con color:
@@ -12,15 +15,16 @@
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { ArrowRight, Award, Box, CircleCheck, CircleDot, Eye, Lock, Trophy } from '@lucide/vue';
-import OsteonaIlustracion from '@/components/OsteonaIlustracion.vue';
 import { useRefuerzoStore } from '@/ai/refuerzo';
 import TarjetaRefuerzo from '@/components/mentor/TarjetaRefuerzo.vue';
 import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
+import IconoModulo from '@/components/modulo/IconoModulo.vue';
+import PasoRecorrido from '@/components/modulo/PasoRecorrido.vue';
 import PortadaModulo from '@/components/modulo/PortadaModulo.vue';
 import RotuloModulo from '@/components/modulo/RotuloModulo.vue';
-import { estadoDeTarjeta, estiloAcento, textoEstadoTarjeta } from '@/components/modulo/identidad';
-import type { EstadoTarjeta } from '@/components/modulo/identidad';
+import { estiloAcento, textoEstadoTarjeta } from '@/components/modulo/identidad';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
+import { usePasosModulos } from '@/components/modulo/usePasosModulos';
 import { Button } from '@/components/ui/button';
 import { MODULOS } from '@/data/modulos';
 import { useAuthStore } from '@/stores/auth';
@@ -31,28 +35,11 @@ const auth = useAuthStore();
 const progreso = useProgresoStore();
 const refuerzo = useRefuerzoStore();
 const contexto = useContextoStore();
-const { esDocente, bloqueoSecuencial } = useAccesoModulos();
+const { esDocente } = useAccesoModulos();
+const { completados, recorridoCompleto, cargandoProgreso, estadoDe, siguiente, pasos, continuar } =
+  usePasosModulos();
 
 const nombre = computed(() => auth.usuario?.nombre ?? '');
-const completados = computed(() => progreso.modulosCompletados.length);
-const recorridoCompleto = computed(() => completados.value >= MODULOS.length);
-
-/** Módulos con avance guardado (sección actual o tiempo) y sin completar. */
-const enCurso = computed(() =>
-  progreso.modulos
-    .filter((m) => !m.completado && (m.seccion_actual !== null || m.tiempo_total_seg > 0))
-    .map((m) => m.modulo),
-);
-/** Mientras llega el progreso no se muestra un estado que luego cambiaría (parpadeo del candado). */
-const cargandoProgreso = computed(() => progreso.loading && !progreso.loaded);
-
-function estadoDe(numero: number): EstadoTarjeta {
-  return estadoDeTarjeta(numero, {
-    completados: progreso.modulosCompletados,
-    enCurso: enCurso.value,
-    bloqueoSecuencial: bloqueoSecuencial.value,
-  });
-}
 
 onMounted(() => {
   contexto.setSeccion('inicio');
@@ -66,21 +53,112 @@ onMounted(() => {
   <!-- El padding inferior deja el final de la página por encima de los botones flotantes (menú
        circular y mentor) en móvil; el <main> del shell reserva otro tanto. -->
   <div
-    class="mx-auto w-full max-w-5xl px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:pt-10 md:pb-10"
+    class="mx-auto w-full max-w-[96rem] px-4 md:px-8 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:pt-10 md:pb-10"
   >
-    <section class="grid items-center gap-6 md:grid-cols-[1fr_auto] md:gap-12">
-      <div class="space-y-4">
-        <h1 class="text-3xl font-semibold tracking-tight md:text-4xl">Hola, {{ nombre }}</h1>
-        <p class="max-w-prose text-lg leading-relaxed">
-          Seis módulos te llevan de la célula al hueso: cómo se forma, se mineraliza, se renueva y
-          envejece, con la mandíbula como ejemplo.
-        </p>
-        <p class="text-muted-foreground max-w-prose">
-          Para avanzar tendrás que actuar: explorar capas, relacionar conceptos y responder
-          preguntas. Si algo no queda claro, pregúntale al mentor con el botón de chat.
-        </p>
+    <section
+      aria-labelledby="titulo-inicio"
+      class="fondo-portada relative isolate overflow-hidden rounded-3xl border p-3 shadow-sm md:p-5"
+      data-testid="portada-inicio"
+    >
+      <!-- Fila superior: título -->
+      <div class="panel-cristal flex items-center gap-4 rounded-2xl px-4 py-3 lg:max-w-xl">
+        <span
+          class="border-primary/30 text-primary hidden size-14 shrink-0 items-center justify-center rounded-xl border sm:flex"
+          aria-hidden="true"
+        >
+          <IconoModulo icono="hueso" class="size-9" />
+        </span>
+        <div class="min-w-0">
+          <p class="text-primary text-sm font-bold">Metabolismo óseo</p>
+          <h1
+            id="titulo-inicio"
+            class="text-2xl leading-tight font-semibold tracking-tight md:text-3xl"
+          >
+            Hola, {{ nombre }}
+          </h1>
+          <p class="text-foreground/80 mt-0.5 text-base">
+            Un viaje interactivo desde la célula hasta el hueso
+          </p>
+        </div>
       </div>
-      <OsteonaIlustracion class="hidden w-52 md:block" />
+
+      <!-- Los seis módulos como recorrido de pasos, a todo el ancho de la portada -->
+      <nav
+        aria-label="Recorrido de los seis módulos"
+        class="panel-cristal mt-3 rounded-2xl px-2 py-2"
+      >
+        <ol
+          class="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          data-testid="pasos-inicio"
+        >
+          <li v-for="(p, i) in pasos" :key="p.m.numero" class="min-w-[8.5rem] flex-1 snap-start">
+            <RouterLink
+              :to="{ name: 'modulo', params: { n: p.m.numero } }"
+              :aria-current="p.actual ? 'step' : undefined"
+              :title="`Módulo ${p.m.numero}: ${p.m.titulo} (${p.etiqueta})`"
+              class="focus-visible:ring-ring relative flex h-full min-h-11 w-full flex-col items-start rounded-lg p-2 outline-none focus-visible:ring-2"
+              :class="p.actual ? 'bg-secondary' : 'hover:bg-muted'"
+              :data-modulo="p.m.numero"
+            >
+              <PasoRecorrido
+                :numero="p.m.numero"
+                :rotulo="`Módulo ${p.m.numero}`"
+                :titulo="p.m.titulo"
+                :etiqueta="p.etiqueta"
+                :estado="p.marca"
+                :actual="p.actual"
+                :ultimo="i === pasos.length - 1"
+              />
+            </RouterLink>
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Fila principal: ilustración del módulo que toca y panel de cristal -->
+      <div class="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-6">
+        <div :style="estiloAcento(siguiente?.numero ?? 1)" class="flex">
+          <PortadaModulo
+            :numero="siguiente?.numero ?? 1"
+            prioritaria
+            class="aspect-[16/10] w-full shadow-md md:aspect-auto md:min-h-80"
+          />
+        </div>
+
+        <div class="panel-cristal flex flex-col gap-4 rounded-3xl p-5 md:p-7">
+          <p class="text-lg leading-relaxed">
+            Seis módulos te llevan <strong class="text-primary">de la célula al hueso</strong>: cómo
+            se forma, se mineraliza, se renueva y envejece, con la
+            <strong class="text-primary">mandíbula</strong> como ejemplo.
+          </p>
+          <p class="text-muted-foreground leading-relaxed">
+            Para avanzar tendrás que actuar: explorar capas y escenas en 3D, relacionar conceptos y
+            responder preguntas. Si algo no queda claro, pregúntale al mentor con el botón de chat.
+          </p>
+          <div class="mt-auto flex items-end justify-between gap-4">
+            <p class="text-muted-foreground text-sm" data-testid="resumen-avance">
+              <span class="text-foreground font-semibold">
+                {{ completados }} de {{ MODULOS.length }}
+              </span>
+              módulos completados
+              <template v-if="siguiente">
+                <br />
+                Sigue:
+                <span class="text-foreground font-medium">Módulo {{ siguiente.numero }}</span>
+              </template>
+            </p>
+            <RouterLink
+              v-if="continuar"
+              :to="continuar.to"
+              class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              :aria-label="continuar.texto"
+              :title="continuar.texto"
+              data-testid="continuar-inicio"
+            >
+              <ArrowRight class="size-6" aria-hidden="true" />
+            </RouterLink>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- «Para reforzar» (F3-07): solo aparece si hay algo que repasar. -->
@@ -136,7 +214,7 @@ onMounted(() => {
         >
           <RouterLink
             :to="{ name: 'modulo', params: { n: m.numero } }"
-            class="bg-card hover:border-acento focus-visible:border-acento group flex w-full flex-col overflow-hidden rounded-xl border transition-colors"
+            class="panel-cristal hover:border-primary focus-visible:border-primary group flex w-full flex-col overflow-hidden rounded-2xl transition-colors"
             :class="!cargandoProgreso && estadoDe(m.numero) === 'bloqueado' ? 'border-dashed' : ''"
           >
             <span class="relative block">

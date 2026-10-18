@@ -12,17 +12,27 @@
  *    teclado y lector de pantalla la alternativa es esa lista (regla R1), no doscientos botones
  *    duplicados. Los controles de vista y de zoom (select y botones) SÍ son accesibles.
  *
+ * Etiquetas laterales (`etiquetasLaterales`, la usa la mandíbula): desde `lg`, en vez de los números
+ * sobre el modelo, cada parte lleva una etiqueta a un lado del lienzo unida con una línea a su punto,
+ * como un atlas. Las partes se ordenan de izquierda a derecha sobre el modelo y la mitad más a la izquierda
+ * va a la columna izquierda (columnas equilibradas aunque todas estén del mismo lado); dentro de cada
+ * columna, de arriba abajo por su altura. Nada de eso cambia al girar; las líneas sí siguen al punto proyectado en cada fotograma (y
+ * se atenúan si queda detrás del hueso). Son la misma ayuda visual que los números (`aria-hidden`,
+ * fuera del orden de Tab): la alternativa accesible sigue siendo la lista de la actividad.
+ *
  * Estados (`EstadosEscena`): detectando, sin WebGL 2, cargando, error (modelo ausente, archivo no
  * válido, contexto perdido) y listo. En todos menos "listo" no hay lienzo y la actividad sigue viva.
  *
  * Nota de tipos (@tresjs/core 5.9 + @types/three 0.186): `:position="[x, y, z]"` no compila
  * (`Object3D.position` es `readonly`); se usan instancias de `Vector3` o props por eje.
  */
-import { computed, onMounted, shallowRef, useId, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, shallowRef, useId, watch } from 'vue';
 import { TresCanvas } from '@tresjs/core';
+import type { TresContext } from '@tresjs/core';
+import { resaltarNodo } from './glb';
 import { useElementSize, useMediaQuery } from '@vueuse/core';
 import { Check, Maximize, ZoomIn, ZoomOut } from '@lucide/vue';
-import { NeutralToneMapping } from 'three';
+import { FrontSide, NeutralToneMapping } from 'three';
 import { Button } from '@/components/ui/button';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import type { Modelo3d, VistaCamara } from '@/content/nodos3d';
@@ -30,6 +40,8 @@ import { VISTAS_CAMARA } from '@/content/nodos3d';
 import { centroDeCaja } from './anclas';
 import CamaraExploracion from './CamaraExploracion.vue';
 import EstadosEscena from './EstadosEscena.vue';
+import EntornoRealista from './procedural/EntornoRealista.vue';
+import { liberarMaterialOrganico, materialTriplanar } from './procedural/realismo';
 import { FOV_VERTICAL_GRADOS, RADIO_NORMALIZADO, distanciaParaEncajar } from './encuadre';
 import type { NodoEscena } from './nodosEscena';
 import type { PosicionPunto } from './proyeccion';
@@ -55,8 +67,10 @@ const props = withDefaults(
     seleccionId?: string | null;
     /** Sube cada vez que hay que llevar la cámara al nodo seleccionado (aunque sea el mismo). */
     ordenEnfoque?: number;
+    /** Desde `lg`, etiquetas a los lados con líneas guía en vez de números sobre el modelo. */
+    etiquetasLaterales?: boolean;
   }>(),
-  { visitados: () => [], seleccionId: null, ordenEnfoque: 0 },
+  { visitados: () => [], seleccionId: null, ordenEnfoque: 0, etiquetasLaterales: false },
 );
 
 const emit = defineEmits<{
@@ -64,7 +78,8 @@ const emit = defineEmits<{
   estado: [estado: EstadoEscena];
 }>();
 
-const COLOR_HUESO = '#e3d6b8';
+/** Hueso real (2026-10-14): marfil, con poros y variación de tono por relieve triplanar. */
+const COLOR_HUESO = '#e8dcc3';
 const COLOR_CELULAS = '#d9cfe8';
 
 const idAyuda = useId();
@@ -134,6 +149,66 @@ const hotspots = computed(() => {
     ];
   });
 });
+
+// -----------------------------------------------------------------------------------------
+// Etiquetas laterales (atlas)
+// -----------------------------------------------------------------------------------------
+
+/** Ancho de cada columna de etiquetas, en fracción del lienzo. */
+const COLUMNA_ETIQUETAS = 0.22;
+const pantallaAncha = useMediaQuery('(min-width: 64rem)');
+const conEtiquetas = computed(() => props.etiquetasLaterales && pantallaAncha.value);
+
+const etiquetas = computed(() => {
+  if (!conEtiquetas.value) return [];
+  const porId = new Map(posiciones.value.map((p) => [p.id, p]));
+  const partes = props.nodos.flatMap((nodo, indice) => {
+    const ubicacion = ubicaciones.value.get(nodo.id);
+    if (!ubicacion) return [];
+    const [x, y] = ubicacion.punto;
+    return [
+      {
+        id: nodo.id,
+        numero: indice + 1,
+        etiqueta: nodo.etiqueta,
+        x,
+        altura: y,
+        posicion: porId.get(nodo.id),
+        visitado: props.visitados.includes(nodo.id),
+        seleccionado: props.seleccionId === nodo.id,
+      },
+    ];
+  });
+  const porX = [...partes].sort((a, b) => a.x - b.x);
+  const mitad = Math.ceil(porX.length / 2);
+  const conLado = porX.map((p, k) => ({
+    ...p,
+    lado: k < mitad ? ('izq' as const) : ('der' as const),
+  }));
+  return (['izq', 'der'] as const).flatMap((lado) => {
+    const delLado = conLado.filter((p) => p.lado === lado).sort((a, b) => b.altura - a.altura);
+    // De arriba abajo, repartidas en la altura del lienzo con un margen arriba y abajo.
+    return delLado.map((p, k) => ({ ...p, yRel: 0.07 + (0.86 * (k + 0.5)) / delLado.length }));
+  });
+});
+
+const lineasEtiquetas = computed(() =>
+  etiquetas.value.flatMap((e) =>
+    e.posicion?.enPantalla
+      ? [
+          {
+            id: e.id,
+            x1: (e.lado === 'izq' ? COLUMNA_ETIQUETAS : 1 - COLUMNA_ETIQUETAS) * ancho.value,
+            y1: e.yRel * alto.value,
+            x2: e.posicion.x,
+            y2: e.posicion.y,
+            detras: e.posicion.detras,
+            seleccionado: e.seleccionado,
+          },
+        ]
+      : [],
+  ),
+);
 
 // -----------------------------------------------------------------------------------------
 // Cámara: vistas, nodos y zoom
@@ -244,6 +319,37 @@ onMounted(() => modelo.iniciar());
 
 const listo = computed(() => estado.value === 'listo');
 const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO : COLOR_CELULAS));
+/**
+ * Material del modelo de una sola malla (la mandíbula STL, sin UV): relieve triplanar de poros y grano, color
+ * que varía un poco con el relieve y brillo sutil, como un hueso real. Cara única: la malla es cerrada.
+ */
+const materialModelo = materialTriplanar(
+  colorModelo.value,
+  props.modelo === 'mandibula' ? 'hueso' : 'celula',
+  { escala: 1.6, intensidad: 1.1, motas: 0.13 },
+  { side: FrontSide },
+);
+onBeforeUnmount(() => liberarMaterialOrganico(materialModelo));
+
+/**
+ * En los modelos de piezas (el hueso largo, los GLB) el nodo elegido brilla en azul: se distingue del resto, no solo
+ * por su etiqueta. El lienzo dibuja a demanda, así que el cambio pide un dibujo.
+ */
+const COLOR_RESALTE = '#2a6db5';
+let contextoTres: TresContext | null = null;
+function alListo(ctx: TresContext): void {
+  contextoTres = ctx;
+  alEstarListo(ctx);
+}
+watch(
+  [() => props.seleccionId, raiz],
+  ([id, r]) => {
+    if (!r) return;
+    resaltarNodo(r, id ?? null, COLOR_RESALTE);
+    contextoTres?.renderer.invalidate();
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -258,7 +364,7 @@ const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO :
     <div
       ref="contenedor"
       class="escena relative w-full overflow-hidden rounded-xl border"
-      :class="listo ? 'h-[min(62svh,28rem)] min-h-72' : 'min-h-64'"
+      :class="listo ? (conEtiquetas ? 'h-[32rem]' : 'h-[min(62svh,28rem)] min-h-72') : 'min-h-64'"
     >
       <TresCanvas
         v-if="listo && camaraInicial"
@@ -268,19 +374,17 @@ const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO :
         :dpr="[1, 2]"
         :tone-mapping="NeutralToneMapping"
         render-mode="on-demand"
-        @ready="alEstarListo"
+        @ready="alListo"
         @error="modelo.fallarRenderizado"
       >
-        <!-- Los hijos de la cámara la siguen: la luz principal ilumina siempre lo que se ve. -->
         <TresPerspectiveCamera
           :position="camaraInicial"
           :fov="FOV_VERTICAL_GRADOS"
           :near="0.1"
           :far="50"
-        >
-          <TresDirectionalLight :position-x="2" :position-y="3" :position-z="1" :intensity="2.4" />
-        </TresPerspectiveCamera>
-        <TresHemisphereLight color="#ffffff" ground-color="#9d92bf" :intensity="1.3" />
+        />
+        <!-- Luces, entorno y sombras: el esquema común de iluminacion.ts, que sigue a la cámara. -->
+        <EntornoRealista />
 
         <CamaraExploracion
           :orden="orden"
@@ -294,9 +398,7 @@ const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO :
           @interrumpida="vistaActual = ''"
         />
 
-        <TresMesh v-if="geometria" :geometry="geometria">
-          <TresMeshStandardMaterial :color="colorModelo" :roughness="0.65" :metalness="0.02" />
-        </TresMesh>
+        <TresMesh v-if="geometria" :geometry="geometria" :material="materialModelo" />
         <primitive v-if="raiz" :object="raiz" />
       </TresCanvas>
 
@@ -305,8 +407,73 @@ const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO :
         lista de nodos de la actividad, que hace lo mismo (regla R1); por eso no entran en el orden de Tab
         ni en el árbol de accesibilidad.
       -->
+      <!-- Etiquetas laterales con líneas guía (mandíbula, desde lg) -->
+      <template v-if="listo && conEtiquetas">
+        <svg
+          class="pointer-events-none absolute inset-0 size-full"
+          :viewBox="`0 0 ${ancho} ${alto}`"
+          aria-hidden="true"
+          data-testid="lineas-etiquetas"
+        >
+          <g v-for="l in lineasEtiquetas" :key="l.id" :opacity="l.detras ? 0.35 : 0.85">
+            <line
+              :x1="l.x1"
+              :y1="l.y1"
+              :x2="l.x2"
+              :y2="l.y2"
+              :stroke="l.seleccionado ? '#1f5a96' : '#1b2a41'"
+              :stroke-width="l.seleccionado ? 3 : 2"
+              stroke-linecap="round"
+            />
+            <circle
+              :cx="l.x2"
+              :cy="l.y2"
+              :r="l.seleccionado ? 7 : 5.5"
+              :fill="l.seleccionado ? '#1f5a96' : '#1b2a41'"
+              stroke="#ffffff"
+              stroke-width="2.5"
+            />
+          </g>
+        </svg>
+        <div class="pointer-events-none absolute inset-0" data-testid="etiquetas-laterales">
+          <button
+            v-for="e in etiquetas"
+            :key="e.id"
+            type="button"
+            tabindex="-1"
+            aria-hidden="true"
+            class="pointer-events-auto absolute flex -translate-y-1/2 items-center gap-2 rounded-lg bg-[#1b2a41] py-1.5 text-left text-[0.8rem] leading-tight font-semibold text-white shadow-lg ring-1 ring-white/10 transition-colors outline-none hover:bg-[#24364f]"
+            :class="[
+              e.lado === 'izq'
+                ? 'left-2 flex-row-reverse pr-1.5 pl-3 text-right'
+                : 'right-2 pr-3 pl-1.5',
+              e.seleccionado ? 'ring-2 ring-[#86b4e8]' : '',
+              e.posicion?.enPantalla && !e.posicion.detras ? '' : 'opacity-80',
+            ]"
+            :style="{
+              top: `${e.yRel * 100}%`,
+              width: `calc(${COLUMNA_ETIQUETAS * 100}% - 0.75rem)`,
+            }"
+            :data-etiqueta="e.id"
+            :data-lado="e.lado"
+            :data-visitado="e.visitado"
+            :data-seleccionado="e.seleccionado"
+            @click="emit('seleccionar', e.id)"
+          >
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full text-xs font-extrabold"
+              :class="e.visitado ? 'bg-success text-white' : 'bg-white text-[#1b2a41]'"
+            >
+              <Check v-if="e.visitado" class="size-4" :stroke-width="3" />
+              <template v-else>{{ e.numero }}</template>
+            </span>
+            <span class="min-w-0 flex-1">{{ e.etiqueta }}</span>
+          </button>
+        </div>
+      </template>
+
       <div
-        v-if="listo"
+        v-if="listo && !conEtiquetas"
         class="pointer-events-none absolute inset-0 overflow-hidden"
         data-testid="puntos-de-interes"
       >
@@ -362,8 +529,14 @@ const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO :
 
     <p :id="idAyuda" class="text-muted-foreground mt-2 text-sm">
       <template v-if="listo">
-        Arrastra para girar el modelo y pellizca para acercarlo. Los números marcan las partes:
-        tócalos o elige una en la lista.
+        <template v-if="conEtiquetas">
+          Arrastra para girar el modelo y usa la rueda para acercarlo. Cada etiqueta señala una
+          parte: tócala o elige una en la lista.
+        </template>
+        <template v-else>
+          Arrastra para girar el modelo y pellizca para acercarlo. Los números marcan las partes:
+          tócalos o elige una en la lista.
+        </template>
       </template>
       <template v-else-if="estado === 'cargando' || estado === 'detectando'">
         Preparando el modelo 3D. Mientras tanto puedes usar la lista de partes.

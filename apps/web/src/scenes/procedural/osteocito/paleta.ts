@@ -42,3 +42,39 @@ export const HEX = {
   /** Flechas de compresión (el azul de la escena de la matriz). */
   compresion: '#3d8fd1',
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo): matriz mineralizada marfil (no el rosa de la
+ * tinción), laguna oscura (una cavidad), pared del conducto de tono tostado, canalículo como una vaina de
+ * líquido casi incolora y células en tonos suaves. Mismas claves que `HEX` (que no cambia: otras escenas importan
+ * paletas, y esta importa la del hueso). Se mantienen, algo más sobrios, los colores que nombran los textos del
+ * módulo 2: cilio primario e integrinas amarillos, esclerostina naranja, uniones comunicantes verdes y líquido
+ * azul; los pulsos de la señal siguen en el amarillo vivo de `HEX`.
+ *
+ * Revisión de diseño (2026-10-17): la paleta unificada entre escenas (el mismo tejido, el mismo color; la de
+ * `bmu/paleta.ts`). Matriz y pared del fondo en los dos extremos del marfil del hueso maduro; el borde de osteoide,
+ * la franja pálida y algo rosada del colágeno sin mineral (antes, más claro que la matriz); las células de
+ * revestimiento, una versión pálida del osteoblasto (lavanda, no rosa grisáceo); núcleos del violeta común.
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  matriz: '#eadfc8',
+  matrizFondo: '#e6d8bc',
+  laminilla: '#c0a582',
+  paredConducto: '#a3826c',
+  capilar: '#c9473e',
+  osteocito: '#8a9ad2',
+  dendrita: '#8a9ad2',
+  nucleo: '#4b408f',
+  laguna: '#45342b',
+  canaliculo: '#d4e2e8',
+  liquido: '#2a88dc',
+  union: '#4f9f68',
+  esclerostina: '#dd7240',
+  /** Amarillo dorado: el de `HEX` tenía casi la misma luminosidad que la matriz marfil y el cilio se perdía. */
+  sensor: '#e3b23c',
+  senal: HEX.senal,
+  revestimiento: '#c6c2e2',
+  osteoblasto: '#8d86c6',
+  osteoide: '#eed4c9',
+  compresion: '#3a7cc0',
+};

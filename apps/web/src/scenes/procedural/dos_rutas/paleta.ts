@@ -40,3 +40,46 @@ export const HEX = {
   medulaAmarilla: HEX_HUESO.medulaAmarilla,
   osteoclasto: HEX_BMU.osteoclasto,
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo): los colores del tejido fresco en vez de los de la
+ * tinción. Mesénquima gelatinoso rosado pálido; vasos y médula roja de sangre. Las células conservan sus tonos
+ * didácticos (mesenquimal pálida, osteoblasto violeta, osteocito azul, condrocito lila), algo más sobrios. El
+ * cartílago calcificado sigue gris porque el texto del paso `crecimiento` lo nombra («su matriz se calcifica
+ * (gris)»). `HEX` no cambia: lo usa la escena de la fractura.
+ *
+ * Paleta unificada entre escenas (2026-10-17: el mismo tejido, el mismo color en todas):
+ *  - Osteoide `#eed4c9` (pálido y algo rosado) → hueso inmaduro o entretejido `#e2b4a2` (rosado: muy vascular; las
+ *    espículas, el collar, las trabéculas del centro primario y los centros secundarios, todo hueso fetal) → hueso
+ *    laminar maduro, marfil `#eadfc8`. Antes el entretejido era marfil cálido (`#e5d3b0`), aunque es la misma
+ *    osificación intramembranosa fetal que la de la mandíbula.
+ *  - Cartílago hialino `#d9e8ef` y calcificado `#a2aaae`; médula roja `#9e3f33` (también la de la cavidad medular,
+ *    antes amarilla) y amarilla `#e8c561`; vaso `#c9473e`.
+ *  - Osteoblasto `#8d86c6`, osteocito `#8a9ad2`, osteoclasto `#b893cf`, núcleos `#4b408f`; las células de
+ *    revestimiento, un osteoblasto más pálido.
+ *  - Pericondrio: membrana fibrosa fina, blanco rosada `#e6cfc4` (antes caramelo, `#d8ae8c`: con el brillo de
+ *    terciopelo se leía como cuero).
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  mesenquima: '#ead9d1',
+  precursor: '#cfb9dc',
+  osteoblasto: '#8d86c6',
+  osteocito: '#8a9ad2',
+  revestimiento: '#cdcae9',
+  nucleo: '#4b408f',
+  osteoide: '#eed4c9',
+  hueso: '#e2b4a2',
+  huesoNuevo: '#e2b4a2',
+  laminaClara: '#eadfc8',
+  laminaOscura: '#c3a97f',
+  cartilago: '#d9e8ef',
+  cartilagoCalcificado: '#a2aaae',
+  condrocito: '#b6addb',
+  condrocitoHipertrofico: '#d9d2e8',
+  lagunaCondrocito: '#eaf0f3',
+  pericondrio: '#e6cfc4',
+  vaso: '#c9473e',
+  medulaRoja: '#9e3f33',
+  medulaAmarilla: '#e8c561',
+  osteoclasto: '#b893cf',
+};

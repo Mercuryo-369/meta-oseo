@@ -1,15 +1,14 @@
 <script setup lang="ts">
 /**
- * Layout de las rutas autenticadas. Monta el menú circular, el HUD y el panel del mentor
- * alrededor de <RouterView/>, ya distribuido para móvil:
+ * Layout de las rutas autenticadas. Monta la cabecera (marca, botón «Módulos», HUD, panel docente, salir),
+ * el menú de módulos y el panel del mentor alrededor de <RouterView/>:
  *
- *   móvil       HUD arriba, ancho completo; contenido a pantalla completa;
- *               menú = botón flotante abajo a la izquierda;
- *               mentor = botón flotante abajo a la derecha.
- *   escritorio  control circular fijo en el borde izquierdo (el contenido deja 5rem libres);
- *               mentor = panel lateral derecho que se superpone al contenido.
+ *   pantallas estrechas  HUD en la cabecera; el menú se despliega desde la izquierda con el botón
+ *                        «Módulos»; mentor = botón flotante abajo a la derecha.
+ *   pantallas anchas     menú = barra lateral fija a la izquierda (el contenido deja 17rem libres);
+ *                        mentor = panel lateral derecho que se superpone al contenido.
  *
- * CONTRATO CON LOS COMPONENTES HIJOS (no cambiar sin avisar): MenuCircular y MentorPanel se
+ * CONTRATO CON LOS COMPONENTES HIJOS (no cambiar sin avisar): MenuModulos y MentorPanel se
  * posicionan a sí mismos con `position: fixed`; HudPuntaje es un bloque que rellena el ancho
  * disponible de la cabecera. El shell no necesita cambios cuando esos componentes se
  * reescriban; solo reserva espacio (padding de <main>) para que nada quede tapado de forma
@@ -19,7 +18,9 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import { LayoutDashboard, LogOut } from '@lucide/vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
-import MenuCircular from '@/components/MenuCircular.vue';
+import BotonModulos from '@/components/navegacion/BotonModulos.vue';
+import SelectorTema from '@/components/SelectorTema.vue';
+import MenuModulos from '@/components/navegacion/MenuModulos.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
@@ -66,15 +67,17 @@ async function salir(): Promise<void> {
       style="padding-top: var(--area-segura-arriba)"
     >
       <div
-        class="mx-auto flex min-h-14 w-full max-w-6xl items-center gap-2 py-1"
+        class="flex min-h-14 w-full items-center gap-2 py-1"
         style="
           padding-left: max(0.75rem, var(--area-segura-izquierda));
           padding-right: max(0.75rem, var(--area-segura-derecha));
         "
       >
+        <BotonModulos />
+
         <RouterLink
           :to="{ name: 'inicio' }"
-          class="text-primary flex min-h-11 shrink-0 items-center gap-2 rounded-md pr-1 font-serif text-lg font-semibold"
+          class="text-foreground flex min-h-11 shrink-0 items-center gap-2.5 rounded-md pr-1 text-base font-semibold tracking-tight lg:w-[16.25rem]"
           aria-label="Metabolismo óseo, ir al inicio"
         >
           <img :src="LOGO" alt="" class="size-8" width="32" height="32" />
@@ -99,6 +102,8 @@ async function salir(): Promise<void> {
           </RouterLink>
         </Button>
 
+        <SelectorTema />
+
         <Button
           variant="ghost"
           class="shrink-0 px-2 sm:px-3"
@@ -113,15 +118,15 @@ async function salir(): Promise<void> {
       </div>
     </header>
 
-    <MenuCircular />
+    <MenuModulos />
 
-    <!-- md:pl-20 deja libre el borde izquierdo para el control del menú; el padding inferior
-         evita que los botones flotantes tapen el final del contenido en móvil. -->
+    <!-- lg:pl-68 deja libre la barra lateral del menú; el padding inferior evita que el botón
+         flotante del mentor tape el final del contenido en móvil. -->
     <main
       id="contenido"
       ref="contenido"
       tabindex="-1"
-      class="flex-1 outline-none md:pl-20"
+      class="flex-1 outline-none lg:pl-68"
       style="padding-bottom: max(6rem, calc(var(--area-segura-abajo) + 5rem))"
     >
       <RouterView />

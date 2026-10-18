@@ -613,14 +613,14 @@
                     "t": 0,
                     "titulo": "El arco mandibular (semana 6)",
                     "vista": "general",
-                    "texto": "Hacia la sexta semana, el primer arco faríngeo está lleno de **[ectomesénquima](glosario:ectomesenquima)** (masa violeta), células llegadas de la [cresta neural craneal](glosario:cresta_neural_craneal). Dentro, a cada lado, ya hay una varilla azul: el [cartílago de Meckel](glosario:cartilago_de_meckel). Por fuera de él corre el nervio alveolar inferior (amarillo), que se divide en sus ramas mentoniana e incisiva."
+                    "texto": "Hacia la sexta semana, el primer arco faríngeo está lleno de **[ectomesénquima](glosario:ectomesenquima)** (masa gelatinosa translúcida), células llegadas de la [cresta neural craneal](glosario:cresta_neural_craneal). Dentro, a cada lado, ya hay una varilla de un blanco azulado: el [cartílago de Meckel](glosario:cartilago_de_meckel). Por fuera de él corre el nervio alveolar inferior (amarillo), que se divide en sus ramas mentoniana e incisiva."
                   },
                   {
                     "id": "paso_condensacion",
                     "t": 0.17,
                     "titulo": "La condensación",
                     "vista": "detalle",
-                    "texto": "Lateral al cartílago de Meckel, en el ángulo que forman el nervio alveolar inferior y su rama mentoniana, el ectomesénquima se **condensa** (manchas moradas): las células se apretan y empiezan a diferenciarse en [osteoblastos](glosario:osteoblasto). No hay cartílago de por medio: el hueso se formará de forma directa."
+                    "texto": "Lateral al cartílago de Meckel, en el ángulo que forman el nervio alveolar inferior y su rama mentoniana, el ectomesénquima se **condensa** (manchas más densas y opacas): las células se apretan y empiezan a diferenciarse en [osteoblastos](glosario:osteoblasto). No hay cartílago de por medio: el hueso se formará de forma directa."
                   },
                   {
                     "id": "paso_centro",
@@ -641,7 +641,7 @@
                     "t": 0.66,
                     "titulo": "Cartílagos secundarios (semanas 10-14)",
                     "vista": "lateral",
-                    "texto": "Cuando ya hay hueso membranoso aparecen los **[cartílagos secundarios](glosario:cartilago_secundario)**: el condilar sobre la rama (el más importante), el coronoideo (transitorio) y el sinfisario entre las dos mitades. El condilar crecerá y se convertirá en hueso por [osificación endocondral](glosario:osificacion_endocondral)."
+                    "texto": "Cuando ya hay hueso membranoso aparecen los **[cartílagos secundarios](glosario:cartilago_secundario)**: el condilar sobre la rama (el más importante), el coronoideo (transitorio) y los sinfisarios (dos nódulos) entre las dos mitades. El condilar crecerá y se convertirá en hueso por [osificación endocondral](glosario:osificacion_endocondral)."
                   },
                   {
                     "id": "paso_meckel_regresion",
@@ -1123,7 +1123,7 @@
                     "t": 0,
                     "titulo": "Precursor sobre el hueso",
                     "vista": "general",
-                    "texto": "Sobre la superficie de un hueso ya mineralizado, junto a un **capilar**, hay una [célula osteoprogenitora](glosario:celula_osteoprogenitora): fusiforme, pálida, con poco citoplasma y núcleo alargado. Ya eligió el linaje óseo y todavía puede dividirse. Gira la escena: el bloque rosado es hueso viejo, cortado para que veas sus laminillas."
+                    "texto": "Sobre la superficie de un hueso ya mineralizado, junto a un **capilar**, hay una [célula osteoprogenitora](glosario:celula_osteoprogenitora): fusiforme, pálida, con poco citoplasma y núcleo alargado. Ya eligió el linaje óseo y todavía puede dividirse. Gira la escena: el bloque marfil es hueso viejo, cortado para que veas sus laminillas."
                   },
                   {
                     "id": "paso_diferenciacion",
@@ -1144,7 +1144,7 @@
                     "t": 0.48,
                     "titulo": "Secreción del osteoide",
                     "vista": "celula",
-                    "texto": "Del Golgi salen **vesículas** que bajan al polo que mira al hueso y vierten su contenido. Así se deposita el [osteoide](glosario:osteoide), la capa clara que crece bajo la fila: matriz orgánica todavía sin mineral, hecha sobre todo de colágeno tipo I, con proteínas como la [osteocalcina](glosario:osteocalcina). Aquí solo se ve una célula secretando; en la vida real todas las de la fila lo hacen a la vez."
+                    "texto": "Del Golgi salen **vesículas** que bajan al polo que mira al hueso y vierten su contenido. Así se deposita el [osteoide](glosario:osteoide), la franja pálida y algo rosada que crece bajo la fila: matriz orgánica todavía sin mineral, hecha sobre todo de colágeno tipo I, con proteínas como la [osteocalcina](glosario:osteocalcina). Aquí solo se ve una célula secretando; en la vida real todas las de la fila lo hacen a la vez."
                   },
                   {
                     "id": "paso_mineralizacion",
@@ -1829,7 +1829,7 @@
             "config": {
               "modelo": "procedural",
               "escena": "osteoclasto_resorcion",
-              "alt": "Escena 3D: un bloque de hueso rosado con un capilar rojo encima. Precursores morados bajan del capilar y se fusionan en una célula gigante que se aplana sobre el hueso con un anillo claro; la escena se corta y se ven los pliegues, las partículas y la laguna excavada; al final la célula se fragmenta.",
+              "alt": "Escena 3D: un bloque de hueso marfil con un capilar rojo encima. Precursores lila bajan del capilar y se fusionan en una célula gigante que se aplana sobre el hueso con un anillo claro; la escena se corta y se ven los pliegues, las partículas y la laguna excavada; al final la célula se fragmenta.",
               "linea_de_tiempo": {
                 "pasos": [
                   {

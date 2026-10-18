@@ -6,6 +6,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   CONDENSACION,
+  GERMEN,
+  NERVIO,
   U_GERMENES,
   U_OIDO,
   VENTANA_CORTE,
@@ -29,13 +31,18 @@ import {
 import type { Lado, Punto2 } from './disposicion';
 import {
   ALCANCE_COMPLETO,
+  HITOS_MANDIBULA_FETAL,
   MESENQUIMA,
+  N_CUERPO,
   N_GERMENES,
   R_LIGAMENTO,
   R_MECKEL,
+  R_NERVIO,
   U_CENTRO,
   U_CUERPO,
+  estadoMandibulaFetal,
 } from './estado';
+import { suavizarContorno } from './geometria';
 
 const LADOS: Lado[] = [1, -1];
 const U = Array.from({ length: 27 }, (_, i) => U_OIDO + (i / 26) * (1 - U_OIDO));
@@ -49,6 +56,17 @@ function areaConSigno(p: readonly Punto2[]): number {
     a += x1 * y2 - x2 * y1;
   }
   return a / 2;
+}
+
+/** Punto dentro de un polígono (regla par-impar). */
+function dentroDe(p: readonly Punto2[], x: number, y: number): boolean {
+  let dentro = false;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
+    const [xi, yi] = p[i]!;
+    const [xj, yj] = p[j]!;
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) dentro = !dentro;
+  }
+  return dentro;
 }
 
 function seCruzan(a: Punto2, b: Punto2, c: Punto2, d: Punto2): boolean {
@@ -229,6 +247,69 @@ describe('gérmenes dentarios', () => {
 
   it('uno cae dentro de la ventana de corte, para verlo en la sección', () => {
     expect(U_GERMENES.some((u) => u > VENTANA_CORTE.u0 && u < VENTANA_CORTE.u1)).toBe(true);
+  });
+
+  it('los molares temporales son mayores que el canino y los incisivos', () => {
+    expect(GERMEN.radios).toHaveLength(N_GERMENES);
+    expect(Math.min(GERMEN.radios[0]!, GERMEN.radios[1]!)).toBeGreaterThan(
+      Math.max(...GERMEN.radios.slice(2)),
+    );
+  });
+});
+
+describe('anatomía del arco (revisión 2026-10-17)', () => {
+  it('la bifurcación del nervio queda bajo el primer molar temporal y el centro de osificación, justo delante', () => {
+    // Al nacer el foramen mentoniano se abre bajo el primer molar temporal (Gray's Anatomy): entre su germen y el
+    // del canino. Antes la bifurcación estaba en 0,72, entre el canino y el incisivo lateral.
+    expect(NERVIO.uBifurcacion).toBeGreaterThanOrEqual(U_GERMENES[1]!);
+    expect(NERVIO.uBifurcacion).toBeLessThan(U_GERMENES[2]!);
+    // El centro, en el ángulo entre la rama incisiva (hacia delante) y la mentoniana.
+    expect(U_CENTRO).toBeGreaterThanOrEqual(NERVIO.uBifurcacion);
+    expect(U_CENTRO - NERVIO.uBifurcacion).toBeLessThan(0.03);
+  });
+
+  it('la ventana de corte no parte la placa inicial y muestra el tronco del nervio', () => {
+    const { alcance, tamano } = estadoMandibulaFetal(HITOS_MANDIBULA_FETAL.centro).hueso;
+    for (let u = VENTANA_CORTE.u0; u <= VENTANA_CORTE.u1; u += 0.005) {
+      expect(escalaCuerpoEn(u, alcance, tamano)).toBe(0);
+    }
+    expect(VENTANA_CORTE.u1).toBeLessThan(NERVIO.uBifurcacion);
+    // En la extensión, la ventana ya corta hueso de sección plena.
+    const ext = estadoMandibulaFetal(HITOS_MANDIBULA_FETAL.extension).hueso;
+    for (const u of [VENTANA_CORTE.u0, VENTANA_CORTE.u1]) {
+      expect(escalaCuerpoEn(u, ext.alcance, ext.tamano)).toBeCloseTo(ext.tamano, 6);
+    }
+  });
+
+  it('el Meckel queda aparte y medial: la lámina lingual del cuerpo no lo atraviesa', () => {
+    const lingual = Math.min(...perfilCuerpo(1).map(([n]) => n));
+    for (let t = HITOS_MANDIBULA_FETAL.centro; t <= 1; t += 0.01) {
+      const e = estadoMandibulaFetal(t);
+      const radio = radioMeckel(0.5, e.meckel.regresion);
+      expect(N_CUERPO + lingual * e.hueso.tamano, `t = ${t}`).toBeGreaterThan(radio);
+    }
+  });
+
+  it('el nervio corre por la canaleta sin tocar el hueso y en su tercio inferior', () => {
+    const { n, y } = { n: NERVIO.n - N_CUERPO, y: NERVIO.y };
+    for (let t = HITOS_MANDIBULA_FETAL.centro; t <= 1; t += 0.01) {
+      const { alveolar, tamano } = estadoMandibulaFetal(t).hueso;
+      const perfil = suavizarContorno(perfilCuerpo(alveolar)).map(
+        ([a, b]) => [a * tamano, b * tamano] as const,
+      );
+      for (let k = 0; k < 16; k++) {
+        const a = (k / 16) * Math.PI * 2;
+        const x = n + R_NERVIO * Math.cos(a);
+        const z = y + R_NERVIO * Math.sin(a);
+        expect(dentroDe(perfil, x, z), `t = ${t}`).toBe(false);
+      }
+    }
+    // En la extensión, el nervio va abajo, no a media altura junto a los gérmenes.
+    const { alveolar, tamano } = estadoMandibulaFetal(HITOS_MANDIBULA_FETAL.extension).hueso;
+    const perfil = perfilCuerpo(alveolar);
+    const suelo = -0.28 * tamano;
+    const techo = perfil[1]![1] * tamano;
+    expect(y).toBeLessThan(suelo + (techo - suelo) / 3);
   });
 });
 

@@ -5,7 +5,7 @@
  *    laminillas), el conducto de Havers con su capilar a la izquierda, el borde de osteoide de la superficie
  *    arriba y las dos flechas de la carga.
  *  - `RedCelular`: los osteocitos (laguna, cuerpo, núcleo), sus dendritas dentro de los canalículos (tramos
- *    instanciados: un cilindro fino azul dentro de un tubo celeste translúcido) y las uniones comunicantes.
+ *    instanciados: un cilindro fino dentro de un tubo translúcido de líquido) y las uniones comunicantes.
  *  - `Dinamica`: lo que se mueve al cargar el hueso: las partículas del líquido, los sensores de la célula
  *    central (cilio primario, integrinas), las moléculas de esclerostina y los pulsos de la señal.
  *  - `Superficie`: las células de la superficie, que pasan de aplanadas (revestimiento) a cúbicas
@@ -14,16 +14,23 @@
  * No calculan nada de la biología: reciben `EstadoOsteocito` (puro) y solo colocan, escalan y aclaran piezas.
  * Materiales compartidos por tipo; `InstancedMesh` para todo lo repetido (una instancia oculta tiene matriz
  * cero); al liberar se libera todo lo creado.
+ *
+ * Realismo (2026-10-14): materiales físicos por tejido (`realismo.ts`) y paleta natural (`NATURAL`): matriz
+ * marfil mate y porosa, laguna oscura (cavidad), conducto revestido de endostio, capilar húmedo, células blandas
+ * y húmedas con núcleo de cromatina granulosa, canalículos como vainas de líquido y moléculas lisas.
+ *
+ * Revisión de diseño (2026-10-17): el borde de osteoide ya no deja en sombra el interior del bloque; los
+ * canalículos son un velo (`veloFresnel`: casi transparentes de frente, más densos de canto) y no tubos de cristal;
+ * el capilar y las uniones no emiten luz (solo las señales: líquido, sensores y pulsos); el líquido y los pulsos se
+ * dibujan de verdad después de los canalículos; y una pieza sin ninguna instancia a la vista no se dibuja.
  */
 import type { Material } from 'three';
 import {
-  BoxGeometry,
-  BufferGeometry,
   BackSide,
-  DoubleSide,
+  BufferGeometry,
   DynamicDrawUsage,
-  FrontSide,
   Float32BufferAttribute,
+  FrontSide,
   Group,
   InstancedBufferAttribute,
   InstancedMesh,
@@ -31,7 +38,7 @@ import {
   LineSegments,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   PlaneGeometry,
   Quaternion,
   Vector3,
@@ -62,25 +69,59 @@ import {
   Y_SUPERFICIE,
 } from './estado';
 import type { EstadoOsteocito } from './estado';
-import { cajaDesdeBase, esfera, flecha, tramo, tuboEnZ } from './geometria';
-import { HEX } from './paleta';
+import {
+  cajaEnEscala,
+  celulaDesdeBase,
+  esfera,
+  flecha,
+  tramo,
+  tuboEnZ,
+  uvPorCaras,
+} from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, veloFresnel } from '../realismo';
 
 const EJE_Y = new Vector3(0, 1, 0);
-const MATRIZ_CERO = new Matrix4().set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+const EJE_Z = new Vector3(0, 0, 1);
+/**
+ * Matriz de una instancia oculta: escala nula, pero con la última fila de una matriz afín (0, 0, 0, 1). Con las
+ * 16 componentes a cero, `applyMatrix4` divide entre cero y la esfera envolvente de la malla sale NaN (three la
+ * usa para ordenar los transparentes y para el raycast).
+ */
+const MATRIZ_CERO = new Matrix4().makeScale(0, 0, 0);
 
-/** Material estándar de doble cara. */
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara salvo
+ * que `extra` diga otra cosa (los tramos abiertos de las dendritas y los canalículos se ven por dentro;
+ * `materialOrganico` ya la pone por defecto).
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, extra);
 }
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
+}
+
+/**
+ * Repeticiones del relieve de un material orgánico por unidad de UV (el mapa de relieve y el de rugosidad son la
+ * misma textura). Para las superficies con UV en unidades de escena, en lugar de la repetición propia del tejido.
+ */
+function repetirRelieve(mat: MeshPhysicalMaterial, ru: number, rv: number): void {
+  mat.bumpMap?.repeat.set(ru, rv);
+}
+
+/** Repeticiones del relieve por unidad de escena en la matriz: una repetición mide 2 unidades. */
+const RELIEVE_POR_UNIDAD = 0.5;
 
 /** Interfaz común de las piezas. */
 export interface PiezaOsteocito {
@@ -120,7 +161,7 @@ function ponerEsfera(
 ): void {
   auxPos.set(p[0], p[1], p[2]);
   auxEsc.set(sx, sy, sz);
-  auxQ.setFromAxisAngle(new Vector3(0, 0, 1), giroZ);
+  auxQ.setFromAxisAngle(EJE_Z, giroZ);
   auxM.compose(auxPos, auxQ, auxEsc);
   malla.setMatrixAt(i, auxM);
 }
@@ -167,14 +208,17 @@ export class BloqueMatriz implements PiezaOsteocito {
     // Paredes del bloque (fondo, lados y base): la cara interior de una caja, opaca, con laminillas en la
     // pared del fondo. La cara frontal es un velo translúcido aparte que se dibuja DESPUÉS de lo de dentro
     // (así lo tiñe) y sin escribir profundidad (así no tapa nada).
-    const matFondo = material(HEX.matrizFondo, { roughness: 0.7, side: BackSide });
-    const geoFondo = new BoxGeometry(BLOQUE.ancho, BLOQUE.alto, BLOQUE.fondo);
+    // Sombras: solo proyectan las caras que la luz ve por detrás (las del fondo). Si no, la cara de delante y
+    // la de arriba de la caja, que la luz ve de frente, dejarían todo el interior en sombra.
+    const matFondo = material(COLOR.matrizFondo, 'hueso', { side: BackSide, shadowSide: BackSide });
+    repetirRelieve(matFondo, RELIEVE_POR_UNIDAD, RELIEVE_POR_UNIDAD);
+    const geoFondo = cajaEnEscala(BLOQUE.ancho, BLOQUE.alto, BLOQUE.fondo);
     const fondo = new Mesh(geoFondo, matFondo);
     fondo.name = 'matriz_paredes';
     fondo.position.set(cx, cy, cz);
     this.grupo.add(fondo);
     this.matLineas = new LineBasicMaterial({
-      color: HEX.laminilla,
+      color: COLOR.laminilla,
       transparent: true,
       opacity: 0.55,
     });
@@ -182,14 +226,15 @@ export class BloqueMatriz implements PiezaOsteocito {
     const laminillas = new LineSegments(geoLaminillas, this.matLineas);
     laminillas.name = 'laminillas';
     this.grupo.add(laminillas);
-    const matVelo = material(HEX.matriz, {
+    // Velo: la cara de corte de la matriz, marfil y mate, que deja ver la red de dentro.
+    const matVelo = material(COLOR.matriz, 'hueso', {
       transparent: true,
       opacity: 0.16,
       depthWrite: false,
-      roughness: 0.5,
       side: FrontSide,
     });
-    const geoVelo = new PlaneGeometry(BLOQUE.ancho, BLOQUE.alto);
+    repetirRelieve(matVelo, RELIEVE_POR_UNIDAD, RELIEVE_POR_UNIDAD);
+    const geoVelo = uvPorCaras(new PlaneGeometry(BLOQUE.ancho, BLOQUE.alto));
     const velo = new Mesh(geoVelo, matVelo);
     velo.name = 'matriz_velo';
     velo.position.set(cx, cy, cz + BLOQUE.fondo / 2);
@@ -197,33 +242,35 @@ export class BloqueMatriz implements PiezaOsteocito {
     this.grupo.add(velo);
 
     // Conducto de Havers a la izquierda, a lo largo de Z, con su capilar dentro.
-    // Solo la cara interior: a través del velo se ve la pared del fondo del túnel, no un tubo macizo.
-    const matPared = material(HEX.paredConducto, { roughness: 0.85, side: BackSide });
+    // Solo la cara interior: a través del velo se ve la pared del fondo del túnel, no un tubo macizo. Revestida
+    // de endostio (fibrosa, con brillo de terciopelo) y más oscura que la matriz: se lee como un túnel.
+    const matPared = material(COLOR.paredConducto, 'membrana', { side: BackSide });
     const geoConducto = tuboEnZ(CONDUCTO.radio, BLOQUE.fondo + 0.02);
     const conducto = new Mesh(geoConducto, matPared);
     conducto.name = 'conducto_havers';
     conducto.position.set(CONDUCTO.x, CONDUCTO.y, cz);
-    const matCapilar = material(HEX.capilar, {
-      roughness: 0.35,
-      emissive: '#7a2a24',
-      emissiveIntensity: 0.4,
-    });
-    const geoCapilar = tuboEnZ(R_CAPILAR, BLOQUE.fondo + 0.5, 16, false);
+    // Sin brillo propio: la sangre no emite luz.
+    const matCapilar = material(COLOR.capilar, 'vaso');
+    const geoCapilar = tuboEnZ(R_CAPILAR, BLOQUE.fondo + 0.5, 20, false);
     const capilar = new Mesh(geoCapilar, matCapilar);
     capilar.name = 'capilar';
     capilar.position.set(CONDUCTO.x, CONDUCTO.y, cz);
     this.grupo.add(conducto, capilar);
 
-    // Superficie del hueso: un borde de osteoide sobre el que se sientan las células.
-    const matOsteoide = material(HEX.osteoide, { roughness: 0.7 });
-    const geoOsteoide = new BoxGeometry(BLOQUE.ancho, GROSOR_OSTEOIDE, BLOQUE.fondo);
+    // Superficie del hueso: un borde de osteoide (colágeno sin mineral, vetas a lo largo de X) sobre el que se
+    // sientan las células. No proyecta sombra: es una tapa sobre toda la cara de arriba del bloque y dejaba en
+    // sombra la parte alta del interior (los pulsos de la señal, enteros, en el paso «superficie»).
+    const matOsteoide = material(COLOR.osteoide, 'fibra');
+    repetirRelieve(matOsteoide, 1, RELIEVE_POR_UNIDAD);
+    const geoOsteoide = cajaEnEscala(BLOQUE.ancho, GROSOR_OSTEOIDE, BLOQUE.fondo, true);
     const osteoide = new Mesh(geoOsteoide, matOsteoide);
     osteoide.name = 'osteoide_superficie';
     osteoide.position.set(cx, Y_SUPERFICIE + GROSOR_OSTEOIDE / 2, cz);
+    osteoide.userData.sinSombra = true;
     this.grupo.add(osteoide);
 
     // Flechas de la carga: una baja sobre la superficie y otra sube desde la base del bloque.
-    const matFlecha = material(HEX.compresion, { roughness: 0.4 });
+    const matFlecha = material(COLOR.compresion, 'molecula');
     const geoFlecha = flecha();
     this.flechas = instanciar(geoFlecha, matFlecha, 2, 'flechas_carga');
     this.grupo.add(this.flechas);
@@ -261,6 +308,7 @@ export class BloqueMatriz implements PiezaOsteocito {
 
   actualizar(estado: EstadoOsteocito): void {
     const c = estado.compresion;
+    this.flechas.visible = c >= 0.01;
     if (c < 0.01) {
       this.flechas.setMatrixAt(0, MATRIZ_CERO);
       this.flechas.setMatrixAt(1, MATRIZ_CERO);
@@ -285,7 +333,7 @@ export class BloqueMatriz implements PiezaOsteocito {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.matLineas.dispose();
     this.flechas.dispose();
   }
@@ -298,6 +346,14 @@ export class BloqueMatriz implements PiezaOsteocito {
 /** Desvío (en −X) que la corriente del líquido imprime a mitad de cada dendrita con la carga máxima. */
 const ARRASTRE = 0.03;
 
+/**
+ * Grosor relativo del tramo `k` de una dendrita: más gruesa junto al cuerpo (×1,2) y más fina hacia la punta
+ * (×0,84), como una prolongación celular real. El canalículo, un túnel en la matriz, no cambia.
+ */
+function grosorDeTramo(k: number): number {
+  return 1.2 - (0.36 * k) / Math.max(1, SEGMENTOS_DENDRITA - 1);
+}
+
 export class RedCelular implements PiezaOsteocito {
   readonly grupo = new Group();
   readonly red: RedLacunoCanalicular;
@@ -309,33 +365,42 @@ export class RedCelular implements PiezaOsteocito {
   private readonly dendritas: InstancedMesh;
   private readonly canaliculos: InstancedMesh;
   private readonly uniones: InstancedMesh;
-  private readonly matUniones: MeshStandardMaterial;
+  private readonly matUniones: MeshPhysicalMaterial;
   private ultimaClave = '';
 
   constructor(red: RedLacunoCanalicular = redLacunoCanalicular()) {
     this.grupo.name = 'red_celular';
     this.red = red;
 
-    const geoEsfera = esfera(14, 10);
+    // Los cuerpos, las lagunas y los núcleos se ven de cerca (vista `laguna`): esferas lisas. Las uniones son
+    // puntos pequeños.
+    const geoCuerpo = esfera(20, 14);
+    const geoLaguna = esfera(16, 12);
+    const geoNucleo = esfera(14, 10);
     const geoEsferaChica = esfera(8, 6);
     const geoTramo = tramo(6);
-    this.geometrias.push(geoEsfera, geoEsferaChica, geoTramo);
+    this.geometrias.push(geoCuerpo, geoLaguna, geoNucleo, geoEsferaChica, geoTramo);
 
-    const matLaguna = material(HEX.laguna, { roughness: 0.55 });
-    const matCuerpo = material(HEX.osteocito, { roughness: 0.42 });
-    const matNucleo = material(HEX.nucleo, { roughness: 0.5 });
-    const matDendrita = material(HEX.dendrita, { roughness: 0.45 });
-    const matCanaliculo = material(HEX.canaliculo, {
+    // La laguna es una cavidad: oscura y sin brillo. La célula y sus dendritas, blandas y húmedas; el núcleo,
+    // de cromatina granulosa. El canalículo es la vaina de líquido que rodea la dendrita: un velo liso, casi
+    // transparente de frente y más denso de canto (con opacidad constante y barniz parecía una pajita de
+    // cristal). Una sola pasada aunque sea de doble cara: es un tubo fino que no escribe profundidad, y sus dos
+    // paredes son del mismo color, así que el orden en que se mezclan no se nota.
+    const matLaguna = material(COLOR.laguna, 'cavidad');
+    const matCuerpo = material(COLOR.osteocito, 'celula');
+    const matNucleo = material(COLOR.nucleo, 'nucleo');
+    const matDendrita = material(COLOR.dendrita, 'celula');
+    const matCanaliculo = material(COLOR.canaliculo, 'liquido', {
+      roughness: 0.35,
+      clearcoat: 0.3,
       transparent: true,
       opacity: 0.42,
       depthWrite: false,
-      roughness: 0.3,
+      forceSinglePass: true,
     });
-    this.matUniones = material(HEX.union, {
-      roughness: 0.4,
-      emissive: HEX.union,
-      emissiveIntensity: 0.2,
-    });
+    veloFresnel(matCanaliculo, 0.4, 2);
+    // Sin brillo propio: son puntos verdes que se leen por su color.
+    this.matUniones = material(COLOR.union, 'molecula');
     this.materiales.push(
       matLaguna,
       matCuerpo,
@@ -346,9 +411,9 @@ export class RedCelular implements PiezaOsteocito {
     );
 
     const n = red.celulas.length;
-    this.lagunas = instanciar(geoEsfera, matLaguna, n, 'lagunas');
-    this.cuerpos = instanciar(geoEsfera, matCuerpo, n, 'osteocitos');
-    this.nucleos = instanciar(geoEsferaChica, matNucleo, n, 'nucleos');
+    this.lagunas = instanciar(geoLaguna, matLaguna, n, 'lagunas');
+    this.cuerpos = instanciar(geoCuerpo, matCuerpo, n, 'osteocitos');
+    this.nucleos = instanciar(geoNucleo, matNucleo, n, 'nucleos');
     const tramos = red.dendritas.length * SEGMENTOS_DENDRITA;
     this.dendritas = instanciar(geoTramo, matDendrita, tramos, 'dendritas');
     this.canaliculos = instanciar(geoTramo, matCanaliculo, tramos, 'canaliculos');
@@ -426,6 +491,7 @@ export class RedCelular implements PiezaOsteocito {
 
     const arrastre = ARRASTRE * estado.compresion;
     let i = 0;
+    let hayTramos = false;
     for (const d of dendritas) {
       const progreso = d.celula === 0 ? estado.dendritas : estado.vecinos.dendritas;
       for (let k = 0; k < SEGMENTOS_DENDRITA; k++, i++) {
@@ -435,6 +501,7 @@ export class RedCelular implements PiezaOsteocito {
           this.canaliculos.setMatrixAt(i, MATRIZ_CERO);
           continue;
         }
+        hayTramos = true;
         const a = d.puntos[k]!;
         const b0 = d.puntos[k + 1]!;
         const b: Punto3 = [
@@ -444,23 +511,21 @@ export class RedCelular implements PiezaOsteocito {
         ];
         // El canalículo (túnel en la matriz) no se mueve; la dendrita, dentro, se desvía con la corriente.
         ponerTramo(this.canaliculos, i, a, b, R_CANALICULO);
+        const radio = R_DENDRITA * grosorDeTramo(k);
         if (arrastre > 0) {
           const sa = Math.sin((Math.PI * k) / SEGMENTOS_DENDRITA) * arrastre;
           const sb = Math.sin((Math.PI * (k + frac)) / SEGMENTOS_DENDRITA) * arrastre;
-          ponerTramo(
-            this.dendritas,
-            i,
-            [a[0] - sa, a[1], a[2]],
-            [b[0] - sb, b[1], b[2]],
-            R_DENDRITA,
-          );
+          ponerTramo(this.dendritas, i, [a[0] - sa, a[1], a[2]], [b[0] - sb, b[1], b[2]], radio);
         } else {
-          ponerTramo(this.dendritas, i, a, b, R_DENDRITA);
+          ponerTramo(this.dendritas, i, a, b, radio);
         }
       }
     }
+    this.dendritas.visible = hayTramos;
+    this.canaliculos.visible = hayTramos;
 
     const u = estado.uniones;
+    this.uniones.visible = u >= 0.01;
     uniones.forEach((union, j) => {
       if (u < 0.01) {
         this.uniones.setMatrixAt(j, MATRIZ_CERO);
@@ -484,7 +549,7 @@ export class RedCelular implements PiezaOsteocito {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of [
       this.lagunas,
       this.cuerpos,
@@ -514,8 +579,8 @@ export class Dinamica implements PiezaOsteocito {
   private readonly esclerostina: InstancedMesh;
   private readonly pulsos: InstancedMesh;
   private readonly cilio: InstancedMesh;
-  private readonly matSensor: MeshStandardMaterial;
-  private readonly matPulso: MeshStandardMaterial;
+  private readonly matSensor: MeshPhysicalMaterial;
+  private readonly matPulso: MeshPhysicalMaterial;
   private readonly datosParticulas;
   private readonly datosIntegrinas: readonly Punto3[];
   private readonly datosEsclerostina;
@@ -539,26 +604,31 @@ export class Dinamica implements PiezaOsteocito {
     );
     this.baseCilio = puntoDeSalida(central, DIRECCION_CILIO);
 
-    const geoEsfera = esfera(8, 6);
+    // Puntos de unos pocos píxeles: 8 × 5 basta y deja margen en el presupuesto para alisar las células.
+    const geoEsfera = esfera(8, 5);
     const geoTramo = tramo(8);
     this.geometrias.push(geoEsfera, geoTramo);
 
-    // Las partículas brillan por sí mismas: dentro del canalículo translúcido y bajo el velo rosa una esfera
-    // celeste sin emisión se confundía con el propio canalículo (comprobado en las capturas de la fase de carga).
-    const matLiquido = material(HEX.liquido, {
-      roughness: 0.25,
-      emissive: HEX.liquido,
+    // Las partículas brillan por sí mismas: dentro del canalículo translúcido y bajo el velo una esfera sin
+    // emisión se confundía con el propio canalículo (comprobado en las capturas de la fase de carga). Son
+    // gotas de líquido: lisas y brillantes. Sensores, esclerostina y pulsos son moléculas: lisas y satinadas.
+    // Las partículas y los pulsos van por dentro de los canalículos y tienen que dibujarse DESPUÉS de ellos: three
+    // dibuja todo lo opaco antes que lo transparente, sea cual sea su `renderOrder`, así que van en la lista de
+    // transparentes (con opacidad 1: tapan del todo y escriben profundidad) y de una cara (esferas cerradas).
+    const despuesDeLosCanaliculos = { transparent: true, opacity: 1, side: FrontSide } as const;
+    const matLiquido = material(COLOR.liquido, 'liquido', {
+      ...despuesDeLosCanaliculos,
+      emissive: COLOR.liquido,
       emissiveIntensity: 0.9,
     });
-    this.matSensor = material(HEX.sensor, {
-      roughness: 0.4,
-      emissive: HEX.sensor,
+    this.matSensor = material(COLOR.sensor, 'molecula', {
+      emissive: COLOR.sensor,
       emissiveIntensity: 0,
     });
-    const matEsclerostina = material(HEX.esclerostina, { roughness: 0.5 });
-    this.matPulso = material(HEX.senal, {
-      roughness: 0.3,
-      emissive: HEX.senal,
+    const matEsclerostina = material(COLOR.esclerostina, 'molecula');
+    this.matPulso = material(COLOR.senal, 'molecula', {
+      ...despuesDeLosCanaliculos,
+      emissive: COLOR.senal,
       emissiveIntensity: 0.9,
     });
     this.materiales.push(matLiquido, this.matSensor, matEsclerostina, this.matPulso);
@@ -588,14 +658,17 @@ export class Dinamica implements PiezaOsteocito {
       this.rutas.length * Dinamica.PULSOS_POR_RUTA,
       'pulsos_senal',
     );
-    // Se dibujan después de los canalículos translúcidos (renderOrder 10) para que su halo no las apague.
+    // Después de los canalículos translúcidos (renderOrder 10) y antes del velo de la cara (20), para que el halo
+    // de los canalículos no las apague.
     this.particulas.renderOrder = 11;
+    this.pulsos.renderOrder = 11;
     this.grupo.add(this.particulas, this.integrinas, this.cilio, this.esclerostina, this.pulsos);
   }
 
   actualizar(estado: EstadoOsteocito): void {
     // Líquido intersticial: fluye por los canalículos hacia el conducto mientras dura la carga.
     const intensidad = estado.flujo.intensidad;
+    this.particulas.visible = intensidad >= 0.01;
     this.datosParticulas.forEach((p, i) => {
       if (intensidad < 0.01) {
         this.particulas.setMatrixAt(i, MATRIZ_CERO);
@@ -612,6 +685,7 @@ export class Dinamica implements PiezaOsteocito {
 
     // Sensores: el cilio siempre está; las integrinas y el latido se destacan con la señal.
     const { enfasis, pulso } = estado.sensores;
+    this.integrinas.visible = enfasis >= 0.01;
     const largoCilio = 0.3 + 0.2 * enfasis;
     const puntaCilio: Punto3 = [
       this.baseCilio[0] + DIRECCION_CILIO[0] * largoCilio,
@@ -633,6 +707,7 @@ export class Dinamica implements PiezaOsteocito {
 
     // Esclerostina: moléculas que salen de la célula y se alejan hacia la superficie.
     const e = estado.esclerostina;
+    this.esclerostina.visible = e >= 0.01;
     this.datosEsclerostina.forEach((m, i) => {
       if (e < 0.01) {
         this.esclerostina.setMatrixAt(i, MATRIZ_CERO);
@@ -653,6 +728,7 @@ export class Dinamica implements PiezaOsteocito {
 
     // Señal: pulsos que recorren las rutas de la célula central a la superficie.
     const { avance, opacidad } = estado.mensaje;
+    let hayPulsos = false;
     this.rutas.forEach((ruta, j) => {
       for (let k = 0; k < Dinamica.PULSOS_POR_RUTA; k++) {
         const indice = j * Dinamica.PULSOS_POR_RUTA + k;
@@ -661,16 +737,18 @@ export class Dinamica implements PiezaOsteocito {
           this.pulsos.setMatrixAt(indice, MATRIZ_CERO);
           continue;
         }
+        hayPulsos = true;
         const r = (0.11 - 0.03 * k) * opacidad;
         ponerEsfera(this.pulsos, indice, puntoEn(ruta, s), r, r, r);
       }
     });
+    this.pulsos.visible = hayPulsos;
     this.pulsos.instanceMatrix.needsUpdate = true;
   }
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of [
       this.particulas,
       this.integrinas,
@@ -687,8 +765,8 @@ export class Dinamica implements PiezaOsteocito {
  * Superficie: células de revestimiento que se vuelven osteoblastos
  * ----------------------------------------------------------------------------------------- */
 
-const COLOR_REVESTIMIENTO: Rgb = lineal(HEX.revestimiento);
-const COLOR_OSTEOBLASTO: Rgb = lineal(HEX.osteoblasto);
+const COLOR_REVESTIMIENTO: Rgb = lineal(COLOR.revestimiento);
+const COLOR_OSTEOBLASTO: Rgb = lineal(COLOR.osteoblasto);
 
 export class Superficie implements PiezaOsteocito {
   readonly grupo = new Group();
@@ -701,13 +779,14 @@ export class Superficie implements PiezaOsteocito {
 
   constructor() {
     this.grupo.name = 'superficie';
-    const geoCaja = cajaDesdeBase();
-    const geoEsfera = esfera(8, 6);
-    this.geometrias.push(geoCaja, geoEsfera);
-    const matCelula = material('#ffffff', { roughness: 0.55 });
-    const matNucleo = material(HEX.nucleo, { roughness: 0.5 });
+    const geoCelula = celulaDesdeBase();
+    const geoEsfera = esfera(12, 8);
+    this.geometrias.push(geoCelula, geoEsfera);
+    // Color por instancia (multiplica al del material, que va en blanco): de revestimiento a osteoblasto.
+    const matCelula = material('#ffffff', 'celula');
+    const matNucleo = material(COLOR.nucleo, 'nucleo');
     this.materiales.push(matCelula, matNucleo);
-    this.celulas = instanciar(geoCaja, matCelula, this.datos.length, 'celulas_superficie');
+    this.celulas = instanciar(geoCelula, matCelula, this.datos.length, 'celulas_superficie');
     this.celulas.instanceColor = new InstancedBufferAttribute(
       new Float32Array(this.datos.length * 3),
       3,
@@ -749,7 +828,7 @@ export class Superficie implements PiezaOsteocito {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.celulas.dispose();
     this.nucleos.dispose();
   }

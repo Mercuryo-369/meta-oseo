@@ -33,9 +33,13 @@ function escenaDePrueba(): Group {
 describe('urlGlb', () => {
   it('cuelga la ruta del modelo de la base de la aplicación, sin barras dobles', () => {
     expect(urlGlb('celulas')).toBe(
-      `${import.meta.env.BASE_URL}${RUTA_GLB.celulas.replace(/^\/+/, '')}`,
+      `${import.meta.env.BASE_URL}${RUTA_GLB.celulas!.replace(/^\/+/, '')}`,
     );
     expect(urlGlb('celulas')).not.toMatch(/(^|[^:])\/\//);
+  });
+
+  it('el hueso largo no se descarga: se construye por código', () => {
+    expect(() => urlGlb('hueso_largo')).toThrow();
   });
 });
 

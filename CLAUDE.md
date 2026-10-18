@@ -79,7 +79,7 @@ python tools/guiones/comprobar_docs.py                      # enlaces internos, 
 uv run --no-project --with pyyaml --with pytest python -m pytest tools/guiones/tests -q   # pruebas de tools/guiones
 uvx ruff check tools/guiones --config tools/guiones/ruff.toml && uvx ruff format --check tools/guiones --config tools/guiones/ruff.toml
 
-# Docker (nunca construido; ver docs/guia-instalacion.md). Validar la configuración no exige el motor, pero sí
+# Docker (construido y probado en local el 2026-10-14; ver docs/guia-instalacion.md). Validar la configuración no exige el motor, pero sí
 # SECRET_KEY y POSTGRES_PASSWORD definidas en el .env:
 docker compose config
 ```

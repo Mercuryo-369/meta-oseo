@@ -4,10 +4,9 @@ Cómo poner en marcha el OVA «Metabolismo óseo» desde cero: primero en un equ
 revisar o hacer una demostración) y después en un servidor con Docker Compose (para los estudiantes).
 
 **Qué está probado y qué no.** Cada comando de la parte 1 se ejecutó el 2026-09-25 sobre una copia limpia del
-repositorio, con carpetas y puertos propios (API en 8030, web en 5195). La parte 2 (Docker) **no se ha
-probado nunca**: el archivo `docker-compose.yml` y los Dockerfile se escribieron y se validaron solo en estático
-(`docker compose config`), y en el equipo de desarrollo el motor de Docker ni siquiera estaba encendido. Al final
-hay una lista de lo que no se pudo verificar.
+repositorio, con carpetas y puertos propios (API en 8030, web en 5195). La parte 2 (Docker) se
+construido y ejecutado por primera vez el 2026-10-14 en Docker Desktop 29.7 (Windows): las tres imágenes se construyen sin cambios, los tres servicios quedan sanos, la extensión `vector` 0.8.7 está activa, las migraciones se aplican solas y, a través de nginx, funcionan la SPA (también las rutas internas), el registro, el inicio de sesión, guardar el resultado de una actividad real (se suma al puntaje), el progreso, la verificación pública y el aviso del mentor sin clave. No se ha probado en un servidor real con HTTPS ni con el mentor activo. Al final hay una lista de lo que no
+se pudo verificar.
 
 - [1. Instalación local en Windows](#1-instalación-local-en-windows)
 - [2. Configuración: el archivo `.env`](#2-configuración-el-archivo-env)
@@ -515,5 +514,5 @@ Para no dar por hecho lo que nadie ejecutó:
 - **El mentor con una clave real de Anthropic** (ver parte 4) y el `MENTOR_SERVER_FALLBACK` con la beta habilitada.
 - **Instalación en Linux o macOS.** Todo se probó en Windows 11; los comandos de Python y Node son los mismos, pero no se
   ejecutaron allí.
-- **La parte de pgvector.** No se usa hoy y no se ha ejercitado.
+- **La parte de pgvector.** La extensión se crea y está activa (comprobado el 2026-10-14), pero el mentor sigue buscando con BM25: la búsqueda vectorial necesita un modelo de embeddings que aún no se ha elegido.
 - **Un teléfono real.** Ver `docs/entrega.md`.

@@ -5,11 +5,29 @@
  * las vistas frente a la caja envolvente de lo visible (no hubo comprobación visual en navegador).
  */
 import { describe, expect, it } from 'vitest';
-import { Box3, Vector3 } from 'three';
-import type { BufferGeometry, Group, Mesh, Object3D } from 'three';
+import { Box3, DoubleSide, Matrix4, Quaternion, Vector3 } from 'three';
+import type {
+  BufferGeometry,
+  Group,
+  InstancedMesh,
+  Material,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
 import { FOV_GRADOS } from '../bmu/vistas';
-import { PUNTOS_ENCIA, carrilesEncia, contornoExterior, contornoInterior } from './disposicion';
-import { HITOS_ALVEOLO, estadoAlveolo } from './estado';
+import { Y_CUELLO } from '../alveolar/disposicion';
+import { NATURAL as NATURAL_ALVEOLAR } from '../alveolar/paleta';
+import { NATURAL as NATURAL_ORTODONCIA } from '../ortodoncia/paleta';
+import {
+  PUNTOS_ENCIA,
+  carrilesEncia,
+  contornoExterior,
+  contornoInterior,
+  posicionForamen,
+} from './disposicion';
+import { ENCIA, FORAMEN, HITOS_ALVEOLO, estadoAlveolo, yCresta } from './estado';
+import { NATURAL } from './paleta';
 import { abanico, cinta, escribirAbanico, escribirCinta } from './geometria';
 import { Alveolo, Conducto, Diente, Encia, Reborde } from './mallas';
 import type { PiezaAlveolo } from './mallas';
@@ -63,6 +81,70 @@ function llamadasDeDibujo(grupo: Group): number {
   return n;
 }
 
+/**
+ * Lo que se dibuja de verdad en un fotograma (rendimiento-09): en el pase principal, cada malla visible cuenta una
+ * llamada por grupo de material, y DOS si su material es transparente, de doble cara y sin `forceSinglePass` (three
+ * la parte en cara trasera y delantera); sus triángulos, por cada instancia y cada pasada. Aparte, el pase de
+ * sombras: las mallas que proyectan (opacas u opacidad > 0,9 y sin `userData.sinSombra`, la regla de
+ * `EntornoRealista`), una pasada por grupo.
+ */
+function medirDibujo(grupos: readonly Object3D[]): {
+  llamadas: number;
+  triangulos: number;
+  sombras: number;
+  triangulosSombra: number;
+} {
+  const r = { llamadas: 0, triangulos: 0, sombras: 0, triangulosSombra: 0 };
+  for (const raiz of grupos) {
+    raiz.traverse((o) => {
+      const malla = o as Mesh & { isInstancedMesh?: boolean; count?: number };
+      if (!malla.geometry || !visibleDeVerdad(o)) return;
+      const lista = (
+        Array.isArray(malla.material) ? malla.material : [malla.material]
+      ) as Material[];
+      const instancias = malla.isInstancedMesh ? (malla.count ?? 1) : 1;
+      const total = triangulosDe(malla.geometry);
+      const partes =
+        Array.isArray(malla.material) && malla.geometry.groups.length > 0
+          ? malla.geometry.groups.map((g) => ({
+              m: lista[g.materialIndex ?? 0]!,
+              t: Math.min(g.count, 3 * total - g.start) / 3,
+            }))
+          : [{ m: lista[0]!, t: total }];
+      const primero = lista[0]!;
+      const proyecta = !malla.userData.sinSombra && (!primero.transparent || primero.opacity > 0.9);
+      for (const { m, t } of partes) {
+        if (!m.visible) continue;
+        const pasadas = m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+        r.llamadas += pasadas;
+        r.triangulos += pasadas * t * instancias;
+        if (proyecta) {
+          r.sombras++;
+          r.triangulosSombra += t * instancias;
+        }
+      }
+    });
+  }
+  return r;
+}
+
+/** Volumen con signo de una malla cerrada: positivo si sus caras miran hacia fuera. */
+function volumenConSigno(g: BufferGeometry): number {
+  const pos = g.getAttribute('position');
+  const indice = g.getIndex()!;
+  const a = new Vector3();
+  const b = new Vector3();
+  const c = new Vector3();
+  let v = 0;
+  for (let i = 0; i < indice.count; i += 3) {
+    a.fromBufferAttribute(pos, indice.getX(i));
+    b.fromBufferAttribute(pos, indice.getX(i + 1));
+    c.fromBufferAttribute(pos, indice.getX(i + 2));
+    v += a.dot(b.clone().cross(c)) / 6;
+  }
+  return v;
+}
+
 /** Caja envolvente de lo visible (con las matrices del mundo al día). */
 function cajaVisible(grupos: Group[]): Box3 {
   const caja = new Box3();
@@ -103,6 +185,38 @@ describe('cinta y abanico', () => {
     expect(sinNaN(g.getAttribute('position').array)).toBe(true);
   });
 
+  it('las cintas llevan UV en unidades de la escena y los extremos de la abierta, vértices propios', () => {
+    const { interior, exterior } = carrilesEncia('vestibular', 0.5, 0.3);
+    const abierta = cinta(PUNTOS_ENCIA, false);
+    escribirCinta(abierta, exterior, interior, 3);
+    expect(abierta.getAttribute('position').count).toBe(8 * PUNTOS_ENCIA + 8);
+    const n = contornoExterior(0.3).length;
+    const cerrada = cinta(n, true);
+    escribirCinta(cerrada, contornoExterior(0.3), contornoInterior(0.3), 3);
+    for (const g of [abierta, cerrada]) {
+      const pos = g.getAttribute('position');
+      const uv = g.getAttribute('uv');
+      expect(uv.count).toBe(pos.count);
+      expect(sinNaN(uv.array)).toBe(true);
+      // En la tapa de delante (los primeros vértices) la UV es la posición [z, y] del plano de corte.
+      for (let i = 0; i < 5; i++) {
+        expect(uv.getX(i)).toBeCloseTo(pos.getZ(i), 5);
+        expect(uv.getY(i)).toBeCloseTo(pos.getY(i), 5);
+      }
+    }
+    // En la pared exterior de la cerrada, la UV recorre el contorno en espejo: sin salto donde se cierra (de un
+    // extremo del último tramo al otro cambia exactamente su largo, como en cualquier otro tramo).
+    const uv = cerrada.getAttribute('uv');
+    const contorno = contornoExterior(0.3);
+    const primero = contorno[0]!;
+    const ultimo = contorno[n - 1]!;
+    expect(uv.getX(4 * n)).toBeCloseTo(0, 9);
+    expect(Math.abs(uv.getX(5 * n - 1) - uv.getX(4 * n))).toBeCloseTo(
+      Math.hypot(primero[0] - ultimo[0], primero[1] - ultimo[1]),
+      4,
+    );
+  });
+
   it('reescribir la misma cinta con otro contorno cambia las posiciones sin cambiar el índice', () => {
     const n = contornoExterior(0).length;
     const g = cinta(n, true);
@@ -116,6 +230,19 @@ describe('cinta y abanico', () => {
     expect(g.boundingBox!.max.y).toBeCloseTo(-0.4, 6);
   });
 
+  // render-07: la cinta de la encía vestibular quedaba con todas las normales hacia dentro (volumen negativo).
+  it('las dos cintas de la encía son sólidos con las caras hacia fuera, abiertas o cerradas y con cualquier pérdida', () => {
+    const encia = new Encia();
+    for (const t of [0, 0.42, 0.56, 0.85, 1]) {
+      encia.actualizar(estadoAlveolo(t));
+      for (const lado of ['vestibular', 'lingual']) {
+        const g = (encia.grupo.getObjectByName(`encia_${lado}`) as Mesh).geometry;
+        expect(volumenConSigno(g), `${lado}, t = ${t}`).toBeGreaterThan(0);
+      }
+    }
+    encia.liberar();
+  });
+
   it('el abanico lleva el polígono al plano de corte a la profundidad pedida, con el centro como último vértice', () => {
     const puntos = contornoInterior(0);
     const g = abanico(puntos.length);
@@ -127,6 +254,9 @@ describe('cinta y abanico', () => {
     expect(pos.getY(pos.count - 1)).toBeCloseTo(-1.25, 6);
     expect(pos.getZ(pos.count - 1)).toBeCloseTo(0, 6);
     expect(sinNaN(pos.array)).toBe(true);
+    // Como las placas de `hueso_alveolar` (render-02), la cara delantera mira a +X, hacia la cámara.
+    const normal = g.getAttribute('normal');
+    for (let i = 0; i < normal.count; i++) expect(normal.getX(i)).toBeGreaterThan(0.99);
   });
 });
 
@@ -211,6 +341,45 @@ describe.each<[string, () => PiezaAlveolo, number, number]>([
     pieza.liberar();
     expect(liberadas).toBeGreaterThan(0);
   });
+
+  it('las superficies con relieve tienen UV (sin ellas el relieve no se vería)', () => {
+    const pieza = crear();
+    pieza.actualizar(estadoAlveolo(0.5));
+    let conRelieve = 0;
+    pieza.grupo.traverse((o) => {
+      const malla = o as Mesh;
+      if (!malla.geometry) return;
+      const materiales = (
+        Array.isArray(malla.material) ? malla.material : [malla.material]
+      ) as MeshStandardMaterial[];
+      if (!materiales.some((m) => m.bumpMap)) return;
+      conRelieve++;
+      expect(malla.geometry.getAttribute('uv'), malla.name).toBeDefined();
+    });
+    expect(conRelieve).toBeGreaterThan(0);
+    pieza.liberar();
+  });
+});
+
+describe('desvanecer de verdad', () => {
+  it('el diente que sale pasa a transparente y su material se recompila (si no, el alfa quedaría en 1)', () => {
+    const diente = new Diente();
+    diente.actualizar(estadoAlveolo(0));
+    const materiales: Material[] = [];
+    diente.grupo.traverse((o) => {
+      const m = (o as Mesh).material as Material | undefined;
+      if (m && !materiales.includes(m)) materiales.push(m);
+    });
+    expect(materiales.length).toBe(4);
+    const versiones = materiales.map((m) => m.version);
+    diente.actualizar(estadoAlveolo(0.115));
+    materiales.forEach((m, i) => {
+      expect(m.transparent).toBe(true);
+      expect(m.opacity).toBeLessThan(0.9);
+      expect(m.version).toBeGreaterThan(versiones[i]!);
+    });
+    diente.liberar();
+  });
 });
 
 function todas(): PiezaAlveolo[] {
@@ -218,27 +387,135 @@ function todas(): PiezaAlveolo[] {
 }
 
 describe('la escena completa', () => {
-  it('cabe en el presupuesto total: menos de 40 000 triángulos y de 40 llamadas de dibujo', () => {
+  // rendimiento-09: cuenta lo que se dibuja de verdad (instancias, la doble pasada de los transparentes de doble cara
+  // y, aparte, el pase de sombras), en 401 instantes. Cifras que cita docs/escena-3d-alveolo.md.
+  it('cabe en el presupuesto total con la doble pasada: menos de 40 000 triángulos, 40 llamadas y 40 de sombra', () => {
     const piezas = todas();
-    let peorTriangulos = 0;
-    let peorLlamadas = 0;
-    for (const t of TIEMPOS) {
-      let tri = 0;
-      let llam = 0;
-      for (const p of piezas) {
-        p.actualizar(estadoAlveolo(t));
-        tri += triangulos(p.grupo);
-        llam += llamadasDeDibujo(p.grupo);
+    const peor = { llamadas: 0, triangulos: 0, sombras: 0, triangulosSombra: 0 };
+    for (let k = 0; k <= 400; k++) {
+      for (const p of piezas) p.actualizar(estadoAlveolo(k / 400));
+      const r = medirDibujo(piezas.map((p) => p.grupo));
+      for (const clave of Object.keys(peor) as (keyof typeof peor)[]) {
+        peor[clave] = Math.max(peor[clave], r[clave]);
       }
-      peorTriangulos = Math.max(peorTriangulos, tri);
-      peorLlamadas = Math.max(peorLlamadas, llam);
     }
-    console.info(
-      `[alveolo] peor instante: ${peorTriangulos} triángulos, ${peorLlamadas} llamadas de dibujo`,
-    );
-    expect(peorTriangulos).toBeLessThan(40_000);
-    expect(peorLlamadas).toBeLessThan(40);
+    console.info(`[alveolo] peor instante: ${JSON.stringify(peor)}`);
+    expect(peor.triangulos).toBeLessThan(40_000);
+    expect(peor.llamadas).toBeLessThan(40);
+    expect(peor.sombras).toBeLessThan(40);
     for (const p of piezas) p.liberar();
+  });
+
+  it('las placas planas del alvéolo y del corte del diente no proyectan sombra; las que se desvanecen, en una pasada', () => {
+    const alveolo = new Alveolo();
+    const diente = new Diente();
+    const planas = [
+      'hueso_alveolar_propio',
+      'ligamento_periodontal',
+      'cavidad',
+      'hueso_nuevo',
+      'tejido_granulacion',
+      'coagulo',
+      'tapa_cortical',
+      'sangrado',
+      'vasos',
+    ];
+    for (const nombre of planas) {
+      const malla = alveolo.grupo.getObjectByName(nombre) as Mesh;
+      expect(malla.userData.sinSombra, nombre).toBe(true);
+      if (nombre !== 'sangrado' && nombre !== 'vasos') {
+        expect((malla.material as Material).forceSinglePass, nombre).toBe(true);
+      }
+    }
+    for (const nombre of ['corte_raiz', 'pulpa']) {
+      const malla = diente.grupo.getObjectByName(nombre) as Mesh;
+      expect(malla.userData.sinSombra, nombre).toBe(true);
+      expect((malla.material as Material).forceSinglePass, nombre).toBe(true);
+    }
+    // La corona y el cemento (con la raíz cervical en relieve) son volúmenes: proyectan y conservan las dos pasadas.
+    for (const nombre of ['corona', 'cemento']) {
+      const malla = diente.grupo.getObjectByName(nombre) as Mesh;
+      expect(malla.userData.sinSombra, nombre).toBeUndefined();
+      expect((malla.material as Material).forceSinglePass, nombre).toBe(false);
+    }
+    alveolo.liberar();
+    diente.liberar();
+  });
+
+  // fidelidad-01, -03, -06 y -08: el mismo tejido, el mismo color en las tres escenas dentales.
+  it('el diente, el ligamento y la lámina son del mismo color que en hueso_alveolar y en la ortodoncia', () => {
+    for (const clave of [
+      'laminaCribiforme',
+      'ligamento',
+      'dentina',
+      'esmalte',
+      'cemento',
+      'pulpa',
+      'medula',
+      'cortical',
+      'corteCortical',
+      'trabecula',
+    ] as const) {
+      expect(NATURAL[clave], clave).toBe(NATURAL_ALVEOLAR[clave]);
+      expect(NATURAL_ORTODONCIA[clave], clave).toBe(NATURAL_ALVEOLAR[clave]);
+    }
+    expect(NATURAL_ORTODONCIA.fibra).toBe(NATURAL_ALVEOLAR.fibra);
+    expect(NATURAL_ORTODONCIA.encia).toBe(NATURAL.encia);
+    expect(NATURAL_ORTODONCIA.osteoclasto).toBe(NATURAL.osteoclasto);
+    expect(NATURAL_ORTODONCIA.vaso).toBe(NATURAL.vaso);
+    // El hueso entretejido, rosado (muy vascular), no el casi blanco de la lámina (fidelidad-08).
+    expect(NATURAL.huesoEntretejido).not.toBe(NATURAL.laminaCribiforme);
+  });
+
+  // fidelidad-02: con la cresta 0,2 bajo el cuello, la encía de siempre (0,15 de grueso) dejaba el margen bajo el
+  // cuello, como una recesión.
+  it('con el diente en su alvéolo, el borde libre de la encía queda por encima del cuello', () => {
+    for (const lado of ['vestibular', 'lingual'] as const) {
+      const { exterior } = carrilesEncia(lado, 0, 0);
+      const borde = exterior[exterior.length - 1]!;
+      expect(borde[1], lado).toBeGreaterThan(Y_CUELLO + 0.05);
+      expect(borde[1], lado).toBeCloseTo(yCresta(0) + ENCIA.margen, 9);
+      // Cerrada, el borde vuelve al grosor de la encía sobre el reborde.
+      const cerrada = carrilesEncia(lado, 1, 0.5).exterior;
+      expect(cerrada[cerrada.length - 1]![1]).toBeCloseTo(yCresta(0.5) + ENCIA.grosor, 9);
+    }
+  });
+
+  // fidelidad-11: la encía tapaba el foramen mentoniano en el último paso, que pide mirarlo.
+  it('al final la encía ya no tapa el foramen mentoniano; con el reborde intacto baja como antes', () => {
+    const encia = carrilesEncia('vestibular', 1, 1).interior;
+    const foramen = posicionForamen(1);
+    const techoForamen = foramen.y + FORAMEN.radio * 0.8;
+    expect(encia[0]![1]).toBeGreaterThan(techoForamen + 0.05);
+    expect(carrilesEncia('vestibular', 0, 0).interior[0]![1]).toBeCloseTo(
+      yCresta(0) - ENCIA.caida,
+      9,
+    );
+  });
+
+  // realismo-21: los osteoclastos eran esferas o cúpulas de escala uniforme (se leían como partículas).
+  it('los osteoclastos se dibujan aplanados contra la superficie que reabsorben', () => {
+    const alveolo = new Alveolo();
+    const escalas = (nombre: string): Vector3[] => {
+      const im = alveolo.grupo.getObjectByName(nombre) as InstancedMesh;
+      const m = new Matrix4();
+      return Array.from({ length: im.count }, (_, i) => {
+        im.getMatrixAt(i, m);
+        const s = new Vector3();
+        m.decompose(new Vector3(), new Quaternion(), s);
+        return s;
+      });
+    };
+    alveolo.actualizar(estadoAlveolo(0.56));
+    for (const s of escalas('osteoclastos_alveolo')) {
+      // Cúpula baja (X, hacia la cámara) sobre una base alargada a lo largo de la pared (Y).
+      expect(s.x).toBeLessThan(0.5 * s.y);
+    }
+    alveolo.actualizar(estadoAlveolo(0.85));
+    for (const s of escalas('osteoclastos_reborde')) {
+      expect(s.y).toBeLessThan(0.5 * s.x);
+    }
+    alveolo.liberar();
   });
 
   it('el diente está al principio, sube y deja de dibujarse desde la extracción', () => {

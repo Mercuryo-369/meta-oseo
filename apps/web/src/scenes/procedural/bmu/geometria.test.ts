@@ -1,12 +1,16 @@
 /**
  * Pruebas de la geometría de la escena de la BMU sin WebGL (three crea las geometrías en memoria): presupuesto
  * de polígonos y de llamadas de dibujo, ausencia de NaN en todo el recorrido del tiempo, determinismo (la
- * misma `t` da los mismos vértices, vaya lo que vaya antes) y liberación de recursos.
+ * misma `t` da los mismos vértices, vaya lo que vaya antes) y liberación de recursos. Desde la revisión de diseño
+ * (2026-10-17), también la orientación de las instancias (bases directas: si no, three las ilumina al revés), la
+ * esfera envolvente de las mallas instanciadas y la oclusión ambiental del túnel.
  */
 import { describe, expect, it, vi } from 'vitest';
+import type { InstancedMesh } from 'three';
+import { Matrix4 } from 'three';
 import { CelulasBmu, TOTAL_INSTANCIAS } from './celulas';
-import { N_OSTEOCITOS, estadoBmu } from './estado';
-import { MallaHueso } from './malla';
+import { LARGO, N_OSTEOCITOS, estadoBmu } from './estado';
+import { MallaHueso, materialHuesoBmu, oclusionLuz } from './malla';
 import { OsteocitosBmu } from './osteocitos';
 import { LIMITES_DISTANCIA, estadoConZoom, estadoDeVista, mezclarCamara, vistaBmu } from './vistas';
 import { VISTAS_ESCENA_PROCEDURAL } from '@/content/nodos3d';
@@ -16,6 +20,29 @@ const TIEMPOS = Array.from({ length: 41 }, (_, i) => i / 40);
 function sinNaN(datos: ArrayLike<number>): boolean {
   for (let i = 0; i < datos.length; i++) if (!Number.isFinite(datos[i]!)) return false;
   return true;
+}
+
+/** Una instancia oculta tiene escala cero: las 15 primeras componentes de su matriz a cero (m[15] = 1). */
+function esVisible(matrices: ArrayLike<number>, i: number): boolean {
+  for (let k = 0; k < 15; k++) if (matrices[16 * i + k] !== 0) return true;
+  return false;
+}
+
+/** Determinantes de las instancias visibles de una malla. */
+function determinantes(malla: InstancedMesh): number[] {
+  const m = new Matrix4();
+  const lista: number[] = [];
+  for (let i = 0; i < malla.count; i++) {
+    if (!esVisible(malla.instanceMatrix.array, i)) continue;
+    malla.getMatrixAt(i, m);
+    lista.push(m.determinant());
+  }
+  return lista;
+}
+
+/** Triángulos de una geometría indexada. */
+function triangulosDe(malla: InstancedMesh): number {
+  return malla.geometry.getIndex()!.count / 3;
 }
 
 describe('MallaHueso', () => {
@@ -34,12 +61,40 @@ describe('MallaHueso', () => {
     for (let i = 0; i < indices.length; i++) expect(indices[i]!).toBeLessThan(vertices);
     for (const t of TIEMPOS) {
       malla.actualizar(estadoBmu(t));
-      for (const nombre of ['position', 'normal', 'color'] as const) {
+      for (const nombre of ['position', 'normal', 'color', 'uv'] as const) {
         expect(sinNaN(malla.geometria.getAttribute(nombre).array), `${nombre} en t = ${t}`).toBe(
           true,
         );
       }
     }
+    malla.liberar();
+  });
+
+  it('lleva oclusión ambiental: 1 fuera, menos en la luz del conducto y 1 en los extremos del túnel', () => {
+    const malla = new MallaHueso();
+    const ao = malla.geometria.getAttribute('ao');
+    expect(ao.count).toBe(malla.geometria.getAttribute('position').count);
+    let minimo = Infinity;
+    let unos = 0;
+    for (let i = 0; i < ao.count; i++) {
+      const v = ao.getX(i);
+      expect(v).toBeGreaterThanOrEqual(0.4);
+      expect(v).toBeLessThanOrEqual(1);
+      minimo = Math.min(minimo, v);
+      if (v === 1) unos++;
+    }
+    // Las piezas exteriores (más de la mitad de los vértices) quedan a 1; el fondo del túnel, por debajo de 0,8.
+    expect(unos).toBeGreaterThan(ao.count / 2);
+    expect(minimo).toBeLessThan(0.45);
+    // Frente a la ventana más luz que junto a las caras de corte; en los extremos, al aire libre.
+    expect(oclusionLuz(0, 0.5)).toBeCloseTo(0.75, 6);
+    expect(oclusionLuz(0, 0)).toBeCloseTo(0.4, 6);
+    expect(oclusionLuz(LARGO / 2, 0.5)).toBe(1);
+    expect(oclusionLuz(-LARGO / 2, 0)).toBe(1);
+    // El material la usa (y comparte programa con los demás materiales con motas y oclusión).
+    const material = materialHuesoBmu();
+    expect(material.customProgramCacheKey()).toContain('ao');
+    material.dispose();
     malla.liberar();
   });
 
@@ -86,13 +141,18 @@ describe('CelulasBmu y OsteocitosBmu', () => {
     expect(celulas.malla.count).toBe(TOTAL_INSTANCIAS);
     expect(TOTAL_INSTANCIAS).toBeLessThan(400);
     expect(osteocitos.discos.count).toBe(N_OSTEOCITOS * 3);
-    // Triángulos totales de la escena por debajo de 60 000.
-    const triCelulas = (celulas.malla.geometry.getIndex()?.count ?? 0) / 3 || 0;
+    // Triángulos totales de la escena por debajo de 60 000: todas las instancias se dibujan (las ocultas, con
+    // escala cero). Los triángulos de cada pieza salen de su geometría (antes, 16 fijos por disco, que ya tiene
+    // 24). Sin doble pasada: ningún material es transparente (el pase de sombras dibuja lo mismo otra vez, en
+    // las mismas 5 llamadas). Falta el capilar (80 triángulos): hoy suman 54 576.
+    for (const malla of [celulas.malla, osteocitos.discos, osteocitos.canaliculos]) {
+      expect((malla.material as { transparent: boolean }).transparent, malla.name).toBe(false);
+    }
     const triangulos =
-      TOTAL_INSTANCIAS * (triCelulas || 96) +
+      celulas.malla.count * triangulosDe(celulas.malla) +
       (hueso.geometria.getIndex()?.count ?? 0) / 3 +
-      osteocitos.discos.count * 16 +
-      osteocitos.canaliculos.count * 12;
+      osteocitos.discos.count * triangulosDe(osteocitos.discos) +
+      osteocitos.canaliculos.count * triangulosDe(osteocitos.canaliculos);
     expect(triangulos).toBeLessThan(60_000);
     celulas.liberar();
     osteocitos.liberar();
@@ -120,18 +180,87 @@ describe('CelulasBmu y OsteocitosBmu', () => {
     hueso.liberar();
   });
 
+  it('las instancias visibles tienen base directa (determinante positivo): three las ilumina del lado bueno', () => {
+    // three decide la cara delantera por objeto (determinante de la matriz de mundo), no por instancia: una
+    // instancia con base zurda se dibuja por su cara trasera, con la normal invertida, y se ilumina al revés.
+    const hueso = new MallaHueso();
+    const celulas = new CelulasBmu(hueso);
+    const osteocitos = new OsteocitosBmu();
+    for (const t of [0.14, 0.32, 0.5, 0.66, 0.84, 1]) {
+      const e = estadoBmu(t);
+      hueso.actualizar(e);
+      celulas.actualizar(e);
+      osteocitos.actualizar(e);
+      for (const malla of [celulas.malla, osteocitos.discos, osteocitos.canaliculos]) {
+        const dets = determinantes(malla);
+        if (t >= 0.84 || malla === celulas.malla)
+          expect(dets.length, `${malla.name}, t = ${t}`).toBeGreaterThan(0);
+        for (const d of dets) expect(d, `${malla.name}, t = ${t}`).toBeGreaterThan(0);
+      }
+    }
+    celulas.liberar();
+    osteocitos.liberar();
+    hueso.liberar();
+  });
+
+  it('la esfera envolvente de cada malla instanciada es finita aunque haya instancias ocultas', () => {
+    const hueso = new MallaHueso();
+    const celulas = new CelulasBmu(hueso);
+    const osteocitos = new OsteocitosBmu();
+    for (const t of [0, 0.32, 0.5, 0.84]) {
+      const e = estadoBmu(t);
+      hueso.actualizar(e);
+      celulas.actualizar(e);
+      osteocitos.actualizar(e);
+      for (const malla of [celulas.malla, osteocitos.discos, osteocitos.canaliculos]) {
+        malla.computeBoundingSphere();
+        const { center, radius } = malla.boundingSphere!;
+        expect(
+          Number.isFinite(center.x + center.y + center.z + radius),
+          `${malla.name}, t = ${t}`,
+        ).toBe(true);
+      }
+    }
+    celulas.liberar();
+    osteocitos.liberar();
+    hueso.liberar();
+  });
+
+  it('cada célula lleva su oclusión ambiental (por instancia): menos luz indirecta en el fondo del túnel', () => {
+    const hueso = new MallaHueso();
+    const celulas = new CelulasBmu(hueso);
+    const ao = celulas.malla.geometry.getAttribute('ao');
+    expect(ao.count).toBe(TOTAL_INSTANCIAS);
+    expect(
+      (ao as unknown as { isInstancedBufferAttribute?: boolean }).isInstancedBufferAttribute,
+    ).toBe(true);
+    expect(
+      (celulas.malla.material as { customProgramCacheKey: () => string }).customProgramCacheKey(),
+    ).toContain('ao');
+    for (const t of [0.14, 0.32, 0.66]) {
+      const e = estadoBmu(t);
+      hueso.actualizar(e);
+      celulas.actualizar(e);
+      let minimo = Infinity;
+      for (let i = 0; i < ao.count; i++) {
+        const v = ao.getX(i);
+        expect(v, `t = ${t}`).toBeGreaterThan(0.4);
+        expect(v, `t = ${t}`).toBeLessThanOrEqual(1);
+        if (esVisible(celulas.malla.instanceMatrix.array, i)) minimo = Math.min(minimo, v);
+      }
+      expect(minimo, `t = ${t}`).toBeLessThan(0.9);
+    }
+    celulas.liberar();
+    hueso.liberar();
+  });
+
   it('en reposo (t = 0) no hay osteoclastos ni osteocitos visibles; en plena resorción, sí osteoclastos', () => {
     const hueso = new MallaHueso();
     const celulas = new CelulasBmu(hueso);
     const osteocitos = new OsteocitosBmu();
     const visibles = (matrices: ArrayLike<number>, desde: number, hasta: number): number => {
       let n = 0;
-      for (let i = desde; i < hasta; i++) {
-        // Una instancia oculta tiene toda su matriz a cero.
-        let algo = false;
-        for (let k = 0; k < 16; k++) if (matrices[16 * i + k] !== 0) algo = true;
-        if (algo) n += 1;
-      }
+      for (let i = desde; i < hasta; i++) if (esVisible(matrices, i)) n += 1;
       return n;
     };
     const inicio = estadoBmu(0);

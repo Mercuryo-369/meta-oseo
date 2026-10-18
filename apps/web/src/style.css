@@ -4,9 +4,10 @@
 /*
  * Sistema de diseño del OVA "Metabolismo óseo".
  *
- * Paleta tomada de la tinción de hematoxilina y eosina (H&E), la que cualquier
- * estudiante de histología reconoce: tinta índigo (hematoxilina), rosa eosina y un
- * fondo claro de lámina de vidrio. Todos los pares texto/fondo cumplen WCAG AA
+ * Paleta clínica (2026-10-14): el público son médicos y odontólogos, así que la interfaz es sobria. Azul
+ * clínico para lo interactivo, texto casi negro azulado, grises fríos y tarjetas blancas con borde fino; sin
+ * cristal ni degradados. Los acentos por módulo (más abajo) conservan los tonos de la tinción H&E y del
+ * mineral y se usan en detalles pequeños. Todos los pares texto/fondo cumplen WCAG AA
  * (4.5:1 texto, 3:1 bordes de controles y foco); se comprobaron con la razón de
  * contraste calculada, no a ojo.
  *
@@ -23,10 +24,10 @@
 @theme inline {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-serif:
-    'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, 'Times New Roman',
-    serif;
-  --font-heading: var(--font-serif);
+  /* Desde 2026-10-14 los títulos usan la misma sans que el texto (aspecto clínico y uniforme). El nombre
+     `--font-serif` se conserva porque muchos componentes usan la clase `font-serif`. */
+  --font-serif: var(--font-sans);
+  --font-heading: var(--font-sans);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -74,24 +75,24 @@
   --radius: 0.75rem;
 
   /* Lámina (fondo) y tinta (texto) */
-  --background: #f7f5fb;
-  --foreground: #1e1a33;
+  --background: #f5f7fa;
+  --foreground: #0f1b2d;
   --card: #ffffff;
-  --card-foreground: #1e1a33;
+  --card-foreground: #0f1b2d;
   --popover: #ffffff;
-  --popover-foreground: #1e1a33;
+  --popover-foreground: #0f1b2d;
 
   /* Hematoxilina: acción principal y foco */
-  --primary: #3b2f86;
+  --primary: #1f5a96;
   --primary-foreground: #ffffff;
-  --secondary: #ebe7f5;
-  --secondary-foreground: #1e1a33;
-  --muted: #efecf6;
-  --muted-foreground: #59546f;
+  --secondary: #e8eef6;
+  --secondary-foreground: #0f1b2d;
+  --muted: #eef2f6;
+  --muted-foreground: #4d5b6e;
 
   /* Eosina: resalte cálido (siguiente logro, avisos suaves) */
-  --accent: #fbe6ec;
-  --accent-foreground: #6e1c3a;
+  --accent: #fbf1df;
+  --accent-foreground: #734505;
   --eosina: #b23a5f;
 
   --destructive: #b3261e;
@@ -99,9 +100,9 @@
   --success-soft: #e1f2ea;
 
   /* --border: separadores decorativos. --input: borde de controles (3:1 sobre el fondo). */
-  --border: #dcd6ea;
-  --input: #857e9f;
-  --ring: #3b2f86;
+  --border: #dde3ea;
+  --input: #7b8798;
+  --ring: #1f5a96;
 
   --chart-1: #3b2f86;
   --chart-2: #b23a5f;
@@ -110,13 +111,13 @@
   --chart-5: #59546f;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #1e1a33;
-  --sidebar-primary: #3b2f86;
+  --sidebar-foreground: #0f1b2d;
+  --sidebar-primary: #1f5a96;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ebe7f5;
-  --sidebar-accent-foreground: #1e1a33;
-  --sidebar-border: #dcd6ea;
-  --sidebar-ring: #3b2f86;
+  --sidebar-accent: #e8eef6;
+  --sidebar-accent-foreground: #0f1b2d;
+  --sidebar-border: #dde3ea;
+  --sidebar-ring: #1f5a96;
 
   /* Medidas compartidas por el shell y los agentes de UI */
   --altura-cabecera: 3.5rem;
@@ -128,31 +129,31 @@
 
 .dark {
   color-scheme: dark;
-  --background: #131025;
-  --foreground: #ece9f7;
-  --card: #1b1731;
-  --card-foreground: #ece9f7;
-  --popover: #1b1731;
-  --popover-foreground: #ece9f7;
+  --background: #0b1220;
+  --foreground: #e6edf6;
+  --card: #111a2b;
+  --card-foreground: #e6edf6;
+  --popover: #111a2b;
+  --popover-foreground: #e6edf6;
 
-  --primary: #b9adff;
-  --primary-foreground: #170f45;
-  --secondary: #28234a;
-  --secondary-foreground: #ece9f7;
-  --muted: #221e3f;
-  --muted-foreground: #aaa5c4;
+  --primary: #86b4e8;
+  --primary-foreground: #08172f;
+  --secondary: #1a2638;
+  --secondary-foreground: #e6edf6;
+  --muted: #162131;
+  --muted-foreground: #a3b1c4;
 
-  --accent: #3d1a2b;
-  --accent-foreground: #ffc7d8;
+  --accent: #33270f;
+  --accent-foreground: #f6d29a;
   --eosina: #f58aa8;
 
   --destructive: #ff8a80;
   --success: #7fd8b2;
   --success-soft: #12342a;
 
-  --border: #332e57;
-  --input: #7d77a0;
-  --ring: #b9adff;
+  --border: #26344a;
+  --input: #6d7d95;
+  --ring: #86b4e8;
 
   --chart-1: #b9adff;
   --chart-2: #f58aa8;
@@ -160,14 +161,14 @@
   --chart-4: #f0c36b;
   --chart-5: #aaa5c4;
 
-  --sidebar: #1b1731;
-  --sidebar-foreground: #ece9f7;
-  --sidebar-primary: #b9adff;
-  --sidebar-primary-foreground: #170f45;
-  --sidebar-accent: #28234a;
-  --sidebar-accent-foreground: #ece9f7;
-  --sidebar-border: #332e57;
-  --sidebar-ring: #b9adff;
+  --sidebar: #111a2b;
+  --sidebar-foreground: #e6edf6;
+  --sidebar-primary: #86b4e8;
+  --sidebar-primary-foreground: #08172f;
+  --sidebar-accent: #1a2638;
+  --sidebar-accent-foreground: #e6edf6;
+  --sidebar-border: #26344a;
+  --sidebar-ring: #86b4e8;
 }
 
 /*
@@ -248,7 +249,8 @@
   h1,
   h2,
   h3 {
-    @apply font-serif;
+    @apply font-sans;
+    letter-spacing: -0.01em;
     line-height: 1.2;
     text-wrap: balance;
   }
@@ -277,6 +279,30 @@
   }
   .saltar-al-contenido:focus {
     top: calc(0.75rem + var(--area-segura-arriba));
+  }
+}
+
+/*
+ * Portadas (inicio y cada módulo) y sus paneles. Superficies sobrias (2026-10-14): fondo liso apenas
+ * distinto de la página y tarjetas blancas con borde fino y sombra muy suave, sin degradados ni cristal.
+ */
+@utility fondo-portada {
+  background: var(--card);
+  .dark & {
+    background: var(--card);
+  }
+}
+
+@utility panel-cristal {
+  background: var(--card);
+  /* Sin `border-style`: lo pone el preflight (sólido) y así `border-dashed` puede cambiarlo. */
+  border-width: 1px;
+  border-color: var(--border);
+  box-shadow:
+    0 1px 2px rgb(15 27 45 / 0.05),
+    0 6px 16px -10px rgb(15 27 45 / 0.12);
+  .dark & {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
   }
 }
 

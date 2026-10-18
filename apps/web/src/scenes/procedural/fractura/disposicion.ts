@@ -56,10 +56,41 @@ export function desplazamientoEn(y: number): number {
   return y > 0 ? DESPLAZAMIENTO : 0;
 }
 
-/** Punto en coordenadas cilíndricas (radio, θ, y). */
+/** Punto en coordenadas cilíndricas (radio, θ, y) alrededor del eje del fragmento en el que cae (el distal, desplazado). */
 function cilindrico(radio: number, theta: number, y: number): Punto3 {
   return [radio * Math.sin(theta) + desplazamientoEn(y), y, radio * Math.cos(theta)];
 }
+
+/**
+ * Punto en coordenadas cilíndricas alrededor del eje x = 0, sin el desplazamiento del fragmento distal: el del
+ * hematoma y el callo, que son tornos centrados en el eje del proximal. Lo que se apoya en ellos va aquí (antes iba
+ * con `cilindrico` y, en y > 0, quedaba 0,12 apartado de la superficie: flotaba).
+ */
+export function cilindricoCentrado(radio: number, theta: number, y: number): Punto3 {
+  return [radio * Math.sin(theta), y, radio * Math.cos(theta)];
+}
+
+/**
+ * Relieve suave (entre −1 y 1) de la superficie de un sólido de revolución según el ángulo θ y la altura `y`:
+ * suma de ondas con frecuencias ENTERAS en θ (la vuelta cierra sin costura). Determinista; `semilla` da otro
+ * dibujo. Lo usan `abollar` (geometría del hematoma y del callo) y la colocación de las células sobre ellos.
+ */
+export function grumo(theta: number, y: number, semilla = 0): number {
+  return (
+    0.5 * Math.sin(3 * theta + 2.3 * y + semilla) * Math.cos(theta - 1.7 * y + 1.1 * semilla) +
+    0.3 * Math.sin(5 * theta - 3.1 * y + 2 * semilla) +
+    0.2 * Math.sin(9 * theta + 5.3 * y + 0.5 * semilla)
+  );
+}
+
+/**
+ * Irregularidad de la superficie del hematoma y del callo (fracción del radio; ver `abollar`) y la semilla de su
+ * dibujo. Las células que se apoyan en ellos se colocan sobre esa misma superficie irregular.
+ */
+export const IRREGULAR = {
+  hematoma: { amplitud: 0.045, semilla: 0.4 },
+  callo: { amplitud: 0.03, semilla: 2.1 },
+} as const;
 
 /* -------------------------------------------------------------------------------------------
  * Perfiles de revolución (radio en función de y)
@@ -168,11 +199,31 @@ export function gotasDeSangre(): Gota[] {
  * ----------------------------------------------------------------------------------------- */
 
 export interface Celula {
+  /** Posición (las que se apoyan en el hematoma: con el hematoma a escala 1; ver `puntoSobreHematoma`). */
   p: Punto3;
   radio: number;
   theta: number;
   /** Retraso relativo (0 a 1) con el que aparece. */
   retraso: number;
+  /** Se apoya en la superficie del hematoma: se coloca en cada fotograma, a la escala que tenga el hematoma. */
+  superficie?: boolean;
+}
+
+/**
+ * Posición de una célula apoyada en el hematoma cuando este está a la escala `s`: sobre su superficie IRREGULAR (la
+ * de `abollar`, la misma que se dibuja), asomando el 65 % de su diámetro. Así no flota ni se hunde, y lo acompaña
+ * cuando el hematoma encoge. `presencia` (0 a 1) es la fracción de su radio con que se dibuja mientras aparece: la
+ * separación de la superficie va con ella (una célula que empieza a crecer no queda en el aire).
+ */
+export function puntoSobreHematoma(
+  c: Pick<Celula, 'p' | 'radio' | 'theta'>,
+  s: number,
+  presencia = 1,
+): Punto3 {
+  const y = c.p[1];
+  const { amplitud, semilla } = IRREGULAR.hematoma;
+  const superficie = s * radioHematoma(y) * (1 + amplitud * grumo(c.theta, y, semilla));
+  return cilindricoCentrado(superficie + 0.3 * c.radio * presencia, c.theta, s * y);
 }
 
 /**
@@ -186,22 +237,17 @@ export function celulasInflamatorias(): { neutrofilos: Celula[]; macrofagos: Cel
   for (let i = 0; i < N_CELULAS_INFLAMATORIAS; i++) {
     const theta = azar() * DOS_PI;
     const macrofago = i % 3 === 0;
-    let p: Punto3;
-    if (i % 4 === 1) {
-      // Dentro de la brecha, entre los extremos.
-      const y = (azar() * 2 - 1) * (BRECHA / 2 - 0.06);
-      p = cilindrico(0.15 + azar() * 0.9, theta, y);
-    } else {
-      // Sobre la superficie del hematoma (que a esa altura está a escala 0,95).
-      const y = (azar() * 2 - 1) * HEMATOMA.medioLargo * 0.85;
-      p = cilindrico(radioHematoma(y) * 0.95 + 0.04, theta, y);
-    }
-    const celula: Celula = {
-      p,
-      radio: macrofago ? 0.1 + azar() * 0.03 : 0.06 + azar() * 0.02,
-      theta,
-      retraso: azar(),
-    };
+    const enBrecha = i % 4 === 1;
+    // Dentro de la brecha, entre los extremos, o sobre la superficie del hematoma (se coloca en cada fotograma).
+    const y = enBrecha
+      ? (azar() * 2 - 1) * (BRECHA / 2 - 0.06)
+      : (azar() * 2 - 1) * HEMATOMA.medioLargo * 0.85;
+    const radioBrecha = enBrecha ? 0.15 + azar() * 0.9 : 0;
+    const radio = macrofago ? 0.1 + azar() * 0.03 : 0.06 + azar() * 0.02;
+    const celula: Celula = enBrecha
+      ? { p: cilindrico(radioBrecha, theta, y), radio, theta, retraso: azar() }
+      : { p: [0, y, 0], radio, theta, retraso: azar(), superficie: true };
+    if (celula.superficie) celula.p = puntoSobreHematoma(celula, 1);
     (macrofago ? macrofagos : neutrofilos).push(celula);
   }
   return { neutrofilos, macrofagos };
@@ -299,9 +345,26 @@ export function osteoblastosDelCallo(): CelulaEnCallo[] {
   return resultado;
 }
 
-/** Posición de una célula sobre la superficie del callo cuando este está a la escala `escala`. */
-export function puntoSobreCallo(c: CelulaEnCallo, escala: number): Punto3 {
-  const y = c.y * escala;
-  const radio = radioCallo(c.y) * escala + c.radio * 0.6;
-  return cilindrico(radio, c.theta, y);
+/**
+ * Posición de una célula sobre la superficie del callo cuando este está a la escala `escala`: sobre su superficie
+ * IRREGULAR (la de `abollar`, la misma que se dibuja), con el centro a 0,2 radios por fuera. Aplanada contra la
+ * superficie (`normalSobreCallo`, 0,6 radios de grosor), asoma unos dos tercios y se apoya en toda su base.
+ * `presencia`, como en `puntoSobreHematoma`. Antes asomaban del 48 al 99 % (esferas sobre el perfil liso: canicas).
+ */
+export function puntoSobreCallo(c: CelulaEnCallo, escala: number, presencia = 1): Punto3 {
+  const { amplitud, semilla } = IRREGULAR.callo;
+  const superficie = escala * radioCallo(c.y) * (1 + amplitud * grumo(c.theta, c.y, semilla));
+  return cilindricoCentrado(superficie + 0.2 * c.radio * presencia, c.theta, escala * c.y);
+}
+
+/**
+ * Normal (unitaria) de la superficie lisa del callo bajo una célula: hacia fuera y tumbada según la pendiente del
+ * perfil (en los extremos del manguito, hasta unos 30°). No depende de la escala (el callo escala por igual en
+ * todas las direcciones). Las células del callo se aplanan a lo largo de ella.
+ */
+export function normalSobreCallo(c: CelulaEnCallo): Punto3 {
+  const h = 1e-3;
+  const pendiente = (radioCallo(c.y + h) - radioCallo(c.y - h)) / (2 * h);
+  const n = Math.hypot(1, pendiente);
+  return [Math.sin(c.theta) / n, -pendiente / n, Math.cos(c.theta) / n];
 }

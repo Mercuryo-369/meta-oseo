@@ -5,14 +5,18 @@
  * pasa a las tres mallas, que solo lo dibujan. Al desmontar libera geometrías y materiales.
  *
  * Llamadas de dibujo: hueso (1), células (1), osteocitos (2) y capilar (1). Materiales reutilizados.
+ *
+ * Realismo (2026-10-14): materiales de `realismo.ts`: el hueso con relieve de poros y su color por vértice (paleta
+ * natural, marfil) y el capilar con la pared lisa y húmeda de un vaso (20 lados, antes 14).
  */
 import { onBeforeUnmount, watch } from 'vue';
 import { useTres } from '@tresjs/core';
-import { CylinderGeometry, DoubleSide, Group, Mesh, MeshStandardMaterial } from 'three';
+import { CylinderGeometry, Group, Mesh } from 'three';
+import { liberarMaterialOrganico, materialOrganico } from '../realismo';
 import { CelulasBmu } from './celulas';
 import { LARGO, R_CAPILAR, estadoBmu } from './estado';
-import { MallaHueso } from './malla';
-import { HEX } from './paleta';
+import { MallaHueso, materialHuesoBmu } from './malla';
+import { NATURAL as COLOR } from './paleta';
 import { OsteocitosBmu } from './osteocitos';
 
 const props = defineProps<{ t: number }>();
@@ -23,26 +27,16 @@ const hueso = new MallaHueso();
 const celulas = new CelulasBmu(hueso);
 const osteocitos = new OsteocitosBmu();
 
-const materialHueso = new MeshStandardMaterial({
-  vertexColors: true,
-  roughness: 0.62,
-  metalness: 0,
-  side: DoubleSide,
-});
+const materialHueso = materialHuesoBmu();
 const mallaHueso = new Mesh(hueso.geometria, materialHueso);
 mallaHueso.name = 'hueso_cortical';
 mallaHueso.frustumCulled = false;
 
-// Capilar: un tubo que atraviesa el fragmento por el eje y asoma un poco por los extremos.
-const geometriaCapilar = new CylinderGeometry(R_CAPILAR, R_CAPILAR, LARGO + 0.9, 14, 1, false);
+// Capilar: un tubo que atraviesa el fragmento por el eje y asoma un poco por los extremos. Sin emisivo (antes
+// #7a2a24 × 0,35, realismo-03): la sangre no da luz; con la luz común de `iluminacion.ts` ya no se apaga.
+const geometriaCapilar = new CylinderGeometry(R_CAPILAR, R_CAPILAR, LARGO + 0.9, 20, 1, false);
 geometriaCapilar.rotateZ(Math.PI / 2);
-const materialCapilar = new MeshStandardMaterial({
-  color: HEX.capilar,
-  roughness: 0.35,
-  metalness: 0,
-  emissive: '#7a2a24',
-  emissiveIntensity: 0.35,
-});
+const materialCapilar = materialOrganico(COLOR.capilar, 'vaso');
 const capilar = new Mesh(geometriaCapilar, materialCapilar);
 capilar.name = 'capilar';
 
@@ -66,9 +60,9 @@ onBeforeUnmount(() => {
   hueso.liberar();
   celulas.liberar();
   osteocitos.liberar();
-  materialHueso.dispose();
+  liberarMaterialOrganico(materialHueso);
   geometriaCapilar.dispose();
-  materialCapilar.dispose();
+  liberarMaterialOrganico(materialCapilar);
 });
 </script>
 

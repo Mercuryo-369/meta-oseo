@@ -55,13 +55,26 @@ describe('CabeceraModulo: identidad', () => {
     expect(w.find('[data-testid="apertura-modulo"]').exists()).toBe(false);
   });
 
-  it('los módulos pares invierten la posición de la ilustración; los impares, no', () => {
+  it('impares: ilustración a la izquierda y panel a la derecha; los pares lo invierten', () => {
     const impar = mount(CabeceraModulo, {
       props: { modulo: modulo(3), avance: avance(modulo(3)) },
     });
     const par = mount(CabeceraModulo, { props: { modulo: modulo(4), avance: avance(modulo(4)) } });
-    expect(impar.get('[data-testid="portada-modulo"]').classes()).toContain('md:order-last');
-    expect(par.get('[data-testid="portada-modulo"]').classes()).not.toContain('md:order-last');
+    expect(impar.get('[data-testid="portada-modulo"]').classes()).not.toContain('md:order-last');
+    expect(par.get('[data-testid="portada-modulo"]').classes()).toContain('md:order-last');
+  });
+
+  it('los pasos van en su ranura junto al título y la flecha emite «continuar»', async () => {
+    const m = modulo(3);
+    const w = mount(CabeceraModulo, {
+      props: { modulo: m, avance: avance(m), textoContinuar: 'Empezar: Dos rutas' },
+      slots: { pasos: '<nav data-testid="pasos">pasos</nav>' },
+    });
+    expect(w.find('[data-testid="pasos"]').exists()).toBe(true);
+    const flecha = w.get('[data-testid="continuar-modulo"]');
+    expect(flecha.attributes('aria-label')).toBe('Empezar: Dos rutas');
+    await flecha.trigger('click');
+    expect(w.emitted('continuar')).toHaveLength(1);
   });
 
   it('no usa animaciones propias (respeta prefers-reduced-motion por construcción)', () => {
@@ -96,6 +109,7 @@ describe('CabeceraModulo: avance y modos', () => {
     const html = w.html();
     expect(html.indexOf('data-testid="ranura"')).toBeGreaterThan(html.indexOf('duracion'));
     expect(html.indexOf('data-testid="ranura"')).toBeLessThan(html.indexOf('titulo-objetivos'));
+    expect(w.find('[data-testid="continuar-modulo"]').exists()).toBe(false);
   });
 
   it('vista de docente: etiqueta visible, aviso de solo lectura y sin avance ni puntaje', () => {

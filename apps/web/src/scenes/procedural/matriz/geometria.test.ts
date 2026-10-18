@@ -4,9 +4,18 @@
  * liberación de recursos.
  */
 import { describe, expect, it } from 'vitest';
-import type { BufferGeometry, Group, InstancedMesh, Mesh, Object3D } from 'three';
-import { HITOS_MATRIZ, estadoMatriz } from './estado';
-import { baston, flecha, globulo, placa } from './geometria';
+import type {
+  BufferGeometry,
+  Group,
+  InstancedMesh,
+  Material,
+  Mesh,
+  Object3D,
+  MeshPhysicalMaterial,
+} from 'three';
+import { DoubleSide } from 'three';
+import { FRAGMENTO, HITOS_MATRIZ, N_LAMINILLAS_FRAGMENTO, estadoMatriz } from './estado';
+import { baston, flecha, globulo, placa, uvPorCaras } from './geometria';
 import { FibrillaAbierta, FragmentoLaminar, LaminillasAmpliadas } from './mallas';
 import type { EscalaMatriz } from './mallas';
 
@@ -54,6 +63,28 @@ function triangulosDibujados(grupo: Group): number {
 
 function llamadasDeDibujo(grupo: Group): number {
   return mallasDe(grupo).filter(aLaVista).length;
+}
+
+/** Pasadas con que three dibuja una malla: dos si es transparente de doble cara sin `forceSinglePass`. */
+function pasadas(malla: Mesh): number {
+  const m = malla.material as Material;
+  return m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+}
+
+/** Triángulos y llamadas contando la doble pasada de las transparencias de doble cara. */
+function conPasadas(grupo: Group): { triangulos: number; llamadas: number } {
+  let triangulos = 0;
+  let llamadas = 0;
+  for (const malla of mallasDe(grupo)) {
+    if (!aLaVista(malla)) continue;
+    const g = malla.geometry as BufferGeometry;
+    const n = (malla as InstancedMesh).isInstancedMesh ? (malla as InstancedMesh).count : 1;
+    const t = ((g.getIndex()?.count ?? g.getAttribute('position').count) / 3) * n;
+    // Las líneas no tienen triángulos (cuentan su llamada).
+    triangulos += (malla as Mesh).isMesh ? t * pasadas(malla) : 0;
+    llamadas += pasadas(malla);
+  }
+  return { triangulos, llamadas };
 }
 
 describe('formas básicas', () => {
@@ -140,12 +171,71 @@ describe.each<[string, () => EscalaMatriz, number]>([
     escala.liberar();
   });
 
+  it('cada material sube de versión como mucho una vez por fotograma (la opacidad se aplica una sola vez)', () => {
+    const escala = crear();
+    const materiales = new Set<Material>();
+    for (const m of mallasDe(escala.grupo)) materiales.add(m.material as Material);
+    for (let k = 0; k <= 200; k++) {
+      const antes = new Map([...materiales].map((m) => [m, m.version]));
+      escala.actualizar(estadoMatriz(k / 200));
+      for (const m of materiales) {
+        expect(m.version - antes.get(m)!, `t = ${k / 200}`).toBeLessThanOrEqual(1);
+      }
+    }
+    escala.liberar();
+  });
+
   it('libera las geometrías al terminar', () => {
     const escala = crear();
     let liberadas = 0;
     for (const g of geometriasDe(escala.grupo)) g.addEventListener('dispose', () => liberadas++);
     escala.liberar();
     expect(liberadas).toBeGreaterThan(0);
+  });
+});
+
+describe('laminillas del fragmento', () => {
+  it('uvPorCaras da UV en unidades: la misma densidad en las seis caras de una caja', () => {
+    const g = uvPorCaras(placa(6.4, 0.394, 2.4));
+    const pos = g.getAttribute('position');
+    const uv = g.getAttribute('uv');
+    const idx = g.getIndex()!;
+    for (let t = 0; t < idx.count / 3; t++) {
+      const [a, b, c] = [0, 1, 2].map((k) => idx.getX(3 * t + k)) as [number, number, number];
+      const lado = (i: number, j: number) =>
+        Math.hypot(pos.getX(i) - pos.getX(j), pos.getY(i) - pos.getY(j), pos.getZ(i) - pos.getZ(j));
+      const ladoUv = (i: number, j: number) =>
+        Math.hypot(uv.getX(i) - uv.getX(j), uv.getY(i) - uv.getY(j));
+      for (const [i, j] of [
+        [a, b],
+        [b, c],
+        [a, c],
+      ] as const) {
+        expect(ladoUv(i, j)).toBeCloseTo(lado(i, j), 6);
+      }
+    }
+  });
+
+  it('son dos mallas (una por tono) con las ocho laminillas, cada una con su parte de la textura', () => {
+    const fragmento = new FragmentoLaminar();
+    const claras = fragmento.grupo.getObjectByName('laminillas_claras') as Mesh;
+    const oscuras = fragmento.grupo.getObjectByName('laminillas_oscuras') as Mesh;
+    expect((claras as unknown as InstancedMesh).isInstancedMesh).toBeFalsy();
+    const cajas = (m: Mesh) => m.geometry.getIndex()!.count / 36;
+    expect(cajas(claras) + cajas(oscuras)).toBe(N_LAMINILLAS_FRAGMENTO);
+    // La V de la cara frontal es la altura de la laminilla: dos laminillas no comparten dibujo.
+    const uv = claras.geometry.getAttribute('uv');
+    let minV = Infinity;
+    let maxV = -Infinity;
+    for (let i = 0; i < uv.count; i++) {
+      minV = Math.min(minV, uv.getY(i));
+      maxV = Math.max(maxV, uv.getY(i));
+    }
+    expect(maxV - minV).toBeGreaterThan(FRAGMENTO.alto * 0.7);
+    const mat = claras.material as MeshPhysicalMaterial;
+    expect(mat.bumpMap!.repeat.x).toBe(1);
+    expect(mat.bumpMap!.anisotropy).toBe(4);
+    fragmento.liberar();
   });
 });
 
@@ -160,6 +250,7 @@ describe('la escena completa', () => {
     const escalas = crearTodas();
     let triangulos = 0;
     let llamadas = 0;
+    const doble = { triangulos: 0, llamadas: 0 };
     for (const t of TIEMPOS) {
       for (const e of escalas) e.actualizar(estadoMatriz(t));
       triangulos = Math.max(
@@ -170,9 +261,21 @@ describe('la escena completa', () => {
         llamadas,
         escalas.reduce((s, e) => s + llamadasDeDibujo(e.grupo), 0),
       );
+      const d = escalas.map((e) => conPasadas(e.grupo));
+      doble.triangulos = Math.max(
+        doble.triangulos,
+        d.reduce((s, x) => s + x.triangulos, 0),
+      );
+      doble.llamadas = Math.max(
+        doble.llamadas,
+        d.reduce((s, x) => s + x.llamadas, 0),
+      );
     }
     expect(triangulos).toBeLessThan(40_000);
     expect(llamadas).toBeLessThan(40);
+    // También con la doble pasada de las transparencias de doble cara (hoy: unos 12 900 y 9).
+    expect(doble.triangulos).toBeLessThan(40_000);
+    expect(doble.llamadas).toBeLessThan(40);
     for (const e of escalas) e.liberar();
   });
 

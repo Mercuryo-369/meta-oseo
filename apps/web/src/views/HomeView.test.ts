@@ -156,3 +156,43 @@ describe('HomeView: nivel', () => {
     expect(docente.find('[data-testid="seccion-nivel"]').exists()).toBe(true);
   });
 });
+
+describe('HomeView: portada con los seis módulos como pasos', () => {
+  it('muestra los seis pasos enlazados y marca como actual el módulo que toca', async () => {
+    const wrapper = await montar([1], { enCurso: [2] });
+    const pasos = wrapper.findAll('[data-testid="pasos-inicio"] a');
+    expect(pasos.map((a) => a.attributes('href'))).toEqual(
+      [1, 2, 3, 4, 5, 6].map((n) => `/modulo/${n}`),
+    );
+    expect(pasos.map((a) => a.attributes('aria-current'))).toEqual([
+      undefined,
+      'step',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]);
+    // El estado se dice también en texto (completado, bloqueado), no solo con el distintivo.
+    expect(pasos[0]!.text()).toContain('Completado');
+    expect(pasos[2]!.text()).toContain('Completa el módulo 2 para abrirlo');
+  });
+
+  it('la flecha del panel lleva al módulo en curso o al primero sin empezar', async () => {
+    const enCurso = await montar([1], { enCurso: [2] });
+    const flecha = enCurso.get('[data-testid="continuar-inicio"]');
+    expect(flecha.attributes('href')).toBe('/modulo/2');
+    expect(flecha.attributes('aria-label')).toMatch(/^Continuar: Módulo 2, /);
+
+    const nueva = await montar();
+    expect(nueva.get('[data-testid="continuar-inicio"]').attributes('aria-label')).toMatch(
+      /^Empezar: Módulo 1, /,
+    );
+  });
+
+  it('con los seis módulos completados la flecha lleva al certificado', async () => {
+    const wrapper = await montar([1, 2, 3, 4, 5, 6]);
+    const flecha = wrapper.get('[data-testid="continuar-inicio"]');
+    expect(flecha.attributes('href')).toBe('/certificado');
+    expect(flecha.attributes('aria-label')).toBe('Ver mi certificado');
+  });
+});

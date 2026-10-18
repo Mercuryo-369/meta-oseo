@@ -16,7 +16,9 @@ import { CONDUCTO, Z_ALVEOLO } from './estado';
 
 const VISTAS: Readonly<Record<string, VistaEsferica>> = {
   general: { azimut: 38, elevacion: 20, distancia: 12.5, objetivo: [0, 0, 0] },
-  corte: { azimut: 62, elevacion: 12, distancia: 10, objetivo: [-0.5, 0.2, 0] },
+  // Revisión de diseño (2026-10-17): el objetivo sube 0,15 porque la corona subió 0,24 (fidelidad-02); si no, la
+  // cúspide se salía por arriba en un lienzo ancho.
+  corte: { azimut: 62, elevacion: 12, distancia: 10, objetivo: [-0.5, 0.35, 0] },
   raiz: { azimut: 60, elevacion: 8, distancia: 6.6, objetivo: [-0.1, 1, Z_ALVEOLO] },
   conducto: { azimut: 70, elevacion: 6, distancia: 3.6, objetivo: [-0.3, CONDUCTO.y, CONDUCTO.z] },
 };

@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { aplicarTema, iniciarTema } from './tema';
+import { CLAVE_TEMA, aplicarTema, iniciarTema, leerPreferencia, useTema } from './tema';
 
 describe('tema claro/oscuro', () => {
   beforeEach(() => {
     document.documentElement.classList.remove('dark');
+    localStorage.clear();
   });
 
   it('aplicarTema añade y quita la clase dark de <html>', () => {
@@ -42,5 +43,53 @@ describe('tema claro/oscuro', () => {
     );
     iniciarTema();
     expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
+});
+
+describe('tema elegido por el estudiante', () => {
+  const sistema = (oscuro: boolean) =>
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: oscuro, addEventListener: vi.fn(), removeEventListener: vi.fn() })),
+    );
+
+  beforeEach(() => {
+    document.documentElement.classList.remove('dark');
+    localStorage.clear();
+  });
+
+  it('alternar pasa al tema contrario y lo recuerda', () => {
+    sistema(false);
+    iniciarTema();
+    const tema = useTema();
+    tema.alternar();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorage.getItem(CLAVE_TEMA)).toBe('oscuro');
+    tema.alternar();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    expect(localStorage.getItem(CLAVE_TEMA)).toBe('claro');
+  });
+
+  it('la elección guardada manda sobre el sistema al volver', () => {
+    localStorage.setItem(CLAVE_TEMA, 'claro');
+    sistema(true);
+    iniciarTema();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    expect(useTema().preferencia.value).toBe('claro');
+  });
+
+  it('«sistema» borra la elección y vuelve a seguir al sistema', () => {
+    sistema(true);
+    iniciarTema();
+    useTema().establecer('claro');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    useTema().establecer('sistema');
+    expect(localStorage.getItem(CLAVE_TEMA)).toBeNull();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+  });
+
+  it('un valor guardado desconocido equivale a seguir al sistema', () => {
+    localStorage.setItem(CLAVE_TEMA, 'morado');
+    expect(leerPreferencia()).toBe('sistema');
   });
 });

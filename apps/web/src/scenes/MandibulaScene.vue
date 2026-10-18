@@ -16,13 +16,16 @@
  * eje (`:position-x`). `:rotation="[x, y, z]"` sí compila. La escala del modelo va ya
  * incorporada en la geometría (stl.ts), así que no hace falta `scale`.
  */
-import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
 import { TresCanvas } from '@tresjs/core';
+import type { TresContext } from '@tresjs/core';
 import { OrbitControls } from '@tresjs/cientos';
 import { useElementSize, useMediaQuery } from '@vueuse/core';
-import { NeutralToneMapping, TOUCH } from 'three';
+import { FrontSide, NeutralToneMapping, TOUCH } from 'three';
 import { useContextoStore } from '@/stores/contextoPedagogico';
 import EstadosEscena from './EstadosEscena.vue';
+import EntornoRealista from './procedural/EntornoRealista.vue';
+import { liberarMaterialOrganico, materialTriplanar } from './procedural/realismo';
 import {
   FOV_VERTICAL_GRADOS,
   RADIO_NORMALIZADO,
@@ -39,7 +42,7 @@ const ID_ESTRUCTURA = 'mandibula';
 const NOMBRE_ESTRUCTURA = 'Mandíbula';
 
 // Colores del hueso y de su resalte al seleccionarlo (eosina de la paleta H&E, src/style.css).
-const COLOR_HUESO = '#e3d6b8';
+const COLOR_HUESO = '#e8dcc3';
 const COLOR_SELECCION = '#b23a5f';
 
 /** Un dedo gira; dos dedos acercan o alejan. Sin paneo: en móvil estorba y pierde el modelo. */
@@ -62,6 +65,25 @@ const girandoSolo = ref(true);
 const autoRotar = computed(() => girandoSolo.value && !reducirMovimiento.value);
 
 const seleccionada = computed(() => contexto.estructuraSeleccionada === ID_ESTRUCTURA);
+
+/** Hueso real (2026-10-14): relieve triplanar (la malla STL no trae UV), con el resalte al seleccionarla. */
+const materialHueso = materialTriplanar(
+  COLOR_HUESO,
+  'hueso',
+  { escala: 1.6, intensidad: 1.1, motas: 0.13 },
+  { side: FrontSide, emissive: COLOR_SELECCION, emissiveIntensity: 0 },
+);
+/** Contexto del lienzo: dibuja a demanda, así que el resalte de la selección pide un dibujo. */
+let contextoTres: TresContext | null = null;
+function alListo(ctx: TresContext): void {
+  contextoTres = ctx;
+  alEstarListo(ctx);
+}
+
+watch(seleccionada, (s) => {
+  materialHueso.emissiveIntensity = s ? 0.35 : 0;
+  contextoTres?.renderer.invalidate();
+});
 
 const limites = computed(() =>
   limitesDistancia(RADIO_NORMALIZADO, distanciaParaEncajar(RADIO_NORMALIZADO, aspecto.value)),
@@ -109,6 +131,8 @@ function alTocarFuera(evento: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
 
 onMounted(() => modelo.iniciar());
 
+onBeforeUnmount(() => liberarMaterialOrganico(materialHueso));
+
 onBeforeUnmount(() => {
   // Lo que el estudiante "tenía en pantalla" deja de valer al salir de la escena.
   if (seleccionada.value) contexto.setEstructura(undefined);
@@ -144,20 +168,19 @@ onBeforeUnmount(() => {
       :clear-alpha="0"
       :dpr="[1, 2]"
       :tone-mapping="NeutralToneMapping"
-      @ready="alEstarListo"
+      render-mode="on-demand"
+      @ready="alListo"
       @error="modelo.fallarRenderizado"
       @pointermissed="alTocarFuera"
     >
-      <!-- Los hijos de la cámara la siguen: la luz principal ilumina siempre lo que se ve. -->
       <TresPerspectiveCamera
         :position="camaraInicial"
         :fov="FOV_VERTICAL_GRADOS"
         :near="0.1"
         :far="50"
-      >
-        <TresDirectionalLight :position-x="2" :position-y="3" :position-z="1" :intensity="2.4" />
-      </TresPerspectiveCamera>
-      <TresHemisphereLight color="#ffffff" ground-color="#9d92bf" :intensity="1.3" />
+      />
+      <!-- Luces, entorno y sombras: el esquema común de iluminacion.ts, que sigue a la cámara. -->
+      <EntornoRealista />
 
       <OrbitControls
         make-default
@@ -175,18 +198,11 @@ onBeforeUnmount(() => {
 
       <TresMesh
         :geometry="geometria"
+        :material="materialHueso"
         @click="alTocarMalla"
         @pointerenter="sobreMalla = true"
         @pointerleave="sobreMalla = false"
-      >
-        <TresMeshStandardMaterial
-          :color="COLOR_HUESO"
-          :roughness="0.65"
-          :metalness="0.02"
-          :emissive="seleccionada ? COLOR_SELECCION : '#000000'"
-          :emissive-intensity="seleccionada ? 0.35 : 0"
-        />
-      </TresMesh>
+      />
     </TresCanvas>
 
     <!-- Etiqueta: pista de uso y, al tocar el hueso, el nombre de la estructura. -->

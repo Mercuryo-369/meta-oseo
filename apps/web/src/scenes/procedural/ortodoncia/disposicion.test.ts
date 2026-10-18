@@ -5,11 +5,15 @@
  * nuevo solo cuando el diente avanzó) y las piezas repetidas son deterministas y están donde deben.
  */
 import { describe, expect, it } from 'vitest';
+import { CRESTA_A_CUELLO } from '../alveolar/disposicion';
+import { siluetaDentina } from './geometria';
 import {
   INDICE_APICE,
   MARGEN_HUELLA,
   N_MUESTRAS_RAIZ,
   TRAMO_HIALINIZADO,
+  Y_CUELLO,
+  Y_FORAMEN,
   cajaDe,
   contornoRaiz,
   corrimientoEnAlveolo,
@@ -18,6 +22,7 @@ import {
   fibrasLigamento,
   indicesOsteoblastos,
   indicesOsteoclastos,
+  indicesOsteoclastosSocavantes,
   indicesVasos,
   paredInicial,
   perfilBloque,
@@ -111,20 +116,35 @@ describe('perfiles estáticos', () => {
     expect(normales[N_MUESTRAS_RAIZ - 21]![0]).toBeGreaterThan(0.9);
   });
 
-  it('la corona nace en el cuello y termina en punta; su silueta y la pulpa caben donde deben', () => {
+  // Revisión de diseño (2026-10-17, fidelidad-02): la corona nacía 0,05 por DEBAJO de la cresta (el hueso tocaba el
+  // esmalte). Ahora nace en el cuello, 0,2 por encima, la misma distancia que en la escena `hueso_alveolar`, y su
+  // cuello tiene el ancho de la raíz.
+  it('la corona nace en el cuello, por encima de la cresta, y termina en punta; su silueta y la pulpa caben donde deben', () => {
     const perfil = perfilCorona();
-    expect(perfil[0]![1]).toBeLessThan(Y_CRESTA);
+    expect(perfil[0]![1]).toBeCloseTo(Y_CUELLO, 9);
+    expect(Y_CUELLO - Y_CRESTA).toBeCloseTo(CRESTA_A_CUELLO, 9);
+    expect(perfil[0]![0]).toBeCloseTo(semianchoRaiz(Y_CRESTA), 9);
     expect(perfil[perfil.length - 1]![0]).toBe(0);
-    expect(perfil[perfil.length - 1]![1]).toBeCloseTo(Y_CRESTA - 0.05 + ALTO_CORONA, 9);
+    expect(perfil[perfil.length - 1]![1]).toBeCloseTo(Y_CUELLO + ALTO_CORONA, 9);
     const corona = siluetaCorona();
     esPoligonoSimpleYFinito(corona);
     expect((cajaDe(corona).xMax + cajaDe(corona).xMin) / 2).toBeCloseTo(0, 9);
+    // La encía cubre el cuello: su margen queda unos 0,7 mm por encima del límite amelocementario.
+    expect(cajaDe(perfilEncia()).yMax).toBeGreaterThan(Y_CUELLO + 0.05);
     const pulpa = siluetaPulpa();
     esPoligonoSimpleYFinito(pulpa);
-    const raiz = siluetaRaiz();
+    // La dentina incluye la raíz cervical, entre la cresta y el cuello.
+    const dentina = siluetaDentina();
     for (const p of pulpa) {
-      expect(dentroDePoligono(p, raiz) || dentroDePoligono(p, corona), `${p}`).toBe(true);
+      expect(dentroDePoligono(p, dentina) || dentroDePoligono(p, corona), `${p}`).toBe(true);
     }
+  });
+
+  it('el conducto llega al foramen apical, junto al ápice (fidelidad-12)', () => {
+    const pulpa = siluetaPulpa();
+    expect(cajaDe(pulpa).yMin).toBeCloseTo(Y_FORAMEN, 9);
+    expect(Y_FORAMEN - Y_APICE).toBeLessThan(0.02);
+    expect(dentroDePoligono([0, Y_FORAMEN], siluetaRaiz())).toBe(true);
   });
 
   it('la silueta inicial del diente es un contorno cerrado con la raíz y la corona, en la posición inicial', () => {
@@ -133,7 +153,7 @@ describe('perfiles estáticos', () => {
     const caja = cajaDe(silueta);
     expect((caja.xMax + caja.xMin) / 2).toBeCloseTo(X_DIENTE_INICIAL, 6);
     expect(caja.yMin).toBeCloseTo(Y_APICE, 6);
-    expect(caja.yMax).toBeCloseTo(Y_CRESTA - 0.05 + ALTO_CORONA, 6);
+    expect(caja.yMax).toBeCloseTo(Y_CUELLO + ALTO_CORONA, 6);
   });
 });
 
@@ -314,8 +334,40 @@ describe('fibras, vasos y células', () => {
     }
   });
 
+  // fidelidad-04: la zona hialinizada es acelular. La resorción frontal ocurre en el ligamento vivo de sus bordes y,
+  // detrás de ella, la socavante, desde la médula.
+  it('ningún osteoclasto frontal cae en la zona hialinizada; los socavantes trabajan detrás de ella', () => {
+    const { puntos } = contornoRaiz();
+    const desde = puntos[TRAMO_HIALINIZADO.desde]![1];
+    const hasta = puntos[TRAMO_HIALINIZADO.hasta]![1];
+    for (const i of indicesOsteoclastos()) {
+      expect(i < TRAMO_HIALINIZADO.desde || i > TRAMO_HIALINIZADO.hasta, `muestra ${i}`).toBe(true);
+      // Ni siquiera la punta de la célula (0,17 a lo largo de la pared) entra en la zona.
+      const y = puntos[i]![1];
+      expect(y + 0.17 < desde || y - 0.17 > hasta, `muestra ${i}`).toBe(true);
+    }
+    expect(indicesOsteoclastos().some((i) => i < TRAMO_HIALINIZADO.desde)).toBe(true);
+    expect(indicesOsteoclastos().some((i) => i > TRAMO_HIALINIZADO.hasta)).toBe(true);
+    for (const i of indicesOsteoclastosSocavantes()) {
+      expect(i).toBeGreaterThan(TRAMO_HIALINIZADO.desde);
+      expect(i).toBeLessThan(TRAMO_HIALINIZADO.hasta);
+    }
+  });
+
+  it('los perfiles del alvéolo se calculan una vez por estado (rendimiento-15)', () => {
+    const e = estadoOrtodoncia(0.5);
+    const p = perfilesAlveolo(e);
+    expect(perfilesAlveolo(e)).toBe(p);
+    const otro = estadoOrtodoncia(0.5);
+    const q = perfilesAlveolo(otro);
+    expect(q).not.toBe(p);
+    expect(q).toEqual(p);
+  });
+
   it('los osteoclastos están en la pared derecha, los osteoblastos en la izquierda y los vasos en ambas', () => {
-    for (const i of indicesOsteoclastos()) expect(i).toBeGreaterThan(INDICE_APICE + 6);
+    for (const i of [...indicesOsteoclastos(), ...indicesOsteoclastosSocavantes()]) {
+      expect(i).toBeGreaterThan(INDICE_APICE + 6);
+    }
     for (const i of indicesOsteoblastos()) expect(i).toBeLessThan(INDICE_APICE - 6);
     const vasos = indicesVasos();
     expect(vasos.filter((i) => i < INDICE_APICE)).toHaveLength(vasos.length / 2);

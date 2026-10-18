@@ -4,10 +4,38 @@
  * de llamadas de dibujo, liberación de recursos, determinismo y visibilidad por fase.
  */
 import { describe, expect, it } from 'vitest';
-import type { BufferGeometry, Group, Mesh, Object3D } from 'three';
-import { HITOS_FRACTURA, estadoFractura } from './estado';
-import { perfilSolido, radioCallo, radioHematoma } from './disposicion';
-import { anillo, arcoDeCuerpo, arcoDeCuna, esfera, fusiforme, tramo } from './geometria';
+import type {
+  BufferGeometry,
+  Group,
+  InstancedMesh,
+  Material,
+  Mesh,
+  MeshPhysicalMaterial,
+  Object3D,
+} from 'three';
+import { DoubleSide, Matrix4, Quaternion, Vector3 } from 'three';
+import { BRECHA, DESPLAZAMIENTO, HITOS_FRACTURA, estadoFractura } from './estado';
+import {
+  IRREGULAR,
+  celulasInflamatorias,
+  normalSobreCallo,
+  osteoblastosDelCallo,
+  perfilSolido,
+  radioCallo,
+  radioHematoma,
+} from './disposicion';
+import {
+  abollar,
+  anillo,
+  arcoDeCuerpo,
+  arcoDeCuna,
+  dentado,
+  esfera,
+  fracturar,
+  fusiforme,
+  grumo,
+  tramo,
+} from './geometria';
 import { HuesoFracturado, Reparacion, presenciaCon } from './mallas';
 import type { PiezaFractura } from './mallas';
 
@@ -38,23 +66,76 @@ function esVisible(o: Object3D): boolean {
   return true;
 }
 
-/** Triángulos dibujados y llamadas de dibujo (objetos con geometría visibles; las instancias cuentan todas). */
-function medir(grupos: readonly Group[]): { triangulos: number; llamadas: number } {
-  let triangulos = 0;
-  let llamadas = 0;
+interface Dibujo {
+  triangulos: number;
+  llamadas: number;
+  /** Contando dos veces lo que three dibuja en dos pasadas (transparente de doble cara sin `forceSinglePass`). */
+  triangulosConPasadas: number;
+  llamadasConPasadas: number;
+  /** Pase de sombras: las mallas opacas (o con opacidad > 0,9) que proyectan sombra (`EntornoRealista`). */
+  llamadasSombra: number;
+}
+
+/** Lo que se dibuja: objetos con geometría visibles (las instancias cuentan todas), doble pasada y sombras. */
+function medir(grupos: readonly Group[]): Dibujo {
+  const d: Dibujo = {
+    triangulos: 0,
+    llamadas: 0,
+    triangulosConPasadas: 0,
+    llamadasConPasadas: 0,
+    llamadasSombra: 0,
+  };
   for (const grupo of grupos) {
     grupo.traverse((o) => {
       const g = (o as Mesh).geometry as BufferGeometry | undefined;
       if (!g || !esVisible(o)) return;
-      llamadas++;
       const porInstancia = (g.getIndex()?.count ?? g.getAttribute('position').count) / 3;
       const instancias = (o as { isInstancedMesh?: boolean; count?: number }).isInstancedMesh
         ? ((o as { count?: number }).count ?? 1)
         : 1;
-      triangulos += porInstancia * instancias;
+      const m = (o as Mesh).material as Material;
+      const pasadas = m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+      d.llamadas++;
+      d.triangulos += porInstancia * instancias;
+      d.llamadasConPasadas += pasadas;
+      d.triangulosConPasadas += porInstancia * instancias * pasadas;
+      if (!o.userData.sinSombra && (!m.transparent || m.opacity > 0.9)) d.llamadasSombra++;
     });
   }
-  return { triangulos, llamadas };
+  return d;
+}
+
+/** Escala de una matriz de instancia (largo de sus columnas): 0 en una instancia oculta. */
+function escalaDe(m: Matrix4): Vector3 {
+  const e = m.elements;
+  return new Vector3(
+    Math.hypot(e[0]!, e[1]!, e[2]!),
+    Math.hypot(e[4]!, e[5]!, e[6]!),
+    Math.hypot(e[8]!, e[9]!, e[10]!),
+  );
+}
+
+/** Repeticiones de la textura por unidad en un triángulo: raíz de (área UV / área real). */
+function densidadUv(g: BufferGeometry, tri: number): number {
+  const pos = g.getAttribute('position');
+  const uv = g.getAttribute('uv');
+  const idx = g.getIndex();
+  const [a, b, c] = [0, 1, 2].map((k) => idx?.getX(3 * tri + k) ?? 3 * tri + k) as [
+    number,
+    number,
+    number,
+  ];
+  const p = (i: number) => new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+  const area =
+    p(b)
+      .sub(p(a))
+      .cross(p(c).sub(p(a)))
+      .length() / 2;
+  const du1 = uv.getX(b) - uv.getX(a);
+  const dv1 = uv.getY(b) - uv.getY(a);
+  const du2 = uv.getX(c) - uv.getX(a);
+  const dv2 = uv.getY(c) - uv.getY(a);
+  return area < 1e-6 ? 1 : Math.sqrt(Math.abs(du1 * dv2 - du2 * dv1) / 2 / area);
 }
 
 function buscar(grupo: Group, nombre: string): Object3D {
@@ -130,6 +211,115 @@ describe('formas básicas', () => {
     t.computeBoundingBox();
     expect(t.boundingBox!.min.y).toBeCloseTo(0, 5);
     expect(t.boundingBox!.max.y).toBeCloseTo(1, 5);
+  });
+});
+
+describe('borde de fractura dentado', () => {
+  it('el dentado cierra la vuelta, está acotado y no es plano', () => {
+    const valores: number[] = [];
+    for (let k = 0; k < 64; k++) {
+      const theta = (k / 64) * Math.PI * 2;
+      expect(dentado(theta)).toBeCloseTo(dentado(theta + Math.PI * 2), 9);
+      expect(Math.abs(dentado(theta))).toBeLessThanOrEqual(1);
+      valores.push(dentado(theta));
+    }
+    expect(Math.max(...valores) - Math.min(...valores)).toBeGreaterThan(1);
+  });
+
+  it('fracturar mueve solo los vértices del borde, según su ángulo, y deja la geometría válida', () => {
+    const g = anillo(0.62, 1, 0.35, 0.3, 4);
+    const antes = Float32Array.from(g.getAttribute('position').array);
+    fracturar(g, -0.175, 0.06);
+    const pos = g.getAttribute('position');
+    let movidos = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const y0 = antes[3 * i + 1]!;
+      if (Math.abs(y0 + 0.175) < 1e-5) {
+        const theta = Math.atan2(pos.getX(i), pos.getZ(i));
+        expect(pos.getY(i)).toBeCloseTo(-0.175 + 0.06 * dentado(theta), 5);
+        movidos++;
+      } else {
+        expect(pos.getY(i)).toBe(y0);
+      }
+    }
+    expect(movidos).toBeGreaterThan(20);
+    expect(sinNaN(g.getAttribute('normal').array)).toBe(true);
+    g.dispose();
+  });
+
+  it('abollar solo cambia la distancia al eje (ni el ángulo ni la altura), con un relieve que cierra la vuelta', () => {
+    for (let k = 0; k < 32; k++) {
+      const theta = (k / 32) * Math.PI * 2;
+      expect(grumo(theta, 0.37, 2.1)).toBeCloseTo(grumo(theta + Math.PI * 2, 0.37, 2.1), 9);
+      expect(Math.abs(grumo(theta, 0.37, 2.1))).toBeLessThanOrEqual(1);
+    }
+    const g = fusiforme(
+      perfilSolido(radioCallo, -0.95, 0.95),
+      arcoDeCuerpo(4).theta0,
+      arcoDeCuerpo(4).arco,
+    );
+    const antes = Float32Array.from(g.getAttribute('position').array);
+    abollar(g, 0.03, 2.1);
+    const pos = g.getAttribute('position');
+    let cambiados = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const x0 = antes[3 * i]!;
+      const z0 = antes[3 * i + 2]!;
+      const r0 = Math.hypot(x0, z0);
+      const r = Math.hypot(pos.getX(i), pos.getZ(i));
+      expect(pos.getY(i)).toBe(antes[3 * i + 1]!);
+      expect(Math.abs(r - r0)).toBeLessThanOrEqual(0.03 * r0 + 1e-6);
+      // Mismo ángulo: la dirección (x, z) no gira.
+      expect(Math.abs(x0 * pos.getZ(i) - z0 * pos.getX(i))).toBeLessThan(1e-5);
+      if (Math.abs(r - r0) > 1e-4) cambiados++;
+    }
+    expect(cambiados).toBeGreaterThan(50);
+    expect(sinNaN(g.getAttribute('normal').array)).toBe(true);
+    g.dispose();
+  });
+
+  it('los bordes de los dos fragmentos encajan: la brecha mide lo mismo en cada ángulo', () => {
+    const hueso = new HuesoFracturado();
+    for (const nombre of ['hueso_necrotico', 'hueso_necrotico_tapa']) {
+      const pos = (buscar(hueso.grupo, nombre) as Mesh).geometry.getAttribute('position');
+      let proximales = 0;
+      let distales = 0;
+      for (let i = 0; i < pos.count; i++) {
+        const y = pos.getY(i);
+        if (Math.abs(y) > BRECHA / 2 + 0.07) continue;
+        // Mismo dibujo en los dos bordes (el distal está desplazado en x): la brecha es constante.
+        const distal = y > 0;
+        const x = pos.getX(i) - (distal ? DESPLAZAMIENTO : 0);
+        const esperado =
+          (distal ? 1 : -1) * (BRECHA / 2) + 0.06 * dentado(Math.atan2(x, pos.getZ(i)));
+        expect(y, `${nombre}, vértice ${i}`).toBeCloseTo(esperado, 4);
+        if (distal) distales++;
+        else proximales++;
+      }
+      expect(proximales).toBeGreaterThan(10);
+      expect(distales).toBeGreaterThan(10);
+    }
+    hueso.liberar();
+  });
+
+  it('el callo cambia de acabado con su tejido: liso y húmedo de cartílago, mate y poroso de hueso', () => {
+    const reparacion = new Reparacion();
+    const centro = () =>
+      (buscar(reparacion.grupo, 'callo_central') as Mesh).material as MeshPhysicalMaterial;
+    reparacion.actualizar(estadoFractura(HITOS_FRACTURA.callo_blando), false);
+    const rBlando = centro().roughness;
+    const ccBlando = centro().clearcoat;
+    const relieveBlando = centro().bumpScale;
+    reparacion.actualizar(estadoFractura(HITOS_FRACTURA.callo_duro), false);
+    expect(centro().roughness).toBeGreaterThan(rBlando);
+    expect(centro().clearcoat).toBeLessThan(ccBlando);
+    expect(centro().bumpScale).toBeGreaterThan(relieveBlando);
+    // El barniz nunca llega a 0: cambiarlo de 0 a más obligaría a recompilar el sombreador.
+    for (const t of TIEMPOS) {
+      reparacion.actualizar(estadoFractura(t), false);
+      expect(centro().clearcoat, `t = ${t}`).toBeGreaterThan(0);
+    }
+    reparacion.liberar();
   });
 });
 
@@ -216,24 +406,161 @@ describe.each<[string, () => PiezaFractura]>([
 });
 
 describe('presupuesto de la escena completa', () => {
-  it('cabe en el presupuesto de triángulos y de llamadas de dibujo en el peor instante', () => {
+  it('cabe en el presupuesto en el peor instante, también con la doble pasada y el pase de sombras', () => {
     const hueso = new HuesoFracturado();
     const reparacion = new Reparacion();
-    let peor = { triangulos: 0, llamadas: 0 };
+    const peor: Dibujo = {
+      triangulos: 0,
+      llamadas: 0,
+      triangulosConPasadas: 0,
+      llamadasConPasadas: 0,
+      llamadasSombra: 0,
+    };
     for (const abierta of [false, true]) {
       for (const t of TIEMPOS) {
         const e = estadoFractura(t);
         hueso.actualizar(e, abierta);
         reparacion.actualizar(e, abierta);
         const m = medir([hueso.grupo, reparacion.grupo]);
-        if (m.triangulos > peor.triangulos) peor = { ...peor, triangulos: m.triangulos };
-        if (m.llamadas > peor.llamadas) peor = { ...peor, llamadas: m.llamadas };
+        for (const k of Object.keys(peor) as (keyof Dibujo)[]) peor[k] = Math.max(peor[k], m[k]);
       }
     }
+    // Hoy: unos 19 400 triángulos y 18 llamadas; 19 con la doble pasada (el periostio fino); 18 de sombra.
     expect(peor.triangulos).toBeGreaterThan(1_000);
     expect(peor.triangulos).toBeLessThan(PRESUPUESTO.triangulos);
     expect(peor.llamadas).toBeLessThan(PRESUPUESTO.llamadas);
+    expect(peor.triangulosConPasadas).toBeLessThan(PRESUPUESTO.triangulos);
+    expect(peor.llamadasConPasadas).toBeLessThan(PRESUPUESTO.llamadas);
+    expect(peor.llamadasSombra).toBeLessThan(PRESUPUESTO.llamadas);
     hueso.liberar();
+    reparacion.liberar();
+  });
+});
+
+describe('revisión de diseño (2026-10-17)', () => {
+  it('UV en unidades: el tramo necrótico (0,35 de largo) tiene el grano de la cortical sana, y el callo y el coágulo también', () => {
+    const hueso = new HuesoFracturado();
+    const reparacion = new Reparacion();
+    for (const [grupo, nombre] of [
+      [hueso.grupo, 'cortical'],
+      [hueso.grupo, 'hueso_necrotico'],
+      [reparacion.grupo, 'coagulo'],
+      [reparacion.grupo, 'callo_central'],
+      [reparacion.grupo, 'callo_periferico'],
+    ] as const) {
+      const g = (buscar(grupo, nombre) as Mesh).geometry;
+      const n = g.getIndex()!.count / 3;
+      let dentro = 0;
+      for (let t = 0; t < n; t++) {
+        const d = densidadUv(g, t);
+        if (d > 0.75 && d < 1.3) dentro++;
+      }
+      // Casi todos los triángulos: quedan fuera los que tocan el eje (las puntas del torno).
+      expect(dentro / n, nombre).toBeGreaterThan(0.85);
+    }
+    hueso.liberar();
+    reparacion.liberar();
+  });
+
+  it('el periostio es opaco (una sola pasada) mientras está engrosado y translúcido cuando es fino', () => {
+    const hueso = new HuesoFracturado();
+    const mat = (buscar(hueso.grupo, 'periostio') as Mesh).material as Material;
+    for (const t of [0.3, 0.45, 0.6, 0.7]) {
+      hueso.actualizar(estadoFractura(t), false);
+      expect(mat.transparent, `t = ${t}`).toBe(false);
+    }
+    hueso.actualizar(estadoFractura(0), false);
+    expect(mat.transparent).toBe(true);
+    expect(mat.opacity).toBeCloseTo(0.7, 6);
+    hueso.liberar();
+  });
+
+  it('las instancias ocultas no estropean la esfera envolvente de su malla (escala 0, no matriz nula)', () => {
+    const reparacion = new Reparacion();
+    for (const t of [0, 0.3, 0.6, 1]) {
+      reparacion.actualizar(estadoFractura(t), true);
+      reparacion.grupo.traverse((o) => {
+        const im = o as InstancedMesh;
+        if (!im.isInstancedMesh) return;
+        im.boundingSphere = null;
+        im.computeBoundingSphere();
+        const c = im.boundingSphere!.center;
+        expect(Number.isFinite(c.x + c.y + c.z), `t = ${t}, ${o.name}`).toBe(true);
+      });
+    }
+    reparacion.liberar();
+  });
+
+  it('la superficie que se dibuja del callo es la que usan sus células (mismo relieve irregular)', () => {
+    const reparacion = new Reparacion();
+    const geo = (buscar(reparacion.grupo, 'callo_central') as Mesh).geometry;
+    const pos = geo.getAttribute('position');
+    const { amplitud, semilla } = IRREGULAR.callo;
+    let comprobados = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const z = pos.getZ(i);
+      const esperado = radioCallo(y) * (1 + amplitud * grumo(Math.atan2(x, z), y, semilla));
+      if (Math.abs(Math.hypot(x, z) - esperado) < 1e-4) comprobados++;
+    }
+    // Los vértices del torno (las caras de corte tienen vértices a cualquier radio).
+    expect(comprobados).toBeGreaterThan(200);
+    reparacion.liberar();
+  });
+
+  it('los osteoblastos del callo se dibujan aplanados contra su superficie (no como canicas)', () => {
+    const reparacion = new Reparacion();
+    reparacion.actualizar(estadoFractura(HITOS_FRACTURA.callo_duro), false);
+    const malla = buscar(reparacion.grupo, 'osteoblastos') as InstancedMesh;
+    const m = new Matrix4();
+    const p = new Vector3();
+    const q = new Quaternion();
+    const e = new Vector3();
+    let vistos = 0;
+    osteoblastosDelCallo().forEach((c, i) => {
+      malla.getMatrixAt(i, m);
+      // `decompose` da escala 1 en una matriz de determinante 0 (la de una instancia oculta).
+      if (escalaDe(m).y < 1e-4) return;
+      m.decompose(p, q, e);
+      vistos++;
+      expect(e.y / e.x).toBeCloseTo(0.6 / 1.15, 4);
+      const eje = new Vector3(0, 1, 0).applyQuaternion(q);
+      expect(eje.dot(new Vector3(...normalSobreCallo(c)))).toBeGreaterThan(0.999);
+    });
+    expect(vistos).toBeGreaterThan(8);
+    reparacion.liberar();
+  });
+
+  it('las células de la superficie del hematoma lo acompañan al encoger y desaparecen con él', () => {
+    const reparacion = new Reparacion();
+    const malla = buscar(reparacion.grupo, 'neutrofilos') as InstancedMesh;
+    const datos = celulasInflamatorias().neutrofilos;
+    const m = new Matrix4();
+    const p = new Vector3();
+    const q = new Quaternion();
+    const e = new Vector3();
+    for (const t of [0.3, 0.36, 0.4]) {
+      reparacion.actualizar(estadoFractura(t), false);
+      const s = buscar(reparacion.grupo, 'hematoma').scale.x;
+      let sobre = 0;
+      for (let i = 0; i < malla.count; i++) {
+        malla.getMatrixAt(i, m);
+        // Las de la brecha (dentro) no se apoyan en el hematoma.
+        if (escalaDe(m).x < 1e-4 || !datos[i]!.superficie) continue;
+        m.decompose(p, q, e);
+        const r = Math.hypot(p.x, p.z);
+        const yEscala1 = p.y / s;
+        sobre++;
+        const liso = s * radioHematoma(yEscala1);
+        // El centro, fuera de la superficie irregular; el borde de dentro de la célula, dentro (no flota).
+        expect(r, `t = ${t}`).toBeGreaterThan(liso * (1 - IRREGULAR.hematoma.amplitud) - 1e-6);
+        expect(r - e.x, `t = ${t}`).toBeLessThan(liso * (1 + IRREGULAR.hematoma.amplitud) + 1e-6);
+      }
+      if (t === 0.3) expect(sobre).toBeGreaterThan(5);
+    }
+    reparacion.actualizar(estadoFractura(0.44), false);
+    expect(esVisible(buscar(reparacion.grupo, 'hematoma'))).toBe(false);
     reparacion.liberar();
   });
 });

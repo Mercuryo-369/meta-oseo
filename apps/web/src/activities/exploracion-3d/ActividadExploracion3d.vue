@@ -361,6 +361,9 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
         :visitados="jugando ? visitados : []"
         :seleccion-id="seleccionId"
         :orden-enfoque="ordenEnfoque"
+        :etiquetas-laterales="
+          actividad.config.modelo === 'mandibula' || actividad.config.modelo === 'hueso_largo'
+        "
         @seleccionar="seleccionar"
         @estado="estadoEscena = $event"
       />

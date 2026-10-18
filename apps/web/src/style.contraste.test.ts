@@ -71,20 +71,20 @@ const REFERENCIA: Record<
   readonly (readonly [number, number, number, number])[]
 > = {
   claro: [
-    [10.84, 10.02, 8.92, 10.84],
-    [6.4, 5.91, 5.37, 6.4],
-    [6.15, 5.69, 5.31, 6.15],
-    [5.93, 5.48, 5.09, 5.93],
-    [6.2, 5.73, 5.23, 6.2],
-    [7.12, 6.58, 5.8, 7.12],
+    [10.84, 10.1, 8.92, 10.84],
+    [6.4, 5.96, 5.37, 6.4],
+    [6.15, 5.73, 5.31, 6.15],
+    [5.93, 5.52, 5.09, 5.93],
+    [6.2, 5.77, 5.23, 6.2],
+    [7.12, 6.63, 5.8, 7.12],
   ],
   oscuro: [
-    [8.64, 9.29, 7.33, 8.81],
-    [7.49, 8.05, 6.58, 7.63],
-    [10.37, 11.15, 8.36, 10.57],
-    [10.48, 11.27, 8.44, 10.69],
-    [9.95, 10.7, 7.91, 10.14],
-    [9.22, 9.92, 7.78, 9.4],
+    [8.69, 9.35, 7.33, 8.81],
+    [7.53, 8.1, 6.58, 7.63],
+    [10.43, 11.22, 8.36, 10.57],
+    [10.55, 11.34, 8.44, 10.69],
+    [10, 10.76, 7.91, 10.14],
+    [9.28, 9.98, 7.78, 9.4],
   ],
 };
 
@@ -99,10 +99,10 @@ describe('fórmula de contraste (valores de referencia conocidos)', () => {
   });
 
   it('encuentra los tokens base de cada tema en style.css', () => {
-    expect(CLARO.get('background')).toBe('#f7f5fb');
+    expect(CLARO.get('background')).toBe('#f5f7fa');
     expect(CLARO.get('card')).toBe('#ffffff');
-    expect(OSCURO.get('background')).toBe('#131025');
-    expect(OSCURO.get('card')).toBe('#1b1731');
+    expect(OSCURO.get('background')).toBe('#0b1220');
+    expect(OSCURO.get('card')).toBe('#111a2b');
   });
 });
 
@@ -158,10 +158,10 @@ describe('el acento por defecto (fuera de un módulo) es el color primario', () 
     expect(css).toMatch(/--acento-sobre:\s*var\(--primary-foreground\)/);
   });
 
-  it('los tokens existentes no cambiaron (paleta H&E)', () => {
-    expect(CLARO.get('primary')).toBe('#3b2f86');
+  it('los tokens base no cambiaron sin querer (paleta clínica, 2026-10-14)', () => {
+    expect(CLARO.get('primary')).toBe('#1f5a96');
     expect(CLARO.get('eosina')).toBe('#b23a5f');
-    expect(OSCURO.get('primary')).toBe('#b9adff');
+    expect(OSCURO.get('primary')).toBe('#86b4e8');
     expect(OSCURO.get('eosina')).toBe('#f58aa8');
   });
 });

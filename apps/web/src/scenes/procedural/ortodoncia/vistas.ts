@@ -15,7 +15,9 @@ import { estadoDeEsferica } from '../bmu/vistas';
 import type { EstadoCamara, VistaEsferica } from '../bmu/vistas';
 
 const VISTAS: Readonly<Record<string, VistaEsferica>> = {
-  general: { azimut: 22, elevacion: 14, distancia: 9.6, objetivo: [-0.05, 0.25, 0] },
+  // Revisión de diseño (2026-10-17): el objetivo sube 0,12 porque la corona subió 0,25 (fidelidad-02); si no, la
+  // cúspide se salía por arriba en un lienzo ancho.
+  general: { azimut: 22, elevacion: 14, distancia: 9.6, objetivo: [-0.05, 0.37, 0] },
   corte: { azimut: 4, elevacion: 5, distancia: 6.4, objetivo: [-0.05, 0.2, 0] },
   compresion: { azimut: 12, elevacion: 4, distancia: 4.4, objetivo: [0.5, 0.1, 0] },
   tension: { azimut: -12, elevacion: 4, distancia: 4.4, objetivo: [-0.75, 0.1, 0] },

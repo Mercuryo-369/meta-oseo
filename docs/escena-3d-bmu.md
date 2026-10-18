@@ -54,9 +54,10 @@ Modelo geométrico (1 unidad = 100 µm): un cilindro de hueso cortical (radio 2)
 ## 3. Rendimiento y recursos (móvil primero)
 
 - Una sola geometría con color por vértice para todo el hueso (13 120 triángulos) y **InstancedMesh** para
-  las células (una llamada, 236 instancias de esfera de 90 triángulos), los discos de los osteocitos y sus
-  canalículos. Total: **5 llamadas de dibujo** y ~36 000 triángulos (tope de diseño: 60 000). Materiales
-  reutilizados y sin texturas.
+  las células (una llamada, 236 instancias de esfera de 168 triángulos), los discos de los osteocitos y sus
+  canalículos. Total: **5 llamadas de dibujo** y 54 576 triángulos (tope de diseño: 60 000), más otras 5
+  llamadas con los mismos triángulos en el pase de sombras. Ningún material es transparente: no hay doble
+  pasada. Materiales reutilizados; el relieve es una textura de 256 × 256 calculada por código y compartida.
 - DPR limitado a [1, 2] y `render-mode="on-demand"`: solo se dibuja cuando cambia `t` o la cámara.
 - Las geometrías se **recalculan en su sitio** (mismos arreglos, sin reservar memoria por fotograma) y se
   liberan al desmontar (`liberar()`); TresJS libera el renderizador.
@@ -91,7 +92,7 @@ apps/web/src/scenes/procedural/
     osteocitos.ts       los osteocitos como cortes sobre las caras de la cuña
     ContenidoBmu.vue    une las mallas y las actualiza al cambiar `t`
     CamaraBmu.vue       OrbitControls + transiciones entre vistas
-    EscenaBmu.vue       lienzo, luces, estados (sin WebGL, error, contexto perdido)
+    EscenaBmu.vue       lienzo, luz común (EntornoRealista), estados (sin WebGL, error, contexto perdido)
 apps/web/src/activities/exploracion-3d/
   PanelLineaTiempo.vue  escena + texto de la fase + controles (sin three)
   ActividadExploracion3d.vue  variante `procedural` (los pasos son las "partes")
@@ -129,3 +130,81 @@ molecular y la relación de columnas siguen en SVG/2D.
 
 Ver `TODO.md`, fila "Escenas 3D con línea de tiempo (prototipo BMU)": pruebas, capturas en `.verify/bmu3d/`
 (escritorio 1280x800 y móvil 390x844), consola, peso de los chunks y tiempo de fotograma medido.
+
+## Realismo (2026-10-14)
+
+Mejora de realismo con la base compartida (`scenes/procedural/realismo.ts` y `EntornoRealista.vue`), como en las
+escenas del hueso y de la matriz:
+
+- **Paleta natural** propia (`NATURAL` y `RGB_NATURAL` en `bmu/paleta.ts`; los valores vigentes son los de ese
+  archivo, ajustados el 2026-10-17 a la paleta unificada: ver la revisión de diseño, abajo). `HEX` y `RGB` no
+  cambian: casi todas las demás escenas construyen sus paletas con `HEX`. El hueso fresco es marfil (no el rosa de
+  la tinción H&E), con las láminas viejas en dos tonos de marfil, como en la escena del hueso; el osteoide, una
+  franja pálida algo rosada (colágeno sin mineralizar) que al mineralizarse toma el marfil claro del hueso nuevo; la
+  línea de cemento, ocre oscuro; la pared reabsorbida, un marfil tostado más oscuro que el hueso intacto; las
+  lagunas de los osteocitos, oscuras (son huecos), y los canalículos, pardos. Las células conservan sus colores
+  didácticos, algo más sobrios: osteoclastos lila, osteoblastos violeta, precursores y células de inversión lila
+  grisáceo. El capilar sigue rojo. Los textos de los pasos no nombran colores; los que citan los apartados
+  anteriores son los de antes.
+- **Materiales por pieza**: el hueso (una malla con color por vértice), tejido `hueso` (mate, con relieve de poros);
+  las células (una malla instanciada) y los discos de los osteocitos, `celula` (blanda y húmeda, con un brillo
+  aterciopelado lila grisáceo, porque el color de cada célula va por instancia), con un emisivo violeta tenue
+  (0,15 desde el 2026-10-17); los canalículos, `cavidad`; el capilar, `vaso` (sin emisivo desde el 2026-10-17).
+- **Coordenadas UV** en la malla del hueso, que no tenía: en unidades de escena, planas en las caras de corte (x,
+  radio) y en las tapas (y, z) y cilíndricas en la superficie exterior y en la luz del conducto (con el radio del
+  túnel fijo, para que la textura no resbale cuando la luz se estrecha). El material repite el relieve una vez por
+  unidad (100 µm): con la repetición del tejido, pensada para UV de 0 a 1, el grano no se vería.
+- **Forma**: células de 12 × 8 (antes 9 × 6: se veían las facetas), discos de los osteocitos de 24 lados (antes 16) y
+  capilar de 20 (antes 14).
+- **Luz**: luz de entorno y sombras suaves (`EntornoRealista.vue`); luces más suaves y un contraluz frío. Desde el
+  2026-10-15 la escena no lleva luces propias: las pone el esquema común de `iluminacion.ts`.
+- **Presupuesto**: 54 576 triángulos (antes 35 856) y las mismas 5 llamadas de dibujo. La prueba sigue exigiendo
+  menos de 60 000 triángulos. Sin cambios de posiciones, tiempos, hitos ni vistas.
+
+No se ha visto en pantalla (el usuario prueba en local).
+
+## Revisión de diseño (2026-10-17)
+
+Correcciones de la revisión de diseño y realismo (render WebGL, rendimiento, fidelidad y realismo visual), con el
+hallazgo de cada una:
+
+- **Células iluminadas al revés (render-03).** El marco de cada célula de la pared y de cada osteoclasto (cuerpo,
+  núcleos y lóbulos) era zurdo: t × f = −n. three decide qué cara es la delantera por objeto (el determinante de su
+  matriz de mundo), no por instancia, así que esas instancias se dibujaban con la cara trasera y, con material de
+  doble cara, la normal invertida: el lado que mira a la luz principal quedaba apagado y el contraluz iluminaba la
+  cara visible. Las células se leían como hoyos en la pared. Ahora f = (0, sen fi, −cos fi) y la base es directa;
+  el desfase de los núcleos en f cambia de signo, así que quedan donde estaban. Lo mismo en los osteocitos de la
+  cara 0 (discos y canalículos): el segundo eje cambia de signo en esa cara, con los canalículos en las mismas
+  direcciones. Una prueba comprueba que todas las instancias visibles tienen determinante positivo.
+- **Emisivos (realismo-03).** El violeta de las células baja de 0,55 a 0,15 (tapaba el fallo anterior y hacía que
+  núcleos y células se vieran iluminados por dentro y sin volumen); el capilar ya no emite (la sangre no da luz).
+- **Oclusión ambiental del túnel (realismo-06).** La luz de entorno y el hemisferio no saben que la luz del
+  conducto está dentro de un cilindro abierto solo por la ventana de 90° de la cuña: el fondo del túnel salía tan
+  claro como la cara exterior. La geometría del hueso lleva un atributo `ao` (`oclusionPorVertice` de
+  `realismo.ts`): 1 en las piezas exteriores y, en la luz, de ~0,75 frente a la ventana a ~0,4 junto a las caras
+  de corte, de vuelta a 1 hacia los extremos (`oclusionLuz` en `malla.ts`). Solo apaga la luz indirecta: la directa
+  ya la ocultan las sombras. Es estático y se escribe una vez. Las células llevan el mismo atributo, por instancia
+  (un `InstancedBufferAttribute` en la esfera), con el 80 % de la oclusión de la pared en que se apoyan (asoman
+  hacia el eje); los precursores, que salen del eje, van de la oclusión del centro del túnel a la de su destino. La
+  verificación proponía multiplicar el color de las células, pero eso apaga también la luz directa, que es lo que
+  la propia verificación descarta para la pared.
+- **Esfera envolvente NaN (render-13).** Las instancias ocultas tenían la matriz entera a cero; con m[15] = 0 three
+  divide entre cero al calcular la esfera envolvente de la malla. Ahora tienen escala cero y m[15] = 1.
+- **Paleta unificada entre escenas (fidelidad-06).** En `NATURAL`: osteoblasto `#8d86c6` (violeta) y osteocito
+  `#8a9ad2` (azul; antes `#8e7fc4`, casi el tono del osteoblasto: los osteocitos atrapados no se distinguían de los
+  osteoblastos), hueso intersticial `#e6d8bc` (dentro del marfil del hueso maduro), células de revestimiento
+  `#c6c2e2` (la versión pálida del osteoblasto, porque son osteoblastos en reposo; antes rosa grisáceo `#d9c1c9`) y
+  capilar `#c9473e` (el vaso de la paleta unificada). Siguen igual: hueso `#eadfc8`, hueso nuevo `#f2e9d8`,
+  osteoide `#eed4c9`, osteoclasto `#b893cf`, núcleos `#4b408f` y precursores `#cbb7da`. Los textos de la actividad
+  no nombran colores: no hay cambios de texto.
+- **Pruebas que cuentan lo que se dibuja (rendimiento-09).** Los triángulos de discos y canalículos salen de su
+  geometría (la prueba seguía con 16 por disco, que ya tiene 24); la prueba comprueba que ningún material es
+  transparente (sin doble pasada). Nuevas pruebas: determinantes, esfera envolvente finita y oclusión.
+- **Higiene (rendimiento-16).** Fuera `puntoCilindrico` (`sector.ts`, sin uso); el alias engañoso
+  `NATURAL as HEX` pasa a `NATURAL as COLOR` (o `NATURAL`, en `celulas.ts`, que ya tiene un `COLOR` propio).
+
+Presupuesto: sin cambios. Antes y después, 54 576 triángulos y 5 llamadas de dibujo, más 5 llamadas (los mismos
+triángulos) en el pase de sombras; ningún material transparente, así que no hay doble pasada. El atributo `ao` no
+añade triángulos ni llamadas.
+
+No se ha visto en pantalla (la usuaria prueba en su equipo).

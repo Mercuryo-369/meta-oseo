@@ -48,14 +48,29 @@ export const REDONDEO_EXTRA = 0.55;
 export const SEMIANCHO_MINIMO = 0.01;
 /** Grosor de la cortical en la cresta (la del reborde cicatrizado). */
 export const GROSOR_CRESTA = GROSOR_CORTICAL.cresta;
-/** Encía: grosor y cuánto baja por las caras del cuerpo desde la cresta. */
-export const ENCIA = { grosor: 0.15, caida: 0.55, solape: 0.02 } as const;
+/**
+ * Encía: grosor; cuánto baja por las caras del cuerpo desde la cresta con el reborde intacto (`caida`) y con la
+ * pérdida completa (`caidaFinal`, la banda de encía insertada se estrecha: deja ver el foramen mentoniano); cuánto se
+ * solapan los dos bordes al cerrar; y la altura del borde libre sobre la cresta junto al diente (`margen`: 0,1 sobre
+ * el cuello, unos 0,8 mm por encima del límite amelocementario).
+ */
+export const ENCIA = {
+  grosor: 0.15,
+  caida: 0.55,
+  caidaFinal: 0.25,
+  solape: 0.02,
+  margen: 0.3,
+} as const;
 /** Cuánto sube el diente al extraerse (unidades). */
 export const ELEVACION_DIENTE = 3.2;
 /** Foramen mentoniano: altura, posición a lo largo del segmento y radio. Va sobre la cara vestibular. */
 export const FORAMEN = { y: -0.85, x: -1.7, radio: 0.12 } as const;
-/** Número de trabéculas instanciadas (incluye las del antiguo alvéolo, que aparecen al madurar). */
-export const N_TRABECULAS_ALVEOLO = 150;
+/**
+ * Número de trabéculas instanciadas (incluye las del antiguo alvéolo, que aparecen al madurar). Eran 150 hasta la
+ * mejora de realismo del 2026-10-14; con 270 la densidad sigue siendo la de la escena `hueso_alveolar` (200 en una
+ * región más pequeña) y las 150 primeras siguen en su sitio porque la semilla es la misma.
+ */
+export const N_TRABECULAS_ALVEOLO = 270;
 /** Osteoclastos sobre la superficie del reborde durante su reabsorción. */
 export const N_OSTEOCLASTOS_REBORDE = 9;
 /** Profundidad (x, negativa) de la cara de la médula respecto de la cara de corte. */

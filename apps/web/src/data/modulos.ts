@@ -44,6 +44,12 @@ export interface IdentidadModulo {
      */
     fondo?: 'papel';
   };
+  /**
+   * Ilustración pintada a sangre para el fondo de la portada del módulo (ruta pública, por ejemplo
+   * `/images/portadas/m3.webp`). Opcional: sin ella la portada muestra `portada.src` en un marco.
+   * Debe ser una imagen sin textos (el título, los pasos y el panel van encima).
+   */
+  heroe?: string;
 }
 
 export const MODULOS: readonly Modulo[] = [

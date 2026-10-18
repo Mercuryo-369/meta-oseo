@@ -1,19 +1,31 @@
 /**
  * Pruebas de las formas de la escena de la vesícula sin WebGL (three crea las geometrías en memoria): geometrías
- * válidas, sin NaN en todo el recorrido del tiempo, presupuesto de polígonos y de llamadas de dibujo, y liberación
- * de recursos.
+ * válidas, sin NaN en todo el recorrido del tiempo, presupuesto de lo que se dibuja de verdad (con la doble pasada
+ * de los transparentes de doble cara y el pase de sombras), materiales y liberación de recursos.
  */
 import { describe, expect, it } from 'vitest';
-import type { BufferGeometry, Group, InstancedMesh, Mesh, Object3D } from 'three';
+import { DoubleSide } from 'three';
+import type {
+  BufferGeometry,
+  Group,
+  InstancedMesh,
+  Material,
+  Mesh,
+  MeshPhysicalMaterial,
+  Object3D,
+} from 'three';
 import { HITOS_VESICULA, estadoVesicula } from './estado';
+import { segmentosDeBandeo } from './disposicion';
 import {
   cuello,
   esfera,
+  globulo,
   hemisferio,
   laminaOndulada,
   losaOndulada,
   mancuerna,
   placaDesdeOrigen,
+  tramoFibrilla,
   tubo,
 } from './geometria';
 import { Osteoblasto, Osteoide, VesiculaMatriz } from './mallas';
@@ -48,22 +60,50 @@ function aLaVista(o: Object3D): boolean {
   return true;
 }
 
-/** Triángulos que se dibujan de verdad: por malla, sus triángulos por el número de instancias. */
-function triangulosDibujados(grupo: Group): number {
-  return mallasDe(grupo).reduce((suma, malla) => {
-    if (!aLaVista(malla)) return suma;
-    const g = malla.geometry as BufferGeometry;
-    const porInstancia = (g.getIndex()?.count ?? g.getAttribute('position').count) / 3;
-    const instancias = (malla as InstancedMesh).isInstancedMesh
-      ? (malla as InstancedMesh).count
-      : 1;
-    return suma + porInstancia * instancias;
-  }, 0);
+interface Dibujo {
+  llamadas: number;
+  triangulos: number;
+  llamadasSombra: number;
+  triangulosSombra: number;
 }
 
-function llamadasDeDibujo(grupo: Group): number {
-  return mallasDe(grupo).filter(aLaVista).length;
+/**
+ * Lo que se dibuja de verdad (revisión de diseño, 2026-10-17): una llamada por malla a la vista, dos si su
+ * material es transparente y de doble cara sin `forceSinglePass` (three lo parte en dos pasadas, cara de atrás y
+ * cara de delante); sus triángulos por todas sus instancias y por sus pasadas. Aparte, el pase de sombras: las
+ * mallas que las proyectan según la regla de `EntornoRealista` (opacas o con opacidad > 0,9 y sin
+ * `userData.sinSombra`).
+ */
+function medirDibujo(grupos: readonly Group[]): Dibujo {
+  const d: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
+  for (const grupo of grupos) {
+    for (const malla of mallasDe(grupo)) {
+      if (!aLaVista(malla)) continue;
+      const m = malla.material as Material;
+      const pasadas = m.transparent && m.side === DoubleSide && !m.forceSinglePass ? 2 : 1;
+      const g = malla.geometry as BufferGeometry;
+      const porInstancia = (g.getIndex()?.count ?? g.getAttribute('position').count) / 3;
+      const instancias = (malla as InstancedMesh).isInstancedMesh
+        ? (malla as InstancedMesh).count
+        : 1;
+      d.llamadas += pasadas;
+      d.triangulos += porInstancia * instancias * pasadas;
+      if (!malla.userData.sinSombra && (!m.transparent || m.opacity > 0.9)) {
+        d.llamadasSombra++;
+        d.triangulosSombra += porInstancia * instancias;
+      }
+    }
+  }
+  return d;
 }
+
+/** Todos los instantes de la prueba, con la vista `interior` (corte forzado) y sin ella. */
+const ESTADOS = [0, 1].flatMap((corte) =>
+  Array.from({ length: 201 }, (_, i) => {
+    const e = estadoVesicula(i / 200);
+    return corte ? { ...e, vesicula: { ...e.vesicula, corte: 1 } } : e;
+  }),
+);
 
 describe('formas básicas', () => {
   it('el hemisferio es la mitad trasera de la esfera (z <= 0) y la esfera es válida', () => {
@@ -101,6 +141,39 @@ describe('formas básicas', () => {
     expect(sinNaN(m.getAttribute('normal').array)).toBe(true);
   });
 
+  it('el glóbulo ocupa lo mismo que una caja de lado 1 y el tramo de fibrilla solo tapa su extremo -X', () => {
+    const g = globulo();
+    g.computeBoundingBox();
+    expect(g.boundingBox!.min.toArray().map((v) => +v.toFixed(6))).toEqual([-0.5, -0.5, -0.5]);
+    expect(g.boundingBox!.max.toArray().map((v) => +v.toFixed(6))).toEqual([0.5, 0.5, 0.5]);
+    const abierto = tramoFibrilla(0.3, 12);
+    const tapado = tramoFibrilla(0.3, 12, true);
+    for (const t of [abierto, tapado]) {
+      t.computeBoundingBox();
+      expect(t.boundingBox!.min.x).toBeCloseTo(-0.5, 6);
+      expect(t.boundingBox!.max.x).toBeCloseTo(0.5, 6);
+      expect(t.boundingBox!.max.y).toBeCloseTo(0.3, 6);
+      expect(t.getAttribute('uv').count).toBe(t.getAttribute('position').count);
+    }
+    // Abierto: 2 triángulos por lado; con tapa, uno más por lado, y la tapa mira a -X en x = -0,5.
+    expect(abierto.getIndex()!.count / 3).toBe(24);
+    expect(tapado.getIndex()!.count / 3).toBe(36);
+    const pos = tapado.getAttribute('position');
+    const nor = tapado.getAttribute('normal');
+    let enTapa = 0;
+    for (let i = 0; i < pos.count; i++) {
+      if (nor.getX(i) < -0.99) {
+        enTapa++;
+        expect(pos.getX(i)).toBeCloseTo(-0.5, 6);
+      }
+    }
+    expect(enTapa).toBeGreaterThan(12);
+    // Las puntas de cada fibrilla son tramos de hueco (los que llevan tapa): lo da por hecho `Osteoide`.
+    const bandeo = segmentosDeBandeo();
+    expect(bandeo[0]!.hueco).toBe(true);
+    expect(bandeo[bandeo.length - 1]!.hueco).toBe(true);
+  });
+
   it('la lámina y la losa onduladas siguen la onda y quedan cerradas', () => {
     const onda = (x: number, z: number) => 0.2 * Math.sin(x) * Math.cos(z);
     const lamina = laminaOndulada(4, 2, 8, 4, onda);
@@ -127,16 +200,21 @@ describe('formas básicas', () => {
 });
 
 describe.each<[string, () => PiezaVesicula, number]>([
-  ['Osteoblasto', () => new Osteoblasto(), 8_000],
+  // 9 000 (antes 8 000): desde el realismo (2026-10-14) las 41 enzimas son glóbulos de 80 triángulos (antes
+  // cajas de 12); la escena entera sigue muy por debajo de su tope de 40 000. Desde la revisión de diseño
+  // (2026-10-17) se cuenta la doble pasada; las moléculas pequeñas que se desvanecen ya no la tienen. La vesícula
+  // pasa de 9 000 a 11 000 solo por esa cuenta: mientras se corta, la esfera entera y la media esfera (952
+  // triángulos cada una) se dibujan a la vez y en dos pasadas cada una (10 462; con el criterio de antes, 8 558).
+  ['Osteoblasto', () => new Osteoblasto(), 9_000],
   ['Osteoide', () => new Osteoide(), 22_000],
-  ['VesiculaMatriz', () => new VesiculaMatriz(), 9_000],
+  ['VesiculaMatriz', () => new VesiculaMatriz(), 11_000],
 ])('%s', (_, crear, presupuesto) => {
-  it('cabe en el presupuesto de triángulos en todos los instantes', () => {
+  it('cabe en el presupuesto de triángulos en todos los instantes (con la doble pasada)', () => {
     const pieza = crear();
     let maximo = 0;
-    for (const t of TIEMPOS) {
-      pieza.actualizar(estadoVesicula(t));
-      maximo = Math.max(maximo, triangulosDibujados(pieza.grupo));
+    for (const e of ESTADOS) {
+      pieza.actualizar(e);
+      maximo = Math.max(maximo, medirDibujo([pieza.grupo]).triangulos);
     }
     expect(maximo).toBeGreaterThan(10);
     expect(maximo).toBeLessThan(presupuesto);
@@ -202,24 +280,83 @@ describe.each<[string, () => PiezaVesicula, number]>([
 describe('la escena completa', () => {
   const crearTodas = () => [new Osteoblasto(), new Osteoide(), new VesiculaMatriz()];
 
-  it('en el peor instante dibuja menos de 40 000 triángulos y menos de 40 llamadas', () => {
+  it('en el peor instante dibuja menos de 40 000 triángulos y menos de 40 llamadas, también en las sombras', () => {
     const piezas = crearTodas();
-    let triangulos = 0;
-    let llamadas = 0;
-    for (const t of TIEMPOS) {
-      for (const p of piezas) p.actualizar(estadoVesicula(t));
-      triangulos = Math.max(
-        triangulos,
-        piezas.reduce((s, p) => s + triangulosDibujados(p.grupo), 0),
-      );
-      llamadas = Math.max(
-        llamadas,
-        piezas.reduce((s, p) => s + llamadasDeDibujo(p.grupo), 0),
-      );
+    const peor: Dibujo = { llamadas: 0, triangulos: 0, llamadasSombra: 0, triangulosSombra: 0 };
+    for (const e of ESTADOS) {
+      for (const p of piezas) p.actualizar(e);
+      const m = medirDibujo(piezas.map((p) => p.grupo));
+      for (const k of Object.keys(peor) as (keyof Dibujo)[]) peor[k] = Math.max(peor[k], m[k]);
     }
-    expect(triangulos).toBeLessThan(40_000);
-    expect(llamadas).toBeLessThan(40);
+    expect(peor.triangulos).toBeLessThan(40_000);
+    expect(peor.llamadas).toBeLessThan(40);
+    expect(peor.triangulosSombra).toBeLessThan(40_000);
+    expect(peor.llamadasSombra).toBeLessThan(40);
     for (const p of piezas) p.liberar();
+  });
+
+  it('solo las membranas se dibujan en dos pasadas, y las de las vesículas son un velo sin luz propia', () => {
+    const piezas = crearTodas();
+    const dobles = new Set<string>();
+    for (const e of ESTADOS) {
+      for (const p of piezas) p.actualizar(e);
+      for (const p of piezas) {
+        for (const malla of mallasDe(p.grupo)) {
+          const m = malla.material as Material;
+          if (aLaVista(malla) && m.transparent && m.side === DoubleSide && !m.forceSinglePass) {
+            dobles.add(malla.name);
+          }
+        }
+      }
+    }
+    const membranas = ['membrana_vesicula', 'membrana_vesicula_cortada', 'vesiculas_vecinas'];
+    // El cuello de gemación es un tubo abierto de membrana (28 triángulos): de doble cara mientras aparece.
+    expect([...dobles].sort()).toEqual([...membranas, 'cuello_gemacion'].sort());
+    for (const nombre of membranas) {
+      const malla = piezas.map((p) => p.grupo.getObjectByName(nombre)).find(Boolean) as Mesh;
+      const m = malla.material as MeshPhysicalMaterial;
+      // Velo de Fresnel: más transparente de frente que de canto.
+      const velo = m.userData.velo as {
+        uVeloCentro: { value: number };
+        uVeloBorde: { value: number };
+      };
+      expect(velo.uVeloCentro.value, nombre).toBeLessThan(velo.uVeloBorde.value);
+      expect(m.emissiveIntensity === 0 || m.emissive.getHex() === 0, nombre).toBe(true);
+      // Satinada, no de cristal.
+      expect(m.roughness, nombre).toBeGreaterThanOrEqual(0.3);
+    }
+    for (const p of piezas) p.liberar();
+  });
+
+  it('los cristales no emiten luz y las estrías de las fibrillas corren a lo largo del eje', () => {
+    const osteoide = new Osteoide();
+    const vesicula = new VesiculaMatriz();
+    for (const nombre of ['cristales_fibrillas', 'racimo_cristales']) {
+      const malla = [osteoide, vesicula]
+        .map((p) => p.grupo.getObjectByName(nombre))
+        .find(Boolean) as Mesh;
+      const m = malla.material as MeshPhysicalMaterial;
+      expect(m.emissiveIntensity === 0 || m.emissive.getHex() === 0, nombre).toBe(true);
+    }
+    // El patrón `fibras` tiene 32 celdas en U y 3 en V. En el cilindro, U da la vuelta (2πr) y V recorre el
+    // tramo (largo × 1,02): el tamaño de una veta a lo largo del eje debe superar al de una veta alrededor.
+    const radio = 0.3;
+    const bandeo = segmentosDeBandeo();
+    for (const [nombre, hueco] of [
+      ['fibrillas_zona_hueco', true],
+      ['fibrillas_zona_solapamiento', false],
+    ] as const) {
+      const malla = osteoide.grupo.getObjectByName(nombre) as Mesh;
+      const repeticion = (malla.material as MeshPhysicalMaterial).bumpMap!.repeat;
+      // U entera: sin costura a lo largo del tramo.
+      expect(Number.isInteger(repeticion.x), nombre).toBe(true);
+      const largo = bandeo.find((s) => s.hueco === hueco)!.largo * 1.02;
+      const vetaAlrededor = (2 * Math.PI * radio) / (32 * repeticion.x);
+      const vetaALoLargo = largo / (3 * repeticion.y);
+      expect(vetaALoLargo / vetaAlrededor, nombre).toBeGreaterThan(4);
+    }
+    osteoide.liberar();
+    vesicula.liberar();
   });
 
   it('visibilidad por fase: cada pieza aparece en su hito y se va cuando toca', () => {

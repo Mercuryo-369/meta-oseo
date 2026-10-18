@@ -13,6 +13,16 @@
  * No calculan nada de la biología: reciben `EstadoDosRutas` (puro) y solo colocan, escalan, colorean y aclaran
  * piezas. Materiales compartidos por tipo; `InstancedMesh` para todo lo repetido (una instancia oculta tiene matriz
  * cero); al liberar se libera todo lo creado.
+ *
+ * Realismo (2026-10-14): materiales orgánicos por tejido (`realismo.ts`) con la paleta natural (`NATURAL`), células
+ * de 12 × 8 segmentos, tamaño y grosor algo distintos (deterministas) en cada célula, espícula, vaso y trabécula,
+ * tablas de borde biselado y osteonas con su conducto de Havers.
+ *
+ * Revisión de diseño (2026-10-17): grano del relieve en unidades de escena en las tablas, el collar, la cortical y el
+ * pericondrio; el molde de cartílago con velo de Fresnel (más denso en el centro, como un sólido translúcido) y
+ * menos barniz; osteoclastos aplanados contra el frente y osteoblastos cúbicos-altos; médula roja en la cavidad
+ * medular del hueso en crecimiento; la tabla superior no proyecta sombra sobre el diploe; las instancias ocultas
+ * con escala 0 (no matriz nula).
  */
 import type { Material } from 'three';
 import {
@@ -21,17 +31,18 @@ import {
   DoubleSide,
   DynamicDrawUsage,
   Float32BufferAttribute,
+  FrontSide,
   Group,
   InstancedMesh,
   LineBasicMaterial,
   LineSegments,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   Vector3,
 } from 'three';
-import { acotar, fraccion, mezclar, suave } from '../interpolacion';
+import { acotar, fraccion, generadorDeterminista, mezclar, suave } from '../interpolacion';
 import {
   TRAMOS_VASO,
   celulasEndocondrales,
@@ -57,38 +68,67 @@ import {
   YEMA,
 } from './estado';
 import type { EstadoDosRutas } from './estado';
-import { anilloAbierto, aro, caja, cilindro, esfera, tramo } from './geometria';
-import { HEX } from './paleta';
+import { anilloAbierto, caja, cilindro, esfera, osteonaConCanal, tabla, tramo } from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, veloFresnel } from '../realismo';
 
 const EJE_Y = new Vector3(0, 1, 0);
 const EJE_Z = new Vector3(0, 0, 1);
-const MATRIZ_CERO = new Matrix4().set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+/**
+ * Instancia oculta: escala 0 con el término homogéneo en 1. Con las 16 componentes a 0, `applyMatrix4` dividía
+ * entre 0 y la esfera envolvente de la malla salía NaN (three la usa para ordenar los transparentes).
+ */
+const MATRIZ_CERO = new Matrix4().makeScale(0, 0, 0);
 
-/** Material estándar. */
+/**
+ * Material de un tejido (`realismo.ts`): físico y con relieve de superficie hecho por código. De UNA cara por
+ * defecto, como antes (a diferencia del hueso largo, que tiene cáscaras abiertas): aquí casi todo son sólidos
+ * cerrados y varios translúcidos (células, cartílago, pericondrio) se verían con doble capa. Las piezas abiertas
+ * (velos, collar y cortical) piden la doble cara.
+ */
 function material(
   color: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-) {
-  return new MeshStandardMaterial({ color, roughness: 0.62, metalness: 0, ...extra });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: FrontSide, ...extra });
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
 }
 
 /** Material translúcido que no escribe profundidad (tiñe lo que tiene detrás sin taparlo). */
 function velo(
   color: string,
+  tipo: TipoTejido,
   opacity: number,
   renderOrder: number,
   malla: Mesh,
-): MeshStandardMaterial {
-  const m = material(color, {
+): MeshPhysicalMaterial {
+  const m = material(color, tipo, {
     transparent: true,
     opacity,
     depthWrite: false,
-    roughness: 0.45,
     side: DoubleSide,
   });
   malla.material = m;
   malla.renderOrder = renderOrder;
   return m;
+}
+
+/**
+ * `n` factores deterministas entre `min` y `max`: en un tejido real ni las células ni las espículas miden todas lo
+ * mismo. La misma semilla da siempre los mismos factores.
+ */
+function variacion(semilla: number, n: number, min: number, max: number): number[] {
+  const azar = generadorDeterminista(semilla);
+  return Array.from({ length: n }, () => mezclar(min, max, azar()));
 }
 
 /** Instancia lista para colocar: `frustumCulled` apagado (las matrices cambian con `t`). */
@@ -109,11 +149,15 @@ function instanciar(
 const auxPos = new Vector3();
 const auxEsc = new Vector3();
 const auxQ = new Quaternion();
+const auxQY = new Quaternion();
 const auxM = new Matrix4();
 const auxDir = new Vector3();
 const auxColor = new Color();
 
-/** Escribe en `malla` la instancia `i`: una esfera unitaria en `p` con semiejes `s` y un giro alrededor de Z. */
+/**
+ * Escribe en `malla` la instancia `i`: una esfera unitaria en `p` con semiejes `s`, girada `giroZ` alrededor de Z y
+ * después `giroY` alrededor de Y (para orientar una célula aplanada dentro de su plano sin inclinarla fuera de él).
+ */
 function ponerEsfera(
   malla: InstancedMesh,
   i: number,
@@ -122,6 +166,7 @@ function ponerEsfera(
   sy: number,
   sz: number,
   giroZ = 0,
+  giroY = 0,
 ): void {
   if (sx < 0.002 || sy < 0.002 || sz < 0.002) {
     malla.setMatrixAt(i, MATRIZ_CERO);
@@ -130,6 +175,7 @@ function ponerEsfera(
   auxPos.set(p[0], p[1], p[2]);
   auxEsc.set(sx, sy, sz);
   auxQ.setFromAxisAngle(EJE_Z, giroZ);
+  if (giroY !== 0) auxQ.premultiply(auxQY.setFromAxisAngle(EJE_Y, giroY));
   auxM.compose(auxPos, auxQ, auxEsc);
   malla.setMatrixAt(i, auxM);
 }
@@ -186,12 +232,12 @@ export interface LadoDosRutas {
   liberar: () => void;
 }
 
-/** El panel de mesénquima translúcido, común a los dos lados. */
-function crearPanel(): { malla: Mesh; mat: MeshStandardMaterial; geo: BufferGeometry } {
+/** El panel de mesénquima translúcido, común a los dos lados: tejido embrionario gelatinoso. */
+function crearPanel(): { malla: Mesh; mat: MeshPhysicalMaterial; geo: BufferGeometry } {
   const geo = caja();
   const malla = new Mesh(geo);
   malla.name = 'mesenquima';
-  const mat = velo(HEX.mesenquima, 0.22, 10, malla);
+  const mat = velo(COLOR.mesenquima, 'mesenquima', 0.22, 10, malla);
   malla.scale.set(PANEL.ancho, PANEL.alto, PANEL.fondo);
   return { malla, mat, geo };
 }
@@ -209,7 +255,7 @@ export class LadoIntramembranoso implements LadoDosRutas {
   readonly grupo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
-  private readonly matPanel: MeshStandardMaterial;
+  private readonly matPanel: MeshPhysicalMaterial;
   private readonly panel: Mesh;
   private readonly celulas: InstancedMesh;
   private readonly nucleos: InstancedMesh;
@@ -217,24 +263,28 @@ export class LadoIntramembranoso implements LadoDosRutas {
   private readonly espiculas: InstancedMesh;
   private readonly vasos: InstancedMesh;
   private readonly medula: Mesh;
-  private readonly matMedula: MeshStandardMaterial;
+  private readonly matMedula: MeshPhysicalMaterial;
   private readonly placas: Mesh[] = [];
-  private readonly matPlacas: MeshStandardMaterial;
+  private readonly matPlacas: MeshPhysicalMaterial;
   private readonly osteonas: InstancedMesh;
-  private readonly matOsteonas: MeshStandardMaterial;
+  private readonly matOsteonas: MeshPhysicalMaterial;
   private readonly laminillas: LineSegments;
   private readonly matLaminillas: LineBasicMaterial;
   private readonly datosCelulas: readonly CelulaIm[];
   private readonly datosEspiculas: readonly Espicula[];
   private readonly datosVasos: readonly Vaso[];
+  /** Factores de tamaño de cada célula y de grosor de cada espícula y cada vaso (deterministas). */
+  private readonly tamanoCelula: readonly number[];
+  private readonly grosorEspicula: readonly number[];
+  private readonly grosorVaso: readonly number[];
   private readonly colores = {
-    precursor: new Color(HEX.precursor),
-    osteoblasto: new Color(HEX.osteoblasto),
-    osteocito: new Color(HEX.osteocito),
-    revestimiento: new Color(HEX.revestimiento),
-    osteoide: new Color(HEX.osteoide),
-    hueso: new Color(HEX.hueso),
-    laminar: new Color(HEX.laminaClara),
+    precursor: new Color(COLOR.precursor),
+    osteoblasto: new Color(COLOR.osteoblasto),
+    osteocito: new Color(COLOR.osteocito),
+    revestimiento: new Color(COLOR.revestimiento),
+    osteoide: new Color(COLOR.osteoide),
+    hueso: new Color(COLOR.hueso),
+    laminar: new Color(COLOR.laminaClara),
   };
 
   constructor() {
@@ -243,6 +293,9 @@ export class LadoIntramembranoso implements LadoDosRutas {
     this.datosEspiculas = espiculasIntramembranosas();
     this.datosCelulas = celulasIntramembranosas(this.datosEspiculas);
     this.datosVasos = vasosIntramembranosos();
+    this.tamanoCelula = variacion(5101, this.datosCelulas.length, 0.92, 1.08);
+    this.grosorEspicula = variacion(5103, this.datosEspiculas.length, 0.85, 1.1);
+    this.grosorVaso = variacion(5107, this.datosVasos.length, 0.85, 1.2);
 
     const panel = crearPanel();
     this.panel = panel.malla;
@@ -251,36 +304,35 @@ export class LadoIntramembranoso implements LadoDosRutas {
     this.materiales.push(panel.mat);
     this.grupo.add(this.panel);
 
-    // Células: cuerpos poligonales con color por instancia (el color del material va en blanco) y núcleos.
-    const geoCelula = esfera(7, 5);
-    const geoNucleo = esfera(6, 4);
+    // Células: cuerpos redondeados (12 × 8) con color por instancia (el color del material va en blanco) y
+    // núcleos. El núcleo se ve poco a través del cuerpo (opacidad 0,92): basta una esfera de pocos polígonos.
+    const geoCelula = esfera(12, 8);
+    const geoNucleo = esfera(4, 3);
     this.geometrias.push(geoCelula, geoNucleo);
-    const matCelula = material('#ffffff', {
+    const matCelula = material('#ffffff', 'celula', {
       transparent: true,
       opacity: OPACIDAD_CELULA,
-      roughness: 0.5,
     });
-    const matNucleo = material(HEX.nucleo, { roughness: 0.5 });
+    const matNucleo = material(COLOR.nucleo, 'nucleo');
     this.materiales.push(matCelula, matNucleo);
     this.celulas = instanciar(geoCelula, matCelula, this.datosCelulas.length, 'celulas');
     this.nucleos = instanciar(geoNucleo, matNucleo, this.datosCelulas.length, 'nucleos');
     this.grupo.add(this.celulas, this.nucleos);
 
-    // Islote de osteoide en el centro de la condensación.
-    const geoOsteoide = esfera(12, 8);
+    // Islote de osteoide en el centro de la condensación: colágeno aún sin mineralizar (estrías y brillo sedoso).
+    const geoOsteoide = esfera(20, 12);
     this.geometrias.push(geoOsteoide);
-    const matOsteoide = material(HEX.osteoide, { roughness: 0.5 });
+    const matOsteoide = material(COLOR.osteoide, 'fibra');
     this.materiales.push(matOsteoide);
     this.osteoide = new Mesh(geoOsteoide, matOsteoide);
     this.osteoide.name = 'osteoide';
     this.grupo.add(this.osteoide);
 
-    // Espículas (con color por instancia: osteoide → hueso entretejido → laminar) y vasos.
+    // Espículas de hueso inmaduro (con color por instancia: osteoide → hueso entretejido → laminar) y vasos.
     const geoTramo = tramo(6);
     this.geometrias.push(geoTramo);
-    const matEspicula = material('#ffffff', { roughness: 0.7 });
-    const matVaso = material(HEX.vaso, {
-      roughness: 0.4,
+    const matEspicula = material('#ffffff', 'hueso_inmaduro');
+    const matVaso = material(COLOR.vaso, 'vaso', {
       emissive: '#7a2a24',
       emissiveIntensity: 0.35,
     });
@@ -289,39 +341,44 @@ export class LadoIntramembranoso implements LadoDosRutas {
     this.vasos = instanciar(geoTramo, matVaso, this.datosVasos.length * TRAMOS_VASO, 'vasos');
     this.grupo.add(this.espiculas, this.vasos);
 
-    // Médula entre las trabéculas: un velo rojizo.
+    // Médula entre las trabéculas: un velo rojo.
     const geoMedula = esfera(14, 10);
     this.geometrias.push(geoMedula);
     this.medula = new Mesh(geoMedula);
     this.medula.name = 'medula';
-    this.matMedula = velo(HEX.medulaRoja, 0.3, 2, this.medula);
+    this.matMedula = velo(COLOR.medulaRoja, 'medula', 0.3, 2, this.medula);
     this.materiales.push(this.matMedula);
     this.grupo.add(this.medula);
 
-    // Tablas compactas arriba y abajo.
-    const geoCaja = caja();
-    this.geometrias.push(geoCaja);
-    this.matPlacas = material(HEX.hueso, { roughness: 0.6 });
+    // Tablas compactas arriba y abajo, de borde biselado. Sus UV van en unidades de escena: el relieve se repite
+    // por unidad y el poro sale redondo en las caras grandes y en los cantos.
+    const geoTabla = tabla();
+    this.geometrias.push(geoTabla);
+    this.matPlacas = material(COLOR.hueso, 'hueso');
+    this.matPlacas.bumpMap?.repeat.set(1.5, 1.5);
     this.materiales.push(this.matPlacas);
     for (const signo of [1, -1] as const) {
-      const placa = new Mesh(geoCaja, this.matPlacas);
+      const placa = new Mesh(geoTabla, this.matPlacas);
       placa.name = signo === 1 ? 'tabla_superior' : 'tabla_inferior';
       placa.position.y = signo * PLACA.y;
+      // Son las tapas del diploe: su sombra caía sobre el 14-25 % de las espículas y los vasos de dentro.
+      placa.userData.sinSombra = true;
       this.placas.push(placa);
       this.grupo.add(placa);
     }
 
-    // Osteonas sobre la cara superior de la tabla de arriba y laminillas en las caras frontales.
-    const geoAro = aro(0.06, 0.1);
-    this.geometrias.push(geoAro);
-    this.matOsteonas = material(HEX.laminaOscura, {
+    // Osteonas (aro de laminillas y conducto de Havers) sobre la cara superior de la tabla de arriba y
+    // laminillas en las caras frontales.
+    const geoOsteona = osteonaConCanal();
+    this.geometrias.push(geoOsteona);
+    this.matOsteonas = material(COLOR.laminaOscura, 'hueso', {
       transparent: true,
       opacity: 0,
-      roughness: 0.6,
+      vertexColors: true,
     });
     this.materiales.push(this.matOsteonas);
     const datosOsteonas = osteonasDePlaca();
-    this.osteonas = instanciar(geoAro, this.matOsteonas, datosOsteonas.length, 'osteonas');
+    this.osteonas = instanciar(geoOsteona, this.matOsteonas, datosOsteonas.length, 'osteonas');
     const yCara = PLACA.y + PLACA.grosor / 2 + 0.008;
     datosOsteonas.forEach((o, i) =>
       ponerEsfera(this.osteonas, i, [o.x, yCara, o.z], o.escala, 1, o.escala),
@@ -329,7 +386,7 @@ export class LadoIntramembranoso implements LadoDosRutas {
     this.osteonas.instanceMatrix.needsUpdate = true;
     this.grupo.add(this.osteonas);
     this.matLaminillas = new LineBasicMaterial({
-      color: HEX.laminaOscura,
+      color: COLOR.laminaOscura,
       transparent: true,
       opacity: 0,
     });
@@ -398,6 +455,8 @@ export class LadoIntramembranoso implements LadoDosRutas {
         // Las que quedan donde se funden las tablas desaparecen dentro del hueso compacto.
         if (Math.abs(c.destino[1]) > PLACA.y - PLACA.grosor - 0.02) presencia = 1 - placas;
       }
+      const tam = this.tamanoCelula[i]!;
+      semi = [semi[0] * tam, semi[1] * tam, semi[2] * tam];
       const giro = c.giro * (1 - dif);
       ponerEsfera(
         this.celulas,
@@ -433,7 +492,7 @@ export class LadoIntramembranoso implements LadoDosRutas {
     let hayEspiculas = false;
     this.datosEspiculas.forEach((e, i) => {
       const f = suave(fraccion(im.espiculas, e.orden, e.orden + 0.15));
-      let radio = R_ESPICULA * im.grosor;
+      let radio = R_ESPICULA * im.grosor * this.grosorEspicula[i]!;
       if (e.externa) radio *= 1 - placas;
       if (f < 0.004 || radio < 0.002) {
         this.espiculas.setMatrixAt(i, MATRIZ_CERO);
@@ -464,7 +523,7 @@ export class LadoIntramembranoso implements LadoDosRutas {
             j * TRAMOS_VASO + k,
             a,
             haciaP(a, b, f),
-            0.032 * Math.min(1, f * 4),
+            0.032 * Math.min(1, f * 4) * this.grosorVaso[j]!,
           );
         }
       });
@@ -491,7 +550,7 @@ export class LadoIntramembranoso implements LadoDosRutas {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     this.matLaminillas.dispose();
     for (const i of [this.celulas, this.nucleos, this.espiculas, this.vasos, this.osteonas]) {
       i.dispose();
@@ -507,7 +566,7 @@ export class LadoEndocondral implements LadoDosRutas {
   readonly grupo = new Group();
   private readonly geometrias: BufferGeometry[] = [];
   private readonly materiales: Material[] = [];
-  private readonly matPanel: MeshStandardMaterial;
+  private readonly matPanel: MeshPhysicalMaterial;
   private readonly panel: Mesh;
   private readonly celulas: InstancedMesh;
   private readonly lagunas: InstancedMesh;
@@ -516,12 +575,12 @@ export class LadoEndocondral implements LadoDosRutas {
   private readonly cartilago: Mesh[] = [];
   private readonly calcificado: Mesh[] = [];
   private readonly epifisis: Mesh[] = [];
-  private readonly matCartilago: MeshStandardMaterial;
-  private readonly matCalcificado: MeshStandardMaterial;
+  private readonly matCartilago: MeshPhysicalMaterial;
+  private readonly matCalcificado: MeshPhysicalMaterial;
   private readonly pericondrio: Mesh;
-  private readonly matPericondrio: MeshStandardMaterial;
+  private readonly matPericondrio: MeshPhysicalMaterial;
   private readonly collar: Mesh;
-  private readonly matCollar: MeshStandardMaterial;
+  private readonly matCollar: MeshPhysicalMaterial;
   private readonly cortical: Mesh;
   private readonly yema: Mesh;
   private readonly vasoMedular: Mesh;
@@ -532,12 +591,15 @@ export class LadoEndocondral implements LadoDosRutas {
   private readonly secundarios: Mesh[] = [];
   private readonly datosCelulas: readonly CelulaEc[];
   private readonly datosTrabeculas: readonly TrabeculaCentro[];
+  /** Factores de tamaño de cada célula y de grosor de cada trabécula (deterministas). */
+  private readonly tamanoCelula: readonly number[];
+  private readonly grosorTrabecula: readonly number[];
   private readonly colores = {
-    precursor: new Color(HEX.precursor),
-    condrocito: new Color(HEX.condrocito),
-    hipertrofico: new Color(HEX.condrocitoHipertrofico),
-    hueso: new Color(HEX.hueso),
-    laminar: new Color(HEX.laminaClara),
+    precursor: new Color(COLOR.precursor),
+    condrocito: new Color(COLOR.condrocito),
+    hipertrofico: new Color(COLOR.condrocitoHipertrofico),
+    hueso: new Color(COLOR.hueso),
+    laminar: new Color(COLOR.laminaClara),
   };
 
   constructor() {
@@ -545,6 +607,8 @@ export class LadoEndocondral implements LadoDosRutas {
     this.grupo.position.x = X_LADO;
     this.datosCelulas = celulasEndocondrales();
     this.datosTrabeculas = trabeculasDelCentro();
+    this.tamanoCelula = variacion(5203, this.datosCelulas.length, 0.92, 1.08);
+    this.grosorTrabecula = variacion(5209, this.datosTrabeculas.length, 0.8, 1.2);
 
     const panel = crearPanel();
     this.panel = panel.malla;
@@ -553,39 +617,49 @@ export class LadoEndocondral implements LadoDosRutas {
     this.materiales.push(panel.mat);
     this.grupo.add(this.panel);
 
-    // Células: cuerpos redondos con color por instancia, lagunas claras detrás y núcleos.
-    const geoCelula = esfera(8, 6);
-    const geoNucleo = esfera(6, 4);
-    this.geometrias.push(geoCelula, geoNucleo);
-    const matCelula = material('#ffffff', {
+    // Células: cuerpos redondos (12 × 8) con color por instancia, lagunas claras detrás y núcleos. Las lagunas y
+    // los núcleos se ven siempre a través de otro tejido (el cartílago o el propio cuerpo celular): bastan
+    // esferas de pocos polígonos.
+    const geoCelula = esfera(12, 8);
+    const geoLaguna = esfera(6, 5);
+    const geoNucleo = esfera(4, 3);
+    this.geometrias.push(geoCelula, geoLaguna, geoNucleo);
+    const matCelula = material('#ffffff', 'celula', {
       transparent: true,
       opacity: OPACIDAD_CELULA,
-      roughness: 0.5,
     });
-    const matLaguna = material(HEX.lagunaCondrocito, { roughness: 0.7 });
-    const matNucleo = material(HEX.nucleo, { roughness: 0.5 });
+    const matLaguna = material(COLOR.lagunaCondrocito, 'cavidad');
+    const matNucleo = material(COLOR.nucleo, 'nucleo');
     this.materiales.push(matCelula, matLaguna, matNucleo);
     const n = this.datosCelulas.length;
     this.celulas = instanciar(geoCelula, matCelula, n, 'celulas');
-    this.lagunas = instanciar(geoCelula, matLaguna, n, 'lagunas');
+    this.lagunas = instanciar(geoLaguna, matLaguna, n, 'lagunas');
     this.nucleos = instanciar(geoNucleo, matNucleo, n, 'nucleos');
     this.grupo.add(this.celulas, this.lagunas, this.nucleos);
 
-    // Molde cartilaginoso: dos cilindros (arriba y abajo del frente), dos epífisis y la zona calcificada.
+    // Molde de cartílago hialino (liso, húmedo y translúcido): dos cilindros (arriba y abajo del frente), dos
+    // epífisis y la zona calcificada, más mate y gris.
     const geoCilindro = cilindro(24);
     const geoEpifisis = esfera(20, 14);
     this.geometrias.push(geoCilindro, geoEpifisis);
-    this.matCartilago = material(HEX.cartilago, {
+    this.matCartilago = material(COLOR.cartilago, 'cartilago', {
       transparent: true,
       opacity: 0.72,
       depthWrite: false,
-      roughness: 0.35,
+      // Menos barniz: con 0,6 de clearcoat el molde se leía como un tubo de plástico.
+      clearcoat: 0.25,
+      clearcoatRoughness: 0.3,
     });
-    this.matCalcificado = material(HEX.cartilagoCalcificado, {
+    // Velo de Fresnel al revés que en una membrana: el molde es un sólido macizo, más espeso (más opaco) en el centro
+    // que en el contorno. Con opacidad constante se veía como vidrio tintado.
+    veloFresnel(this.matCartilago, 1.15, 0.6);
+    this.matCalcificado = material(COLOR.cartilagoCalcificado, 'cartilago', {
       transparent: true,
       opacity: 0.8,
       depthWrite: false,
-      roughness: 0.6,
+      // Matriz calcificada: calcárea, sin el brillo húmedo del cartílago sano.
+      roughness: 0.62,
+      clearcoat: 0.15,
     });
     this.materiales.push(this.matCartilago, this.matCalcificado);
     for (const signo of [1, -1] as const) {
@@ -607,19 +681,30 @@ export class LadoEndocondral implements LadoDosRutas {
     }
 
     // Pericondrio (luego periostio), collar perióstico y cortical madura: anillos abiertos hacia la cámara.
-    const geoPericondrio = anilloAbierto(0.44, 0.47);
-    const geoCollar = anilloAbierto(COLLAR.interior, COLLAR.exterior);
-    const geoCortical = anilloAbierto(CORTICAL.interior, CORTICAL.exterior);
+    // UV en unidades de escena a su tamaño final (el collar y la cortical crecen en alto; el pericondrio, también en
+    // radio, de 1 a 1,45).
+    const altoDiafisis = 2 * COLLAR.medioLargo;
+    const geoPericondrio = anilloAbierto(0.44, 0.47, 40, {
+      alto: 2 * MOLDE.medioLargo + 0.1,
+      radial: 1.2,
+    });
+    const geoCollar = anilloAbierto(COLLAR.interior, COLLAR.exterior, 40, { alto: altoDiafisis });
+    const geoCortical = anilloAbierto(CORTICAL.interior, CORTICAL.exterior, 40, {
+      alto: altoDiafisis,
+    });
     this.geometrias.push(geoPericondrio, geoCollar, geoCortical);
     // Solo la cara exterior: así no se ve su pared de fondo a través del cartílago translúcido (se leía como
-    // una banda ocre que tapaba el molde) y queda como dos rebordes a los lados.
-    this.matPericondrio = material(HEX.pericondrio, {
+    // una banda ocre que tapaba el molde) y queda como dos rebordes a los lados. Vaina fibrosa.
+    this.matPericondrio = material(COLOR.pericondrio, 'membrana', {
       transparent: true,
       opacity: 0.6,
-      roughness: 0.85,
     });
-    this.matCollar = material(HEX.hueso, { roughness: 0.6, side: DoubleSide });
-    const matCortical = material(HEX.laminaClara, { roughness: 0.55, side: DoubleSide });
+    this.matPericondrio.bumpMap?.repeat.set(0.6, 0.6);
+    // El collar nace como hueso inmaduro; la cortical que lo engruesa al final es hueso compacto.
+    this.matCollar = material(COLOR.hueso, 'hueso_inmaduro', { side: DoubleSide });
+    this.matCollar.bumpMap?.repeat.set(1.5, 1.5);
+    const matCortical = material(COLOR.laminaClara, 'hueso', { side: DoubleSide });
+    matCortical.bumpMap?.repeat.set(1.4, 1.4);
     this.materiales.push(this.matPericondrio, this.matCollar, matCortical);
     this.pericondrio = new Mesh(geoPericondrio, this.matPericondrio);
     this.pericondrio.name = 'pericondrio';
@@ -631,8 +716,7 @@ export class LadoEndocondral implements LadoDosRutas {
     this.grupo.add(this.pericondrio, this.collar, this.cortical);
 
     // Yema perióstica (vaso horizontal que perfora el collar) y vaso medular (vertical, en el centro).
-    const matVaso = material(HEX.vaso, {
-      roughness: 0.4,
+    const matVaso = material(COLOR.vaso, 'vaso', {
       emissive: '#7a2a24',
       emissiveIntensity: 0.35,
     });
@@ -646,11 +730,14 @@ export class LadoEndocondral implements LadoDosRutas {
     this.vasoMedular.position.x = 0.05;
     this.grupo.add(this.yema, this.vasoMedular);
 
-    // Trabéculas del centro primario y, al final, la cavidad medular que las sustituye.
+    // Trabéculas del centro primario (hueso inmaduro sobre restos de cartílago) y, al final, la cavidad medular
+    // que las sustituye, llena de médula ROJA: es un hueso en crecimiento (con placa de crecimiento), y al nacer y
+    // en la infancia toda la médula es hematopoyética; la conversión a grasa empieza en la diáfisis después del
+    // primer año (fidelidad-07). Es el mismo rojo de la médula del lado intramembranoso.
     const geoTramo = tramo(6);
     this.geometrias.push(geoTramo);
-    const matTrabecula = material(HEX.huesoNuevo, { roughness: 0.7 });
-    const matMedula = material(HEX.medulaAmarilla, { roughness: 0.5 });
+    const matTrabecula = material(COLOR.huesoNuevo, 'hueso_inmaduro');
+    const matMedula = material(COLOR.medulaRoja, 'medula');
     this.materiales.push(matTrabecula, matMedula);
     this.trabeculas = instanciar(
       geoTramo,
@@ -662,13 +749,14 @@ export class LadoEndocondral implements LadoDosRutas {
     this.cavidad.name = 'cavidad_medular';
     this.grupo.add(this.trabeculas, this.cavidad);
 
-    // Células del frente: osteoclastos (grandes, lilas) y osteoblastos (pequeños, violetas).
-    const matOsteoclasto = material(HEX.osteoclasto, { roughness: 0.5 });
-    const matOsteoblasto = material(HEX.osteoblasto, { roughness: 0.5 });
+    // Células del frente: osteoclastos (grandes, lilas, aplanados contra el cartílago que reabsorben) y
+    // osteoblastos (pequeños, violetas, cúbicos-altos sobre las trabéculas).
+    const matOsteoclasto = material(COLOR.osteoclasto, 'celula');
+    const matOsteoblasto = material(COLOR.osteoblasto, 'celula');
     this.materiales.push(matOsteoclasto, matOsteoblasto);
     this.osteoclastos = instanciar(geoCelula, matOsteoclasto, N_OSTEOCLASTOS, 'osteoclastos');
     this.osteoblastos = instanciar(
-      esfera(7, 5),
+      esfera(12, 8),
       matOsteoblasto,
       N_OSTEOBLASTOS_CENTRO,
       'osteoblastos_centro',
@@ -676,8 +764,8 @@ export class LadoEndocondral implements LadoDosRutas {
     this.geometrias.push(this.osteoblastos.geometry);
     this.grupo.add(this.osteoclastos, this.osteoblastos);
 
-    // Centros secundarios de osificación en las epífisis.
-    const matSecundario = material(HEX.huesoNuevo, { roughness: 0.65 });
+    // Centros secundarios de osificación en las epífisis: hueso esponjoso nuevo.
+    const matSecundario = material(COLOR.huesoNuevo, 'hueso_esponjoso');
     this.materiales.push(matSecundario);
     for (const signo of [1, -1] as const) {
       const sec = new Mesh(geoEpifisis, matSecundario);
@@ -727,7 +815,9 @@ export class LadoEndocondral implements LadoDosRutas {
       const k = llegada(estado.condensacion, c.retraso);
       let pos = mezclarP(c.dispersa, c.condensada, k);
       pos = mezclarP(pos, c.laguna, molde);
+      const tam = this.tamanoCelula[i]!;
       let semi = mezclarV3(FORMA.fusiforme, FORMA.condrocito, dif);
+      semi = [semi[0] * tam, semi[1] * tam, semi[2] * tam];
       auxColor.copy(this.colores.precursor).lerp(this.colores.condrocito, dif);
       if (c.central) {
         const crecido = 1 + 0.9 * hipertrofia;
@@ -839,7 +929,7 @@ export class LadoEndocondral implements LadoDosRutas {
         return;
       }
       hayTrabeculas = true;
-      ponerTramo(this.trabeculas, i, tr.a, haciaP(tr.a, tr.b, f), 0.045);
+      ponerTramo(this.trabeculas, i, tr.a, haciaP(tr.a, tr.b, f), 0.045 * this.grosorTrabecula[i]!);
     });
     this.trabeculas.visible = hayTrabeculas;
     this.trabeculas.instanceMatrix.needsUpdate = true;
@@ -854,22 +944,31 @@ export class LadoEndocondral implements LadoDosRutas {
     const celulasFrente = suave(ec.celulasFrente);
     this.osteoclastos.visible = celulasFrente > 0.004;
     this.osteoblastos.visible = celulasFrente > 0.004 && frente > 0.25;
+    // Un osteoclasto activo es grande y aplanado, pegado a la superficie que reabsorbe (antes, una esfera perfecta:
+    // se leía como una partícula): apoyado en el plano del frente y girado en ese plano, cada uno de una manera.
+    const r = 0.12 * celulasFrente;
     const posOsteoclastos: Punto3[] = [
-      [0.14, frente + 0.06, 0.14],
-      [-0.14, frente + 0.06, -0.02],
-      [0.1, -frente - 0.06, 0.12],
-      [-0.16, -frente - 0.06, 0],
+      [0.14, frente + 0.55 * r, 0.14],
+      [-0.14, frente + 0.55 * r, -0.02],
+      [0.1, -frente - 0.55 * r, 0.12],
+      [-0.16, -frente - 0.55 * r, 0],
     ];
     posOsteoclastos.forEach((p, i) => {
-      const r = 0.12 * celulasFrente;
-      ponerEsfera(this.osteoclastos, i, p, r, r, r);
+      ponerEsfera(this.osteoclastos, i, p, 1.5 * r, 0.55 * r, 1.2 * r, 0, i * 1.3);
     });
     this.osteoclastos.instanceMatrix.needsUpdate = true;
+    const rb = 0.07 * celulasFrente;
     for (let i = 0; i < N_OSTEOBLASTOS_CENTRO; i++) {
       const signo = i % 2 === 0 ? 1 : -1;
       const columna = Math.floor(i / 2) - 1;
-      const r = 0.07 * celulasFrente;
-      ponerEsfera(this.osteoblastos, i, [columna * 0.2, signo * (frente - 0.22), 0.2], r, r, r);
+      ponerEsfera(
+        this.osteoblastos,
+        i,
+        [columna * 0.2, signo * (frente - 0.22), 0.2],
+        0.9 * rb,
+        1.2 * rb,
+        0.9 * rb,
+      );
     }
     this.osteoblastos.instanceMatrix.needsUpdate = true;
 
@@ -883,7 +982,7 @@ export class LadoEndocondral implements LadoDosRutas {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of [
       this.celulas,
       this.lagunas,

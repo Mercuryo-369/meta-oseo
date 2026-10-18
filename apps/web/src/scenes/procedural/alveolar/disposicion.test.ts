@@ -5,20 +5,28 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  CRESTA_A_CUELLO,
   DESPLAZAMIENTO_LAMINA,
+  Y_CUELLO,
+  Y_FORAMEN,
   alturaInicioTrabecular,
   bandaAlrededorDeRaiz,
+  bandaCemento,
   cajaDe,
   dentroDePoligono,
   fibrasLigamento,
+  grosorCemento,
   perfilCorona,
+  perfilCoronaLingual,
   perfilCuerpo,
+  perfilDentina,
   perforacionesLamina,
   regionTrabecular,
   semianchoCuerpo,
   semianchoInterior,
   semianchoRaiz,
   siluetaCorona,
+  siluetaDentina,
   siluetaPulpa,
   siluetaRaiz,
   trabeculasAlveolares,
@@ -125,24 +133,114 @@ describe('raíz, corona y pulpa', () => {
     expect(dentroDePoligono(enLamina, ligamento)).toBe(false);
   });
 
-  it('la corona nace en la cresta y su silueta es el perfil del torno reflejado', () => {
+  // Revisión de diseño (2026-10-17, fidelidad-02): la corona nacía 0,04 por DEBAJO de la cresta y el hueso tocaba el
+  // esmalte. Ahora nace en el cuello, 0,2 por encima (1,5 a 2 mm en un periodonto sano).
+  it('la corona nace en el cuello, por encima de la cresta, y su silueta es el perfil del torno reflejado', () => {
     const perfil = perfilCorona();
-    expect(perfil[0]![1]).toBeLessThan(Y_CRESTA);
+    expect(perfil[0]![1]).toBeCloseTo(Y_CUELLO, 9);
+    expect(Y_CUELLO - Y_CRESTA).toBeCloseTo(CRESTA_A_CUELLO, 9);
+    // Con la escala de la corona (1 unidad ≈ 7,8 mm): entre 1,5 y 2 mm.
+    expect(CRESTA_A_CUELLO * 7.8).toBeGreaterThanOrEqual(1.5);
+    expect(CRESTA_A_CUELLO * 7.8).toBeLessThanOrEqual(2);
     expect(perfil[perfil.length - 1]![0]).toBe(0);
-    expect(perfil[perfil.length - 1]![1]).toBeCloseTo(Y_CRESTA - 0.04 + ALTO_CORONA, 9);
+    expect(perfil[perfil.length - 1]![1]).toBeCloseTo(Y_CUELLO + ALTO_CORONA, 9);
     const silueta = siluetaCorona();
     esPoligonoSimpleYFinito(silueta);
     const caja = cajaDe(silueta);
     expect((caja.zMax + caja.zMin) / 2).toBeCloseTo(Z_ALVEOLO, 9);
+    // Ningún punto del esmalte baja de la cresta, y el ligamento y la lámina no suben del todo hasta el cuello.
+    expect(caja.yMin).toBeGreaterThan(Y_CRESTA + 0.1);
+    expect(cajaDe(bandaAlrededorDeRaiz(0, DESPLAZAMIENTO_LAMINA)).yMax).toBeLessThanOrEqual(
+      Y_CRESTA + 1e-9,
+    );
   });
 
-  it('la pulpa cabe dentro del diente', () => {
+  it('la pulpa cabe dentro del diente (la raíz con su tramo cervical, entre la cresta y el cuello, y la corona)', () => {
     const pulpa = siluetaPulpa();
     esPoligonoSimpleYFinito(pulpa);
-    const diente = [...siluetaRaiz(0)];
+    const diente = siluetaDentina();
     const corona = siluetaCorona();
     for (const p of pulpa) {
       expect(dentroDePoligono(p, diente) || dentroDePoligono(p, corona), `${p}`).toBe(true);
+    }
+  });
+
+  it('el conducto llega al foramen apical, junto al ápice (fidelidad-12)', () => {
+    const pulpa = siluetaPulpa();
+    // Antes se cerraba 0,22 por encima del ápice (1,7 mm de cemento macizo).
+    expect(cajaDe(pulpa).yMin).toBeCloseTo(Y_FORAMEN, 9);
+    expect(Y_FORAMEN - Y_APICE).toBeLessThan(0.02);
+    expect(Y_FORAMEN).toBeGreaterThan(Y_APICE);
+    // El conducto se estrecha hacia el ápice, sin salirse de la raíz.
+    const cerca = pulpa.filter(([, y]) => y < Y_APICE + 0.1);
+    expect(cerca.length).toBeGreaterThan(1);
+    for (const [z, y] of cerca) expect(Math.abs(z - Z_ALVEOLO)).toBeLessThan(semianchoRaiz(y));
+  });
+});
+
+describe('corona, dentina y cemento (realismo)', () => {
+  it('la corona tiene dos cúspides: la vestibular, sobre el eje, y la lingual, más baja, con el surco entre ambas', () => {
+    const vestibular = perfilCorona();
+    const lingual = perfilCoronaLingual();
+    expect(lingual).toHaveLength(vestibular.length);
+    // Mismo cuello (del ancho de la raíz) y misma punta (la cúspide vestibular, sobre el eje).
+    expect(vestibular[0]).toEqual(lingual[0]);
+    expect(vestibular[0]![0]).toBeCloseTo(semianchoRaiz(Y_CUELLO), 9);
+    expect(vestibular[0]![1]).toBeCloseTo(Y_CUELLO, 9);
+    const punta = vestibular[vestibular.length - 1]!;
+    expect(lingual[lingual.length - 1]).toEqual(punta);
+    expect(Math.max(...vestibular.map((p) => p[1]))).toBeCloseTo(punta[1], 9);
+    // Perfil lingual: sube hasta la cúspide lingual, baja al surco central y vuelve a subir hasta la punta.
+    let i = 1;
+    while (i < lingual.length - 1 && lingual[i + 1]![1] >= lingual[i]![1]) i++;
+    const cuspide = lingual[i]!;
+    let j = i;
+    while (j < lingual.length - 1 && lingual[j + 1]![1] <= lingual[j]![1]) j++;
+    const surco = lingual[j]!;
+    expect(cuspide[1]).toBeLessThan(punta[1] - 0.2);
+    expect(surco[1]).toBeLessThan(cuspide[1] - 0.05);
+    expect(surco[0]).toBeLessThan(cuspide[0]);
+    expect(surco[0]).toBeGreaterThan(0.05);
+    // Los dos contornos llegan al radio de la corona: la silueta queda centrada en el eje del alvéolo.
+    expect(Math.max(...vestibular.map((p) => p[0]))).toBe(Math.max(...lingual.map((p) => p[0])));
+  });
+
+  it('la dentina queda bajo el esmalte, con el cuerno de cada cúspide, y la pulpa dentro de la dentina', () => {
+    const dentina = siluetaDentina();
+    esPoligonoSimpleYFinito(dentina);
+    const corona = siluetaCorona();
+    for (const p of dentina) {
+      if (p[1] > Y_CUELLO + 0.02) expect(dentroDePoligono(p, corona), `${p}`).toBe(true);
+    }
+    // El esmalte es más grueso en la punta de las cúspides que en el cuello.
+    const techo = perfilDentina('vestibular');
+    const punta = perfilCorona();
+    expect(punta[punta.length - 1]![1] - techo[techo.length - 1]![1]).toBeGreaterThan(0.12);
+    // La raíz de la dentina llega al ápice.
+    expect(cajaDe(dentina).yMin).toBeCloseTo(Y_APICE, 9);
+    for (const p of siluetaPulpa()) expect(dentroDePoligono(p, dentina), `${p}`).toBe(true);
+  });
+
+  it('el cemento reviste la raíz por dentro, fino en el cuello y grueso en el ápice, que llena', () => {
+    const cemento = bandaCemento();
+    esPoligonoSimpleYFinito(cemento);
+    expect(grosorCemento(Y_APICE)).toBeGreaterThan(2 * grosorCemento(Y_CUELLO));
+    const caja = cajaDe(cemento);
+    expect(caja.yMax).toBeCloseTo(Y_CUELLO, 9);
+    expect(caja.yMin).toBeCloseTo(Y_APICE, 9);
+    // A media raíz: el borde de la raíz es cemento y el centro, dentina.
+    const y = 0.8;
+    const borde: Punto2 = [Z_ALVEOLO + semianchoRaiz(y) - grosorCemento(y) / 2, y];
+    expect(dentroDePoligono(borde, cemento)).toBe(true);
+    expect(dentroDePoligono([Z_ALVEOLO, y], cemento)).toBe(false);
+    // Junto al ápice la raíz es todo cemento.
+    expect(dentroDePoligono([Z_ALVEOLO, Y_APICE + 0.03], cemento)).toBe(true);
+    // Todo el cemento está dentro de la raíz (un poco hacia dentro de cada punto: el borde es compartido); entre la
+    // cresta y el cuello, la raíz cervical, del ancho de la raíz en la cresta.
+    const raiz = siluetaRaiz(0.002);
+    for (const p of cemento) {
+      if (p[1] <= Y_CRESTA) expect(dentroDePoligono(p, raiz), `${p}`).toBe(true);
+      else expect(Math.abs(p[0] - Z_ALVEOLO), `${p}`).toBeLessThanOrEqual(SEMIANCHO_RAIZ + 1e-9);
     }
   });
 });

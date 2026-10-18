@@ -5,13 +5,23 @@
  *  - `CuerpoSeccionado`: la mitad que queda (x < 0): la cortical como un cascarón extruido con el hueco del
  *    hueso trabecular, la cara de corte de las tablas, la cara de la médula al fondo del hueco y las trabéculas
  *    instanciadas entre ambas.
- *  - `Alveolo`: la media corona fija, la cara de corte del diente (esmalte, dentina, pulpa), el hueso alveolar
- *    propio con sus perforaciones y el ligamento periodontal con sus fibras.
+ *  - `Alveolo`: la media corona fija con la cara de corte del diente (esmalte, dentina, cemento y pulpa), el
+ *    hueso alveolar propio con sus perforaciones y el ligamento periodontal con sus fibras.
  *  - `ConductoMandibular`: el túnel bajo el ápice con el nervio, la arteria y la vena alveolares inferiores.
  *
  * No calculan nada de la anatomía: reciben `EstadoAlveolar` (puro) y solo mueven, aclaran o destacan piezas.
  * La cara de corte está en x = 0 mirando a +X; las capas planas van a profundidades distintas (unas centésimas)
  * para no pelearse por el mismo píxel. Materiales compartidos por capa; al liberar se libera todo lo creado.
+ *
+ * Realismo (2026-10-14): materiales físicos por tejido (`realismo.ts`, con relieve de superficie hecho por
+ * código) y la paleta natural (`NATURAL` de `paleta.ts`, aquí `COLOR`).
+ *
+ * Revisión de diseño (2026-10-17): las capas de la cara de corte miran a +X de verdad (`placa`, render-02); el
+ * esmalte lleva un degradado por vértice y un brillo satinado (realismo-10); la cresta queda 0,2 unidades por debajo
+ * del cuello y la raíz cervical se dibuja en relieve entre ambos (fidelidad-02); el cemento es tejido `dentina`, sin
+ * los poros vasculares del hueso (fidelidad-13). Las capas interiores del corte (ligamento, raíz, cemento, pulpa,
+ * perforaciones) no proyectan sombra (`userData.sinSombra`): son un dibujo plano sobre las de detrás y su sombra solo
+ * dejaría un reborde oscuro desplazado.
  */
 import type { Material } from 'three';
 import {
@@ -26,21 +36,23 @@ import {
   LineSegments,
   Matrix4,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Quaternion,
   RingGeometry,
   Vector3,
 } from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   DESPLAZAMIENTO_LAMINA,
   bandaAlrededorDeRaiz,
+  bandaCemento,
   fibrasLigamento,
   perfilCuerpo,
   perforacionesLamina,
   regionTrabecular,
   siluetaCorona,
+  siluetaDentina,
   siluetaPulpa,
-  siluetaRaiz,
   trabeculasAlveolares,
 } from './disposicion';
 import type { Punto2 } from './disposicion';
@@ -52,8 +64,10 @@ import {
   PROFUNDIDAD_TRABECULAR,
 } from './estado';
 import type { EstadoAlveolar } from './estado';
-import { DOS_PI, bloque, mediaCorona, placa } from './geometria';
-import { HEX } from './paleta';
+import { DOS_PI, bloque, mediaCorona, mediaRaizCervical, pintarUniforme, placa } from './geometria';
+import { NATURAL as COLOR } from './paleta';
+import type { TipoTejido } from '../realismo';
+import { liberarMaterialOrganico, materialOrganico, ponerOpacidad } from '../realismo';
 
 const EJE_X = new Vector3(1, 0, 0);
 const MITAD = LARGO_SEGMENTO / 2;
@@ -66,42 +80,94 @@ const CAPA = {
   perforaciones: 0.04,
   diente: 0.055,
   fibras: 0.055,
+  dentina: 0.06,
+  cemento: 0.064,
   pulpa: 0.07,
 } as const;
 
 /**
- * Material estándar de doble cara con un emisivo apagado que se enciende por fase (`resaltar`). El color del
- * resalte es una versión más viva del propio color de la estructura (`HEX.resalte*`), no un amarillo común:
- * sobre la médula amarilla un destello amarillo borraría las trabéculas.
+ * Repeticiones del relieve de superficie por unidad de escena en las piezas con UV en unidades (placas y
+ * bloques, ver `geometria.ts`): las primitivas de three traen UV de 0 a 1 y para ellas vale la repetición de
+ * `realismo.ts`; con UV en unidades, el grano saldría seis o diez veces más fino y el relieve, más duro.
+ */
+const RELIEVE = { hueso: 1.3, medula: 1.2, membrana: 0.6, dentina: 1, blando: 1.5 } as const;
+
+/** Radio de las trabéculas (el de abajo; arriba se afinan un poco). */
+const RADIO_TRABECULA = 0.031;
+
+/**
+ * Material de un tejido (`realismo.ts`): físico, con relieve de superficie hecho por código y de doble cara
+ * (las placas se ven por ambos lados).
  */
 function material(
   color: string,
-  emisivo: string,
-  extra: Partial<ConstructorParameters<typeof MeshStandardMaterial>[0]> = {},
-): MeshStandardMaterial {
-  return new MeshStandardMaterial({
-    color,
-    roughness: 0.62,
-    metalness: 0,
-    side: DoubleSide,
-    emissive: emisivo,
-    emissiveIntensity: 0,
-    ...extra,
-  });
+  tipo: TipoTejido = 'hueso',
+  extra: ConstructorParameters<typeof MeshPhysicalMaterial>[0] = {},
+): MeshPhysicalMaterial {
+  return materialOrganico(color, tipo, { side: DoubleSide, ...extra });
+}
+
+/**
+ * Material con un emisivo apagado que se enciende por fase (`resaltar`). El color del resalte es una versión más
+ * viva del propio color de la estructura (`COLOR.resalte*`), no un amarillo común: sobre la médula un destello
+ * amarillo borraría las trabéculas.
+ */
+function resaltable(color: string, tipo: TipoTejido, emisivo: string): MeshPhysicalMaterial {
+  return material(color, tipo, { emissive: emisivo, emissiveIntensity: 0 });
+}
+
+/**
+ * Fija las repeticiones del relieve (y su giro) de un material. El mapa de relieve y el de rugosidad son la
+ * misma textura (un clon propio de cada material), así que basta con tocarla una vez.
+ */
+function relieve(
+  m: MeshPhysicalMaterial,
+  repeticiones: number,
+  alto = repeticiones,
+  giro = 0,
+): MeshPhysicalMaterial {
+  const textura = m.bumpMap;
+  if (textura) {
+    textura.repeat.set(repeticiones, alto);
+    textura.rotation = giro;
+  }
+  return m;
+}
+
+/**
+ * Esmalte de la corona: el color va por vértice (el degradado de `mediaCorona` y el blanco uniforme de la cara de
+ * corte), así que el material es blanco. Liso y satinado (`realismo.ts`).
+ */
+function esmalte(): MeshPhysicalMaterial {
+  return material('#ffffff', 'esmalte', { vertexColors: true });
+}
+
+/** Cemento radicular: liso y mate, sin los poros vasculares del hueso (el cemento es avascular). */
+function cemento(): MeshPhysicalMaterial {
+  return relieve(material(COLOR.cemento, 'dentina'), RELIEVE.dentina);
+}
+
+/** Marca una malla para que no proyecte sombra (`EntornoRealista`): capas planas interiores del corte. */
+function sinSombra(m: Mesh): Mesh {
+  m.userData.sinSombra = true;
+  return m;
+}
+
+/** Libera materiales: los orgánicos con su clon de textura de relieve. */
+function liberarMateriales(lista: readonly Material[]): void {
+  for (const m of lista) {
+    if (m instanceof MeshPhysicalMaterial) liberarMaterialOrganico(m);
+    else m.dispose();
+  }
 }
 
 /** Aplica una opacidad a un grupo de materiales (transparentes solo mientras hace falta). */
 function poner(materiales: readonly Material[], opacidad: number): void {
-  const o = Math.max(0, Math.min(1, opacidad));
-  for (const m of materiales) {
-    m.opacity = o;
-    m.transparent = o < 0.995;
-    m.depthWrite = o > 0.5;
-  }
+  ponerOpacidad(materiales, opacidad);
 }
 
 /** Enciende el resalte de unos materiales (0 apagado, 1 pleno). */
-function resaltar(materiales: readonly MeshStandardMaterial[], k: number, maximo = 0.55): void {
+function resaltar(materiales: readonly MeshPhysicalMaterial[], k: number, maximo = 0.55): void {
   for (const m of materiales) m.emissiveIntensity = maximo * Math.max(0, Math.min(1, k));
 }
 
@@ -113,6 +179,14 @@ function circulo(z: number, y: number, radio: number, n = 36): Punto2[] {
     puntos.push([z + radio * Math.cos(a), y + radio * Math.sin(a)]);
   }
   return puntos;
+}
+
+/** Une geometrías con los mismos atributos en una (una sola llamada de dibujo) y libera las partes. */
+function unir(partes: BufferGeometry[]): BufferGeometry {
+  const unida = mergeGeometries(partes, false);
+  for (const parte of partes) parte.dispose();
+  if (!unida) throw new Error('No se pudieron unir las geometrías del diente.');
+  return unida;
 }
 
 /** Interfaz común de las piezas. */
@@ -146,7 +220,7 @@ abstract class Pieza implements PiezaAlveolar {
 
   liberar(): void {
     for (const g of this.geometrias) g.dispose();
-    for (const m of this.materiales) m.dispose();
+    liberarMateriales(this.materiales);
     for (const i of this.instanciados) i.dispose();
   }
 }
@@ -156,21 +230,21 @@ abstract class Pieza implements PiezaAlveolar {
  * ----------------------------------------------------------------------------------------- */
 
 export class MitadMovil extends Pieza {
-  private readonly matCortical: MeshStandardMaterial;
-  private readonly matEsmalte: MeshStandardMaterial;
-
   constructor() {
     super();
     this.grupo.name = 'mitad_anterior';
-    this.matCortical = material(HEX.cortical, HEX.resalteCortical);
-    this.matEsmalte = material(HEX.esmalte, HEX.esmalte, { roughness: 0.35 });
-    this.materiales.push(this.matCortical, this.matEsmalte);
+    const cortical = relieve(material(COLOR.cortical, 'hueso'), RELIEVE.hueso);
+    const matEsmalte = esmalte();
+    const matCemento = cemento();
+    this.materiales.push(cortical, matEsmalte, matCemento);
 
     // El bloque se extruye hacia −X; se corre media longitud para que ocupe x de 0 a +MITAD.
     const cuerpo = bloque(perfilCuerpo(), [], MITAD);
     cuerpo.translate(MITAD, 0, 0);
-    this.malla(cuerpo, this.matCortical, 'cuerpo_mitad_anterior');
-    this.malla(mediaCorona(1), this.matEsmalte, 'corona_mitad_anterior');
+    this.malla(cuerpo, cortical, 'cuerpo_mitad_anterior');
+    this.malla(mediaCorona(1), matEsmalte, 'corona_mitad_anterior');
+    // La raíz entre la cresta y el cuello (cubierta de cemento): la corona no flota sobre el hueso.
+    this.malla(mediaRaizCervical(1), matCemento, 'raiz_mitad_anterior');
   }
 
   actualizar(estado: EstadoAlveolar): void {
@@ -187,18 +261,29 @@ export class MitadMovil extends Pieza {
  * ----------------------------------------------------------------------------------------- */
 
 export class CuerpoSeccionado extends Pieza {
-  private readonly matCortical: MeshStandardMaterial;
-  private readonly matCorte: MeshStandardMaterial;
-  private readonly matMedula: MeshStandardMaterial;
-  private readonly matTrabecula: MeshStandardMaterial;
+  private readonly matCortical: MeshPhysicalMaterial;
+  private readonly matCorte: MeshPhysicalMaterial;
+  private readonly matMedula: MeshPhysicalMaterial;
+  private readonly matTrabecula: MeshPhysicalMaterial;
 
   constructor() {
     super();
     this.grupo.name = 'cuerpo_seccionado';
-    this.matCortical = material(HEX.cortical, HEX.resalteCortical);
-    this.matCorte = material(HEX.corteCortical, HEX.resalteCortical, { roughness: 0.7 });
-    this.matMedula = material(HEX.medula, HEX.resalteMedula, { roughness: 0.55 });
-    this.matTrabecula = material(HEX.trabecula, HEX.resalteTrabecula, { roughness: 0.7 });
+    // Superficie del hueso y cara de corte del hueso compacto (más clara y densa), mates y porosas; médula
+    // grasa y húmeda; trabéculas de hueso esponjoso.
+    this.matCortical = relieve(
+      resaltable(COLOR.cortical, 'hueso', COLOR.resalteCortical),
+      RELIEVE.hueso,
+    );
+    this.matCorte = relieve(
+      resaltable(COLOR.corteCortical, 'hueso', COLOR.resalteCortical),
+      RELIEVE.hueso,
+    );
+    this.matMedula = relieve(
+      resaltable(COLOR.medula, 'medula', COLOR.resalteMedula),
+      RELIEVE.medula,
+    );
+    this.matTrabecula = resaltable(COLOR.trabecula, 'hueso_esponjoso', COLOR.resalteTrabecula);
     this.materiales.push(this.matCortical, this.matCorte, this.matMedula, this.matTrabecula);
 
     const contorno = perfilCuerpo();
@@ -217,9 +302,10 @@ export class CuerpoSeccionado extends Pieza {
     );
     this.malla(placa(trabecular, [], -MITAD + 0.01), this.matMedula, 'fondo_medula');
 
-    // Trabéculas: barras instanciadas dentro del hueco.
+    // Trabéculas: barras instanciadas dentro del hueco, de seis caras, abiertas por los extremos (quedan dentro
+    // de la red o de la médula) y algo más finas por un extremo.
     const lista = trabeculasAlveolares();
-    const geo = new CylinderGeometry(0.028, 0.028, 1, 5, 1, true);
+    const geo = new CylinderGeometry(RADIO_TRABECULA * 0.84, RADIO_TRABECULA, 1, 6, 1, true);
     this.geometrias.push(geo);
     const barras = new InstancedMesh(geo, this.matTrabecula, lista.length);
     barras.name = 'trabeculas';
@@ -228,7 +314,11 @@ export class CuerpoSeccionado extends Pieza {
     lista.forEach((t, i) => {
       // El eje Y de la barra se gira sobre X hasta la dirección (0, sen a, cos a) del plano de corte.
       q.setFromAxisAngle(EJE_X, Math.PI / 2 - t.angulo);
-      m.compose(new Vector3(t.x, t.y, t.z), q, new Vector3(1, t.largo, 1));
+      // Grosor algo distinto en cada trabécula (determinista): una red real no es de barras iguales. Sin
+      // asomar por delante de la cara de corte (x = 0).
+      const variado = 0.75 + 0.6 * Math.abs(Math.sin(i * 12.9898 + t.z * 78.233));
+      const grosor = Math.min(variado, (-t.x - 0.004) / RADIO_TRABECULA);
+      m.compose(new Vector3(t.x, t.y, t.z), q, new Vector3(grosor, t.largo, grosor));
       barras.setMatrixAt(i, m);
     });
     barras.instanceMatrix.needsUpdate = true;
@@ -250,9 +340,9 @@ export class CuerpoSeccionado extends Pieza {
  * ----------------------------------------------------------------------------------------- */
 
 export class Alveolo extends Pieza {
-  private readonly matLamina: MeshStandardMaterial;
-  private readonly matLigamento: MeshStandardMaterial;
-  private readonly matPerforacion: MeshStandardMaterial;
+  private readonly matLamina: MeshPhysicalMaterial;
+  private readonly matLigamento: MeshPhysicalMaterial;
+  private readonly matPerforacion: MeshPhysicalMaterial;
   private readonly matFibras: LineBasicMaterial;
   private readonly perforaciones: InstancedMesh;
   private readonly centrosPerforaciones: Punto2[];
@@ -261,26 +351,46 @@ export class Alveolo extends Pieza {
   constructor() {
     super();
     this.grupo.name = 'alveolo';
-    const esmalte = material(HEX.esmalte, HEX.esmalte, { roughness: 0.35 });
-    const dentina = material(HEX.dentina, HEX.dentina, { roughness: 0.6 });
-    const pulpa = material(HEX.pulpa, HEX.pulpa, { roughness: 0.5 });
-    this.matLamina = material(HEX.laminaCribiforme, HEX.resalteLamina, { roughness: 0.65 });
-    this.matLigamento = material(HEX.ligamento, HEX.resalteLigamento, { roughness: 0.75 });
-    this.matPerforacion = material(HEX.perforacion, HEX.perforacion, { roughness: 0.8 });
+    // Esmalte liso y satinado (color por vértice); dentina lisa; cemento liso y mate; pulpa blanda y húmeda.
+    const matEsmalte = esmalte();
+    const dentina = relieve(material(COLOR.dentina, 'dentina'), RELIEVE.dentina);
+    const matCemento = cemento();
+    const pulpa = relieve(material(COLOR.pulpa, 'encia'), RELIEVE.blando);
+    // Hueso alveolar propio: hueso denso. Ligamento: tejido fibroso, con las vetas del relieve atravesando la
+    // banda (giradas un cuarto de vuelta), como sus fibras principales.
+    this.matLamina = relieve(
+      resaltable(COLOR.laminaCribiforme, 'hueso', COLOR.resalteLamina),
+      RELIEVE.hueso,
+    );
+    this.matLigamento = relieve(
+      resaltable(COLOR.ligamento, 'membrana', COLOR.resalteLigamento),
+      RELIEVE.membrana,
+      RELIEVE.membrana,
+      Math.PI / 2,
+    );
+    this.matPerforacion = resaltable(COLOR.perforacion, 'cavidad', COLOR.perforacion);
     this.materiales.push(
-      esmalte,
+      matEsmalte,
       dentina,
+      matCemento,
       pulpa,
       this.matLamina,
       this.matLigamento,
       this.matPerforacion,
     );
 
-    // Diente: media corona en relieve y su cara de corte plana (esmalte y dentina), con la pulpa encima.
-    this.malla(mediaCorona(-1), esmalte, 'corona');
-    this.malla(placa(siluetaCorona(), [], CAPA.diente), esmalte, 'corte_corona');
-    this.malla(placa(siluetaRaiz(0), [], CAPA.diente), dentina, 'corte_raiz');
-    this.malla(placa(siluetaPulpa(), [], CAPA.pulpa), pulpa, 'pulpa');
+    // Diente: la media corona en relieve y la cara de corte del esmalte en una sola malla; encima, la dentina
+    // (corona y raíz), el cemento que reviste la raíz (con la raíz cervical en relieve, entre la cresta y el
+    // cuello, en la misma malla) y la pulpa, cuyo conducto llega al foramen apical.
+    const caraEsmalte = pintarUniforme(placa(siluetaCorona(), [], CAPA.diente), COLOR.esmalte);
+    this.malla(unir([mediaCorona(-1), caraEsmalte]), matEsmalte, 'corona');
+    sinSombra(this.malla(placa(siluetaDentina(), [], CAPA.dentina), dentina, 'corte_raiz'));
+    this.malla(
+      unir([placa(bandaCemento(), [], CAPA.cemento), mediaRaizCervical(-1)]),
+      matCemento,
+      'cemento',
+    );
+    sinSombra(this.malla(placa(siluetaPulpa(), [], CAPA.pulpa), pulpa, 'pulpa'));
 
     // Hueso alveolar propio (lámina cribiforme) y ligamento periodontal: dos bandas alrededor de la raíz.
     this.malla(
@@ -288,16 +398,18 @@ export class Alveolo extends Pieza {
       this.matLamina,
       'hueso_alveolar_propio',
     );
-    this.malla(
-      placa(bandaAlrededorDeRaiz(0, GROSOR_LIGAMENTO), [], CAPA.ligamento),
-      this.matLigamento,
-      'ligamento_periodontal',
+    sinSombra(
+      this.malla(
+        placa(bandaAlrededorDeRaiz(0, GROSOR_LIGAMENTO), [], CAPA.ligamento),
+        this.matLigamento,
+        'ligamento_periodontal',
+      ),
     );
 
-    // Perforaciones de la lámina: discos pequeños instanciados que crecen con su fase.
+    // Perforaciones de la lámina: discos pequeños instanciados que crecen con su fase, mirando a +X.
     this.centrosPerforaciones = perforacionesLamina();
-    const geoDisco = new CircleGeometry(0.03, 10);
-    geoDisco.rotateY(-Math.PI / 2);
+    const geoDisco = new CircleGeometry(0.03, 12);
+    geoDisco.rotateY(Math.PI / 2);
     this.geometrias.push(geoDisco);
     this.perforaciones = new InstancedMesh(
       geoDisco,
@@ -306,10 +418,11 @@ export class Alveolo extends Pieza {
     );
     this.perforaciones.name = 'perforaciones';
     this.perforaciones.frustumCulled = false;
+    this.perforaciones.userData.sinSombra = true;
     this.instanciados.push(this.perforaciones);
     this.grupo.add(this.perforaciones);
 
-    // Fibras del ligamento: segmentos oblicuos del hueso al cemento.
+    // Fibras del ligamento: segmentos oblicuos del hueso al cemento, blanquecinas como el colágeno.
     const puntos: number[] = [];
     for (const [a, b] of fibrasLigamento()) {
       puntos.push(CAPA.fibras, a[1], a[0], CAPA.fibras, b[1], b[0]);
@@ -317,7 +430,7 @@ export class Alveolo extends Pieza {
     const geoFibras = new BufferGeometry();
     geoFibras.setAttribute('position', new Float32BufferAttribute(puntos, 3));
     this.geometrias.push(geoFibras);
-    this.matFibras = new LineBasicMaterial({ color: HEX.fibra, transparent: true, opacity: 0 });
+    this.matFibras = new LineBasicMaterial({ color: COLOR.fibra, transparent: true, opacity: 0 });
     this.materiales.push(this.matFibras);
     const fibras = new LineSegments(geoFibras, this.matFibras);
     fibras.name = 'fibras_ligamento';
@@ -327,15 +440,19 @@ export class Alveolo extends Pieza {
     this.ponerPerforaciones(0);
   }
 
+  /** Objetos reutilizables para escribir las instancias (sin crear nada en cada fotograma, rendimiento-15). */
+  private readonly m = new Matrix4();
+  private readonly q = new Quaternion();
+  private readonly pos = new Vector3();
+  private readonly esc = new Vector3();
+
   private ponerPerforaciones(escala: number): void {
     if (Math.abs(escala - this.ultimaEscala) < 1e-4) return;
     this.ultimaEscala = escala;
-    const m = new Matrix4();
-    const q = new Quaternion();
     const s = Math.max(1e-4, escala);
     this.centrosPerforaciones.forEach(([z, y], i) => {
-      m.compose(new Vector3(CAPA.perforaciones, y, z), q, new Vector3(1, s, s));
-      this.perforaciones.setMatrixAt(i, m);
+      this.m.compose(this.pos.set(CAPA.perforaciones, y, z), this.q, this.esc.set(1, s, s));
+      this.perforaciones.setMatrixAt(i, this.m);
     });
     this.perforaciones.instanceMatrix.needsUpdate = true;
   }
@@ -355,18 +472,20 @@ export class Alveolo extends Pieza {
  * ----------------------------------------------------------------------------------------- */
 
 export class ConductoMandibular extends Pieza {
-  private readonly matBorde: MeshStandardMaterial;
-  private readonly matNervio: MeshStandardMaterial;
-  private readonly matVasos: MeshStandardMaterial[];
+  private readonly matBorde: MeshPhysicalMaterial;
+  private readonly matNervio: MeshPhysicalMaterial;
+  private readonly matVasos: MeshPhysicalMaterial[];
 
   constructor() {
     super();
     this.grupo.name = 'conducto_mandibular';
-    const pared = material(HEX.conducto, HEX.conducto, { roughness: 0.8 });
-    this.matBorde = material(HEX.bordeConducto, HEX.resalteConducto, { roughness: 0.6 });
-    this.matNervio = material(HEX.nervio, HEX.nervio, { roughness: 0.5 });
-    const arteria = material(HEX.arteria, HEX.arteria, { roughness: 0.4 });
-    const vena = material(HEX.vena, HEX.vena, { roughness: 0.4 });
+    // Pared y borde del conducto: hueso (el borde, la línea densa que lo rodea en la radiografía). Nervio con
+    // sus fascículos a lo largo; vasos lisos y húmedos.
+    const pared = relieve(material(COLOR.conducto, 'hueso'), 2, 4);
+    this.matBorde = resaltable(COLOR.bordeConducto, 'hueso', COLOR.resalteConducto);
+    this.matNervio = resaltable(COLOR.nervio, 'nervio', COLOR.nervio);
+    const arteria = resaltable(COLOR.arteria, 'vaso', COLOR.arteria);
+    const vena = resaltable(COLOR.vena, 'vaso', COLOR.vena);
     this.matVasos = [arteria, vena];
     this.materiales.push(pared, this.matBorde, this.matNervio, arteria, vena);
 
@@ -378,7 +497,7 @@ export class ConductoMandibular extends Pieza {
 
     // Borde del conducto sobre la cara de la médula (la línea densa que rodea el conducto en la radiografía).
     const borde = new RingGeometry(CONDUCTO.radio, CONDUCTO.radio + 0.045, 36);
-    borde.rotateY(-Math.PI / 2);
+    borde.rotateY(Math.PI / 2);
     borde.translate(-PROFUNDIDAD_TRABECULAR + 0.008, CONDUCTO.y, CONDUCTO.z);
     this.malla(borde, this.matBorde, 'borde_conducto');
 

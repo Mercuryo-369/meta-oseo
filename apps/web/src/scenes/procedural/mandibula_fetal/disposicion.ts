@@ -14,7 +14,6 @@ import {
   ALCANCE_COMPLETO,
   MESENQUIMA,
   N_CUERPO,
-  N_GERMENES,
   R_LIGAMENTO,
   R_MECKEL,
   U_CENTRO,
@@ -99,21 +98,26 @@ export function posicionEnArco(lado: Lado, u: number, n: number, y: number): Vec
 /** Tramo del arco que ocupa la masa de mesénquima. */
 export const U_MESENQUIMA = { inicio: -0.12, fin: 1 } as const;
 
-/** `k` valores de `u` repartidos uniformemente entre `u0` y `u1` (ambos incluidos). */
-export function muestrasDeArco(u0: number, u1: number, k: number): number[] {
-  return Array.from({ length: k }, (_, i) => mezclar(u0, u1, k > 1 ? i / (k - 1) : 0));
-}
-
 /* -------------------------------------------------------------------------------------------
  * Nervio alveolar inferior
  * ----------------------------------------------------------------------------------------- */
 
-/** Desplazamiento (lateral, vertical) del nervio respecto al cartílago de Meckel. */
+/**
+ * Desplazamiento (lateral, vertical) del nervio respecto al cartílago de Meckel y tramos del arco. Revisión
+ * (2026-10-17):
+ *  - La bifurcación en mentoniano e incisivo pasa de u = 0,72 (entre el canino y el incisivo lateral) a 0,54: el
+ *    foramen mentoniano del recién nacido se abre bajo el primer molar temporal (Gray's Anatomy) y la rama incisiva
+ *    es la que inerva el canino y los incisivos (fidelidad-05).
+ *  - Lateral: a 0,04 por dentro del centro del cuerpo (antes 0,08): centrado en la canaleta, no toca la lámina
+ *    lingual ni en la placa inicial (`t` = 0,34).
+ *  - Vertical: de 0,05 a -0,06. Antes flotaba a media altura de la canaleta, casi tocando los gérmenes; ahora corre
+ *    cerca del suelo, como el conducto mandibular del recién nacido, que va cerca del borde inferior (fidelidad-18).
+ */
 export const NERVIO = {
-  n: 0.34,
-  y: 0.05,
+  n: N_CUERPO - 0.04,
+  y: -0.06,
   uInicio: -0.12,
-  uBifurcacion: 0.72,
+  uBifurcacion: 0.54,
   uFinIncisivo: 0.97,
 } as const;
 
@@ -219,8 +223,12 @@ export function escalaCuerpoEn(u: number, alcance: number, tamano: number): numb
   return tamano * mezclar(afilado, 1, completo);
 }
 
-/** Ventana de corte del cuerpo: el tramo de `u` que falta en la mitad `lado` para ver la sección. */
-export const VENTANA_CORTE = { lado: 1 as Lado, u0: 0.485, u1: 0.555 } as const;
+/**
+ * Ventana de corte del cuerpo: el tramo de `u` que falta en la mitad `lado` para ver la sección. Por detrás del
+ * centro de osificación (fuera de la placa inicial, que en `t` = 0,34 ocupa de 0,43 a 0,67), donde la canaleta lleva
+ * el tronco del nervio alveolar inferior, y con el germen del segundo molar temporal dentro.
+ */
+export const VENTANA_CORTE = { lado: 1 as Lado, u0: 0.36, u1: 0.43 } as const;
 
 /** Tramos (`u0`, `u1`) que dibuja el cuerpo óseo de cada mitad: la mitad con ventana va en dos. */
 export function tramosCuerpo(lado: Lado): { u0: number; u1: number }[] {
@@ -240,14 +248,28 @@ export function centroCuerpo(lado: Lado, u: number): Vec3 {
  * Gérmenes dentarios
  * ----------------------------------------------------------------------------------------- */
 
-/** `u` de los cinco gérmenes de cada lado (dos molares, canino y dos incisivos, de atrás adelante). */
+/**
+ * `u` de los cinco gérmenes de cada lado (de atrás adelante: segundo y primer molar temporal, canino, incisivo
+ * lateral e incisivo central).
+ */
 export const U_GERMENES: readonly number[] = [0.4, 0.52, 0.64, 0.76, 0.88];
-/** Radio del germen a tamaño 1 y altura de su centro sobre el centro del cuerpo. */
-export const GERMEN = { radio: 0.19, y: 0.3 } as const;
+/**
+ * Radio de cada germen a tamaño 1 (mismo orden que `U_GERMENES`) y altura de su centro sobre el centro del cuerpo.
+ * Los molares temporales son mayores que el canino y los incisivos (antes, cinco esferas iguales de 0,19).
+ */
+export const GERMEN = {
+  radios: [0.21, 0.2, 0.18, 0.16, 0.16] as readonly number[],
+  y: 0.3,
+} as const;
 
 export function posicionGermen(lado: Lado, indice: number): Vec3 {
   const u = U_GERMENES[indice] ?? U_GERMENES[0]!;
   return posicionEnArco(lado, u, N_CUERPO, GERMEN.y);
+}
+
+/** Radio del germen `indice` a tamaño 1. */
+export function radioGermen(indice: number): number {
+  return GERMEN.radios[indice] ?? GERMEN.radios[0]!;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -280,11 +302,35 @@ export const GROSOR_RAMA = 0.26;
 /** Cabeza del cóndilo y punta de la coronoides, en el mismo plano (z, y) relativo de la silueta. */
 export const CONDILO = { z: -0.86, y: 1.58, semiejes: [0.26, 0.2, 0.24] as Vec3 } as const;
 export const CORONOIDES = { z: 0.33, y: 1.2, radio: 0.13 } as const;
+/**
+ * El cartílago condilar aparece (semana 10) como una masa en cono que ocupa buena parte de la rama; hacia la mitad
+ * de la vida fetal casi todo se ha convertido en hueso y solo queda la capa de la cabeza (Nanci, Ten Cate's Oral
+ * Histology). Semiejes del cono antes de osificarse y cuánto baja su centro respecto a la cabeza (a tamaño 1).
+ */
+export const CONO_CONDILAR = { semiejes: [0.2, 0.45, 0.22] as Vec3, bajada: 0.3 } as const;
 
 /** Sínfisis: donde se juntan las dos mitades, en la línea media. */
 export function centroSinfisis(): Vec3 {
   const p = puntoArco(1, 1);
   return [0, p[1] + 0.08, p[2] + N_CUERPO * 0.35];
+}
+
+/**
+ * Los cartílagos sinfisarios son dos nódulos, uno a cada lado de la línea media, en el tejido conjuntivo entre los
+ * extremos de las dos mitades (Nanci, Ten Cate's Oral Histology); antes se dibujaba uno solo. Semiejes a tamaño 1.
+ */
+export const NODULO_SINFISARIO = {
+  separacion: 0.11,
+  semiejes: [0.095, 0.42, 0.27] as Vec3,
+} as const;
+
+/** Centros de los dos nódulos sinfisarios (lado +1 y lado -1). */
+export function centrosSinfisarios(): [Vec3, Vec3] {
+  const [x, y, z] = centroSinfisis();
+  return [
+    [x + NODULO_SINFISARIO.separacion, y, z],
+    [x - NODULO_SINFISARIO.separacion, y, z],
+  ];
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -357,6 +403,3 @@ export function celulasCondensacion(n: number, semilla: number): CelulaMesenquim
   }
   return resultado;
 }
-
-/** Número de gérmenes por lado, reexportado para las pruebas. */
-export const GERMENES_POR_LADO = N_GERMENES;

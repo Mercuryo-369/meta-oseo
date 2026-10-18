@@ -11,6 +11,7 @@ import {
   laminillasDelHueso,
   mitocondrias,
   puntoDeVesicula,
+  ribosomasDelReticulo,
   saculosDelGolgi,
   vesiculasDeSecrecion,
 } from './disposicion';
@@ -43,6 +44,19 @@ describe('orgánulos de la célula protagonista', () => {
       expect(Math.min(c.sx, c.sy)).toBeLessThan(0.02);
       expect(dentroDeLaCelula(c)).toBe(true);
     }
+  });
+
+  it('los ribosomas cubren las dos caras de cada cisterna, dentro de su planta y deterministas', () => {
+    const r = ribosomasDelReticulo();
+    expect(ribosomasDelReticulo()).toEqual(r);
+    const n = cisternasDelReticulo().length;
+    expect(r.length).toBeGreaterThanOrEqual(n * 2 * 8);
+    for (let c = 0; c < n; c++) {
+      for (const cara of [1, -1]) {
+        expect(r.some((x) => x.cisterna === c && x.cara === cara)).toBe(true);
+      }
+    }
+    for (const x of r) expect(Math.hypot(x.u, x.v)).toBeLessThan(1);
   });
 
   it('los sáculos del Golgi están del lado del hueso respecto al núcleo', () => {

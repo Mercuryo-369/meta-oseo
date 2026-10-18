@@ -30,7 +30,7 @@ describe('arranque de la aplicación', () => {
     });
     await flushPromises();
 
-    expect(document.querySelectorAll('ol a')).toHaveLength(6);
+    expect(document.querySelectorAll('[data-testid="tarjeta-modulo"] a')).toHaveLength(6);
     expect(document.querySelector('main#contenido')).not.toBeNull();
     expect(document.title).toBe('Inicio · Metabolismo óseo · OVA');
     expect(fetch).not.toHaveBeenCalled();

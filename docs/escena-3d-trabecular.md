@@ -15,7 +15,7 @@ la escena con un dedo y acercarla con dos.
 
 | Fase (`t`) | Qué se ve | Vista |
 |---|---|---|
-| `joven` (0) | Un cubo de unas 3 unidades (una biopsia de cresta ilíaca o de cuerpo vertebral) con una cortical fina encima; red densa de placas verticales y barras horizontales, médula lavanda entre ellas; en la cara frontal, tres BMU: osteoclastos en un hoyo, osteoblastos rellenando otros dos | `general` |
+| `joven` (0) | Un cubo de unas 3 unidades (una biopsia de cresta ilíaca o de cuerpo vertebral) con una cortical fina encima; red densa de placas verticales y barras horizontales, médula roja entre ellas; en la cara frontal, tres BMU: osteoclastos en un hoyo, osteoblastos rellenando otros dos | `general` |
 | `equilibrio` (0,17) | La red no cambia: lo que se excava se rellena (hoyo lleno de osteoide) | `detalle` |
 | `adelgazamiento` (0,34) | Todas las trabéculas más finas; los hoyos de las BMU quedan a medio rellenar y el de resorción crece | `corte` |
 | `perforacion` (0,5) | Las BMU ya no se ven; algunas placas se agujerean (pasan a marcos de barras) y algunas barras se cortan dejando un muñón | `corte` |
@@ -48,7 +48,7 @@ para completar la actividad.
   con vida alta y siguen enteras hasta el final.
 - **Seis piezas** (`mallas.ts`): `RedTrabecular` (dos `InstancedMesh`: 420 tiras y 99 barras, con color por
   instancia en el cubo que envejece), `CorticalSuperior` (lámina y 16 poros instanciados), `Medula` (caja
-  translúcida de caras traseras cuyo color va del lavanda al amarillo), `BmuTrabeculares` (hoyos, osteoide y
+  translúcida de caras traseras cuyo color va del rojo al amarillo), `BmuTrabeculares` (hoyos, osteoide y
   células en tres `InstancedMesh`; se apoyan en la cara frontal de su placa y bajan con ella al adelgazarse),
   `FlechaCarga` y `CuboTrabecular`, que las une y aplasta todo menos la flecha (la base no se mueve). Con
   `fantasma: true` es el cubo joven translúcido, sin médula ni BMU, desplazado `X_FANTASMA` = -3,9.
@@ -58,9 +58,9 @@ para completar la actividad.
   `trabecular/vistas.ts`: `general` (tres cuartos), `detalle` (cerca de la cara frontal), `corte` (de frente y
   casi sin elevación: la red se lee como un corte histológico o una radiografía) y `comparacion` (más lejos,
   centrada entre los dos cubos). En un lienzo estrecho la cámara se aleja sola (`estadoDeEsferica`).
-- **Colores:** los del dibujo `m6_hueso_normal_osteoporotico.svg` (médula `#e2d9f5`, grasa `#f3e39a`,
-  microfractura `#b8302f`, flecha `#e58c3c`), el hueso esponjoso del módulo 1 (`#efb5c6`) y la BMU (hueso
-  `#d98aa2`, hoyo, osteoide, osteoclasto `#c9a0dc`, osteoblasto `#8b7bdc`).
+- **Colores:** `HEX` (`trabecular/paleta.ts`) guarda los del dibujo `m6_hueso_normal_osteoporotico.svg`, del hueso
+  esponjoso del módulo 1 y de la BMU, y ya no se dibuja; la escena usa `NATURAL` (ver «Realismo» y «Revisión de
+  diseño»): hueso marfil, médula roja que se vuelve amarilla, microfractura roja `#b8302f` y flecha naranja.
 
 ## 3. Límites y honestidad
 
@@ -80,8 +80,9 @@ para completar la actividad.
 - Las microfracturas están en el interior (una placa central y dos de canto en la capa frontal): pueden quedar
   medio tapadas desde `comparacion`; se distinguen por el rojo.
 - **Sin revisión del docente** del texto de los pasos ni de la forma de las estructuras. **Sin medir en un
-  teléfono real.** Presupuesto comprobado por pruebas contando instancias: 16 324 triángulos y 10 llamadas de
-  dibujo en el peor instante (`carga`); 7 llamadas en las fases sin fantasma.
+  teléfono real.** Presupuesto comprobado por pruebas contando instancias y la doble pasada de los transparentes de
+  doble cara (aquí no hay): 29 756 triángulos y 10 llamadas de dibujo en el peor instante (`carga`), y 5 del pase de
+  sombras.
 
 ## 4. Dónde está cada cosa
 
@@ -94,6 +95,75 @@ para completar la actividad.
 | Vistas de cámara | `.../trabecular/vistas.ts` |
 | Paleta | `.../trabecular/paleta.ts` |
 | Escena y contenido dentro del lienzo | `.../trabecular/EscenaTrabecular.vue`, `ContenidoTrabecular.vue` |
-| Pruebas (68) | `estado.test.ts`, `disposicion.test.ts`, `geometria.test.ts` |
+| Pruebas (78) | `estado.test.ts`, `disposicion.test.ts`, `geometria.test.ts` |
 | Registro y catálogo | `scenes/procedural/registro.ts`, `content/nodos3d.ts` |
 | Contenido | `modules/m6_el_paso_del_tiempo/content.json`, actividad `m6_3_trabecular_3d` (texto definitivo en `.verify/trabecular/actividad.json` hasta que el coordinador lo fusione) |
+
+## Realismo (2026-10-14)
+
+Mejora de realismo con la base común de las escenas procedurales (`scenes/procedural/realismo.ts` y
+`EntornoRealista.vue`), la misma de [escena-3d-hueso.md](escena-3d-hueso.md), buscando que el cubo se lea como una
+pieza anatómica o una micro-TC de hueso esponjoso:
+
+- **Paleta natural** propia (`NATURAL` en `trabecular/paleta.ts`; `HEX`, los colores del dibujo, no cambia):
+  trabéculas y cortical marfil, con un tono algo distinto en cada trabécula (las de menos vida, más amarillentas);
+  poros de la cortical oscuros (la boca de un conducto vascular, antes lavanda); médula **roja** (hematopoyética) que
+  con la adipogénesis pasa a **amarilla** (antes, de lavanda a amarilla); cubo joven fantasma de un marfil más tostado
+  (es translúcido y, sobre el fondo casi blanco del tema claro, un marfil claro no se vería); hoyo de resorción pardo y
+  osteoide nacarado; células de la BMU y flecha naranja con sus colores didácticos, algo más sobrios. Se mantiene el
+  color que nombra el texto del paso `carga`: las microfracturas siguen **rojas**.
+- **Tejido de cada pieza** (`realismo.ts`): placas, barras y fantasma → `hueso_esponjoso` (mate y granuloso; la
+  repetición del relieve se ajusta a la forma de las tiras y de las barras para que el grano salga redondo); lámina
+  cortical y hoyos de resorción → `hueso` (picado de poros); poros → `cavidad`; médula → `medula`; osteoide → `fibra`;
+  células de la BMU → `celula`; flecha → `molecula` (con su brillo propio). Materiales de una cara, como antes: todo
+  son sólidos cerrados y el fantasma translúcido se vería con doble capa. La médula sigue siendo solo caras traseras.
+- **Luz de entorno** y contraluz frío, como en la escena del hueso; la luz principal proyecta sombras suaves, que dan
+  profundidad a la red.
+- **Forma** (`geometria.ts`):
+  - Cada tira de placa es una **losa de canto biselado** en arista, con normales redondeadas (20 triángulos; antes una
+    caja de 12): las placas dejan de verse como cajas. Las tiras superior e inferior de una placa entera se solapan
+    0,035 en el centro (solape que se anula al abrirse el agujero) y las laterales se alargan lo mismo para esconder
+    sus extremos: sin surcos a media placa ni en las esquinas del marco. Para que sus caras no coincidan donde se
+    solapan, la tira inferior es un 2 % más fina y las laterales, un 4 %. Efecto secundario: el agujero de la
+    perforación asoma algo más tarde, cuando ya mide unas 0,06 unidades.
+  - Las **barras** tienen cintura (0,8 del radio en el centro, por donde adelgazan y se rompen) y puntas romas
+    (sólido de revolución de 10 segmentos, 60 triángulos; antes un cilindro de 7 con tapas, 28).
+  - Cortical de **borde redondeado** (caja biselada de 44 triángulos), poros de 12 segmentos, células de la BMU de
+    12 × 8, discos de 24 segmentos y flecha de 20 y 16.
+- **Presupuesto** en el peor instante (`carga`, t = 0,875, con el fantasma): 29 756 triángulos y 10 llamadas de dibujo
+  (antes 16 324 y 10; límite de la prueba: 40 000 y 40). Pruebas nuevas en `geometria.test.ts` (75 en la carpeta):
+  las formas biseladas (cerradas, con UV, normales unitarias y triángulos hacia fuera), la cintura de la barra, UV y
+  material físico en todas las mallas, el marfil del hueso y el rojo de la microfractura.
+
+No se ha visto en pantalla (el usuario prueba en local): falta comprobar a ojo el fantasma en el tema claro y el tono
+del fondo de médula roja.
+
+## Revisión de diseño (2026-10-17)
+
+Revisión con mirada de diseñador gráfico y de clínico, sobre la base compartida nueva (luces de `iluminacion.ts` y
+`EntornoRealista.vue`, motas, rugosidad y `oclusionPorVertice` de `realismo.ts`).
+
+- **Oclusión ambiental (realismo-06).** Las trabéculas del centro del cubo recibían la misma luz indirecta que las de
+  las caras (three no ocluye el entorno ni el hemisferio). Ahora las placas y las barras del cubo que envejece llevan
+  un atributo `ao` POR INSTANCIA (`InstancedBufferAttribute`, escrito una vez: la red no se mueve) y el material
+  `oclusionPorVertice`: 1 en las caras abiertas (los cuatro lados y la base) y 0,4 en el centro y bajo la cortical,
+  con una rampa suave de 0,9 de hondura (`oclusionTrabecula`). Solo apaga la luz indirecta: la directa ya la ocultan
+  las sombras, y oscurecer el color (el atajo que proponía la verificación para las instancias) habría apagado
+  también lo que la luz principal ilumina por la cara frontal. Sin triángulos ni llamadas nuevos. El fantasma no la
+  lleva (es translúcido).
+- **Lámina cortical (render-05 y realismo-19).** Es la tapa del cubo y ya no proyecta sombra (`userData.sinSombra`):
+  dejaba en sombra el 7-12 % de las placas. Sus UV van en unidades de escena (`cajaBiselada` con medidas; repetición
+  1,4 por unidad): con UV de 0 a 1 por cara iba a 2 × 3,3 repeticiones por unidad arriba y a 2 × 50 en los cantos.
+- **Paleta unificada** (`NATURAL`): hueso maduro marfil (placas `#eadfc8`, barras `#e6d8bc`, cortical `#e8dcc2`);
+  osteoide `#eed4c9`; médula roja `#9e3f33` y amarilla `#e8c561`; osteoblasto `#8d86c6`, osteoclasto `#b893cf`,
+  núcleos `#4b408f`. La microfractura sigue roja y la flecha, naranja.
+- **Pruebas:** el presupuesto cuenta la doble pasada y el pase de sombras; nuevas pruebas de la oclusión por
+  instancia y de la lámina (sin sombra, UV en unidades). `cajaBiselada` acepta las medidas (también la usan las
+  tablas de las dos rutas).
+
+Presupuesto en el peor instante (`carga`): antes y después 29 756 triángulos y 10 llamadas; pase de sombras, de 6 a
+5 llamadas.
+
+No se ha visto en pantalla. Conviene mirar: cuánto se oscurece el centro de la red en `corte` y `general` (si
+resulta poco, `OCLUSION_CENTRO` en `mallas.ts`); el contraste entre placas y barras, ahora más parecidas; y la
+médula roja de fondo con el tema claro.

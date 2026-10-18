@@ -6,19 +6,27 @@
          No se bloquea el zoom del usuario (accesibilidad). -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#f7f5fb" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#131025" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
       content="Metabolismo óseo: un viaje interactivo desde la célula hasta el hueso."
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Metabolismo óseo · OVA</title>
-    <!-- Aplica el tema oscuro antes del primer pintado para evitar un destello claro.
-         La lógica completa (y los cambios en vivo) está en src/lib/tema.ts. -->
+    <!-- Aplica el tema antes del primer pintado para evitar un destello: la elección guardada
+         (`ova.tema`: claro u oscuro) o, si no hay, la del sistema. La lógica completa (y los cambios
+         en vivo) está en src/lib/tema.ts. -->
     <script>
       try {
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        var t = null;
+        try {
+          t = localStorage.getItem('ova.tema');
+        } catch (e) {}
+        if (
+          t === 'oscuro' ||
+          (t !== 'claro' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
           document.documentElement.classList.add('dark');
         }
       } catch (e) {}

@@ -1,26 +1,32 @@
 <script setup lang="ts">
 /**
- * Índice de secciones del módulo.
+ * Pasos del módulo: un recorrido horizontal («3.1 ─ 3.2 ─ …») con un nodo por sección unido por un riel,
+ * el número dentro del nodo y el título debajo (sin repetir el número). La sección que se lee lleva el nodo relleno de azul; la completada, una
+ * marca verde; la bloqueada, un candado (rediseño del 2026-10-17, antes eran flechas encadenadas).
  *
- *  - Desde `md`: lista vertical (columna lateral) con el estado de cada sección.
- *  - En móvil: indicador compacto EN EL FLUJO de la página (nunca fijo, para no tapar el HUD, el menú
- *    circular ni el botón del mentor, que sí lo son): «Sección 2 de 5», puntos de avance y un
- *    selector nativo para saltar.
+ *  - En pantallas anchas los pasos se reparten el ancho de la cabecera. Cuando no caben (móvil), la fila
+ *    se desplaza en horizontal con ajuste a cada paso; el paso actual se centra solo al cambiar de sección.
+ *  - En móvil, debajo, un selector nativo para saltar («Sección 2 de 5»): con muchos pasos es más
+ *    rápido que desplazar la fila. Todo va en el flujo de la página, nunca fijo.
  *
- * El estado de cada sección se dice con icono y con texto (completada, actual, bloqueada), nunca solo
- * con color. Una sección bloqueada se puede activar: no navega, pero pide a la página que explique
- * qué falta (`bloqueada`), en vez de ser un botón mudo.
+ * El estado de cada sección se dice con icono y con texto (completada, pendiente, bloqueada), nunca
+ * solo con color. Una sección bloqueada se puede activar: no navega, pero pide a la página que
+ * explique qué falta (`bloqueada`), en vez de ser un botón mudo.
+ *
+ * El dibujo de cada paso lo pone `PasoRecorrido.vue` (compartido con la portada del inicio).
  */
-import { computed } from 'vue';
-import { Check, Lock } from '@lucide/vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import type { EstadoSeccion } from '@/content/scoring';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
+import PasoRecorrido from './PasoRecorrido.vue';
 
 const props = defineProps<{
   secciones: readonly { id: string; titulo: string }[];
   estados: readonly EstadoSeccion[];
   /** Índice de la sección que se está leyendo. */
   indice: number;
+  /** Número del módulo, para rotular los pasos «3.1», «3.2»… (sin él, «1», «2»…). */
+  numeroModulo?: number;
 }>();
 
 const emit = defineEmits<{
@@ -38,13 +44,21 @@ const ETIQUETA: Readonly<Record<EstadoSeccion, string>> = {
 const items = computed(() =>
   props.secciones.map((s, i) => {
     const estado = props.estados[i] ?? 'bloqueada';
+    const titulo = textoPlanoDeMarkdown(s.titulo);
     return {
       i,
       id: s.id,
-      titulo: textoPlanoDeMarkdown(s.titulo),
+      numero: props.numeroModulo ? `${props.numeroModulo}.${i + 1}` : String(i + 1),
+      titulo,
       estado,
       etiqueta: ETIQUETA[estado],
       bloqueada: estado === 'bloqueada',
+      /** Distintivo del paso: completado, bloqueado o ninguno. */
+      marca: (estado === 'completada'
+        ? 'completada'
+        : estado === 'bloqueada'
+          ? 'bloqueada'
+          : 'normal') as 'completada' | 'bloqueada' | 'normal',
       actual: i === props.indice,
     };
   }),
@@ -61,63 +75,63 @@ function alElegir(evento: Event): void {
   // El selector vuelve a la sección visible si la elegida está bloqueada.
   (evento.target as HTMLSelectElement).value = String(props.indice);
 }
+
+/* ----- El paso actual siempre a la vista dentro de la fila ----- */
+
+const botones = ref<HTMLElement[]>([]);
+
+watch(
+  () => props.indice,
+  async (i) => {
+    await nextTick();
+    const reducir =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+    botones.value[i]?.scrollIntoView?.({
+      block: 'nearest',
+      inline: 'center',
+      behavior: reducir ? 'auto' : 'smooth',
+    });
+  },
+);
 </script>
 
 <template>
   <nav aria-label="Secciones del módulo" data-testid="navegacion-secciones">
-    <!-- Escritorio -->
-    <ol class="hidden space-y-1 md:block" data-testid="indice-secciones">
-      <li v-for="item in items" :key="item.id">
+    <ol
+      class="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      data-testid="indice-secciones"
+    >
+      <li v-for="item in items" :key="item.id" class="min-w-[8.5rem] flex-1 snap-start">
         <button
+          :ref="(el) => (botones[item.i] = el as HTMLElement)"
           type="button"
           :aria-current="item.actual ? 'step' : undefined"
           :aria-disabled="item.bloqueada ? 'true' : undefined"
           :data-estado="item.estado"
-          :class="[
-            'flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors',
-            'focus-visible:ring-ring outline-none focus-visible:ring-2',
-            item.actual ? 'bg-secondary text-secondary-foreground font-semibold' : 'hover:bg-muted',
-            item.bloqueada && 'text-muted-foreground',
-          ]"
+          :title="`${item.numero}. ${item.titulo} (${item.etiqueta})`"
+          class="focus-visible:ring-ring relative flex h-full min-h-11 w-full flex-col items-start rounded-lg p-2 text-left outline-none focus-visible:ring-2"
+          :class="item.actual ? 'bg-secondary' : 'hover:bg-muted'"
           @click="activar(item.i)"
         >
-          <span
-            :class="[
-              'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold',
-              item.estado === 'completada' && 'border-success bg-success-soft text-success',
-            ]"
-            aria-hidden="true"
-          >
-            <Check v-if="item.estado === 'completada'" class="size-4" />
-            <Lock v-else-if="item.bloqueada" class="size-3.5" />
-            <template v-else>{{ item.i + 1 }}</template>
-          </span>
-          <span class="min-w-0 flex-1">
-            <span class="block">{{ item.titulo }}</span>
-            <span class="text-muted-foreground block text-xs font-normal">
-              {{ item.etiqueta }}
-            </span>
-          </span>
+          <PasoRecorrido
+            :numero="item.numero"
+            :titulo="item.titulo"
+            :etiqueta="item.etiqueta"
+            :estado="item.marca"
+            :actual="item.actual"
+            :ultimo="item.i === items.length - 1"
+          />
         </button>
       </li>
     </ol>
 
-    <!-- Móvil -->
-    <div class="space-y-2 md:hidden" data-testid="indicador-movil">
+    <!-- Móvil: salto directo a una sección -->
+    <div class="mt-3 space-y-2 md:hidden" data-testid="indicador-movil">
       <p class="text-sm font-medium">
         Sección {{ indice + 1 }} de {{ secciones.length }}
         <span class="text-muted-foreground font-normal"> · {{ items[indice]?.titulo }} </span>
       </p>
-      <ol class="flex gap-1.5" aria-hidden="true">
-        <li
-          v-for="item in items"
-          :key="item.id"
-          :class="[
-            'h-2 flex-1 rounded-full',
-            item.estado === 'completada' ? 'bg-success' : item.actual ? 'bg-primary' : 'bg-border',
-          ]"
-        />
-      </ol>
       <label class="sr-only" for="ir-a-seccion">Ir a la sección</label>
       <select
         id="ir-a-seccion"
@@ -126,7 +140,7 @@ function alElegir(evento: Event): void {
         @change="alElegir"
       >
         <option v-for="item in items" :key="item.id" :value="String(item.i)">
-          {{ item.i + 1 }}. {{ item.titulo }} ({{ item.etiqueta }})
+          {{ item.numero }}. {{ item.titulo }} ({{ item.etiqueta }})
         </option>
       </select>
     </div>

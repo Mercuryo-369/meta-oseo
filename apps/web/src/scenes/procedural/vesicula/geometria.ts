@@ -7,7 +7,13 @@
  * las placas a lo largo de X; el cuello y las proteínas de membrana a lo largo de Y.
  */
 import type { BufferGeometry } from 'three';
-import { BoxGeometry, CylinderGeometry, PlaneGeometry, SphereGeometry } from 'three';
+import {
+  BoxGeometry,
+  CircleGeometry,
+  CylinderGeometry,
+  PlaneGeometry,
+  SphereGeometry,
+} from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 function unir(partes: BufferGeometry[]): BufferGeometry {
@@ -17,9 +23,13 @@ function unir(partes: BufferGeometry[]): BufferGeometry {
   return unida;
 }
 
-/** Caja de lado 1 centrada en el origen: cada instancia la escala a su tamaño (enzimas de membrana). */
-export function caja(): BufferGeometry {
-  return new BoxGeometry(1, 1, 1);
+/**
+ * Glóbulo de diámetro 1 centrado en el origen (ocupa el cubo de lado 1 de las cajas que sustituye; con un número
+ * par de anillos pasa por el ecuador): cada instancia lo escala a su tamaño. Las enzimas de la membrana son
+ * proteínas globulares, no cajas. Pocos lados: son piezas pequeñas.
+ */
+export function globulo(segmentos = 8, anillos = 6): BufferGeometry {
+  return new SphereGeometry(0.5, segmentos, anillos);
 }
 
 /** Esfera de radio 1 (vesículas, iones, núcleo amorfo). */
@@ -58,6 +68,24 @@ export function tubo(radio: number, largo: number, segmentos = 10): BufferGeomet
   return g;
 }
 
+/**
+ * Tramo del bandeo de una fibrilla: cilindro de radio `radio` y largo 1 a lo largo de X, centrado, ABIERTO por los
+ * extremos, porque los tramos se tocan y sus tapas quedarían dentro de la fibrilla. Con `tapa` lleva un disco
+ * solo en el extremo -X: el primer tramo de la fibrilla cierra así su punta y el último, girado media vuelta, la
+ * otra. Sin las tapas ocultas caben más lados en el mismo presupuesto de triángulos.
+ */
+export function tramoFibrilla(radio: number, segmentos = 14, tapa = false): BufferGeometry {
+  const lado = new CylinderGeometry(radio, radio, 1, segmentos, 1, true);
+  // El eje Y pasa a X (el extremo +Y queda en -X).
+  lado.rotateZ(Math.PI / 2);
+  if (!tapa) return lado;
+  const disco = new CircleGeometry(radio, segmentos);
+  // El disco nace mirando a +Z; girado -90° alrededor de Y mira a -X.
+  disco.rotateY(-Math.PI / 2);
+  disco.translate(-0.5, 0, 0);
+  return unir([lado, disco]);
+}
+
 /** Cilindro de radio 1 y alto 1 a lo largo de Y, centrado: canales, transportadores y enzimas de la vesícula. */
 export function cilindro(segmentos = 10): BufferGeometry {
   return new CylinderGeometry(1, 1, 1, segmentos, 1, false);
@@ -89,7 +117,7 @@ export type Onda = (x: number, z: number) => number;
 
 /**
  * Lámina ondulada de `ancho` (X) por `fondo` (Z) centrada en el origen del plano XZ, con la altura `onda(x, z)`
- * sumada a cada vértice: la membrana basal del osteoblasto.
+ * sumada a cada vértice: la membrana del polo secretor del osteoblasto.
  */
 export function laminaOndulada(
   ancho: number,
@@ -113,7 +141,9 @@ export function laminaOndulada(
 /**
  * Losa de `ancho` (X) por `fondo` (Z) y `grosor` (Y), apoyada sobre y = 0 (va de 0 a `grosor`), cuya cara inferior
  * sigue la onda `onda(x, z)`: el citoplasma que queda sobre la membrana. Solo se desplazan los vértices de abajo,
- * de modo que la losa sigue cerrada.
+ * de modo que la losa sigue cerrada. Seis caras: la inferior con `nx` × `nz` celdas (sigue la onda), la superior
+ * plana de una sola celda (antes tenía tantas como la inferior sin necesitarlas) y cuatro laterales de una fila
+ * cuyo borde de abajo sigue la onda.
  */
 export function losaOndulada(
   ancho: number,
@@ -123,8 +153,26 @@ export function losaOndulada(
   nz: number,
   onda: Onda,
 ): BufferGeometry {
-  const g = new BoxGeometry(ancho, grosor, fondo, nx, 1, nz);
-  g.translate(0, grosor / 2, 0);
+  const mx = ancho / 2;
+  const mz = fondo / 2;
+  // Los planos nacen en XY mirando a +Z: girados alrededor de X miran abajo o arriba, alrededor de Y a los lados.
+  const abajo = new PlaneGeometry(ancho, fondo, nx, nz);
+  abajo.rotateX(Math.PI / 2);
+  const arriba = new PlaneGeometry(ancho, fondo, 1, 1);
+  arriba.rotateX(-Math.PI / 2);
+  arriba.translate(0, grosor, 0);
+  const delante = new PlaneGeometry(ancho, grosor, nx, 1);
+  delante.translate(0, grosor / 2, mz);
+  const detras = new PlaneGeometry(ancho, grosor, nx, 1);
+  detras.rotateY(Math.PI);
+  detras.translate(0, grosor / 2, -mz);
+  const derecha = new PlaneGeometry(fondo, grosor, nz, 1);
+  derecha.rotateY(Math.PI / 2);
+  derecha.translate(mx, grosor / 2, 0);
+  const izquierda = new PlaneGeometry(fondo, grosor, nz, 1);
+  izquierda.rotateY(-Math.PI / 2);
+  izquierda.translate(-mx, grosor / 2, 0);
+  const g = unir([abajo, arriba, delante, detras, derecha, izquierda]);
   const pos = g.getAttribute('position');
   for (let i = 0; i < pos.count; i++) {
     if (pos.getY(i) < grosor * 0.25) {

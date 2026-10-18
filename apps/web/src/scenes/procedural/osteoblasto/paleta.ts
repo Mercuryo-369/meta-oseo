@@ -39,3 +39,43 @@ export const HEX = {
   vesicula: '#fbf1f6',
   capilar: HEX_BMU.capilar,
 } as const;
+
+/**
+ * Paleta NATURAL de esta escena (2026-10-14, mejora de realismo): colores del tejido vivo, no de la tinción.
+ * Mismas claves que `HEX` (que no cambia). Se mantienen, algo más sobrios, los colores que nombran los textos
+ * del módulo 2: el frente de mineralización «la línea oscura», el retículo rugoso azul, el Golgi amarillo y las
+ * mitocondrias naranjas. Las células van en tonos suaves que siguen distinguiendo cada estado (precursor pálido,
+ * osteoblasto basófilo violeta azulado, revestimiento pálido, apoptosis grisácea).
+ *
+ * Revisión de diseño (2026-10-17): la paleta unificada entre escenas (el mismo tejido, el mismo color; la de
+ * `bmu/paleta.ts`). El hueso viejo deja de ser el «bloque rosado» y pasa al marfil del hueso maduro de las demás
+ * escenas del módulo (osteocito y osteoclasto); el hueso nuevo, el marfil más claro del hueso recién formado; y el
+ * osteoide, la franja pálida y algo rosada del colágeno sin mineral (antes era más claro que el hueso nuevo: al
+ * mineralizarse parecía oscurecerse, al revés que en la BMU). De abajo arriba, en la cara de corte: hueso viejo
+ * marfil, hueso nuevo más blanco, la línea oscura del frente y el osteoide rosado pálido. Revestimiento y
+ * precursor, versiones pálidas del osteoblasto; núcleos del violeta común.
+ */
+export const NATURAL: Record<keyof typeof HEX, string> = {
+  hueso: '#e8dbc3',
+  laminilla: '#c0a582',
+  osteoide: '#eed4c9',
+  huesoNuevo: '#f2e9d8',
+  frente: '#6b4a4f',
+  /** Pálidas y frías: se distinguen del osteoide rosado y del hueso marfil, cálidos, sobre los que se apoyan. */
+  precursor: '#cbb7da',
+  osteoblasto: '#8d86c6',
+  revestimiento: '#c6c2e2',
+  osteocito: '#8a9ad2',
+  /** La laguna cortada se ve oscura: es una cavidad (como en la escena del hueso). */
+  laguna: '#4a3830',
+  /** Canalículos: hilos oscuros en la cara de corte. */
+  canaliculo: '#5f4637',
+  apoptosis: '#7b7189',
+  nucleo: '#4b408f',
+  nucleolo: '#a297d6',
+  reticulo: '#5866b8',
+  golgi: '#e0bd68',
+  mitocondria: '#da8a5e',
+  vesicula: '#f2ebe4',
+  capilar: '#c9473e',
+};

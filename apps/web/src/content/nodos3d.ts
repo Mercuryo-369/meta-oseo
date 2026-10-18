@@ -1,7 +1,9 @@
 /**
  * Catálogo de las escenas 3D del contenido (docs/content-schema.md, "Actividad exploracion-3d").
  *
- * El 3D se reserva para la mandíbula y las células (CLAUDE.md). Hay DOS maneras de que un nodo
+ * El 3D de exploración es para la mandíbula, las células y, desde 2026-10-17 (pedido de la usuaria: el dibujo
+ * SVG no se veía profesional), el hueso largo de m1_1, que se construye por código y no lleva GLB. Hay DOS
+ * maneras de que un nodo
  * del contenido apunte al modelo:
  *  - por PIEZA: su `id` es el nombre de un nodo del GLB. Solo valen los del catálogo de este
  *    archivo, que es exactamente lo que F0-08 (mandíbula) y F0-10 (células) planean separar en
@@ -15,7 +17,7 @@
  * deben respetar. Si el modelador cambia un nombre, se cambia aquí y en el contenido.
  */
 
-export const MODELOS_3D = ['mandibula', 'celulas'] as const;
+export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo'] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
 export interface NodoCatalogo {
@@ -50,9 +52,24 @@ const NODOS_CELULAS: readonly NodoCatalogo[] = [
   { id: 'osteoclasto', etiqueta: 'Osteoclasto' },
 ];
 
+/**
+ * Hueso largo serrado a lo largo (`scenes/hueso_largo/modeloHuesoLargo.ts`): cada región es un grupo del modelo
+ * con este nombre.
+ */
+const NODOS_HUESO_LARGO: readonly NodoCatalogo[] = [
+  { id: 'cartilago_articular', etiqueta: 'Cartílago articular' },
+  { id: 'epifisis', etiqueta: 'Epífisis' },
+  { id: 'linea_epifisaria', etiqueta: 'Línea epifisaria' },
+  { id: 'metafisis', etiqueta: 'Metáfisis' },
+  { id: 'diafisis', etiqueta: 'Diáfisis' },
+  { id: 'cavidad_medular', etiqueta: 'Cavidad medular' },
+  { id: 'arteria_nutricia', etiqueta: 'Arteria nutricia' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
+  hueso_largo: NODOS_HUESO_LARGO,
 };
 
 /**
@@ -61,7 +78,7 @@ export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>>
  * `ancla`; la escena que cargue el modelo decide qué hacer si el archivo falta (ver la sección
  * "3D" de la cabecera de activities/types.ts).
  */
-export const RUTA_GLB: Readonly<Record<Modelo3d, string>> = {
+export const RUTA_GLB: Readonly<Partial<Record<Modelo3d, string>>> = {
   mandibula: '/models/mandibula.glb',
   celulas: '/models/celulas.glb',
 };

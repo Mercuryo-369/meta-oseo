@@ -10,7 +10,7 @@
  * no válido" en vez de quedarse cargando.
  */
 import { Box3, Group, Mesh, Sphere, Vector3 } from 'three';
-import type { BufferGeometry, Material, Object3D, Texture } from 'three';
+import type { BufferGeometry, Material, MeshStandardMaterial, Object3D, Texture } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { Modelo3d } from '@/content/nodos3d';
 import { RUTA_GLB } from '@/content/nodos3d';
@@ -20,7 +20,10 @@ import { ErrorModelo } from './stl';
 
 /** Ruta pública del GLB de un modelo, respetando la base de la aplicación (`import.meta.env.BASE_URL`). */
 export function urlGlb(modelo: Modelo3d): string {
-  return `${import.meta.env.BASE_URL}${RUTA_GLB[modelo].replace(/^\/+/, '')}`;
+  const ruta = RUTA_GLB[modelo];
+  if (!ruta)
+    throw new ErrorModelo(`El modelo «${modelo}» no se descarga: se construye por código.`);
+  return `${import.meta.env.BASE_URL}${ruta.replace(/^\/+/, '')}`;
 }
 
 /** Radio mínimo de la zona de un nodo minúsculo, para que la cámara no se meta dentro de él. */
@@ -92,6 +95,42 @@ export function ubicarNodoGlb(raiz: Object3D, id: string): UbicacionNodo | null 
     radio: Math.max(RADIO_MIN_NODO, tamano.length() / 2),
     origen: 'nodo_glb',
   };
+}
+
+/**
+ * Resalta el nodo `id` de un modelo de piezas (GLB o el hueso largo) con un brillo propio de `color` en sus
+ * materiales, y apaga el de los demás (vuelven a su brillo original). Con `id` nulo no resalta nada. Sirve de
+ * respuesta visual al tocar una zona: el nodo elegido se distingue del resto, no solo por su etiqueta.
+ */
+export function resaltarNodo(
+  raiz: Object3D,
+  id: string | null,
+  color: string,
+  intensidad = 0.3,
+): void {
+  const elegidas = new Set<Object3D>();
+  if (id) raiz.getObjectByName(id)?.traverse((o) => elegidas.add(o));
+  raiz.traverse((objeto) => {
+    if (!(objeto instanceof Mesh)) return;
+    const materiales: Material[] = Array.isArray(objeto.material)
+      ? objeto.material
+      : [objeto.material];
+    for (const material of materiales) {
+      const conBrillo = material as MeshStandardMaterial;
+      if (!conBrillo.emissive) continue;
+      const original = (conBrillo.userData.brilloOriginal ??= {
+        color: conBrillo.emissive.getHex(),
+        intensidad: conBrillo.emissiveIntensity,
+      }) as { color: number; intensidad: number };
+      if (elegidas.has(objeto)) {
+        conBrillo.emissive.set(color);
+        conBrillo.emissiveIntensity = intensidad;
+      } else {
+        conBrillo.emissive.setHex(original.color);
+        conBrillo.emissiveIntensity = original.intensidad;
+      }
+    }
+  });
 }
 
 /** Libera geometrías, materiales y texturas de una escena cargada (los recursos de la GPU). */
