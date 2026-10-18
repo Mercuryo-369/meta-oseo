@@ -40,15 +40,15 @@ La mandíbula es el mejor caso de estudio del módulo porque reúne todo lo que 
 
 ## Ilustraciones y modelos requeridos
 
-Las imágenes se producen como SVG multicapa: cada capa es un grupo `<g id="...">` con el id de la tabla y debe poder resaltarse y recibir un toque. El único modelo 3D es la mandíbula, una sola malla: las zonas se marcan con hotspots con nombre, no con piezas separadas. Las células se dibujan en SVG.
+Las imágenes se producen como SVG multicapa: cada capa es un grupo `<g id="...">` con el id de la tabla y debe poder resaltarse y recibir un toque. La mandíbula es un modelo 3D de una sola malla: las zonas se marcan con hotspots con nombre, no con piezas separadas. Desde 2026-10-18, las exploraciones de 3.3 y 3.4 usan modelos 3D construidos por código (`osteoide` y `red_lacuno_canalicular`), cuyas regiones son piezas con nombre; el resto de las células se dibujan en SVG.
 
 | id de archivo | Qué muestra | Se usa en | Capas o zonas (`id` = etiqueta) |
 |---|---|---|---|
 | `m3_rutas_formacion_osea` | Dos paneles lado a lado: A, osificación intramembranosa; B, osificación endocondral en un hueso largo. | Sección 3.1 | `im_condensacion_mesenquimatosa` = Condensación mesenquimatosa; `im_osteoblastos` = Osteoblastos; `im_osteoide` = Osteoide; `im_trabeculas_hueso_inmaduro` = Trabéculas de hueso inmaduro; `im_periostio` = Periostio; `ec_modelo_cartilaginoso` = Modelo de cartílago hialino; `ec_condrocitos_hipertroficos` = Condrocitos hipertróficos; `ec_collar_oseo` = Collar óseo perióstico; `ec_invasion_vascular` = Invasión vascular; `ec_centro_osificacion_primario` = Centro primario de osificación; `ec_placa_crecimiento` = Placa de crecimiento |
 | `m3_mandibula_desarrollo` | Vista lateral esquemática de una hemimandíbula fetal (aproximadamente entre las semanas 10 y 14 de desarrollo, contadas desde la fecundación [verificar]): hueso intramembranoso lateral al cartílago de Meckel y cartílagos secundarios. | Sección 3.2 | `cartilago_de_meckel` = Cartílago de Meckel; `hueso_intramembranoso_lateral` = Hueso intramembranoso (cuerpo y rama); `sitio_primer_osificacion` = Primer centro de osificación; `nervio_alveolar_inferior` = Nervio alveolar inferior; `germen_dental` = Germen dental; `cartilago_condilar` = Cartílago condilar (secundario); `cartilago_coronoideo` = Cartílago coronoideo (secundario); `cartilago_sinfisario` = Cartílago sinfisario (secundario); `extremo_posterior_meckel` = Extremo posterior de Meckel (martillo y yunque) |
-| `m3_osteoide_hueso_inmaduro` | Corte de una trabécula en formación: osteoblastos, osteoide, frente de mineralización, hueso inmaduro con osteocitos y, al lado, hueso laminar ya remodelado. | Sección 3.3 | `osteoblastos_activos` = Osteoblastos activos; `osteoide` = Osteoide; `frente_mineralizacion` = Frente de mineralización; `hueso_inmaduro` = Hueso inmaduro (fibrilar); `osteocito_incluido` = Osteocito recién incluido; `capilar` = Capilar sanguíneo; `linea_cementante` = Línea cementante; `hueso_laminar` = Hueso laminar |
+| `osteoide` (modelo 3D por código; hasta 2026-10-18, el SVG `m3_osteoide_hueso_inmaduro`) | Corte de una trabécula en formación: osteoblastos, osteoide, frente de mineralización, hueso inmaduro con osteocitos y, al lado, hueso laminar ya remodelado. | Sección 3.3 | `osteoblastos_activos` = Osteoblastos activos; `osteoide` = Osteoide; `frente_mineralizacion` = Frente de mineralización; `hueso_inmaduro` = Hueso inmaduro (fibrilar); `osteocito_incluido` = Osteocito recién incluido; `capilar` = Capilar sanguíneo; `linea_cementante` = Línea cementante; `hueso_laminar` = Hueso laminar |
 | `m3_bmp_runx2_osterix` | Escena para el arrastre: célula osteoprogenitora con receptor de BMP en la membrana, Smad en el citoplasma y RUNX2 y osterix en el núcleo. | Sección 3.3 (arrastre) | `celula_progenitora` = Célula osteoprogenitora; `receptor_bmp` = Receptor de BMP (tipo I y tipo II); `smad_1_5_8` = Smad1/5/8; `smad4` = Smad4; `nucleo_celular` = Núcleo; `runx2` = RUNX2; `osterix_sp7` = Osterix (SP7); `genes_osteoblasto` = Genes del osteoblasto |
-| `m3_osteocito_red_lacuno_canalicular` | Corte de hueso cortical con un osteocito en su laguna, sus procesos en los canalículos, el espacio pericelular, los sensores y la conexión con el capilar y con las células de la superficie. | Sección 3.4 | `matriz_mineralizada` = Matriz mineralizada; `laguna_osteocitica` = Laguna osteocítica; `cuerpo_osteocito` = Cuerpo del osteocito; `procesos_dendriticos` = Procesos dendríticos; `canaliculos` = Canalículos; `espacio_pericelular` = Espacio pericelular; `fibras_de_anclaje` = Fibras de anclaje; `integrinas_puntos_union` = Integrinas en los puntos de unión; `cilio_primario` = Cilio primario; `canal_piezo1` = Canal Piezo1; `conexina_43` = Conexina 43 (uniones y hemicanales); `capilar_conducto_haversiano` = Capilar del conducto de Havers; `celulas_revestimiento` = Células de revestimiento y osteoblastos de superficie; `flechas_flujo_liquido` = Dirección del flujo de líquido; `mensajeros_pge2_no` = Mensajeros PGE2 y óxido nítrico |
+| `m3_osteocito_red_lacuno_canalicular` (SVG de la animación) y `red_lacuno_canalicular` (modelo 3D por código de la exploración desde 2026-10-18, con 12 regiones: ver la actividad) | Corte de hueso cortical con un osteocito en su laguna, sus procesos en los canalículos, el espacio pericelular, los sensores y la conexión con el capilar y con las células de la superficie. | Sección 3.4 | `matriz_mineralizada` = Matriz mineralizada; `laguna_osteocitica` = Laguna osteocítica; `cuerpo_osteocito` = Cuerpo del osteocito; `procesos_dendriticos` = Procesos dendríticos; `canaliculos` = Canalículos; `espacio_pericelular` = Espacio pericelular; `fibras_de_anclaje` = Fibras de anclaje; `integrinas_puntos_union` = Integrinas en los puntos de unión; `cilio_primario` = Cilio primario; `canal_piezo1` = Canal Piezo1; `conexina_43` = Conexina 43 (uniones y hemicanales); `capilar_conducto_haversiano` = Capilar del conducto de Havers; `celulas_revestimiento` = Células de revestimiento y osteoblastos de superficie; `flechas_flujo_liquido` = Dirección del flujo de líquido; `mensajeros_pge2_no` = Mensajeros PGE2 y óxido nítrico |
 | `m3_sensores_mecanicos` | Ampliación esquemática (fuera de escala) de la membrana de un proceso dendrítico con sus sensores y mensajeros, más un recuadro aparte con el cuerpo del osteocito en su laguna, donde se dibuja el cilio primario. | Sección 3.5 | `membrana_proceso` = Membrana del proceso dendrítico; `matriz_pericelular_fibras` = Matriz pericelular y fibras de anclaje; `integrinas` = Integrinas; `canal_piezo1` = Canal Piezo1; `cilio_primario` = Cilio primario; `hemicanal_cx43` = Hemicanal de conexina 43; `calcio_intracelular` = Ca²⁺ intracelular; `citoesqueleto_actina` = Citoesqueleto de actina; `pge2` = Prostaglandina E2 (PGE2); `oxido_nitrico` = Óxido nítrico (NO) |
 | `m3_via_wnt_esclerostina` | Escena para el arrastre: membrana de un osteoblasto de superficie con Frizzled, LRP5/6 y receptor de PTH, complejo de destrucción, β-catenina y núcleo; a un lado, un osteocito que secreta esclerostina y que también lleva PTH1R. | Sección 3.6 (arrastre) | `osteoblasto_membrana` = Membrana del osteoblasto; `frizzled` = Frizzled; `lrp5_6` = LRP5/6; `pth1r` = Receptor de PTH (PTH1R); `pth1r_osteocito` = PTH1R del osteocito; `complejo_destruccion` = Complejo de destrucción (Axin, APC, GSK3β); `beta_catenina` = β-catenina; `nucleo_tcf_lef` = Núcleo con TCF/LEF; `genes_diana_wnt` = Genes diana de Wnt; `osteocito_secretor` = Osteocito secretor de esclerostina; `matriz_osea_superficie` = Matriz ósea y osteoide en la superficie |
 | `m3_mecanostato_ventanas` | Gráfico esquemático del mecanostato de Frost: eje horizontal con la deformación del hueso (en microdeformaciones, escala logarítmica) y bandas de respuesta. | Sección 3.7 | `ventana_desuso` = Ventana de desuso; `umbral_desuso` = Umbral de remodelado por desuso (MESr); `ventana_adaptada` = Ventana adaptada (mantenimiento); `umbral_modelado` = Umbral de modelado (MESm); `ventana_sobrecarga_leve` = Ventana de sobrecarga leve; `umbral_microdano` = Umbral de microdaño (MESp); `ventana_sobrecarga_patologica` = Ventana de sobrecarga patológica; `zona_fractura` = Zona de fractura |
@@ -58,9 +58,9 @@ Las imágenes se producen como SVG multicapa: cada capa es un grupo `<g id="..."
 
 - `m3_rutas_formacion_osea`: en el panel A dibujar los osteoblastos cuboides en fila sobre una banda pálida de osteoide, y debajo la trabécula mineralizada con osteocitos incluidos; el mesénquima condensado rodea capilares. En el panel B respetar el orden de zonas de la placa de crecimiento (reserva, proliferación en columnas, hipertrofia, calcificación y osificación) y dibujar el collar óseo perióstico alrededor de la diáfisis, antes de la invasión vascular, que entra por el centro. Usar el mismo color para el osteoide y para la matriz mineralizada en los dos paneles. Esquema fuera de escala.
 - `m3_mandibula_desarrollo`: vista lateral. El cartílago de Meckel discurre por la cara medial de la lámina ósea, que se forma lateral a él; usar transparencia para verlo. El hueso se forma como un canal abierto hacia arriba alrededor del nervio alveolar inferior y de los gérmenes dentales, y su primer centro de osificación se ubica donde el nervio se divide en sus ramas mentoniana e incisiva. El cartílago condilar es un casquete en el extremo posterosuperior, el coronoideo en el extremo anterosuperior de la rama y el sinfisario en la línea media anterior. El extremo posterior de Meckel apunta al oído medio. Dibujar el cartílago condilar como un cartílago independiente del de Meckel.
-- `m3_osteoide_hueso_inmaduro`: en el hueso inmaduro mostrar fibras de colágeno en haces irregulares y osteocitos grandes, redondeados y numerosos; en el laminar, láminas paralelas con osteocitos alineados y menos numerosos. La línea cementante separa ambos como una línea irregular y basófila.
+- `osteoide` (modelo 3D): en el hueso inmaduro mostrar fibras de colágeno en haces irregulares y osteocitos grandes, redondeados y numerosos; en el laminar, láminas paralelas con osteocitos alineados y menos numerosos. La línea cementante separa ambos como una línea irregular y basófila. Los osteoblastos son cúbicos y voluminosos, con el núcleo en el polo alejado del hueso y la zona pálida del Golgi entre el núcleo y la matriz; el capilar va en el tejido conectivo de encima, cortado a lo largo, con sus eritrocitos.
 - `m3_bmp_runx2_osterix`: la secuencia se lee de la membrana al núcleo. Señales BMP en la membrana; Smad1/5/8 fosforilados unidos a Smad4 en el citoplasma; RUNX2 activado en el núcleo; osterix aparece después de RUNX2 (mostrarlo como paso siguiente, no simultáneo).
-- `m3_osteocito_red_lacuno_canalicular`: el espacio pericelular y las fibras de anclaje están exagerados para que se vean (esquema fuera de escala; indicarlo en la imagen). Los canalículos parten del cuerpo del osteocito en todas direcciones, con mayor densidad hacia el capilar y hacia la superficie. Los procesos de osteocitos vecinos se tocan mediante uniones comunicantes en sus extremos. El cilio primario se proyecta desde el cuerpo dentro de la laguna. Las flechas de flujo deben poder invertirse para representar el ciclo de carga y descarga.
+- `m3_osteocito_red_lacuno_canalicular` y `red_lacuno_canalicular`: el espacio pericelular y las fibras de anclaje están exagerados para que se vean (esquema fuera de escala; indicarlo en la imagen). Los canalículos parten del cuerpo del osteocito en todas direcciones, con mayor densidad hacia el capilar y hacia la superficie. Los procesos de osteocitos vecinos se tocan mediante uniones comunicantes en sus extremos. El cilio primario se proyecta desde el cuerpo dentro de la laguna. Las flechas de flujo deben poder invertirse para representar el ciclo de carga y descarga (en la animación; el modelo 3D muestra el sentido al cargar). En el modelo 3D, las células de revestimiento son planas, con el núcleo aplanado, y el capilar va a lo largo del conducto de Havers, abierto, con sus eritrocitos.
 - `m3_sensores_mecanicos`: fuera de escala. Las fibras de anclaje cruzan el espacio pericelular entre la pared canalicular y la membrana del proceso. Piezo1 se dibuja como canal de tres aspas; el hemicanal de conexina 43 como hemicanal de seis subunidades. El cilio primario no se dibuja sobre la membrana del proceso: va en un recuadro con el cuerpo del osteocito, proyectándose dentro de la laguna.
 - `m3_via_wnt_esclerostina`: Frizzled es un receptor de siete dominios transmembrana; LRP5/6 es un correceptor de un solo paso de membrana. El osteocito secretor debe quedar a un lado y por debajo del osteoblasto, dentro de la matriz, y su esclerostina se representa como partículas que viajan hacia LRP5/6. El osteocito lleva su propio PTH1R (`pth1r_osteocito`): es el mismo receptor que el del osteoblasto y la PTH puede acoplarse a cualquiera de los dos. Los estados de la escena (Wnt acoplado, esclerostina acoplada, PTH acoplada) deben poder mostrarse por separado.
 - `m3_mecanostato_ventanas`: las cifras son aproximadas y varían entre fuentes; rotularlas como «valores aproximados». Eje en escala logarítmica. Mostrar los umbrales como marcas con rango, no como líneas exactas. La ventana adaptada va entre MESr y MESm y la de sobrecarga leve entre MESm y MESp.
@@ -542,18 +542,19 @@ preguntas:
 ##### Actividad m3_multicapa_osteoide
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Dentro de una trabécula en formación"
-instrucciones: "Explora el corte de una trabécula ósea. Toca cada capa para leer su descripción; con teclado, Tab para moverte y Enter o Espacio para abrir la capa. Fíjate en cómo cambia la organización del colágeno y de los osteocitos entre el hueso inmaduro y el laminar. Debes abrir las 6 capas obligatorias."
+instrucciones: "Gira el corte de la trabécula con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Toca cada región para leer qué es; con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Compara el colágeno y los osteocitos del hueso inmaduro y del laminar. Visita las 6 regiones obligatorias."
 obligatoria: true
 puntaje_max: 20
 concepto: "Osteoide, hueso inmaduro y hueso laminar"
 retroalimentacion:
   acierto: "Bien. Ahora puedes reconocer en un corte el osteoide, el frente de mineralización y la diferencia entre hueso inmaduro y laminar."
   error: "Faltan capas obligatorias. Ábrelas todas para comparar el hueso inmaduro con el laminar."
-svg: m3_osteoide_hueso_inmaduro
-modo: explorar
-capas:
+# 2026-10-18: pasa del dibujo SVG (m3_osteoide_hueso_inmaduro, con una ilustración hecha con IA que tenía errores
+# histológicos) a un modelo 3D construido por código. Mismo id, regiones, textos, puntaje y obligatorias.
+modelo: osteoide
+hotspots:
   - id: osteoblastos_activos
     etiqueta: "Osteoblastos activos"
     descripcion: "Células cuboides en fila que secretan colágeno tipo I y otras proteínas de la matriz. Están comunicadas entre sí por uniones comunicantes."
@@ -718,18 +719,22 @@ pasos:
 ##### Actividad m3_multicapa_osteocito
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Explora la red lacuno-canalicular"
-instrucciones: "Explora el corte de hueso cortical con un osteocito y su red. Toca cada capa para leer su descripción. Con teclado, usa Tab para moverte entre capas, Enter o Espacio para abrirlas y Esc para cerrarlas. Pasar el cursor solo muestra el nombre. En pantallas pequeñas puedes acercar la imagen con dos dedos. Debes abrir las 10 capas obligatorias."
+instrucciones: "Gira el bloque de hueso cortical con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): la matriz está cortada para que veas el osteocito y su red. Toca cada región para leer qué es; con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita las 9 regiones obligatorias."
 obligatoria: true
 puntaje_max: 30
 concepto: "Anatomía funcional del sistema lacuno-canalicular"
 retroalimentacion:
   acierto: "Muy bien. Ya conoces las piezas de la red: laguna, procesos, canalículos, espacio pericelular y sus conexiones con el capilar y la superficie."
   error: "Faltan capas obligatorias. Ábrelas todas: el flujo de líquido solo se entiende viendo cómo se conectan las piezas."
-svg: m3_osteocito_red_lacuno_canalicular
-modo: explorar
-capas:
+# 2026-10-18: pasa del dibujo SVG (con una ilustración hecha con IA que tenía errores histológicos) a un modelo 3D
+# construido por código. El SVG m3_osteocito_red_lacuno_canalicular se conserva para la animación. La exploración
+# admite 12 regiones y el dibujo tenía 15 capas: espacio_pericelular se une a canaliculos, integrinas_puntos_union a
+# fibras_de_anclaje, y canal_piezo1 y conexina_43 forman canales_de_membrana (obligatorias: 9, antes 10). Pendiente
+# de validar con el docente.
+modelo: red_lacuno_canalicular
+hotspots:
   - id: matriz_mineralizada
     etiqueta: "Matriz mineralizada"
     descripcion: "Matriz ósea calcificada que rodea a la red. Se deforma muy poco con la carga; esa deformación crea diferencias de presión en el líquido de los canalículos."
@@ -743,26 +748,17 @@ capas:
     etiqueta: "Procesos dendríticos"
     descripcion: "Prolongaciones finas del osteocito que recorren los canalículos y se conectan con las de otros osteocitos. Su membrana es donde actúa el esfuerzo cortante del flujo."
   - id: canaliculos
-    etiqueta: "Canalículos"
-    descripcion: "Conductos de menos de un micrómetro de diámetro que salen de las lagunas y alojan los procesos. Forman la red por la que se mueve el líquido."
-  - id: espacio_pericelular
-    etiqueta: "Espacio pericelular"
-    descripcion: "Espacio muy estrecho entre la membrana del proceso y la pared del canalículo. Contiene líquido intersticial y matriz pericelular. Por aquí circula el flujo que activa al osteocito."
+    etiqueta: "Canalículos y espacio pericelular"
+    descripcion: "Conductos de menos de un micrómetro de diámetro que salen de las lagunas y alojan los procesos. Forman la red por la que se mueve el líquido. Entre la membrana del proceso y la pared del canalículo queda el espacio pericelular, muy estrecho, con líquido intersticial y matriz pericelular: por aquí circula el flujo que activa al osteocito. En el modelo, el líquido es el manguito translúcido, exagerado para que se vea."
   - id: fibras_de_anclaje
-    etiqueta: "Fibras de anclaje"
-    descripcion: "Elementos transversales que unen la membrana del proceso con la pared del canalículo. En el modelo de Weinbaum, el arrastre del líquido sobre ellas amplifica la deformación local de la membrana."
-  - id: integrinas_puntos_union
-    etiqueta: "Integrinas en los puntos de unión"
-    descripcion: "Receptores de adhesión que fijan el proceso a la pared canalicular. Transmiten la tracción al citoesqueleto y activan señales de adhesión focal."
+    etiqueta: "Fibras de anclaje e integrinas"
+    descripcion: "Elementos transversales que unen la membrana del proceso con la pared del canalículo. En el modelo de Weinbaum, el arrastre del líquido sobre ellas amplifica la deformación local de la membrana. En los puntos de unión, las integrinas, receptores de adhesión, fijan el proceso a la pared canalicular: transmiten la tracción al citoesqueleto y activan señales de adhesión focal."
   - id: cilio_primario
     etiqueta: "Cilio primario"
     descripcion: "Prolongación única en forma de antena que se proyecta desde el cuerpo dentro de la laguna. Se propone como sensor del flujo de líquido; su mecanismo exacto en osteocitos sigue en estudio."
-  - id: canal_piezo1
-    etiqueta: "Canal Piezo1"
-    descripcion: "Canal catiónico mecanosensible de la membrana. Con el estiramiento de la membrana deja entrar cationes, entre ellos Ca²⁺."
-  - id: conexina_43
-    etiqueta: "Conexina 43 (uniones y hemicanales)"
-    descripcion: "Las uniones comunicantes conectan procesos de osteocitos vecinos. Los hemicanales, mitades de esos canales abiertas al medio, se abren con la deformación y liberan mensajeros como la PGE2."
+  - id: canales_de_membrana
+    etiqueta: "Canales de membrana: Piezo1 y conexina 43"
+    descripcion: "Piezo1, de tres aspas, es un canal catiónico mecanosensible: con el estiramiento de la membrana deja entrar cationes, entre ellos Ca²⁺. La conexina 43, en anillos de seis subunidades, forma las uniones comunicantes que conectan procesos de osteocitos vecinos y hemicanales, mitades de esos canales abiertas al medio, que se abren con la deformación y liberan mensajeros como la PGE2."
   - id: capilar_conducto_haversiano
     etiqueta: "Capilar del conducto de Havers"
     descripcion: "Vaso que abastece a los osteocitos de oxígeno y nutrientes. Los canalículos conectan las lagunas con este conducto y con la superficie."
@@ -771,7 +767,7 @@ capas:
     descripcion: "Células que cubren la superficie ósea. Reciben las señales del osteocito y, según ellas, forman hueso nuevo o lo preparan para resorción."
   - id: flechas_flujo_liquido
     etiqueta: "Dirección del flujo de líquido"
-    descripcion: "Flechas que indican cómo se mueve el líquido cuando la carga cambia: en un sentido al cargar y en el contrario al descargar. Sin cambio de carga no hay flujo."
+    descripcion: "Flechas que indican cómo se mueve el líquido cuando la carga cambia: en un sentido al cargar y en el contrario al descargar. Sin cambio de carga no hay flujo. En el modelo, las flechas marcan el sentido al cargar."
   - id: mensajeros_pge2_no
     etiqueta: "Mensajeros PGE2 y óxido nítrico"
     descripcion: "Moléculas que el osteocito libera en respuesta al flujo. Viajan por la red y llegan a la superficie, donde modulan a osteoblastos y osteoclastos."
@@ -781,9 +777,8 @@ requeridas:
   - cuerpo_osteocito
   - procesos_dendriticos
   - canaliculos
-  - espacio_pericelular
   - fibras_de_anclaje
-  - conexina_43
+  - canales_de_membrana
   - capilar_conducto_haversiano
   - flechas_flujo_liquido
 ```

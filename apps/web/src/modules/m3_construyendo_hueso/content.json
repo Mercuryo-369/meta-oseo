@@ -380,8 +380,20 @@
   ],
   "estado_revision": {
     "estado": "borrador",
-    "notas": "Borrador generado desde m3_construyendo_hueso.md, pendiente de validación del docente. Las 60 marcas de cifras dudosas del guion se quitaron del texto y están en pendientes; el detalle está en la sección 12 del guion. Ajustes a mano tras convertir: se enlazó al glosario la primera aparición de cada término (Smad, Noggin, Cilio primario y Frizzled solo aparecen en tablas y actividades) y en el SVG m3_sensores_mecanicos se renombraron dos grupos a ids únicos. Banco de preguntas y ganchos del mentor no se transcriben.",
+    "notas": "Borrador generado desde m3_construyendo_hueso.md, pendiente de validación del docente. Las 60 marcas de cifras dudosas del guion se quitaron del texto y están en pendientes; el detalle está en la sección 12 del guion. Ajustes a mano tras convertir: se enlazó al glosario la primera aparición de cada término (Smad, Noggin, Cilio primario y Frizzled solo aparecen en tablas y actividades) y en el SVG m3_sensores_mecanicos se renombraron dos grupos a ids únicos. Banco de preguntas y ganchos del mentor no se transcriben. Dos multicapa pasaron a 3D (2026-10-18): ver pendientes.",
     "pendientes": [
+      {
+        "id": "m3_multicapa_osteoide",
+        "nota": "Validar el modelo 3D que sustituye al dibujo (2026-10-18): mismas 8 regiones, textos y obligatorias. Revisar la forma de los osteoblastos, el ribete de osteoide, los osteocitos de cada hueso y la línea cementante festoneada; las proporciones son aproximadas."
+      },
+      {
+        "id": "m3_multicapa_osteocito",
+        "nota": "Validar la agrupación del modelo 3D (2026-10-18): las 15 capas del dibujo pasan a 12 regiones. Espacio pericelular va con Canalículos, integrinas con Fibras de anclaje, y Piezo1 y conexina 43 en Canales de membrana. Obligatorias: 9 (antes 10)."
+      },
+      {
+        "id": "m3_multicapa_osteocito",
+        "nota": "Confirmar el sentido de las flechas del flujo en el modelo 3D: durante la carga (compresión), de la laguna hacia el conducto de Havers y hacia la superficie; al descargar se invierte."
+      },
       {
         "id": "m3",
         "nota": "Confirmar: «60 a 90 minutos»"
@@ -1592,9 +1604,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m3_multicapa_osteoide",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Dentro de una trabécula en formación",
-            "instrucciones": "Explora el corte de una trabécula ósea. Toca cada capa para leer su descripción; con teclado, Tab para moverte y Enter o Espacio para abrir la capa. Fíjate en cómo cambia la organización del colágeno y de los osteocitos entre el hueso inmaduro y el laminar. Debes abrir las 6 capas obligatorias.",
+            "instrucciones": "Gira el corte de la trabécula con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Toca cada región para leer qué es; con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Compara el colágeno y los osteocitos del hueso inmaduro y del laminar. Visita las 6 regiones obligatorias.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
@@ -1603,12 +1615,9 @@
             },
             "concepto": "Osteoide, hueso inmaduro y hueso laminar",
             "config": {
-              "svg": "/images/m3/m3_osteoide_hueso_inmaduro.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m3/m3_osteoide_hueso_inmaduro.webp",
-              "alt": "Corte de una trabécula en formación: osteoblastos, osteoide, frente de mineralización, hueso inmaduro con osteocitos y, al lado, hueso laminar ya remodelado.",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "osteoide",
+              "alt": "Modelo 3D de una trabécula en formación cortada por un plano: hilera de osteoblastos sobre el osteoide, frente de mineralización, hueso inmaduro con osteocitos, un osteocito recién incluido, capilar con eritrocitos y, tras la línea cementante, hueso laminar. Fuera de escala.",
+              "nodos": [
                 {
                   "id": "osteoblastos_activos",
                   "etiqueta": "Osteoblastos activos",
@@ -1650,7 +1659,7 @@
                   "descripcion": "Hueso organizado en láminas con fibras de colágeno paralelas y osteocitos alineados entre ellas. Se deposita sobre una superficie ya existente y es más resistente que el inmaduro."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "osteoblastos_activos",
                 "osteoide",
                 "frente_mineralizacion",
@@ -1870,9 +1879,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m3_multicapa_osteocito",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "Explora la red lacuno-canalicular",
-            "instrucciones": "Explora el corte de hueso cortical con un osteocito y su red. Toca cada capa para leer su descripción. Con teclado, usa Tab para moverte entre capas, Enter o Espacio para abrirlas y Esc para cerrarlas. Pasar el cursor solo muestra el nombre. En pantallas pequeñas puedes acercar la imagen con dos dedos. Debes abrir las 10 capas obligatorias.",
+            "instrucciones": "Gira el bloque de hueso cortical con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): la matriz está cortada para que veas el osteocito y su red. Toca cada región para leer qué es; con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita las 9 regiones obligatorias.",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
@@ -1881,12 +1890,9 @@
             },
             "concepto": "Anatomía funcional del sistema lacuno-canalicular",
             "config": {
-              "svg": "/images/m3/m3_osteocito_red_lacuno_canalicular_zonas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m3/m3_osteocito_red_lacuno_canalicular.webp",
-              "alt": "Corte de hueso cortical con un osteocito en su laguna, sus procesos en los canalículos, el espacio pericelular, los sensores y la conexión con el capilar y con las células de la superficie.",
-              "modo": "explorar",
-              "capas": [
+              "modelo": "red_lacuno_canalicular",
+              "alt": "Modelo 3D de hueso cortical cortado: un osteocito estrellado en su laguna, sus procesos dentro de los canalículos con fibras de anclaje, canales de membrana, el capilar del conducto de Havers, células de la superficie, flechas del flujo y mensajeros. Fuera de escala.",
+              "nodos": [
                 {
                   "id": "matriz_mineralizada",
                   "etiqueta": "Matriz mineralizada",
@@ -1909,23 +1915,13 @@
                 },
                 {
                   "id": "canaliculos",
-                  "etiqueta": "Canalículos",
-                  "descripcion": "Conductos de menos de un micrómetro de diámetro que salen de las lagunas y alojan los procesos. Forman la red por la que se mueve el líquido."
-                },
-                {
-                  "id": "espacio_pericelular",
-                  "etiqueta": "Espacio pericelular",
-                  "descripcion": "Espacio muy estrecho entre la membrana del proceso y la pared del canalículo. Contiene líquido intersticial y matriz pericelular. Por aquí circula el flujo que activa al osteocito."
+                  "etiqueta": "Canalículos y espacio pericelular",
+                  "descripcion": "Conductos de menos de un micrómetro de diámetro que salen de las lagunas y alojan los procesos. Forman la red por la que se mueve el líquido. Entre la membrana del proceso y la pared del canalículo queda el espacio pericelular, muy estrecho, con líquido intersticial y matriz pericelular: por aquí circula el flujo que activa al osteocito. En el modelo, el líquido es el manguito translúcido, exagerado para que se vea."
                 },
                 {
                   "id": "fibras_de_anclaje",
-                  "etiqueta": "Fibras de anclaje",
-                  "descripcion": "Elementos transversales que unen la membrana del proceso con la pared del canalículo. En el modelo de Weinbaum, el arrastre del líquido sobre ellas amplifica la deformación local de la membrana."
-                },
-                {
-                  "id": "integrinas_puntos_union",
-                  "etiqueta": "Integrinas en los puntos de unión",
-                  "descripcion": "Receptores de adhesión que fijan el proceso a la pared canalicular. Transmiten la tracción al citoesqueleto y activan señales de adhesión focal."
+                  "etiqueta": "Fibras de anclaje e integrinas",
+                  "descripcion": "Elementos transversales que unen la membrana del proceso con la pared del canalículo. En el modelo de Weinbaum, el arrastre del líquido sobre ellas amplifica la deformación local de la membrana. En los puntos de unión, las integrinas, receptores de adhesión, fijan el proceso a la pared canalicular: transmiten la tracción al citoesqueleto y activan señales de adhesión focal."
                 },
                 {
                   "id": "cilio_primario",
@@ -1933,14 +1929,9 @@
                   "descripcion": "Prolongación única en forma de antena que se proyecta desde el cuerpo dentro de la laguna. Se propone como sensor del flujo de líquido; su mecanismo exacto en osteocitos sigue en estudio."
                 },
                 {
-                  "id": "canal_piezo1",
-                  "etiqueta": "Canal Piezo1",
-                  "descripcion": "Canal catiónico mecanosensible de la membrana. Con el estiramiento de la membrana deja entrar cationes, entre ellos Ca²⁺."
-                },
-                {
-                  "id": "conexina_43",
-                  "etiqueta": "Conexina 43 (uniones y hemicanales)",
-                  "descripcion": "Las uniones comunicantes conectan procesos de osteocitos vecinos. Los hemicanales, mitades de esos canales abiertas al medio, se abren con la deformación y liberan mensajeros como la PGE2."
+                  "id": "canales_de_membrana",
+                  "etiqueta": "Canales de membrana: Piezo1 y conexina 43",
+                  "descripcion": "Piezo1, de tres aspas, es un canal catiónico mecanosensible: con el estiramiento de la membrana deja entrar cationes, entre ellos Ca²⁺. La conexina 43, en anillos de seis subunidades, forma las uniones comunicantes que conectan procesos de osteocitos vecinos y hemicanales, mitades de esos canales abiertas al medio, que se abren con la deformación y liberan mensajeros como la PGE2."
                 },
                 {
                   "id": "capilar_conducto_haversiano",
@@ -1955,7 +1946,7 @@
                 {
                   "id": "flechas_flujo_liquido",
                   "etiqueta": "Dirección del flujo de líquido",
-                  "descripcion": "Flechas que indican cómo se mueve el líquido cuando la carga cambia: en un sentido al cargar y en el contrario al descargar. Sin cambio de carga no hay flujo."
+                  "descripcion": "Flechas que indican cómo se mueve el líquido cuando la carga cambia: en un sentido al cargar y en el contrario al descargar. Sin cambio de carga no hay flujo. En el modelo, las flechas marcan el sentido al cargar."
                 },
                 {
                   "id": "mensajeros_pge2_no",
@@ -1963,15 +1954,14 @@
                   "descripcion": "Moléculas que el osteocito libera en respuesta al flujo. Viajan por la red y llegan a la superficie, donde modulan a osteoblastos y osteoclastos."
                 }
               ],
-              "requeridas": [
+              "requeridos": [
                 "matriz_mineralizada",
                 "laguna_osteocitica",
                 "cuerpo_osteocito",
                 "procesos_dendriticos",
                 "canaliculos",
-                "espacio_pericelular",
                 "fibras_de_anclaje",
-                "conexina_43",
+                "canales_de_membrana",
                 "capilar_conducto_haversiano",
                 "flechas_flujo_liquido"
               ]

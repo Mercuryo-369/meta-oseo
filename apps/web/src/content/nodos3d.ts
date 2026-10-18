@@ -3,8 +3,8 @@
  *
  * El 3D de exploración es para la mandíbula, las células y, desde 2026-10-17 (pedido de la usuaria: el dibujo
  * SVG no se veía profesional), el hueso largo de m1_1, que se construye por código y no lleva GLB. Desde
- * 2026-10-18 también la raíz en su alvéolo con el ligamento periodontal de m2 (`ligamento_periodontal`, por código:
- * sustituye a una multicapa cuya ilustración tenía errores). Hay DOS maneras de que un nodo
+ * 2026-10-18 también los modelos por código que sustituyen a multicapa cuya ilustración tenía errores
+ * (`scenes/modelosPorCodigo.ts`). Hay DOS maneras de que un nodo
  * del contenido apunte al modelo:
  *  - por PIEZA: su `id` es el nombre de un nodo del GLB. Solo valen los del catálogo de este
  *    archivo, que es exactamente lo que F0-08 (mandíbula) y F0-10 (células) planean separar en
@@ -26,6 +26,8 @@ export const MODELOS_3D = [
   'ligamento_periodontal',
   'tejido_oseo_envejecido',
   'hueso_osteoporotico',
+  'osteoide',
+  'red_lacuno_canalicular',
 ] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
@@ -140,6 +142,44 @@ const NODOS_HUESO_OSTEOPOROTICO: readonly NodoCatalogo[] = [
   { id: 'colapso_vertebral', etiqueta: 'Aplastamiento vertebral (fractura por fragilidad)' },
 ];
 
+/**
+ * Superficie de formación ósea de una trabécula (`scenes/osteoide/modeloOsteoide.ts`, actividad
+ * m3_multicapa_osteoide): las ocho capas del dibujo SVG que sustituye, con los mismos ids.
+ */
+const NODOS_OSTEOIDE: readonly NodoCatalogo[] = [
+  { id: 'osteoblastos_activos', etiqueta: 'Osteoblastos activos' },
+  { id: 'osteoide', etiqueta: 'Osteoide' },
+  { id: 'frente_mineralizacion', etiqueta: 'Frente de mineralización' },
+  { id: 'hueso_inmaduro', etiqueta: 'Hueso inmaduro (fibrilar)' },
+  { id: 'osteocito_incluido', etiqueta: 'Osteocito recién incluido' },
+  { id: 'capilar', etiqueta: 'Capilar sanguíneo' },
+  { id: 'linea_cementante', etiqueta: 'Línea cementante' },
+  { id: 'hueso_laminar', etiqueta: 'Hueso laminar' },
+];
+
+/**
+ * Osteocito y su red lacuno-canalicular (`scenes/red_lacuno_canalicular/modeloRedLacunoCanalicular.ts`, actividad
+ * m3_multicapa_osteocito). El dibujo tenía 15 capas y la exploración admite 12 nodos: el espacio pericelular va con
+ * los canalículos, las integrinas con las fibras de anclaje y Piezo1 con la conexina 43 (`canales_de_membrana`).
+ */
+const NODOS_RED_LACUNO_CANALICULAR: readonly NodoCatalogo[] = [
+  { id: 'matriz_mineralizada', etiqueta: 'Matriz mineralizada' },
+  { id: 'laguna_osteocitica', etiqueta: 'Laguna osteocítica' },
+  { id: 'cuerpo_osteocito', etiqueta: 'Cuerpo del osteocito' },
+  { id: 'procesos_dendriticos', etiqueta: 'Procesos dendríticos' },
+  { id: 'canaliculos', etiqueta: 'Canalículos y espacio pericelular' },
+  { id: 'fibras_de_anclaje', etiqueta: 'Fibras de anclaje e integrinas' },
+  { id: 'cilio_primario', etiqueta: 'Cilio primario' },
+  { id: 'canales_de_membrana', etiqueta: 'Canales de membrana: Piezo1 y conexina 43' },
+  { id: 'capilar_conducto_haversiano', etiqueta: 'Capilar del conducto de Havers' },
+  {
+    id: 'celulas_revestimiento',
+    etiqueta: 'Células de revestimiento y osteoblastos de superficie',
+  },
+  { id: 'flechas_flujo_liquido', etiqueta: 'Dirección del flujo de líquido' },
+  { id: 'mensajeros_pge2_no', etiqueta: 'Mensajeros PGE2 y óxido nítrico' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
@@ -148,6 +188,8 @@ export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>>
   ligamento_periodontal: NODOS_LIGAMENTO_PERIODONTAL,
   tejido_oseo_envejecido: NODOS_TEJIDO_OSEO_ENVEJECIDO,
   hueso_osteoporotico: NODOS_HUESO_OSTEOPOROTICO,
+  osteoide: NODOS_OSTEOIDE,
+  red_lacuno_canalicular: NODOS_RED_LACUNO_CANALICULAR,
 };
 
 /**

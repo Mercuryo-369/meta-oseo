@@ -1227,6 +1227,19 @@ modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `
 en corte transversal, normales y osteoporóticos a la misma escala (`apps/web/src/scenes/hueso_osteoporotico/`).
 Construido por código, como `hueso_largo`, y **no admite `ancla`**.
 
+**Modelo `osteoide`** (2026-10-18, actividad m3_multicapa_osteoide): `osteoblastos_activos`, `osteoide`,
+`frente_mineralizacion`, `hueso_inmaduro`, `osteocito_incluido`, `capilar`, `linea_cementante`, `hueso_laminar`. Es
+la superficie de formación de una trabécula cortada por un plano (`apps/web/src/scenes/osteoide/modeloOsteoide.ts`),
+construida por código como el hueso largo. **No admite `ancla`**.
+
+**Modelo `red_lacuno_canalicular`** (2026-10-18, actividad m3_multicapa_osteocito): `matriz_mineralizada`,
+`laguna_osteocitica`, `cuerpo_osteocito`, `procesos_dendriticos`, `canaliculos` (con el espacio pericelular),
+`fibras_de_anclaje` (con las integrinas), `cilio_primario`, `canales_de_membrana` (Piezo1 y conexina 43),
+`capilar_conducto_haversiano`, `celulas_revestimiento`, `flechas_flujo_liquido`, `mensajeros_pge2_no`. Es un osteocito
+en hueso cortical cortado, con su red y el conducto de Havers
+(`apps/web/src/scenes/red_lacuno_canalicular/modeloRedLacunoCanalicular.ts`), construido por código. **No admite
+`ancla`**.
+
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del
 cóndilo; `z` 0 es atrás y 1 adelante (el mentón). Por ejemplo, el mentón está cerca de `{ x: 0.5, y: 0.2, z: 1 }`.
