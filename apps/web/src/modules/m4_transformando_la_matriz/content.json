@@ -434,11 +434,11 @@
         "nota": "Confirmar: «| Secundaria | Lenta: meses a años | Se añaden más cristales y estos crecen y maduran; se propone que participa la red de osteocitos»"
       },
       {
-        "id": "osteoide",
+        "id": "m4_multicapa_frente",
         "nota": "Confirmar: «En hueso normal la costura mide aproximadamente 10 µm»"
       },
       {
-        "id": "hueso_mineralizado",
+        "id": "m4_multicapa_frente",
         "nota": "Confirmar: «Tras la fase primaria tiene aproximadamente 60 a 70 % del mineral máximo y sigue madurando durante meses o años»"
       },
       {
@@ -2258,23 +2258,20 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m4_multicapa_frente",
-            "tipo": "multicapa",
+            "tipo": "exploracion-3d",
             "titulo": "El frente de mineralización, capa por capa",
-            "instrucciones": "Lee cada pista y toca en el corte la estructura que describe (con teclado, Tab y Enter). Al acertar lees su ficha. Debes ubicar cuatro estructuras.",
+            "instrucciones": "Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de una superficie ósea en formación. Recórrelo de la superficie hacia el interior y toca cada estructura para leer su ficha. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cuatro estructuras requeridas.",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
               "correcta": "Bien: ubicas el frente como el límite entre el osteoide blando y el hueso mineralizado, con el osteocito ya incluido en la matriz.",
-              "incorrecta": "Esa no es la estructura de la pista. Recuerda el orden de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
+              "incorrecta": "Todavía te faltan estructuras por visitar. Recorre el corte en orden, de la superficie hacia el interior: osteoblastos, osteoide, frente, hueso mineralizado, osteocito."
             },
             "concepto": "Frente de mineralización",
             "config": {
-              "svg": "/images/m4/m4_frente_mineralizacion_zonas.svg",
-              "viewBox": "0 0 800 600",
-              "fondo": "/images/m4/m4_frente_mineralizacion.webp",
-              "alt": "Corte de una superficie ósea en formación, de la superficie hacia el interior: osteoblastos, osteoide, frente de mineralización, hueso mineralizado y osteocito con sus canalículos.",
-              "modo": "identificar",
-              "capas": [
+              "modelo": "frente_mineralizacion",
+              "alt": "Bloque 3D de superficie ósea en formación, de unas 64 µm de ancho: osteoblastos, osteoide de unas 10 µm con vesículas de matriz de 0,1 a 0,2 µm, frente de mineralización, hueso mineralizado con osteocitos y canalículos, y dos marcas de tetraciclina separadas 8 µm.",
+              "nodos": [
                 {
                   "id": "osteoblastos",
                   "etiqueta": "Osteoblastos",
@@ -2283,8 +2280,7 @@
                 {
                   "id": "osteoide",
                   "etiqueta": "Osteoide",
-                  "descripcion": "Matriz recién secretada, sin mineral. En hueso normal la costura mide aproximadamente 10 µm. Un grosor mucho mayor sugiere retraso de la mineralización.",
-                  "pista": "La capa de matriz blanda recién secretada que aún no tiene mineral, entre las células de superficie y el hueso duro."
+                  "descripcion": "Matriz recién secretada, sin mineral. En hueso normal la costura mide aproximadamente 10 µm. Un grosor mucho mayor sugiere retraso de la mineralización."
                 },
                 {
                   "id": "vesiculas_matriz",
@@ -2294,20 +2290,17 @@
                 {
                   "id": "frente_mineralizacion",
                   "etiqueta": "Frente de mineralización",
-                  "descripcion": "Límite entre el osteoide y el hueso mineralizado. Avanza hacia la superficie a medida que se forma matriz nueva. Es donde se fija la tetraciclina.",
-                  "pista": "La línea de transición donde la matriz blanda pasa a matriz con mineral y donde se fija la tetraciclina."
+                  "descripcion": "Límite entre el osteoide y el hueso mineralizado. Avanza hacia la superficie a medida que se forma matriz nueva. Es donde se fija la tetraciclina."
                 },
                 {
                   "id": "hueso_mineralizado",
                   "etiqueta": "Hueso mineralizado",
-                  "descripcion": "Matriz con mineral. Tras la fase primaria tiene aproximadamente 60 a 70 % del mineral máximo y sigue madurando durante meses o años.",
-                  "pista": "La matriz dura y ya mineralizada, situada más al interior que el frente, donde quedan incluidas las células."
+                  "descripcion": "Matriz con mineral. Tras la fase primaria tiene aproximadamente 60 a 70 % del mineral máximo y sigue madurando durante meses o años."
                 },
                 {
                   "id": "osteocito",
                   "etiqueta": "Osteocito",
-                  "descripcion": "Osteoblasto que quedó incluido en la matriz, en su laguna. Regula la mineralización mediante proteínas como DMP1 y produce FGF23.",
-                  "pista": "La célula con prolongaciones que quedó atrapada en una laguna dentro de la matriz mineralizada."
+                  "descripcion": "Osteoblasto que quedó incluido en la matriz, en su laguna. Regula la mineralización mediante proteínas como DMP1 y produce FGF23."
                 },
                 {
                   "id": "canaliculos",
@@ -2320,7 +2313,7 @@
                   "descripcion": "Dos líneas paralelas depositadas en el frente en dos momentos. La distancia entre ellas dividida por los días entre ciclos es la tasa de aposición mineral."
                 }
               ],
-              "requeridas": ["osteoide", "frente_mineralizacion", "hueso_mineralizado", "osteocito"]
+              "requeridos": ["osteoide", "frente_mineralizacion", "hueso_mineralizado", "osteocito"]
             }
           }
         },

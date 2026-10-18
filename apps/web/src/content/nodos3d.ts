@@ -17,7 +17,7 @@
  * deben respetar. Si el modelador cambia un nombre, se cambia aquí y en el contenido.
  */
 
-export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo'] as const;
+export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo', 'frente_mineralizacion'] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
 export interface NodoCatalogo {
@@ -66,10 +66,27 @@ const NODOS_HUESO_LARGO: readonly NodoCatalogo[] = [
   { id: 'arteria_nutricia', etiqueta: 'Arteria nutricia' },
 ];
 
+/**
+ * Bloque de una superficie ósea en formación (`scenes/frente_mineralizacion/modeloFrenteMineralizacion.ts`, actividad
+ * m4_multicapa_frente; sustituye a la ilustración de la multicapa desde 2026-10-18): cada región es un grupo del
+ * modelo con este nombre, de la superficie hacia el interior.
+ */
+const NODOS_FRENTE_MINERALIZACION: readonly NodoCatalogo[] = [
+  { id: 'osteoblastos', etiqueta: 'Osteoblastos' },
+  { id: 'osteoide', etiqueta: 'Osteoide' },
+  { id: 'vesiculas_matriz', etiqueta: 'Vesículas de matriz' },
+  { id: 'frente_mineralizacion', etiqueta: 'Frente de mineralización' },
+  { id: 'hueso_mineralizado', etiqueta: 'Hueso mineralizado' },
+  { id: 'osteocito', etiqueta: 'Osteocito' },
+  { id: 'canaliculos', etiqueta: 'Canalículos' },
+  { id: 'marcas_tetraciclina', etiqueta: 'Marcas de tetraciclina' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
   hueso_largo: NODOS_HUESO_LARGO,
+  frente_mineralizacion: NODOS_FRENTE_MINERALIZACION,
 };
 
 /**

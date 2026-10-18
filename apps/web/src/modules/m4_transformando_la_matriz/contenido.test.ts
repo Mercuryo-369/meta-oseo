@@ -244,14 +244,15 @@ describe('módulo 4: cobertura del guion', () => {
     expect(puntajeMaximoModulo(modulo)).toBeGreaterThanOrEqual(PUNTAJE_MODULO_MIN);
   });
 
-  it('cuenta 20 actividades del guion (5 multicapa, 9 quiz, 3 relaciones, 1 video, 1 arrastre y 1 exploración 3D) más las 3D extra', () => {
+  it('cuenta 20 actividades del guion (4 multicapa, 9 quiz, 3 relaciones, 1 video, 1 arrastre y 2 exploraciones 3D) más las 3D extra', () => {
     expect(contarActividadesPorTipo(modulo)).toEqual({
-      multicapa: 5,
+      // m4_multicapa_frente pasó de multicapa (SVG) a exploración 3D con el modelo frente_mineralizacion (2026-10-18).
+      multicapa: 4,
       quiz: 9,
       'relacion-columnas': 3,
       'video-texto': 1,
       'arrastre-molecular': 1,
-      'exploracion-3d': 1 + EXTRAS_3D.length,
+      'exploracion-3d': 2 + EXTRAS_3D.length,
     });
   });
 

@@ -1,8 +1,8 @@
 // Prueba permanente de las ilustraciones SVG del módulo 4 ("Transformando la matriz").
 // Valida cada archivo de public/images/m4 con el validador real (src/content/svg.ts) y comprueba
 // que estén todas las capas que pide el guion, en docs/guion-por-modulo/m4_transformando_la_matriz.md,
-// sección "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). El modelo 3D de la mandíbula
-// no es un SVG y no se comprueba aquí.
+// sección "Ilustraciones y modelos requeridos" (tabla "Capas o zonas"). Los modelos 3D (la mandíbula y el
+// bloque del frente de mineralización, scenes/frente_mineralizacion) no son SVG y no se comprueban aquí.
 import { describe, expect, it } from 'vitest';
 import { analizarSvg, problemasSvg } from '@/content/svg';
 
@@ -62,7 +62,8 @@ const CAPAS_POR_ARCHIVO: Record<string, readonly string[]> = {
     'cristales_extrafibrilares',
     'eje_c_cristales',
   ],
-  // Sección 4.6 (multicapa, identificar)
+  // Sección 4.6 (figura del texto; hasta 2026-10-18 también la multicapa de modo identificar, hoy un modelo 3D).
+  // Conserva sus capas y zonas táctiles.
   m4_frente_mineralizacion: [
     'osteoblastos',
     'osteoide',
@@ -101,6 +102,7 @@ const ARCHIVOS = Object.keys(CAPAS_POR_ARCHIVO);
 /** Dibujos de modo "identificar": no pueden nombrar dentro del dibujo las estructuras que se piden. */
 const NOMBRES_PROHIBIDOS: Record<string, RegExp> = {
   m4_fibrilla_colageno: /hueco|solap|periodo|tropocol|entrecruz|mol[eé]cula/i,
+  // El frente ya no es una multicapa (2026-10-18), pero su dibujo sigue sin rótulos de capa.
   m4_frente_mineralizacion:
     /osteoblast|osteoide|ves[ií]cula|frente|hueso|osteocit|canal[ií]cul|tetraciclina/i,
   m4_homeostasis_calcio_fosfato:
