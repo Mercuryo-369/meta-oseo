@@ -40,27 +40,30 @@ La mandíbula es el hilo conductor del módulo. Cada concepto general vuelve a e
 
 ## Ilustraciones y modelos requeridos
 
-Convenciones de producción: las imágenes se producen como **SVG multicapa** (un grupo `<g>` por capa, con el `id` exacto que aparece en esta tabla). El único modelo 3D es la **mandíbula**, una sola malla: no hay piezas separadas, por eso sus estructuras se definen como **hotspots** con nombre y descripción (sección 1.5). Las células, cuando aparecen, se dibujan en SVG. Todo lo dibujado es esquemático y sin escala salvo que se indique.
+Convenciones de producción: las imágenes se producen como **SVG multicapa** (un grupo `<g>` por capa, con el `id` exacto que aparece en esta tabla). La **mandíbula** es una sola malla: no hay piezas separadas, por eso sus estructuras se definen como **hotspots** con nombre y descripción (sección 1.5). Desde 2026-10-17/18 hay además modelos 3D construidos por código, con una pieza por estructura: el hueso largo (`hueso_largo`), el extremo del hueso largo por capas (`hueso_capas`), la osteona (`osteona`) y el hueso entretejido frente al laminar (`hueso_entretejido_laminar`). Las células, cuando aparecen, se dibujan en SVG. Todo lo dibujado es esquemático y sin escala salvo que se indique.
 
 | id de archivo | Que muestra | Capas o zonas (id = etiqueta) | Se usa en |
 |---|---|---|---|
 | `m1_hueso_largo_macro` | Corte longitudinal de un hueso largo (por ejemplo, fémur) con sus regiones y su irrigación principal | `cartilago_articular` = Cartílago articular; `epifisis` = Epífisis; `linea_epifisaria` = Línea epifisaria; `metafisis` = Metáfisis; `diafisis` = Diáfisis; `cavidad_medular` = Cavidad medular; `arteria_nutricia` = Arteria nutricia | Actividad `m1_1_hueso_largo` |
 | `m1_hormonas_oseas_escena` | Esquema de un hueso que libera mensajeros a la sangre y tres órganos diana con sus receptores. Los efectos no llevan capas propias: los anima la aplicación con su vocabulario de animaciones y sus indicadores (ver la actividad) | `hueso_emisor` = Hueso (osteocito y osteoblasto); `vaso_sanguineo` = Torrente sanguíneo; `organo_rinon` = Riñón (túbulo proximal); `organo_pancreas` = Páncreas (célula beta); `organo_hipotalamo` = Hipotálamo (neuronas); `receptor_fgfr_klotho` = Receptor del riñón; `receptor_celula_beta` = Receptor del páncreas; `receptor_mc4r` = Receptor del hipotálamo | Actividad `m1_2_hormonas_oseas` |
 | `m1_matriz_composicion` | Vista a escala nanométrica de una fibrilla de colágeno tipo I con cristales de hidroxiapatita y proteínas no colágenas | `fragmento_hueso` = Fragmento de hueso (vista general); `fibrilla_colageno` = Fibrilla de colágeno tipo I; `zonas_hueco` = Espacios entre moléculas de colágeno; `cristales_hidroxiapatita` = Cristales de hidroxiapatita; `proteinas_no_colagenas` = Proteínas no colágenas; `fuerza_traccion` = Flechas de tracción; `fuerza_compresion` = Flechas de compresión | Actividad `m1_3_video_matriz` |
-| `m1_entretejido_laminar` | Dos paneles a la misma escala: hueso entretejido (izquierda) y hueso laminar (derecha) | `fibras_entretejidas` = Fibras entrecruzadas al azar; `osteocitos_entretejido` = Osteocitos del hueso entretejido; `laminillas_paralelas` = Laminillas paralelas; `osteocitos_laminares` = Osteocitos del hueso laminar | Actividad `m1_3_entretejido_laminar` |
-| `m1_corte_hueso_capas` | Corte longitudinal de la extremidad de un hueso largo, de la superficie al interior | `periostio` = Periostio; `hueso_cortical` = Hueso cortical; `endostio` = Endostio; `hueso_trabecular` = Hueso trabecular; `medula_osea` = Médula ósea | Actividad `m1_4_corte_capas` |
-| `m1_osteona_detalle` | Bloque de hueso cortical (esquema clásico) con una osteona en primer plano | `conducto_de_havers` = Conducto de Havers; `laminillas_concentricas` = Laminillas concéntricas; `osteocito_en_laguna` = Osteocito en su laguna; `canaliculos` = Canalículos; `linea_cementante` = Línea cementante; `conducto_de_volkmann` = Conducto de Volkmann; `laminillas_intersticiales` = Laminillas intersticiales | Actividad `m1_4_osteona` |
+| `m1_entretejido_laminar` | Dos paneles a la misma escala: hueso entretejido (izquierda) y hueso laminar (derecha) | `fibras_entretejidas` = Fibras entrecruzadas al azar; `osteocitos_entretejido` = Osteocitos del hueso entretejido; `laminillas_paralelas` = Laminillas paralelas; `osteocitos_laminares` = Osteocitos del hueso laminar | Figura de la sección 1.3 (la actividad `m1_3_entretejido_laminar` usa el modelo 3D `hueso_entretejido_laminar` desde 2026-10-18) |
+| `m1_corte_hueso_capas_rotulado` | Corte longitudinal de la extremidad de un hueso largo, de la superficie al interior, con los nombres de las capas | `periostio` = Periostio; `hueso_cortical` = Hueso cortical; `endostio` = Endostio; `hueso_trabecular` = Hueso trabecular; `medula_osea` = Médula ósea | Figura de la sección 1.4 (la actividad `m1_4_corte_capas` usa el modelo 3D `hueso_capas` desde 2026-10-18; el dibujo sin rótulos de la multicapa se retiró) |
+| `m1_osteona_detalle` | Bloque de hueso cortical (esquema clásico) con una osteona en primer plano | `conducto_de_havers` = Conducto de Havers; `laminillas_concentricas` = Laminillas concéntricas; `osteocito_en_laguna` = Osteocito en su laguna; `canaliculos` = Canalículos; `linea_cementante` = Línea cementante; `conducto_de_volkmann` = Conducto de Volkmann; `laminillas_intersticiales` = Laminillas intersticiales | Portada del módulo (la actividad `m1_4_osteona` usa el modelo 3D `osteona` desde 2026-10-18) |
 | `m1_proceso_alveolar_corte` | Corte transversal (vestibulolingual) del cuerpo mandibular a la altura de una raíz dentaria | `hueso_alveolar_propio` = Hueso alveolar propio (lámina cribiforme); `tablas_corticales` = Tablas corticales vestibular y lingual; `hueso_trabecular_alveolar` = Hueso trabecular de soporte; `ligamento_periodontal` = Ligamento periodontal; `raiz_dentaria` = Raíz del diente; `conducto_mandibular` = Conducto mandibular | Actividad `m1_5_proceso_alveolar` |
 | `m1_wolff_femur` | Corte frontal de la extremidad proximal del fémur con la orientación de las trabéculas | `trayectorias_compresion` = Trabéculas de compresión; `trayectorias_traccion` = Trabéculas de tracción; `corteza_femoral` = Cortical del fémur | Actividad `m1_5_wolff_femur` y figura de la sección 1.5 |
+| `hueso_capas` (modelo 3D construido por código) | Extremo de un hueso largo serrado a lo largo: final de la diáfisis, metáfisis y epífisis con el cartílago articular, y el corte transversal de la diáfisis | `periostio` = Periostio (capa fibrosa y capa celular, con sus vasos; termina en el borde del cartílago); `hueso_cortical` = Hueso cortical (marfil, gruesa en la diáfisis y fina en la epífisis); `endostio` = Endostio (capa fina que tapiza la cortical, la cavidad y cada trabécula); `hueso_trabecular` = Hueso trabecular (red de trabéculas en arcadas y línea epifisaria); `medula_osea` = Médula ósea (amarilla en la cavidad, roja entre las trabéculas) | Actividad `m1_4_corte_capas` |
+| `osteona` (modelo 3D construido por código) | Bloque de hueso cortical: corte transversal delante, longitudinal a la derecha y periostio arriba, con una osteona en primer plano de laminillas escalonadas | `conducto_de_havers`, `laminillas_concentricas`, `osteocito_en_laguna`, `canaliculos`, `linea_cementante`, `conducto_de_volkmann`, `laminillas_intersticiales` (las mismas siete estructuras del dibujo, una pieza cada una) | Actividad `m1_4_osteona` |
+| `hueso_entretejido_laminar` (modelo 3D construido por código) | Dos bloques a la misma escala: hueso entretejido (izquierda) y hueso laminar con tres laminillas escalonadas (derecha) | `fibras_entretejidas`, `osteocitos_entretejido`, `laminillas_paralelas`, `osteocitos_laminares` (las mismas cuatro estructuras del dibujo) | Actividad `m1_3_entretejido_laminar` |
 | `mandibula` (modelo 3D) | Mandíbula humana adulta, una sola malla de hueso; se espera sin dientes, porque BodyParts3D los modela aparte (confirmar al inspeccionar el modelo). Provisional: `apps/web/public/models/mandibula_bodyparts3d.stl` (BodyParts3D FJ6399) | Hotspots (ids tomados del catálogo `CATALOGO_NODOS.mandibula` del frontend): `cuerpo` = Cuerpo; `rama` = Rama; `angulo` = Ángulo; `condilo` = Cóndilo (proceso condilar); `apofisis_coronoides` = Apófisis coronoides; `escotadura_mandibular` = Escotadura mandibular; `sinfisis` = Sínfisis mentoniana; `foramen_mentoniano` = Foramen mentoniano; `foramen_mandibular` = Foramen mandibular (entrada del conducto mandibular); `proceso_alveolar` = Proceso alveolar (apófisis alveolar) | Actividad `m1_5_mandibula_3d` |
 
 ### Notas de precision anatomica (para quien dibuja y modela)
 
 - **`m1_hueso_largo_macro`.** El cartílago articular es hialino, cubre solo la superficie articular de la epífisis y no lleva periostio. La epífisis es sobre todo hueso trabecular con una cortical delgada; la diáfisis tiene cortical gruesa y una cavidad medular central (con médula amarilla en el adulto). La línea epifisaria se dibuja como una línea fina de hueso más denso entre epífisis y metáfisis. La arteria nutricia entra por el foramen nutricio, en la diáfisis, y se ramifica hacia la médula. Añadir, en trazo tenue, los vasos periósticos para indicar que la cortical recibe sangre por dentro y por fuera.
-- **`m1_corte_hueso_capas`.** El periostio se dibuja con dos capas (fibrosa externa y celular interna) y no cubre la superficie articular. El endostio es una línea muy fina, no una capa gruesa: tapiza la cara interna de la cortical, la cavidad medular y cada trabécula (por eso se dibuja junto a la cortical y también alrededor de las trabéculas). La médula ocupa los espacios entre trabéculas y la cavidad medular; no es una capa final aparte. La cortical debe ser más gruesa en la diáfisis que en la epífisis. Las trabéculas se orientan según las líneas de carga, no al azar.
-- **`m1_osteona_detalle`.** Esquema clásico en bloque: laminillas circunferenciales externas bajo el periostio, varias osteonas paralelas al eje del hueso, laminillas intersticiales (fragmentos angulosos) entre ellas y un conducto de Volkmann que cruza de forma transversal u oblicua **sin laminillas concéntricas propias**, uniendo conductos de Havers. La línea cementante es el contorno festoneado que rodea cada osteona. Las lagunas se dibujan entre laminillas, con canalículos que salen hacia el conducto central. Proporciones esquemáticas: el conducto de Havers mide alrededor de 50 µm y la osteona unos 200 a 250 µm de diámetro [verificar]; no dibujar barra de escala.
+- **`m1_corte_hueso_capas` (hoy el modelo `hueso_capas` y la figura rotulada).** El periostio se dibuja con dos capas (fibrosa externa y celular interna) y no cubre la superficie articular. El endostio es una línea muy fina, no una capa gruesa: tapiza la cara interna de la cortical, la cavidad medular y cada trabécula (por eso se dibuja junto a la cortical y también alrededor de las trabéculas). La médula ocupa los espacios entre trabéculas y la cavidad medular; no es una capa final aparte. La cortical debe ser más gruesa en la diáfisis que en la epífisis. Las trabéculas se orientan según las líneas de carga, no al azar.
+- **`m1_osteona_detalle` (y el modelo `osteona`).** Esquema clásico en bloque: laminillas circunferenciales externas bajo el periostio, varias osteonas paralelas al eje del hueso, laminillas intersticiales (fragmentos angulosos) entre ellas y un conducto de Volkmann que cruza de forma transversal u oblicua **sin laminillas concéntricas propias**, uniendo conductos de Havers. La línea cementante es el contorno festoneado que rodea cada osteona. Las lagunas se dibujan entre laminillas, con canalículos que salen hacia el conducto central. Proporciones esquemáticas: el conducto de Havers mide alrededor de 50 µm y la osteona unos 200 a 250 µm de diámetro [verificar]; no dibujar barra de escala.
 - **`m1_matriz_composicion`.** Esquema sin escala. La fibrilla de colágeno muestra un bandeo periódico (alternancia de zonas densas y de huecos); los cristales de hidroxiapatita son laminillas muy pequeñas que se sitúan en los huecos y a lo largo de la fibrilla. No dibujar los cristales como esferas ni como cubos.
-- **`m1_entretejido_laminar`.** Ambos paneles a la misma escala para que se aprecie que en el entretejido los osteocitos son más numerosos y grandes y sin orden, y en el laminar son menos y se alinean entre láminas. En el laminar, la dirección de las fibras cambia de una lámina a la siguiente.
+- **`m1_entretejido_laminar` (y el modelo `hueso_entretejido_laminar`).** Ambos paneles a la misma escala para que se aprecie que en el entretejido los osteocitos son más numerosos y grandes y sin orden, y en el laminar son menos y se alinean entre láminas. En el laminar, la dirección de las fibras cambia de una lámina a la siguiente.
 - **`m1_proceso_alveolar_corte`.** El hueso alveolar propio es una lámina delgada que reviste el alvéolo, perforada por pequeños orificios (por eso se llama lámina cribiforme); se dibuja como una línea densa junto al ligamento periodontal. Las tablas corticales rodean por fuera; entre ellas y el alvéolo hay hueso trabecular. El conducto mandibular aparece como un círculo bajo el ápice, con nervio, arteria y vena. La cortical del borde basal es la más gruesa. Añadir una nota: en la radiografía, el hueso alveolar propio se ve como la lámina dura.
 - **`m1_wolff_femur`.** Esquema clásico simplificado. El sistema de compresión va desde la cortical medial del cuello (calcar) hacia la parte superior de la cabeza; el de tracción va desde la cortical lateral, arqueándose hacia la parte inferior de la cabeza. Los dos sistemas se cruzan formando ángulos cercanos a 90°. Dejar claro en la nota al pie que es un modelo simplificado.
 - **`m1_hormonas_oseas_escena`.** No es anatómica: es un esquema conceptual. Los órganos diana pueden dibujarse como iconos reconocibles; lo importante es que cada receptor tenga una forma distinta y visible (llave y cerradura). No se dibujan capas de efecto: la aplicación anima el efecto con su vocabulario cerrado (liberación, activación, inhibición...) y con indicadores de fosfato, insulina y apetito.
@@ -675,18 +678,20 @@ pares:
 ##### Actividad m1_3_entretejido_laminar
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Entretejido frente a laminar"
-instrucciones: "Toca cada zona de la imagen para ver qué la distingue (con teclado, Tab para moverte entre zonas y Enter para abrir su descripción; hay una lista de zonas bajo la imagen). Visita las cuatro zonas."
+instrucciones: "Gira los bloques con un dedo y acércalos con dos (en escritorio, arrastra con el ratón y usa la rueda): a la izquierda, hueso entretejido; a la derecha, hueso laminar, a la misma escala. Toca cada estructura para ver qué la distingue. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita las cuatro."
 obligatoria: true
 puntaje_max: 20
 concepto: "Hueso laminar y entretejido"
 retroalimentacion:
   acierto: "Muy bien. Ya distingues el hueso entretejido, de fibras al azar y formación rápida, del laminar, de laminillas paralelas y más resistente."
-  error: "Faltan zonas por visitar. Compara los dos paneles: fíjate en la dirección de las fibras y en la cantidad y la posición de los osteocitos."
-svg: m1_entretejido_laminar
-modo: explorar
-capas:
+  error: "Faltan estructuras por visitar. Compara los dos bloques: fíjate en la dirección de las fibras y en la cantidad, el tamaño y la posición de los osteocitos."
+# 2026-10-18: pasa de la multicapa sobre el dibujo m1_entretejido_laminar (con una ilustración hecha con IA debajo
+# que pintaba el hueso laminar como bandas con cavidades) a un modelo 3D construido por código: dos bloques a la
+# misma escala. Mismas estructuras, textos, requeridas y puntaje. El dibujo sigue como figura de la sección 1.3.
+modelo: hueso_entretejido_laminar
+hotspots:
   - id: fibras_entretejidas
     etiqueta: "Fibras entrecruzadas al azar"
     descripcion: "En el hueso entretejido, los haces de colágeno son gruesos y se entrecruzan sin un orden. Se forma rápido y sin necesitar una superficie previa, por eso aparece en el feto, en el callo de fractura y en la reparación de un alvéolo."
@@ -699,7 +704,7 @@ capas:
   - id: osteocitos_laminares
     etiqueta: "Osteocitos del hueso laminar"
     descripcion: "Son menos numerosos y se alinean entre las laminillas, con canalículos que los conectan. La mineralización es más uniforme y mayor."
-requeridas: [fibras_entretejidas, osteocitos_entretejido, laminillas_paralelas, osteocitos_laminares]
+requeridos: [fibras_entretejidas, osteocitos_entretejido, laminillas_paralelas, osteocitos_laminares]
 ```
 
 ##### Actividad m1_3_quiz_matriz
@@ -825,25 +830,29 @@ Bajo el periostio y alrededor de la cavidad medular hay además laminillas que r
 
 > Atencion: no confundas los conductos. **Havers:** longitudinales y rodeados de laminillas concéntricas. **Volkmann:** transversales u oblicuos y sin laminillas concéntricas propias; conectan.
 
-Ahora trabajarás sobre las imágenes: primero el corte completo y después la osteona.
+Ahora trabajarás en 3D: primero sobre el extremo de un hueso serrado y después sobre un bloque de hueso cortical con sus osteonas.
 
 #### Actividades
 
 ##### Actividad m1_4_corte_capas
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Del periostio a la médula"
-instrucciones: "La aplicación te pedirá tocar, una por una, cada estructura del corte, desde la superficie hacia el interior (con teclado, Tab para moverte y Enter para confirmar; también puedes elegir en la lista de estructuras bajo la imagen). Si te equivocas, verás una pista y podrás intentarlo de nuevo."
+instrucciones: "La aplicación te pedirá tocar, una por una, cada estructura del corte, desde la superficie hacia el interior. Gira el hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo el modelo. Si te equivocas, verás una pista y podrás intentarlo de nuevo."
 obligatoria: true
 puntaje_max: 20
 concepto: "Hueso cortical y trabecular, periostio y endostio"
 retroalimentacion:
   acierto: "Correcto. Recorriste el corte de fuera hacia dentro: el periostio, la cortical densa, el endostio que tapiza sus caras internas, el hueso trabecular esponjoso y la médula ósea que ocupa sus espacios."
   error: "Esa no es la estructura pedida. Lee la pista: el endostio es una línea muy fina que tapiza por dentro la cortical y las trabéculas, y la médula ocupa los espacios entre ellas."
-svg: m1_corte_hueso_capas
+# 2026-10-18: pasa de la multicapa sobre el dibujo m1_corte_hueso_capas (con una ilustración hecha con IA debajo
+# que pintaba la cortical pardo rojiza, como un músculo) a un modelo 3D construido por código: el extremo de un hueso
+# largo serrado a lo largo. Sigue en modo identificar, con las mismas pistas, textos, requeridas y puntaje. La figura
+# de la lectura sigue siendo el dibujo rotulado (m1_corte_hueso_capas_rotulado).
+modelo: hueso_capas
 modo: identificar
-capas:
+hotspots:
   - id: periostio
     etiqueta: "Periostio"
     descripcion: "Membrana de tejido conjuntivo que cubre por fuera el hueso. Tiene una capa externa fibrosa (vasos, nervios, fibras de Sharpey) y una capa interna celular con células osteoprogenitoras. Permite crecer en grosor y reparar el hueso."
@@ -864,24 +873,28 @@ capas:
     etiqueta: "Médula ósea"
     descripcion: "Tejido blando que llena la cavidad medular y los espacios entre trabéculas. Puede ser roja (hematopoyética) o amarilla (adiposa) según la zona y la edad."
     pista: "Busca el tejido blando que llena la cavidad central y los espacios entre trabéculas."
-requeridas: [periostio, hueso_cortical, endostio, hueso_trabecular, medula_osea]
+requeridos: [periostio, hueso_cortical, endostio, hueso_trabecular, medula_osea]
 ```
 
 ##### Actividad m1_4_osteona
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Localiza las partes de la osteona"
-instrucciones: "La aplicación te pedirá tocar, una por una, cada estructura de la osteona por su nombre. Si te equivocas, verás una pista y podrás intentarlo de nuevo (con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo la imagen)."
+instrucciones: "La aplicación te pedirá tocar, una por una, cada estructura de la osteona. Gira el bloque con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda). Si te equivocas, verás una pista y podrás intentarlo de nuevo (con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo el modelo)."
 obligatoria: true
 puntaje_max: 20
 concepto: "Osteona y conductos de Havers y de Volkmann"
 retroalimentacion:
   acierto: "Excelente. Localizaste las estructuras de la osteona y distingues los conductos de Havers, longitudinales, de los de Volkmann, transversales."
   error: "Esa no es la estructura pedida. Lee la pista: el conducto de Havers está en el centro de las laminillas concéntricas; el de Volkmann las cruza y conecta."
-svg: m1_osteona_detalle
+# 2026-10-18: pasa de la multicapa sobre el dibujo m1_osteona_detalle (con una ilustración hecha con IA debajo en la
+# que no se veían las lagunas ni los canalículos) a un modelo 3D construido por código: un bloque de hueso cortical
+# con varias osteonas y una en primer plano. Sigue en modo identificar, con las mismas pistas, textos, requeridas y
+# puntaje.
+modelo: osteona
 modo: identificar
-capas:
+hotspots:
   - id: conducto_de_havers
     etiqueta: "Conducto de Havers"
     descripcion: "Canal longitudinal en el centro de la osteona. Contiene capilares, fibras nerviosas y tejido conjuntivo laxo, y mide unas 50 µm [verificar]."
@@ -909,7 +922,7 @@ capas:
     etiqueta: "Laminillas intersticiales"
     descripcion: "Fragmentos de osteonas antiguas que quedaron entre osteonas más recientes tras el remodelado."
     pista: "Busca los fragmentos angulosos de hueso que quedan entre las osteonas."
-requeridas: [conducto_de_havers, laminillas_concentricas, osteocito_en_laguna, linea_cementante, conducto_de_volkmann, laminillas_intersticiales]
+requeridos: [conducto_de_havers, laminillas_concentricas, osteocito_en_laguna, linea_cementante, conducto_de_volkmann, laminillas_intersticiales]
 ```
 
 ##### Actividad m1_4_relacion_estructuras

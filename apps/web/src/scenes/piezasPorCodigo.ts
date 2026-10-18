@@ -7,17 +7,22 @@
  * relieve"). Las piezas planas se construyen en el plano XY local, mirando a +Z (`h` es la altura sobre ese plano), y
  * `marcoCara` las lleva a cualquier cara de un bloque.
  */
-import type { BufferGeometry, Material, MeshPhysicalMaterialParameters, Object3D } from 'three';
+import type {
+  BufferGeometry,
+  Material,
+  MeshPhysicalMaterialParameters,
+  Object3D,
+  Euler,
+  MeshPhysicalMaterial,
+} from 'three';
 import {
   BufferAttribute,
   BufferGeometry as Geometria,
   CatmullRomCurve3,
-  Euler,
   Group,
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshPhysicalMaterial,
   Path,
   Shape,
   ShapeGeometry,
@@ -90,13 +95,15 @@ export function distanciaASegmento(p: Vec2, a: Vec2, b: Vec2): number {
   const dx = b[0] - a[0];
   const dy = b[1] - a[1];
   const largo2 = dx * dx + dy * dy;
-  const t = largo2 > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / largo2)) : 0;
+  const t =
+    largo2 > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / largo2)) : 0;
   return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy));
 }
 
 /** Punto de una lista más cercano a `objetivo` (para poner una etiqueta sobre una pieza generada). */
 export function masCercano<T>(lista: readonly T[], posicion: (x: T) => Vec2, objetivo: Vec2): T {
-  let mejor = lista[0]!;
+  if (lista.length === 0) throw new Error('No hay piezas entre las que elegir.');
+  let mejor: T = lista[0] as T;
   let distancia = Infinity;
   for (const x of lista) {
     const [px, py] = posicion(x);
@@ -535,10 +542,7 @@ export function cilindroZ(
 }
 
 /** Caja alineada con los ejes (sus seis caras, mirando hacia fuera), con UV en unidades en cada cara. */
-export function caja(
-  [x0, y0, z0]: Vec3,
-  [x1, y1, z1]: Vec3,
-): BufferGeometry {
+export function caja([x0, y0, z0]: Vec3, [x1, y1, z1]: Vec3): BufferGeometry {
   const plano = (ancho: number, alto: number, marco: Matrix4): BufferGeometry => {
     const g = cara(
       [

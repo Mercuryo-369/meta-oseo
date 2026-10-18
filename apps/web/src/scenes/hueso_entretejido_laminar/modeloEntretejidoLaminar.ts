@@ -109,13 +109,13 @@ function marcoDerecha(xc: number): Matrix4 {
 }
 
 /** Rectángulo de una cara (u, v) centrado en su origen. */
-interface Rect {
+export interface Rect {
   u0: number;
   u1: number;
   v0: number;
   v1: number;
 }
-const FRENTE_RECT: Rect = { u0: -ANCHO / 2, u1: ANCHO / 2, v0: Y0, v1: Y1 };
+export const FRENTE_RECT: Rect = { u0: -ANCHO / 2, u1: ANCHO / 2, v0: Y0, v1: Y1 };
 const ARRIBA_RECT: Rect = { u0: -ANCHO / 2, u1: ANCHO / 2, v0: -FONDO / 2, v1: FONDO / 2 };
 const DERECHA_RECT: Rect = { u0: -FONDO / 2, u1: FONDO / 2, v0: Y0, v1: Y1 };
 const dentro =
@@ -133,30 +133,41 @@ export interface Haz {
 
 /**
  * Haces de colágeno de una cara del bloque entretejido: gruesos, curvos, en cualquier dirección y tan apretados que
- * forman un fieltro. Rodean las lagunas (los osteocitos quedan entre los haces, no debajo).
+ * forman un fieltro. Se desvían alrededor de las lagunas (los osteocitos quedan entre los haces, no debajo).
  */
-export function hacesDeCara(r: Rect, cuantos: number, semilla: number, lagunas: readonly Laguna[] = []): Haz[] {
+export function hacesDeCara(
+  r: Rect,
+  cuantos: number,
+  semilla: number,
+  lagunas: readonly Laguna[] = [],
+): Haz[] {
   const azar = aleatorio(semilla);
   const haces: Haz[] = [];
   for (let i = 0; i < cuantos; i++) {
-    const radio = mezclar(0.015, 0.025, azar());
+    const radio = mezclar(0.013, 0.021, azar());
     const c: Vec2 = [mezclar(r.u0, r.u1, azar()), mezclar(r.v0, r.v1, azar())];
     const ang = azar() * Math.PI;
     const largo = mezclar(0.5, 1.1, azar());
     const curva1 = (azar() - 0.5) * 0.5;
     const curva2 = (azar() - 0.5) * 0.5;
-    const eje = muestras(-0.5, 0.5, 16).map((t): Vec2 => {
+    const eje = muestras(-0.5, 0.5, 20).map((t): Vec2 => {
       const a = ang + curva1 * t + curva2 * t * t * 2;
-      return [c[0] + Math.cos(a) * largo * t, c[1] + Math.sin(a) * largo * t];
+      const p: Vec2 = [c[0] + Math.cos(a) * largo * t, c[1] + Math.sin(a) * largo * t];
+      // Rodea las lagunas que encuentra en su camino.
+      for (const l of lagunas) {
+        const minimo = LAGUNA_ENTRETEJIDO[0] * Math.max(...l.escala) + radio + 0.004;
+        const dx = p[0] - l.centro[0];
+        const dy = p[1] - l.centro[1];
+        const d = Math.hypot(dx, dy);
+        if (d < minimo) {
+          const k = minimo / Math.max(d, 1e-6);
+          p[0] = l.centro[0] + (d > 1e-6 ? dx : 1) * k;
+          p[1] = l.centro[1] + (d > 1e-6 ? dy : 0) * k;
+        }
+      }
+      return p;
     });
-    const libre = (p: Vec2): boolean =>
-      dentro(r, radio + 0.008)(p) &&
-      lagunas.every(
-        (l) =>
-          Math.hypot(p[0] - l.centro[0], p[1] - l.centro[1]) >
-          LAGUNA_ENTRETEJIDO[0] * Math.max(...l.escala) + radio,
-      );
-    for (const tramo of recortar(eje, libre)) {
+    for (const tramo of recortar(eje, dentro(r, radio + 0.008))) {
       if (tramo.length >= 4) haces.push({ eje: tramo, radio });
     }
   }
@@ -170,7 +181,7 @@ function tuboDeHaz(h: Haz, marco: Matrix4, fase: number): BufferGeometry {
     const altura = h.radio * (0.1 * Math.sin(t * Math.PI * 3.1 + fase) - 0.05);
     return puntoEnCara(marco, u, v, altura);
   });
-  return tubo(puntos, h.radio, 24, 6, 0.1);
+  return tubo(puntos, h.radio, 20, 6, 0.1);
 }
 
 export interface Laguna {
@@ -197,7 +208,11 @@ export function lagunasEntretejido(
     if (!cabe(c) || lagunas.some((l) => Math.hypot(l.centro[0] - c[0], l.centro[1] - c[1]) < 0.12))
       continue;
     const e = mezclar(0.8, 1.25, azar());
-    const l: Laguna = { centro: c, angulo: azar() * Math.PI, escala: [e, e * mezclar(0.85, 1.15, azar())] };
+    const l: Laguna = {
+      centro: c,
+      angulo: azar() * Math.PI,
+      escala: [e, e * mezclar(0.85, 1.15, azar())],
+    };
     lagunas.push(l);
     const n = 3 + Math.floor(azar() * 3);
     for (let k = 0; k < n; k++) {
@@ -362,15 +377,17 @@ function matrices(
     const a = semiejes[0] * l.escala[0];
     const b = semiejes[1] * l.escala[1];
     salida.lagunas.push(base.clone().multiply(new Matriz().makeScale(a, b, 1)));
-    salida.celulas.push(base.clone().multiply(new Matriz().makeScale(a * 0.66, b * 0.6, ALTO_CELULA)));
+    salida.celulas.push(
+      base.clone().multiply(new Matriz().makeScale(a * 0.66, b * 0.6, ALTO_CELULA)),
+    );
   }
   return salida;
 }
 
 const CARAS_ENTRETEJIDO = [
-  { marco: marcoFrente(X_ENTRETEJIDO), rect: FRENTE_RECT, haces: 70, lagunas: 24, semilla: 3 },
-  { marco: marcoArriba(X_ENTRETEJIDO), rect: ARRIBA_RECT, haces: 50, lagunas: 16, semilla: 5 },
-  { marco: marcoDerecha(X_ENTRETEJIDO), rect: DERECHA_RECT, haces: 36, lagunas: 12, semilla: 7 },
+  { marco: marcoFrente(X_ENTRETEJIDO), rect: FRENTE_RECT, haces: 110, lagunas: 24, semilla: 3 },
+  { marco: marcoArriba(X_ENTRETEJIDO), rect: ARRIBA_RECT, haces: 80, lagunas: 16, semilla: 5 },
+  { marco: marcoDerecha(X_ENTRETEJIDO), rect: DERECHA_RECT, haces: 55, lagunas: 12, semilla: 7 },
 ] as const;
 
 /** Construye los dos bloques: un grupo (girado) con un subgrupo por región. */
@@ -456,7 +473,11 @@ export function crearEntretejidoLaminar(): Group {
       malla(unir(cortesA), material(COLORES.laminillaA, 'hueso', 30), 'laminillas_a_cortes'),
       malla(unir(vetasB), material(COLORES.laminillaB, 'fibra', [60, 6]), 'laminillas_b_vetas'),
       malla(unir(cortesB), material(COLORES.laminillaB, 'hueso', 30), 'laminillas_b_cortes'),
-      malla(unir(fibrasDePeldanos()), material(COLORES.fibraLaminar, 'fibra', [1, 8]), 'fibras_peldanos'),
+      malla(
+        unir(fibrasDePeldanos()),
+        material(COLORES.fibraLaminar, 'fibra', [1, 8]),
+        'fibras_peldanos',
+      ),
     ),
   );
 
@@ -497,7 +518,11 @@ export function crearEntretejidoLaminar(): Group {
         'osteocitos_laminares',
       ),
       malla(
-        unir(laminar.canaliculos.map((l) => enCara(cinta(l, ANCHO_CANALICULO, H_CANALICULO), marcoFrente(X_LAMINAR)))),
+        unir(
+          laminar.canaliculos.map((l) =>
+            enCara(cinta(l, ANCHO_CANALICULO, H_CANALICULO), marcoFrente(X_LAMINAR)),
+          ),
+        ),
         material(COLORES.canaliculo, 'cavidad'),
         'canaliculos_laminares',
       ),
@@ -551,7 +576,10 @@ export function puntoDeRegion(id: RegionEntretejidoLaminar): PuntoRegion {
         CARAS_ENTRETEJIDO[0].semilla * 11,
       );
       const l = masCercano(lagunas, (x) => x.centro, [0.25, -0.2]);
-      return girado([X_ENTRETEJIDO + l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA], 0.25);
+      return girado(
+        [X_ENTRETEJIDO + l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA],
+        0.25,
+      );
     }
     case 'laminillas_paralelas': {
       const v = Y0 + GROSOR_LAMINILLA * 4.5;
@@ -559,7 +587,10 @@ export function puntoDeRegion(id: RegionEntretejidoLaminar): PuntoRegion {
     }
     case 'osteocitos_laminares': {
       const l = masCercano(lagunasLaminares().lagunas, (x) => x.centro, [0.3, -0.2]);
-      return girado([X_LAMINAR + l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA], 0.25);
+      return girado(
+        [X_LAMINAR + l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA],
+        0.25,
+      );
     }
   }
 }

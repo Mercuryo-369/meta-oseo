@@ -83,7 +83,10 @@ describe('perfil del extremo del hueso largo', () => {
       for (let j = i + 1; j < espacios.length; j++) {
         const a = espacios[i]!;
         const b = espacios[j]!;
-        if (Math.hypot(a.centro[0] - b.centro[0], a.centro[1] - b.centro[1]) > a.radio + b.radio + 0.1)
+        if (
+          Math.hypot(a.centro[0] - b.centro[0], a.centro[1] - b.centro[1]) >
+          a.radio + b.radio + 0.1
+        )
           continue;
         expect(distanciaEntrePoligonos(a.contorno, b.contorno)).toBeGreaterThanOrEqual(
           GROSOR_TRABECULA * 0.79,
@@ -119,7 +122,9 @@ describe('modelo', () => {
       while (o && !REGIONES_HUESO_CAPAS.includes(o.name as never) && o !== modelo) o = o.parent;
       const id = o && o !== modelo ? o.name : `contexto:${m.name}`;
       const mat = m.material as Material;
-      expect(vistos.get(mat) ?? id, `material compartido entre ${vistos.get(mat)} y ${id}`).toBe(id);
+      expect(vistos.get(mat) ?? id, `material compartido entre ${vistos.get(mat)} y ${id}`).toBe(
+        id,
+      );
       vistos.set(mat, id);
     }
     for (const id of REGIONES_HUESO_CAPAS) {
@@ -136,16 +141,20 @@ describe('modelo', () => {
     }
   });
 
-  it('las capas de la cara de corte son planas y miran a la cámara', () => {
+  it('las capas de la cara de corte son planas y miran a la cámara (salvo cantos y el corte transversal)', () => {
     for (const nombre of ['hueso_cortical_corte', 'endostio_capa', 'medula_osea_corte']) {
       const m = modelo.getObjectByName(nombre) as Mesh;
       const pos = m.geometry.getAttribute('position');
       const nor = m.geometry.getAttribute('normal');
+      let deFrente = 0;
       for (let i = 0; i < pos.count; i++) {
-        // El corte transversal de la izquierda mira a −X.
-        if (Math.abs(pos.getX(i) - X_IZQ) < 1e-6 && Math.abs(nor.getX(i) + 1) < 1e-3) continue;
-        expect(nor.getZ(i), nombre).toBeGreaterThan(0.99);
+        const nz = nor.getZ(i);
+        if (nz > 0.99) deFrente++;
+        // El corte transversal de la izquierda mira a −X; los cantos (paredes) son horizontales.
+        else if (Math.abs(pos.getX(i) - X_IZQ) < 1e-6 && Math.abs(nor.getX(i) + 1) < 1e-3) continue;
+        else expect(Math.abs(nz), nombre).toBeLessThan(1e-3);
       }
+      expect(deFrente / pos.count, nombre).toBeGreaterThan(0.3);
     }
   });
 
@@ -210,7 +219,11 @@ describe('contenido', () => {
       alt: 'Extremo de un hueso largo serrado a lo largo.',
       nodos: [
         { id: 'periostio', etiqueta: 'Periostio', descripcion: 'Membrana que cubre el hueso.' },
-        { id: 'endostio', etiqueta: 'Endostio', descripcion: 'Capa fina que lo tapiza por dentro.' },
+        {
+          id: 'endostio',
+          etiqueta: 'Endostio',
+          descripcion: 'Capa fina que lo tapiza por dentro.',
+        },
       ],
       requeridos: ['periostio'],
     };
@@ -218,7 +231,10 @@ describe('contenido', () => {
     expect(
       ConfigExploracion3dSchema.safeParse({
         ...base,
-        nodos: [...base.nodos, { id: 'diafisis', etiqueta: 'Diáfisis', descripcion: 'Del otro modelo.' }],
+        nodos: [
+          ...base.nodos,
+          { id: 'diafisis', etiqueta: 'Diáfisis', descripcion: 'Del otro modelo.' },
+        ],
       }).success,
     ).toBe(false);
   });

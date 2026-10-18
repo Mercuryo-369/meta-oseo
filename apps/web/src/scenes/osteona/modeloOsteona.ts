@@ -93,10 +93,10 @@ const H_VOLKMANN = 0.003;
 /** Altura de la cúpula del osteocito sobre la cara. */
 const ALTO_CELULA = 0.006;
 
-const GROSOR_CEMENTO = 0.012;
+export const GROSOR_CEMENTO = 0.012;
 const FORRO_CONDUCTO = 0.008;
 const ANCHO_CANALICULO = 0.0034;
-const ANCHO_VOLKMANN = 0.05;
+export const ANCHO_VOLKMANN = 0.05;
 /** Semiejes de una laguna (largo a lo largo de la laminilla y grosor). */
 const LAGUNA: Vec2 = [0.024, 0.009];
 
@@ -119,7 +119,7 @@ const COLORES = {
 } as const;
 
 /** Giro del bloque: inclinado hacia la cámara y algo vuelto, para ver el corte transversal, el longitudinal y el periostio. */
-export const GIRO = new Euler(0.42, -0.4, 0);
+export const GIRO = new Euler(0.34, -0.42, 0);
 
 /* ----- Osteonas ----- */
 
@@ -181,7 +181,7 @@ function festones(o: Osteona): (theta: number) => number {
   const n = Math.max(8, Math.round((Math.PI * 2 * o.radio) / 0.07));
   const fase = (o.cx * 7.1 + o.cy * 3.3) % 1;
   return (theta: number) => {
-    const f = (((theta * n) / (Math.PI * 2) + fase) % 1 + 1) % 1;
+    const f = ((((theta * n) / (Math.PI * 2) + fase) % 1) + 1) % 1;
     return 0.009 * (1 - (2 * f - 1) ** 2);
   };
 }
@@ -318,7 +318,10 @@ export function lagunasDelFrente(): LagunasDeCara {
     const enOsteona = (p: Vec2): boolean => {
       const r = Math.hypot(p[0] - o.cx, p[1] - o.cy);
       return (
-        r > o.havers && r < o.radio - GROSOR_CEMENTO - 0.002 && p[0] < X_MAX - 0.004 && libreDeVolkmann(p)
+        r > o.havers &&
+        r < o.radio - GROSOR_CEMENTO - 0.002 &&
+        p[0] < X_MAX - 0.004 &&
+        libreDeVolkmann(p)
       );
     };
     // Una corona de lagunas cada dos límites entre laminillas.
@@ -327,7 +330,8 @@ export function lagunasDelFrente(): LagunasDeCara {
       const n = Math.max(3, Math.floor((o.arco * r) / 0.1));
       const fase = azar() * 6.28;
       for (let j = 0; j < n; j++) {
-        const t = o.theta0 + ((j + 0.5 + (azar() - 0.5) * 0.5) * o.arco) / n + (o.arco < 6 ? 0 : fase);
+        const t =
+          o.theta0 + ((j + 0.5 + (azar() - 0.5) * 0.5) * o.arco) / n + (o.arco < 6 ? 0 : fase);
         const c: Vec2 = [o.cx + r * Math.cos(t), o.cy + r * Math.sin(t)];
         if (!enOsteona([c[0] + 0.03 * Math.cos(t + 1.57), c[1]]) || !enOsteona(c)) continue;
         if (c[0] > X_MAX - LAGUNA[0]) continue;
@@ -349,10 +353,7 @@ export function lagunasDelFrente(): LagunasDeCara {
         }
         if (azar() < 0.3) {
           const ang = t + Math.PI / 2 + (azar() < 0.5 ? 0 : Math.PI);
-          const inicio: Vec2 = [
-            c[0] + Math.cos(ang) * LAGUNA[0],
-            c[1] + Math.sin(ang) * LAGUNA[0],
-          ];
+          const inicio: Vec2 = [c[0] + Math.cos(ang) * LAGUNA[0], c[1] + Math.sin(ang) * LAGUNA[0]];
           for (const tramo of recortar(canaliculo(inicio, ang, 0.03, azar), enOsteona)) {
             canaliculos.push(tramo);
           }
@@ -372,7 +373,8 @@ export function lagunasDelFrente(): LagunasDeCara {
       lagunas.push({ centro: p, angulo: t + Math.PI / 2, escala: mezclar(0.85, 1.1, azar()) });
       for (const ang of [t, t + Math.PI, t + 0.4, t + Math.PI - 0.4]) {
         const inicio: Vec2 = [p[0] + Math.cos(ang) * LAGUNA[1], p[1] + Math.sin(ang) * LAGUNA[1]];
-        for (const tramo of recortar(canaliculo(inicio, ang, 0.03, azar), libre)) canaliculos.push(tramo);
+        for (const tramo of recortar(canaliculo(inicio, ang, 0.03, azar), libre))
+          canaliculos.push(tramo);
       }
     }
   }
@@ -384,7 +386,10 @@ export function lagunasDelFrente(): LagunasDeCara {
       for (const ang of [Math.PI / 2, -Math.PI / 2]) {
         const inicio: Vec2 = [c[0], c[1] + Math.sin(ang) * LAGUNA[1]];
         const dentro = (p: Vec2) => p[1] > Y_OSTEONAS + 0.004 && p[1] < Y_HUESO - 0.004;
-        for (const tramo of recortar(canaliculo(inicio, ang + (azar() - 0.5) * 0.4, 0.028, azar), dentro))
+        for (const tramo of recortar(
+          canaliculo(inicio, ang + (azar() - 0.5) * 0.4, 0.028, azar),
+          dentro,
+        ))
           canaliculos.push(tramo);
       }
     }
@@ -404,22 +409,32 @@ export function lagunasDeLaDerecha(): LagunasDeCara {
   const enOsteona = (p: Vec2): boolean => {
     const d = Math.abs(p[1] - o.cy);
     return (
-      d > o.havers && d < o.radio - GROSOR_CEMENTO - 0.002 && p[0] > 0.004 && p[0] < Z_FRENTE - Z_FONDO - 0.004 &&
+      d > o.havers &&
+      d < o.radio - GROSOR_CEMENTO - 0.002 &&
+      p[0] > 0.004 &&
+      p[0] < Z_FRENTE - Z_FONDO - 0.004 &&
       !enVolkmann(p, VOLKMANN_DERECHA, 0.012)
     );
   };
   for (let k = 1; k < o.limites.length - 1; k += 2) {
     for (const lado of [1, -1]) {
       const v = o.cy + lado * o.limites[k]!;
-      for (let u = 0.05 + azar() * 0.08; u < Z_FRENTE - Z_FONDO - 0.05; u += mezclar(0.14, 0.22, azar())) {
+      for (
+        let u = 0.05 + azar() * 0.08;
+        u < Z_FRENTE - Z_FONDO - 0.05;
+        u += mezclar(0.14, 0.22, azar())
+      ) {
         const c: Vec2 = [u, v];
         if (!enOsteona(c)) continue;
         lagunas.push({ centro: c, angulo: 0, escala: mezclar(0.9, 1.2, azar()) });
         for (const sentido of [1, -1]) {
           for (let q = 0; q < 2; q++) {
-            const ang = sentido * Math.PI / 2 + (azar() - 0.5) * 0.5;
+            const ang = (sentido * Math.PI) / 2 + (azar() - 0.5) * 0.5;
             const inicio: Vec2 = [c[0] + (q - 0.5) * 0.02, c[1] + Math.sin(ang) * LAGUNA[1]];
-            for (const tramo of recortar(canaliculo(inicio, ang, mezclar(0.03, 0.05, azar()), azar), enOsteona))
+            for (const tramo of recortar(
+              canaliculo(inicio, ang, mezclar(0.03, 0.05, azar()), azar),
+              enOsteona,
+            ))
               canaliculos.push(tramo);
           }
         }
@@ -450,20 +465,32 @@ function bandasCircunferenciales(desde: number, hasta: number, h: number): Buffe
 }
 
 /** Matrices de las lagunas (discos oscuros) y de los osteocitos (cúpulas) de una cara. */
-function matricesLagunas(lagunas: readonly Laguna[], marco: Matrix4): { lagunas: Matrix4[]; celulas: Matrix4[] } {
+function matricesLagunas(
+  lagunas: readonly Laguna[],
+  marco: Matrix4,
+): { lagunas: Matrix4[]; celulas: Matrix4[] } {
   const m = new Matrix4();
   const lista = { lagunas: [] as Matrix4[], celulas: [] as Matrix4[] };
   for (const l of lagunas) {
     const giro = new Matrix4().makeRotationZ(l.angulo);
     m.makeTranslation(l.centro[0], l.centro[1], H_LAGUNA).multiply(giro);
     lista.lagunas.push(
-      marco.clone().multiply(m).multiply(new Matrix4().makeScale(LAGUNA[0] * l.escala, LAGUNA[1] * l.escala, 1)),
+      marco
+        .clone()
+        .multiply(m)
+        .multiply(new Matrix4().makeScale(LAGUNA[0] * l.escala, LAGUNA[1] * l.escala, 1)),
     );
     lista.celulas.push(
       marco
         .clone()
         .multiply(m)
-        .multiply(new Matrix4().makeScale(LAGUNA[0] * l.escala * 0.64, LAGUNA[1] * l.escala * 0.52, ALTO_CELULA)),
+        .multiply(
+          new Matrix4().makeScale(
+            LAGUNA[0] * l.escala * 0.64,
+            LAGUNA[1] * l.escala * 0.52,
+            ALTO_CELULA,
+          ),
+        ),
     );
   }
   return lista;
@@ -486,15 +513,23 @@ function matricesLagunasPrimerPlano(): { lagunas: Matrix4[]; celulas: Matrix4[] 
       const z = mezclar(z0 + 0.012, z1 - 0.012, azar());
       const normal = new Vector3(Math.cos(t), Math.sin(t), 0);
       const tangente = new Vector3(-Math.sin(t), Math.cos(t), 0);
-      const largo = new Vector3(0, 0, 1).multiplyScalar(Math.cos(fibra)).addScaledVector(tangente, Math.sin(fibra));
+      const largo = new Vector3(0, 0, 1)
+        .multiplyScalar(Math.cos(fibra))
+        .addScaledVector(tangente, Math.sin(fibra));
       const ancho = new Vector3().crossVectors(normal, largo);
       const base = new Matrix4()
         .makeBasis(largo, ancho, normal)
         .setPosition(o.cx + (r + 0.0012) * Math.cos(t), o.cy + (r + 0.0012) * Math.sin(t), z);
       const e = mezclar(0.85, 1.15, azar());
-      lista.lagunas.push(base.clone().multiply(new Matrix4().makeScale(LAGUNA[0] * e, LAGUNA[1] * e, 1)));
+      lista.lagunas.push(
+        base.clone().multiply(new Matrix4().makeScale(LAGUNA[0] * e, LAGUNA[1] * e, 1)),
+      );
       lista.celulas.push(
-        base.clone().multiply(new Matrix4().makeScale(LAGUNA[0] * e * 0.64, LAGUNA[1] * e * 0.52, ALTO_CELULA)),
+        base
+          .clone()
+          .multiply(
+            new Matrix4().makeScale(LAGUNA[0] * e * 0.64, LAGUNA[1] * e * 0.52, ALTO_CELULA),
+          ),
       );
     }
   }
@@ -589,7 +624,11 @@ export function crearOsteona(): Group {
         material(COLORES.periostioCelular, 'membrana', [6, 3]),
         'periostio_celular',
       ),
-      malla(tubo(vasoPeriostio, 0.013, 60, 8, 0.04), material(COLORES.arteriola, 'vaso'), 'vaso_periostico'),
+      malla(
+        tubo(vasoPeriostio, 0.013, 60, 8, 0.04),
+        material(COLORES.arteriola, 'vaso'),
+        'vaso_periostico',
+      ),
     ),
   );
 
@@ -616,7 +655,9 @@ export function crearOsteona(): Group {
         // La última laminilla llega hasta los festones de la línea cementante; las demás son anillos regulares.
         const borde = ultima ? festones(o) : () => 0;
         discos.push(
-          enFrente(anilloPlano(o.cx, o.cy, r1, r2, H_LAMINILLA, o.theta0, o.arco, 72, borde, false)),
+          enFrente(
+            anilloPlano(o.cx, o.cy, r1, r2, H_LAMINILLA, o.theta0, o.arco, 72, borde, false),
+          ),
         );
       }
       if (o === DERECHA) {
@@ -664,7 +705,16 @@ export function crearOsteona(): Group {
   OSTEONAS.forEach((o, i) => {
     if (i === 0) {
       cemento.push(cilindroZ(o.cx, o.cy, o.radio, Z_FRENTE, Z_FRENTE + SALIDA_CEMENTO, 72));
-      const tapa = anilloPlano(o.cx, o.cy, o.radio - GROSOR_CEMENTO, o.radio, 0, 0, Math.PI * 2, 72);
+      const tapa = anilloPlano(
+        o.cx,
+        o.cy,
+        o.radio - GROSOR_CEMENTO,
+        o.radio,
+        0,
+        0,
+        Math.PI * 2,
+        72,
+      );
       tapa.translate(0, 0, Z_FRENTE + SALIDA_CEMENTO);
       cemento.push(tapa);
       return;
@@ -694,7 +744,10 @@ export function crearOsteona(): Group {
           muestras(0, largoDerecha, 40)
             .map((u): Vec2 => [u, Math.min(a, b) + 0.004 * Math.sin(u * 40)])
             .concat(
-              muestras(largoDerecha, 0, 40).map((u): Vec2 => [u, Math.max(a, b) + 0.004 * Math.sin(u * 40)]),
+              muestras(largoDerecha, 0, 40).map((u): Vec2 => [
+                u,
+                Math.max(a, b) + 0.004 * Math.sin(u * 40),
+              ]),
             ),
           H_CEMENTO,
         ),
@@ -702,7 +755,10 @@ export function crearOsteona(): Group {
     );
   }
   bloque.add(
-    region('linea_cementante', malla(unir(cemento), material(COLORES.cemento, 'hueso', 10), 'linea_cementante')),
+    region(
+      'linea_cementante',
+      malla(unir(cemento), material(COLORES.cemento, 'hueso', 10), 'linea_cementante'),
+    ),
   );
 
   // Conducto de Havers: la luz oscura en cada osteona, su forro, los vasos (y el nervio de la de primer plano), y el
@@ -715,7 +771,16 @@ export function crearOsteona(): Group {
     if (i === 0) {
       const boca = Z_FRENTE + salidaLaminilla(0);
       forro.push(cilindroZ(o.cx, o.cy, o.havers, Z_FRENTE - 0.05, boca + 0.012, 40));
-      const anillo = anilloPlano(o.cx, o.cy, o.havers, o.havers + FORRO_CONDUCTO, 0, 0, Math.PI * 2, 40);
+      const anillo = anilloPlano(
+        o.cx,
+        o.cy,
+        o.havers,
+        o.havers + FORRO_CONDUCTO,
+        0,
+        0,
+        Math.PI * 2,
+        40,
+      );
       anillo.translate(0, 0, boca + 0.012);
       forro.push(anillo);
       const fondo = anilloPlano(o.cx, o.cy, 0, o.havers, 0, 0, Math.PI * 2, 40);
@@ -728,7 +793,18 @@ export function crearOsteona(): Group {
     }
     luz.push(enFrente(anilloPlano(o.cx, o.cy, 0, o.havers, H_CEMENTO, o.theta0, o.arco, 40)));
     forro.push(
-      enFrente(anilloPlano(o.cx, o.cy, o.havers, o.havers + FORRO_CONDUCTO, H_CEMENTO, o.theta0, o.arco, 40)),
+      enFrente(
+        anilloPlano(
+          o.cx,
+          o.cy,
+          o.havers,
+          o.havers + FORRO_CONDUCTO,
+          H_CEMENTO,
+          o.theta0,
+          o.arco,
+          40,
+        ),
+      ),
     );
     const v = vasosDeHavers(o, Z_FRENTE + 0.008);
     rojos.push(v.rojo);
@@ -747,7 +823,12 @@ export function crearOsteona(): Group {
       ),
     ),
   );
-  const nervio = new CylinderGeometry(0.009, 0.009, Z_FRENTE + salidaLaminilla(0) + 0.09 - Z_FONDO, 10);
+  const nervio = new CylinderGeometry(
+    0.009,
+    0.009,
+    Z_FRENTE + salidaLaminilla(0) + 0.09 - Z_FONDO,
+    10,
+  );
   nervio.rotateX(Math.PI / 2);
   nervio.translate(
     PRIMER_PLANO.cx + 0.004,
@@ -770,7 +851,11 @@ export function crearOsteona(): Group {
     region(
       'laminillas_intersticiales',
       malla(
-        unir(arcosIntersticiales().map((a) => enFrente(cara(trazo(a.puntos, 0.014, 1), H_INTERSTICIAL)))),
+        unir(
+          arcosIntersticiales().map((a) =>
+            enFrente(cara(trazo(a.puntos, 0.014, 1), H_INTERSTICIAL)),
+          ),
+        ),
         material(COLORES.intersticial, 'hueso', 8),
         'laminillas_intersticiales',
       ),
@@ -831,7 +916,11 @@ export function crearOsteona(): Group {
   });
   const vasoDerecha: Vec3[] = [
     ...muestras(0, 1, 6).map((t): Vec3 => {
-      const p = new Vector3(mezclar(d[0], c[0], t), mezclar(d[1], c[1], t), 0.002 * Math.sin(t * 7));
+      const p = new Vector3(
+        mezclar(d[0], c[0], t),
+        mezclar(d[1], c[1], t),
+        0.002 * Math.sin(t * 7),
+      );
       p.applyMatrix4(MARCO_DERECHA);
       return [p.x, p.y, p.z];
     }),
@@ -841,7 +930,10 @@ export function crearOsteona(): Group {
     region(
       'conducto_de_volkmann',
       malla(
-        unir([enFrente(cara(surco(a, b), H_VOLKMANN)), enDerecha(cara(surco(c, [d[0], d[1] + DERECHA.havers]), H_VOLKMANN))]),
+        unir([
+          enFrente(cara(surco(a, b), H_VOLKMANN)),
+          enDerecha(cara(surco(c, [d[0], d[1] + DERECHA.havers]), H_VOLKMANN)),
+        ]),
         material(COLORES.conducto, 'cavidad'),
         'volkmann_luz',
       ),
@@ -875,7 +967,11 @@ export function puntoDeRegion(id: RegionOsteona): PuntoRegion {
       const k = 3;
       const r = (o.limites[k]! + o.limites[k + 1]!) / 2;
       const t = (140 * Math.PI) / 180;
-      return girado([o.cx + r * Math.cos(t), o.cy + r * Math.sin(t), Z_FRENTE + salidaLaminilla(k)], FRENTE, 0.4);
+      return girado(
+        [o.cx + r * Math.cos(t), o.cy + r * Math.sin(t), Z_FRENTE + salidaLaminilla(k)],
+        FRENTE,
+        0.4,
+      );
     }
     case 'osteocito_en_laguna': {
       const o1 = OSTEONAS[1]!;
@@ -883,7 +979,11 @@ export function puntoDeRegion(id: RegionOsteona): PuntoRegion {
         o1.cx + 0.2 * Math.cos(0.5),
         o1.cy + 0.2 * Math.sin(0.5),
       ]);
-      return girado([l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA * 0.5], FRENTE, 0.16);
+      return girado(
+        [l.centro[0], l.centro[1], Z_FRENTE + H_LAGUNA + ALTO_CELULA * 0.5],
+        FRENTE,
+        0.16,
+      );
     }
     case 'canaliculos': {
       const o4 = OSTEONAS[4]!;
@@ -895,7 +995,11 @@ export function puntoDeRegion(id: RegionOsteona): PuntoRegion {
       const o2 = OSTEONAS[2]!;
       const t = (-40 * Math.PI) / 180;
       const r = o2.radio - GROSOR_CEMENTO * 0.2;
-      return girado([o2.cx + r * Math.cos(t), o2.cy + r * Math.sin(t), Z_FRENTE + H_CEMENTO], FRENTE, 0.3);
+      return girado(
+        [o2.cx + r * Math.cos(t), o2.cy + r * Math.sin(t), Z_FRENTE + H_CEMENTO],
+        FRENTE,
+        0.3,
+      );
     }
     case 'conducto_de_volkmann': {
       const [a, b] = VOLKMANN_FRENTE;

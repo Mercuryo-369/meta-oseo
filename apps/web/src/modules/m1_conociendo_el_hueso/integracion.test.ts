@@ -677,7 +677,8 @@ describe('módulo 1 (integración): caminos de error con el contenido real', () 
   });
 
   it('multicapa (identificar): tocar la capa equivocada no completa; con la correcta se termina con menos puntaje', async () => {
-    const a = actividad<DatosMulticapa>('m1_4_corte_capas');
+    // m1_4_corte_capas pasó a exploración 3D (2026-10-18): la multicapa de identificar que queda es la del alvéolo.
+    const a = actividad<DatosMulticapa>('m1_5_proceso_alveolar');
     expect(a.config.modo).toBe('identificar');
     const w = montar(a);
     await vi.waitFor(() => expect(w.find('[data-testid="multicapa-svg"] svg').exists()).toBe(true));
@@ -689,6 +690,27 @@ describe('módulo 1 (integración): caminos de error con el contenido real', () 
     expect(w.emitted('completada')).toBeUndefined();
 
     await completarMulticapa(w, a);
+    const r = completadas(w)[0]!;
+    expect(r.precision).toBeLessThan(1);
+    expect(r.puntaje).toBeGreaterThan(0);
+    expect(r.puntaje).toBeLessThan(a.puntaje_max);
+  });
+
+  it('exploración 3D (identificar): tocar otra estructura no completa; con las pedidas se termina con menos puntaje', async () => {
+    const a = actividad<Datos3d>('m1_4_osteona');
+    expect(a.config.modo).toBe('identificar');
+    const w = montar(a);
+    const lista = await vi.waitFor(() => w.get('[data-testid="lista-nodos"]'));
+    const boton = (id: string) =>
+      lista.findAll('button').find((b) => b.attributes('data-nodo') === id)!;
+    const otra = a.config.nodos.find((n) => n.id !== a.config.requeridos[0])!;
+    await boton(otra.id).trigger('click');
+    await flushPromises();
+    expect(interacciones(w).some((x) => x.resultado === 'incorrecta')).toBe(true);
+    expect(w.emitted('completada')).toBeUndefined();
+
+    await completar3d(w, a);
+    await vi.waitFor(() => expect(completadas(w)).toHaveLength(1));
     const r = completadas(w)[0]!;
     expect(r.precision).toBeLessThan(1);
     expect(r.puntaje).toBeGreaterThan(0);

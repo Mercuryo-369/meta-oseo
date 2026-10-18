@@ -314,9 +314,10 @@ describe('módulo 1: cobertura respecto al guion', () => {
     ]);
     expect(porTipo(actividades)).toEqual({
       'arrastre-molecular': 1,
-      // m1_1_hueso_largo pasó de multicapa (SVG) a exploración 3D (2026-10-17).
-      'exploracion-3d': 2,
-      multicapa: 5,
+      // m1_1_hueso_largo pasó de multicapa (SVG) a exploración 3D (2026-10-17); m1_3_entretejido_laminar,
+      // m1_4_corte_capas y m1_4_osteona, el 2026-10-18 (las dos últimas, en modo identificar).
+      'exploracion-3d': 5,
+      multicapa: 2,
       quiz: 5,
       'relacion-columnas': 4,
       'video-texto': 1,

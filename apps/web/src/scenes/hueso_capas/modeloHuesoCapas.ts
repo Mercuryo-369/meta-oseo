@@ -340,10 +340,7 @@ function limitesLocales([x, y]: Vec2, m: number): [Vec2, number][] {
     limites.push([[-pendiente / l, s / l], (r - pendiente * x) / l]);
   } else {
     const fi = Math.atan2(y / B_INTERIOR, (x - X_CENTRO) / A_INTERIOR);
-    const p: Vec2 = [
-      X_CENTRO + (A_INTERIOR - m) * Math.cos(fi),
-      (B_INTERIOR - m) * Math.sin(fi),
-    ];
+    const p: Vec2 = [X_CENTRO + (A_INTERIOR - m) * Math.cos(fi), (B_INTERIOR - m) * Math.sin(fi)];
     const n0: Vec2 = [Math.cos(fi) / A_INTERIOR, Math.sin(fi) / B_INTERIOR];
     const l = Math.hypot(...n0);
     const n: Vec2 = [n0[0] / l, n0[1] / l];
@@ -541,7 +538,10 @@ function vasosPeriostio(): BufferGeometry[] {
   // Radio de la superficie del periostio (desplazada por la normal; en la epífisis no es radioExterior + grosor).
   const perfil = desplazar(tramoPeriostio(), PERIOSTIO_TOTAL);
   const r = (x: number): number => {
-    const i = Math.max(1, perfil.findIndex(([px]) => px >= x));
+    const i = Math.max(
+      1,
+      perfil.findIndex(([px]) => px >= x),
+    );
     const [x0, r0] = perfil[i - 1]!;
     const [x1, r1] = perfil[Math.min(i, perfil.length - 1)]!;
     return mezclar(r0, r1, x1 > x0 ? (x - x0) / (x1 - x0) : 0) + 0.003;
@@ -554,10 +554,24 @@ function vasosPeriostio(): BufferGeometry[] {
     [2.45, 3.1],
   ] as const) {
     const xs = muestras(X_IZQ + 0.05, X_CARTILAGO - 0.08, 12);
-    tubos.push(tubo(xs.map((x) => sobre(x, fi0 + 0.12 * Math.sin(x * 3 + fase))), 0.009, 60, 6));
+    tubos.push(
+      tubo(
+        xs.map((x) => sobre(x, fi0 + 0.12 * Math.sin(x * 3 + fase))),
+        0.009,
+        60,
+        6,
+      ),
+    );
     // Una rama que se separa hacia la epífisis.
     const xr = muestras(0.0, X_CARTILAGO - 0.15, 6);
-    tubos.push(tubo(xr.map((x, i) => sobre(x, fi0 + 0.05 * Math.sin(fase) + 0.07 * i)), 0.006, 24, 5));
+    tubos.push(
+      tubo(
+        xr.map((x, i) => sobre(x, fi0 + 0.05 * Math.sin(fase) + 0.07 * i)),
+        0.006,
+        24,
+        5,
+      ),
+    );
   }
   return tubos;
 }
