@@ -19,6 +19,8 @@ export interface OpcionesActividad {
   descripcion?: (indice: number) => string;
   puntaje_max?: number;
   penalizacion?: { por_intento: number; piso: number };
+  /** Modo identificar: cada nodo lleva `pista` («Pista de la zona N…»). */
+  identificar?: boolean;
 }
 
 /**
@@ -38,12 +40,14 @@ export function crearActividad(opciones: OpcionesActividad = {}): ActividadExplo
     descripcion = (i) => `Descripción de la zona número ${i + 1} del modelo.`,
     puntaje_max = 30,
     penalizacion,
+    identificar = false,
   } = opciones;
   const lista = Array.from({ length: nodos }, (_, i) => ({
     id: id(i),
     etiqueta: etiqueta(i),
     descripcion: descripcion(i),
     ...(modelo === 'mandibula' ? { ancla: { x: 0.5, y: 0.5, z: (i % 10) / 10 } } : {}),
+    ...(identificar ? { pista: `Pista de la zona número ${i + 1}, sin decir su nombre.` } : {}),
   }));
   return ActividadExploracion3dSchema.parse({
     id: actividadId,
@@ -56,6 +60,7 @@ export function crearActividad(opciones: OpcionesActividad = {}): ActividadExplo
     concepto: 'Concepto de prueba',
     config: {
       modelo,
+      ...(identificar ? { modo: 'identificar' } : {}),
       alt: 'Modelo tridimensional de prueba que se puede girar.',
       nodos: lista,
       requeridos: lista.slice(0, requeridos).map((n) => n.id),

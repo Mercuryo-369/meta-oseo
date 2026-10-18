@@ -342,7 +342,8 @@ export function esProgresoTardio(
  * si tiene sentido, un `resultado`:
  *  - `selecciona_capa`, `identifica_capa` (multicapa; `identifica` lleva resultado; en un error,
  *    `identifica_capa` lleva la capa PEDIDA y va seguida de `selecciona_capa` con la tocada)
- *  - `selecciona_nodo` (exploracion-3d)
+ *  - `selecciona_nodo`, `identifica_nodo` (exploracion-3d; `identifica_nodo` solo en modo identificar, con
+ *    resultado y la misma regla que `identifica_capa` en un error)
  *  - `arrastra_molecula` (objeto = molécula), `acopla_molecula` (objeto = molécula, con resultado)
  *  - `relaciona_par` (relacion-columnas; objeto = id del elemento de A, con resultado)
  *  - `responde_pregunta` (quiz; objeto = id de la pregunta, con resultado)
@@ -354,6 +355,7 @@ export const ACCIONES_INTERACCION = [
   'selecciona_capa',
   'identifica_capa',
   'selecciona_nodo',
+  'identifica_nodo',
   'arrastra_molecula',
   'acopla_molecula',
   'relaciona_par',
@@ -403,6 +405,7 @@ export function seleccionDeInteraccion(
     case 'selecciona_capa':
     case 'identifica_capa':
     case 'selecciona_nodo':
+    case 'identifica_nodo':
       return { estructura: interaccion.objeto };
     case 'arrastra_molecula':
     case 'acopla_molecula':
@@ -458,8 +461,16 @@ export type DetalleVideoTexto = {
   via?: 'video' | 'transcripcion';
 };
 export type DetalleExploracion3d = {
-  /** Ids de los nodos visitados (con `ancla` o por pieza). */
+  /** Ids de los nodos visitados (con `ancla` o por pieza); en modo identificar, los identificados. */
   visitados: string[];
+  /** Solo en modo identificar (`config.modo`). */
+  modo?: 'identificar';
+  /** Consignas resueltas (todas, al completar). */
+  aciertos?: number;
+  /** Fallos totales. */
+  errores?: number;
+  /** Fallos por id del nodo que se pedía. */
+  errores_por_nodo?: Record<string, number>;
 };
 
 export interface DetallePorTipo {

@@ -22,6 +22,10 @@
  * (`logica.ts`) y una llegada tardía de `estadoPrevio` se recoge mientras el estudiante no haya hecho
  * nada, igual que en los otros cinco componentes.
  *
+ * Modo IDENTIFICAR (`config.modo`, solo con modelo): como la multicapa, se pide cada requerido por su `pista`;
+ * tocar otra parte cuenta un fallo (salvo una ya identificada) y la precisión sale de aciertos y fallos. La
+ * instantánea guarda la consigna en curso y los fallos por nodo pedido. Los identificados se marcan como hechos.
+ *
  * Foco (R6): tocar una parte no mueve el foco; al completar pasa al encabezado del resultado, y al
  * empezar otro intento, a la lista de partes. Nada roba el foco al cargar.
  *
@@ -54,17 +58,25 @@ import type {
 } from '@/activities/types';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
 import { crearEmisorProgreso } from '@/content/progreso';
-import { calcularPuntaje, textoRetroalimentacion } from '@/content/scoring';
+import { calcularPuntaje, precisionPorConteo, textoRetroalimentacion } from '@/content/scoring';
 import AtribucionMandibula from '@/scenes/AtribucionMandibula.vue';
 import type { EstadoEscena } from '@/scenes/useModeloExploracion';
 import {
   avanceDeExploracion,
+  consignasDeIdentificar,
   crearInstantanea,
+  crearInstantaneaIdentificar,
+  detalleDeIdentificar,
   esExploracionProcedural,
+  esModoIdentificar,
   exploracionCompleta,
+  nodosIdentificados,
   prepararExploracion,
   requeridosVisitados,
+  restaurarIdentificar,
   restaurarVisitados,
+  totalErrores,
+  veredictoDeNodo,
 } from './logica';
 import PanelLineaTiempo from './PanelLineaTiempo.vue';
 import TextoMarkdown from './TextoMarkdown.vue';
@@ -137,6 +149,10 @@ const partes = computed(() =>
 );
 const requeridos = computed(() => exploracion.value.requeridos);
 const jugando = computed(() => props.modo === 'jugar');
+const esIdentificar = computed(() => esModoIdentificar(props.actividad.config));
+const consignas = computed(() =>
+  esIdentificar.value ? consignasDeIdentificar(props.actividad.config, exploracion.value) : [],
+);
 
 const intentos = ref(intentoInicial(props.estadoPrevio));
 const visitados = ref<string[]>(
@@ -152,6 +168,21 @@ const faseActualId = ref<string | null>(null);
 const interactuado = ref(false);
 const resultado = ref<ResultadoActividad<'exploracion-3d'> | null>(null);
 const anuncio = ref('');
+
+/* ---- modo identificar ---- */
+const identificarPrevio = restaurarIdentificar(
+  props.estadoPrevio?.progreso?.instantanea,
+  consignas.value,
+);
+/** Consignas ya resueltas (índice de la consigna actual). */
+const paso = ref(identificarPrevio?.paso ?? 0);
+/** Fallos por id del nodo que se pedía. */
+const errores = ref<Record<string, number>>(identificarPrevio?.errores ?? {});
+const veredicto = ref<{ tipo: 'correcta' | 'incorrecta' | 'info'; texto: string } | null>(null);
+const consignaActual = computed(() => consignas.value[paso.value] ?? null);
+const identificados = computed(() => nodosIdentificados(consignas.value, paso.value));
+/** Lo que se marca como hecho en la escena y en la lista: visitados o, al identificar, identificados. */
+const hechos = computed(() => (esIdentificar.value ? identificados.value : visitados.value));
 
 const visitadosRequeridos = computed(() => requeridosVisitados(requeridos.value, visitados.value));
 const seleccionado = computed(() => nodos.value.find((n) => n.id === seleccionId.value) ?? null);
@@ -172,6 +203,9 @@ watch(
     if (interactuado.value) return;
     intentos.value = intentoInicial(nuevo);
     visitados.value = restaurarVisitados(nuevo?.progreso?.instantanea, nodos.value);
+    const previo = restaurarIdentificar(nuevo?.progreso?.instantanea, consignas.value);
+    paso.value = previo?.paso ?? 0;
+    errores.value = previo?.errores ?? {};
   },
   { deep: true },
 );
@@ -184,16 +218,20 @@ const tituloResultado = ref<HTMLElement | null>(null);
 const tituloLista = ref<HTMLElement | null>(null);
 
 function completar(): void {
-  const precision = 1;
+  const precision = esIdentificar.value
+    ? precisionPorConteo(consignas.value.length, totalErrores(errores.value))
+    : 1;
   const puntaje = calcularPuntaje(props.actividad, { precision, intentos: intentos.value });
   const final: ResultadoActividad<'exploracion-3d'> = {
     puntaje,
     intentos: intentos.value,
     precision,
-    detalle: { visitados: [...visitados.value] },
+    detalle: esIdentificar.value
+      ? detalleDeIdentificar(consignas.value, errores.value)
+      : { visitados: [...visitados.value] },
   };
   resultado.value = final;
-  anuncio.value = `Exploración completada. Obtuviste ${puntaje} de ${props.actividad.puntaje_max} puntos.`;
+  anuncio.value = `${esIdentificar.value ? 'Actividad completada' : 'Exploración completada'}. Obtuviste ${puntaje} de ${props.actividad.puntaje_max} puntos.`;
   // Primero se cierra el emisor: el `progreso` pendiente jamás debe llegar después de `completada`.
   emisor.cerrar();
   emit('completada', final);
@@ -212,6 +250,10 @@ function seleccionar(id: string): void {
     return;
   }
   interactuado.value = true;
+  if (esIdentificar.value && resultado.value === null) {
+    alIdentificar(id, nodo);
+    return;
+  }
   emit('interaccion', { accion: 'selecciona_nodo', objeto: id });
 
   const yaCompletada = resultado.value !== null;
@@ -238,6 +280,53 @@ function seleccionar(id: string): void {
       instantanea: crearInstantanea(visitados.value, nodos.value),
     });
   }
+}
+
+/** Un toque en modo identificar: acierto, fallo (cuenta para la precisión) o una ya identificada (no cuenta). */
+function alIdentificar(id: string, nodo: { etiqueta: string; descripcion: string }): void {
+  const consigna = consignaActual.value;
+  if (!consigna) return;
+  const ficha = `${nodo.etiqueta}: ${textoPlanoDeMarkdown(nodo.descripcion)}`;
+  const resultadoToque = veredictoDeNodo(id, consigna.nodo, new Set(identificados.value));
+  if (resultadoToque === 'correcta') {
+    emit('interaccion', { accion: 'identifica_nodo', objeto: id, resultado: 'correcta' });
+    paso.value += 1;
+    veredicto.value = { tipo: 'correcta', texto: `¡Correcto! Es «${nodo.etiqueta}».` };
+    const siguiente = consignaActual.value;
+    if (!siguiente) {
+      anuncio.value = `Correcto: ${ficha}`;
+      completar();
+      return;
+    }
+    anuncio.value = `Correcto: ${ficha} Siguiente consigna: ${textoPlanoDeMarkdown(siguiente.texto)}`;
+  } else if (resultadoToque === 'incorrecta') {
+    errores.value = { ...errores.value, [consigna.nodo]: (errores.value[consigna.nodo] ?? 0) + 1 };
+    // Objeto = el nodo PEDIDO; después, el tocado, para que el mentor sepa qué confundió con qué.
+    emit('interaccion', {
+      accion: 'identifica_nodo',
+      objeto: consigna.nodo,
+      resultado: 'incorrecta',
+    });
+    emit('interaccion', { accion: 'selecciona_nodo', objeto: id });
+    veredicto.value = {
+      tipo: 'incorrecta',
+      texto: `Esa no es. Tocaste «${nodo.etiqueta}». Lee otra vez la consigna e inténtalo de nuevo.`,
+    };
+    anuncio.value = `Incorrecto. Tocaste ${ficha} Lee otra vez la consigna.`;
+  } else {
+    emit('interaccion', { accion: 'selecciona_nodo', objeto: id });
+    veredicto.value = {
+      tipo: 'info',
+      texto: `Ya identificaste «${nodo.etiqueta}»; esa no cuenta como error. Sigue con la consigna.`,
+    };
+    anuncio.value = `${ficha} Ya la habías identificado.`;
+    return;
+  }
+  emisor.emitir({
+    avance: consignas.value.length > 0 ? paso.value / consignas.value.length : 0,
+    intentos: intentos.value,
+    instantanea: crearInstantaneaIdentificar(paso.value, errores.value),
+  });
 }
 
 /**
@@ -271,18 +360,25 @@ function repetir(): void {
   if (!jugando.value) return;
   intentos.value += 1;
   visitados.value = [];
+  paso.value = 0;
+  errores.value = {};
+  veredicto.value = null;
   seleccionId.value = null;
   // Sin selección, la cámara vuelve al encuadre general (y la línea de tiempo, a t = 0).
   ordenEnfoque.value += 1;
   ordenReinicio.value += 1;
   resultado.value = null;
-  anuncio.value = 'Empezaste de nuevo. Explora las partes requeridas.';
+  anuncio.value = esIdentificar.value
+    ? 'Empezaste de nuevo. Sigue las consignas.'
+    : 'Empezaste de nuevo. Explora las partes requeridas.';
   emisor.reabrir();
   emit('interaccion', { accion: 'reinicia_actividad' });
   void nextTick(() => tituloLista.value?.focus());
 }
 
-const retroalimentacion = computed(() => textoRetroalimentacion(props.actividad, 1));
+const retroalimentacion = computed(() =>
+  textoRetroalimentacion(props.actividad, resultado.value?.precision ?? 1),
+);
 
 defineExpose({ seleccionar, repetir, visitarDesdeLinea });
 </script>
@@ -315,7 +411,28 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
       </p>
     </header>
 
-    <div v-if="jugando" class="grid gap-1" data-testid="avance">
+    <div v-if="jugando && esIdentificar" class="grid gap-1" data-testid="avance">
+      <p class="flex items-center gap-2 text-sm font-medium">
+        <CircleCheck v-if="!!resultado" class="text-success size-4 shrink-0" aria-hidden="true" />
+        {{ resultado ? consignas.length : paso }} de {{ consignas.length }} consignas resueltas
+      </p>
+      <div
+        class="bg-secondary h-2 overflow-hidden rounded-full"
+        role="progressbar"
+        aria-label="Consignas resueltas"
+        aria-valuemin="0"
+        :aria-valuemax="consignas.length"
+        :aria-valuenow="resultado ? consignas.length : paso"
+      >
+        <div
+          class="bg-primary h-full rounded-full motion-safe:transition-[width]"
+          :style="{
+            width: `${((resultado ? consignas.length : paso) / Math.max(1, consignas.length)) * 100}%`,
+          }"
+        />
+      </div>
+    </div>
+    <div v-else-if="jugando" class="grid gap-1" data-testid="avance">
       <p class="flex items-center gap-2 text-sm font-medium">
         <CircleCheck v-if="!!resultado" class="text-success size-4 shrink-0" aria-hidden="true" />
         {{ visitadosRequeridos }} de {{ requeridos.length }} {{ partes.requeridas }}
@@ -334,6 +451,35 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
           :style="{ width: `${(visitadosRequeridos / Math.max(1, requeridos.length)) * 100}%` }"
         />
       </div>
+    </div>
+
+    <div
+      v-if="jugando && esIdentificar && consignaActual && !resultado"
+      class="bg-card grid gap-2 rounded-xl border p-4"
+      data-testid="consigna"
+    >
+      <p class="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+        Consigna {{ paso + 1 }} de {{ consignas.length }}
+      </p>
+      <TextoMarkdown :texto="consignaActual.texto" class="block font-medium" />
+      <p class="text-muted-foreground text-sm">
+        Toca en el modelo, o elige en la lista, la estructura que corresponde.
+      </p>
+      <p
+        v-if="veredicto"
+        class="rounded-md px-3 py-2 text-sm"
+        :class="
+          veredicto.tipo === 'correcta'
+            ? 'bg-success-soft'
+            : veredicto.tipo === 'incorrecta'
+              ? 'bg-destructive/10 text-destructive'
+              : 'bg-muted'
+        "
+        data-testid="veredicto"
+        :data-tipo="veredicto.tipo"
+      >
+        {{ veredicto.texto }}
+      </p>
     </div>
 
     <div class="grid gap-2">
@@ -359,7 +505,7 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
         :modelo="actividad.config.modelo"
         :alt="actividad.config.alt"
         :nodos="nodos"
-        :visitados="jugando ? visitados : []"
+        :visitados="jugando ? hechos : []"
         :seleccion-id="seleccionId"
         :orden-enfoque="ordenEnfoque"
         :etiquetas-laterales="
@@ -417,7 +563,7 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
             "
             :aria-describedby="!esProcedural && seleccionId === nodo.id ? idFicha : undefined"
             :data-nodo="nodo.id"
-            :data-visitado="jugando && visitados.includes(nodo.id)"
+            :data-visitado="jugando && hechos.includes(nodo.id)"
             @click="seleccionar(nodo.id)"
           >
             <span
@@ -429,13 +575,16 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
               <span class="block font-medium break-words">{{ nodo.etiqueta }}</span>
               <span class="text-muted-foreground block text-xs">
                 {{ nodo.requerido ? 'Requerida' : 'Opcional'
-                }}<template v-if="jugando && visitados.includes(nodo.id)">
-                  · {{ esProcedural ? 'Visitada' : 'Explorada' }}</template
+                }}<template v-if="jugando && hechos.includes(nodo.id)">
+                  ·
+                  {{
+                    esIdentificar ? 'Identificada' : esProcedural ? 'Visitada' : 'Explorada'
+                  }}</template
                 >
               </span>
             </span>
             <Check
-              v-if="jugando && visitados.includes(nodo.id)"
+              v-if="jugando && hechos.includes(nodo.id)"
               class="text-success size-5 shrink-0"
               aria-hidden="true"
             />
@@ -475,7 +624,7 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
         class="font-heading flex items-center gap-2 text-base font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <CircleCheck class="text-success size-5 shrink-0" aria-hidden="true" />
-        Exploración completada
+        {{ esIdentificar ? 'Actividad completada' : 'Exploración completada' }}
       </h4>
       <TextoMarkdown :texto="retroalimentacion" class="block" />
       <p class="text-sm">
@@ -484,7 +633,7 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
       </p>
       <div>
         <Button type="button" variant="outline" data-testid="repetir" @click="repetir">
-          Volver a explorar desde cero
+          {{ esIdentificar ? 'Volver a empezar desde cero' : 'Volver a explorar desde cero' }}
         </Button>
       </div>
     </div>
