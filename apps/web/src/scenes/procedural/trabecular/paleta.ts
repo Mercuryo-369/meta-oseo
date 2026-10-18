@@ -1,6 +1,6 @@
 /**
  * Paleta de la escena del hueso trabecular que envejece: los colores del dibujo
- * `m6_hueso_normal_osteoporotico.svg` (la actividad multicapa vecina de la sección 6.3), de la escena del hueso
+ * `m6_hueso_normal_osteoporotico.svg` (la figura de la sección 6.3), de la escena del hueso
  * largo (`hueso/paleta.ts`) y de la BMU (`bmu/paleta.ts`), para que cada estructura se reconozca del dibujo a la
  * escena. Hex sRGB.
  */

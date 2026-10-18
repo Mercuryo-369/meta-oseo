@@ -40,18 +40,20 @@ La mandíbula es el lugar del esqueleto donde el paso del tiempo se ve y se palp
 
 ## Ilustraciones y modelos requeridos
 
-Convenciones de producción: las imágenes se producen como **SVG multicapa** (un grupo `<g>` por capa, con el `id` exacto que aparece en esta tabla, con `tabindex="0"`, `role="button"` y `aria-label` igual a la etiqueta, y con una zona táctil de al menos 44 px). El único modelo 3D es la **mandíbula**, una sola malla: no hay piezas separadas, por eso sus estructuras se definen como **hotspots** con nombre y descripción (sección 6.4). Las células se dibujan en SVG. Todo lo dibujado es esquemático y sin escala salvo que se indique. En el texto, cada figura se inserta con la sintaxis de imagen de Markdown y el id de archivo, sin extensión.
+Convenciones de producción: las imágenes se producen como **SVG multicapa** (un grupo `<g>` por capa, con el `id` exacto que aparece en esta tabla, con `tabindex="0"`, `role="button"` y `aria-label` igual a la etiqueta, y con una zona táctil de al menos 44 px). La **mandíbula** es un modelo 3D de una sola malla: no hay piezas separadas, por eso sus estructuras se definen como **hotspots** con nombre y descripción (sección 6.4). Desde 2026-10-18, el tejido óseo envejecido (6.2) y la comparación del hueso normal con el osteoporótico (6.3) se exploran en dos modelos 3D construidos por código, `tejido_oseo_envejecido` y `hueso_osteoporotico`, cuyas regiones son los hotspots de sus actividades; los SVG del mismo nombre quedan como figuras del texto. Las células se dibujan en SVG. Todo lo dibujado es esquemático y sin escala salvo que se indique. En el texto, cada figura se inserta con la sintaxis de imagen de Markdown y el id de archivo, sin extensión.
 
 | id de archivo | Que muestra | Capas o zonas (id = etiqueta) | Se usa en |
 |---|---|---|---|
 | `m6_curva_masa_osea` | Gráfico esquemático de la masa ósea frente a la edad, con la curva de mujeres y la de hombres, sus tres tramos y la menopausia | `eje_edad_masa` = Ejes: edad y masa ósea; `curva_mujer` = Curva en mujeres; `curva_hombre` = Curva en hombres; `fase_crecimiento` = Fase de construcción; `zona_pico_masa_osea` = Pico de masa ósea; `fase_meseta` = Meseta; `marca_menopausia` = Menopausia; `fase_perdida_acelerada` = Pérdida acelerada de la menopausia; `fase_perdida_lenta` = Pérdida lenta de la vejez; `umbral_fragilidad` = Umbral de fragilidad (esquemático); `curva_pico_mayor` = Curva con un pico mayor (línea punteada) | Actividad `m6_1_video_curva` y figura de la sección 6.1 |
 | `m6_escena_estrogeno_rankl` | Escena celular esquemática: una célula osteoblástica, un precursor de osteoclasto, un linfocito T y la superficie ósea, con los receptores y las capas de animación de cada efecto | `superficie_osea` = Superficie ósea; `celula_osteoblastica` = Célula osteoblástica o estromal; `receptor_er_alfa` = Receptor de estrógeno ERα (intracelular); `rankl_membrana` = RANKL anclado en la membrana; `opg_soluble` = Osteoprotegerina (OPG); `linfocito_t` = Linfocito T; `precursor_osteoclasto` = Precursor de osteoclasto; `receptor_rank` = Receptor RANK; `receptor_cfms` = Receptor c-Fms (para M-CSF); `receptor_tnf` = Receptor de TNF (TNFR1); `osteoclasto_multinucleado` = Osteoclasto multinucleado; `laguna_resorcion` = Laguna de reabsorción; `efecto_estrogeno_rankl` = Animación: el estrógeno baja RANKL y, al retirarlo, se invierte; `efecto_opg_bloquea` = Animación: la OPG cubre a RANKL; `efecto_diferenciacion` = Animación: fusión y maduración del osteoclasto; `efecto_proliferacion` = Animación: aumento de precursores; `efecto_amplificacion_tnf` = Animación: amplificación por TNF-α | Actividad `m6_1_arrastre_estrogenos` |
-| `m6_tejido_oseo_envejecido` | Corte transversal esquemático de hueso cortical envejecido con una osteona, un poro ampliado, la superficie endostal y la médula | `osteocito_senescente` = Osteocito senescente; `red_canalicular_reducida` = Red canalicular empobrecida; `laguna_mineralizada` = Laguna mineralizada (micropetrosis); `microfisura` = Microfisura; `poro_cortical` = Poro cortical ampliado; `medula_adiposa` = Médula con más grasa; `matriz_colageno_age` = Colágeno con productos de glicación (AGE); `superficie_osteoblastos_escasos` = Superficie con pocos osteoblastos | Actividad `m6_2_multicapa_tejido_envejecido` y figura de la sección 6.2 |
-| `m6_hueso_normal_osteoporotico` | Dos paneles a la misma escala: un cuerpo vertebral en corte sagital y una cortical en corte transversal, en hueso normal (izquierda) y osteoporótico (derecha) | `trabeculas_normales` = Trabéculas conectadas (hueso normal); `trabeculas_osteoporoticas` = Trabéculas adelgazadas (hueso osteoporótico); `perforacion_trabecular` = Trabécula perforada o desconectada; `cortical_normal` = Cortical gruesa (hueso normal); `cortical_adelgazada` = Cortical adelgazada; `porosidad_cortical` = Porosidad cortical aumentada; `cavidad_medular_ampliada` = Cavidad medular ampliada; `colapso_vertebral` = Aplastamiento vertebral (fractura por fragilidad) | Actividad `m6_3_multicapa_normal_osteoporotico` y figura de la sección 6.3 |
+| `m6_tejido_oseo_envejecido` | Corte transversal esquemático de hueso cortical envejecido con una osteona, un poro ampliado, la superficie endostal y la médula | `osteocito_senescente` = Osteocito senescente; `red_canalicular_reducida` = Red canalicular empobrecida; `laguna_mineralizada` = Laguna mineralizada (micropetrosis); `microfisura` = Microfisura; `poro_cortical` = Poro cortical ampliado; `medula_adiposa` = Médula con más grasa; `matriz_colageno_age` = Colágeno con productos de glicación (AGE); `superficie_osteoblastos_escasos` = Superficie con pocos osteoblastos | Figura de la sección 6.2 (la actividad `m6_2_multicapa_tejido_envejecido` usa el modelo 3D `tejido_oseo_envejecido`) |
+| `m6_hueso_normal_osteoporotico` | Dos paneles a la misma escala: un cuerpo vertebral en corte sagital y una cortical en corte transversal, en hueso normal (izquierda) y osteoporótico (derecha) | `trabeculas_normales` = Trabéculas conectadas (hueso normal); `trabeculas_osteoporoticas` = Trabéculas adelgazadas (hueso osteoporótico); `perforacion_trabecular` = Trabécula perforada o desconectada; `cortical_normal` = Cortical gruesa (hueso normal); `cortical_adelgazada` = Cortical adelgazada; `porosidad_cortical` = Porosidad cortical aumentada; `cavidad_medular_ampliada` = Cavidad medular ampliada; `colapso_vertebral` = Aplastamiento vertebral (fractura por fragilidad) | Figura de la sección 6.3 (la actividad `m6_3_multicapa_normal_osteoporotico` usa el modelo 3D `hueso_osteoporotico`) |
 | `m6_reborde_alveolar_cascada` | Seis cortes transversales (vestibulolinguales) de la región posterior del cuerpo mandibular, desde el diente presente hasta el reborde deprimido | `etapa_1_diente_presente` = Etapa 1 (Cawood y Howell, clase I): diente en su alvéolo; `etapa_2_alveolo_postextraccion` = Etapa 2 (clase II): alvéolo tras la extracción; `etapa_3_reborde_redondeado` = Etapa 3 (clase III): reborde redondeado; `etapa_4_reborde_filo_cuchillo` = Etapa 4 (clase IV): reborde en filo de cuchillo; `etapa_5_reborde_plano` = Etapa 5 (clase V): reborde plano; `etapa_6_reborde_deprimido` = Etapa 6 (clase VI): reborde deprimido; `ligamento_periodontal` = Ligamento periodontal; `hueso_alveolar_propio` = Hueso alveolar propio (hueso fasciculado); `carga_funcional` = Flechas de carga funcional; `conducto_mandibular` = Conducto mandibular | Actividad `m6_4_ordenar_reborde` (se muestra tras responder) y figura de la sección 6.4 |
 | `m6_atm_cambios_degenerativos` | Corte sagital de la articulación temporomandibular en dos paneles: normal y con cambios degenerativos | `condilo_mandibular` = Cóndilo mandibular; `fosa_mandibular` = Fosa mandibular; `eminencia_articular` = Eminencia articular; `disco_articular` = Disco articular; `fibrocartilago_articular` = Fibrocartílago de superficie; `hueso_subcondral` = Hueso subcondral; `osteofito_condilar` = Osteofito; `aplanamiento_condilar` = Aplanamiento del cóndilo; `esclerosis_subcondral` = Esclerosis subcondral; `disco_desplazado` = Disco adelgazado o desplazado | Figura de la sección 6.4 |
 | `m6_prevencion_mapa` | Esquema conceptual: el hueso como blanco, con las medidas de prevención y los fármacos conectados al mecanismo sobre el que actúan | `hueso_diana` = Hueso (blanco); `pilar_carga_mecanica` = Carga mecánica; `pilar_calcio` = Calcio; `pilar_vitamina_d` = Vitamina D; `pilar_habitos` = Hábitos (tabaco y alcohol); `pilar_caidas` = Prevención de caídas; `palanca_antirreabsortivos` = Fármacos antirreabsortivos; `palanca_anabolicos` = Fármacos anabólicos | Figura de la sección 6.5 |
 | `mandibula` (modelo 3D) | Mandíbula humana adulta sin dientes, una sola malla. Provisional: `apps/web/public/models/mandibula_bodyparts3d.stl` (BodyParts3D FJ6399) | Hotspots: `cuerpo` = Cuerpo y borde inferior (hueso basal); `angulo` = Ángulo; `condilo` = Cóndilo (proceso condilar); `foramen_mentoniano` = Foramen mentoniano; `apofisis_alveolar` = Apófisis alveolar (reborde); `linea_milohioidea` = Línea milohioidea | Actividad `m6_4_mandibula_3d` |
+| `tejido_oseo_envejecido` (modelo 3D) | Bloque de hueso cortical envejecido en corte transversal, construido por código (`apps/web/src/scenes/tejido_oseo_envejecido/`) | Regiones: las mismas ocho estructuras que `m6_tejido_oseo_envejecido` | Actividad `m6_2_multicapa_tejido_envejecido` |
+| `hueso_osteoporotico` (modelo 3D) | Dos pares a la misma escala, construidos por código (`apps/web/src/scenes/hueso_osteoporotico/`): cuerpo vertebral en corte sagital y diáfisis en corte transversal, normales y osteoporóticos | Regiones: las mismas ocho capas que `m6_hueso_normal_osteoporotico` | Actividad `m6_3_multicapa_normal_osteoporotico` |
 
 ### Notas de precision anatomica (para quien dibuja y modela)
 
@@ -63,6 +65,8 @@ Convenciones de producción: las imágenes se producen como **SVG multicapa** (u
 - **`m6_atm_cambios_degenerativos`.** Corte sagital con la boca cerrada. Panel normal: cóndilo, fosa mandibular, eminencia articular y disco articular bicóncavo interpuesto (banda anterior, zona intermedia y banda posterior), con espacios articulares superior e inferior. Las superficies articulares se recubren de **fibrocartílago**, no de cartílago hialino: dibujarlas con una línea fina y no con una capa gruesa. Panel degenerativo: cóndilo aplanado, osteofito en el borde anterior, esclerosis subcondral (hueso subcondral más denso) y disco adelgazado y desplazado hacia delante.
 - **`m6_prevencion_mapa`.** Esquema conceptual, no anatómico. El hueso va al centro; cada medida se conecta con una flecha al mecanismo que aprovecha (osteocito y esclerostina, mineral, absorción de calcio, osteoclasto, RANKL, vía Wnt). Los fármacos van aparte de la prevención, con etiquetas neutras y sin dosis.
 - **`mandibula` (3D).** Una sola malla de hueso, sin dientes y sin atrofia: no modelar la pérdida ósea, el texto de cada hotspot la describe. Los hotspots son marcadores anclados a una posición del modelo; sus nombres son los `id` de la tabla y coinciden con los del módulo 1 donde se repiten. Posiciones sugeridas: `apofisis_alveolar` en el borde alveolar superior del cuerpo, en la zona posterior; `foramen_mentoniano` en la cara lateral del cuerpo, a la altura de los premolares; `cuerpo` en el borde inferior, a la altura del foramen mentoniano y por detrás de él; `angulo` en la esquina posteroinferior; `condilo` en la cabeza del proceso condilar; `linea_milohioidea` en la cara medial del cuerpo, como una cresta oblicua desde la zona del tercer molar hacia la sínfisis. Cualquier pantalla que muestre este modelo debe llevar la atribución exigida por la licencia CC BY-SA 2.1 JP (ver `docs/atribuciones.md`).
+- **`tejido_oseo_envejecido` (3D).** Sustituye a la ilustración hecha con IA, que dibujaba la osteona con radios y los adipocitos rellenos. Bloque cortado con la cara de corte hacia el estudiante. Osteona con laminillas **concéntricas** alrededor de un conducto de Havers con su capilar y línea cementante festoneada; laminillas intersticiales en fragmentos. Pocos osteocitos viables; osteocitos senescentes dorados con gránulos de lipofuscina; lagunas vacías (apoptosis, dentro de la región del osteocito senescente) y lagunas rellenas de mineral, sin célula. Canalículos escasos, cortos y alguno interrumpido. Microfisura fina en el hueso intersticial que se detiene en la línea cementante. Poro cortical lobulado cerca del endostio. Endostio con dos células de revestimiento aplanadas y un osteoblasto. Médula con adipocitos grandes de una sola gota, vacíos y blanco amarillentos, con el núcleo aplastado contra el borde, y algo de tejido hematopoyético entre ellos. El colágeno con AGE va en una lupa: fibrillas con su bandeo y puentes pardo amarillentos entre fibrillas vecinas, sin escala.
+- **`hueso_osteoporotico` (3D).** Sustituye a la ilustración hecha con IA, que tenía aspecto de piedra tallada y una cortical osteoporótica gruesa. Las dos vértebras y las dos diáfisis están a la misma escala; lo anterior de la vértebra va a la izquierda. Vértebra normal: cortical más gruesa y red tridimensional de varillas y placas verticales unidas por horizontales, con médula roja. Vértebra osteoporótica: cortical fina, varillas verticales finas y largas casi sin horizontales, dos varillas rotas y una placa perforada, médula más grasa y aplastamiento en cuña (delante queda a dos tercios de la altura de atrás), con la placa terminal superior hundida, la pared anterior abombada y trabéculas compactadas bajo ella. Diáfisis normal: cortical gruesa con poros pequeños y cavidad estrecha. Diáfisis osteoporótica: cortical **adelgazada** con poros grandes, sobre todo cerca del endostio, borde interno festoneado, cavidad medular **ampliada** y contorno externo algo mayor.
 
 ## Secciones
 
@@ -341,7 +345,7 @@ La menopausia no lo explica todo. En mujeres y en hombres, con los años cambian
 
 ![Corte esquemático de hueso cortical envejecido con osteocitos senescentes, una microfisura, un poro ampliado y una médula con más grasa](m6_tejido_oseo_envejecido)
 
-*Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorar cada estructura.*
+*Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorarlo en 3D.*
 
 **Qué cambia**
 
@@ -371,18 +375,19 @@ Explora ahora el corte de hueso envejecido y comprueba lo aprendido.
 ##### Actividad m6_2_multicapa_tejido_envejecido
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Explora un hueso que envejece"
-instrucciones: "Toca cada estructura del corte para leer qué le ocurre al envejecer (con teclado, usa Tab para pasar de una a otra y Enter para abrir su descripción; también puedes usar la lista de estructuras bajo la imagen). Visita al menos las cinco estructuras marcadas como requeridas."
+instrucciones: "Gira el bloque de hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de hueso cortical envejecido visto al microscopio. Toca cada estructura para leer qué le ocurre al envejecer. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco estructuras requeridas."
 obligatoria: true
 puntaje_max: 30
 concepto: "Envejecimiento celular y de la matriz"
 retroalimentacion:
   acierto: "Muy bien. Ya reconoces los cambios celulares y de la matriz que reducen la calidad del hueso, incluso cuando la densidad todavía parece aceptable."
   error: "Todavía quedan estructuras por visitar. Revisa las que no han cambiado de color: cada una explica un cambio distinto del hueso envejecido."
-svg: m6_tejido_oseo_envejecido
-modo: explorar
-capas:
+# 2026-10-18: pasa de la multicapa sobre el SVG m6_tejido_oseo_envejecido (con una ilustración hecha con IA
+# que tenía errores) a un modelo 3D construido por código. Mismas estructuras, textos y requeridas.
+modelo: tejido_oseo_envejecido
+hotspots:
   - id: osteocito_senescente
     etiqueta: "Osteocito senescente"
     descripcion: "Osteocito que dejó de funcionar bien y secreta un cóctel inflamatorio (SASP) que favorece la reabsorción y frena la formación. Con la edad aumentan los osteocitos senescentes y también su muerte por apoptosis."
@@ -407,7 +412,7 @@ capas:
   - id: superficie_osteoblastos_escasos
     etiqueta: "Superficie con pocos osteoblastos"
     descripcion: "En el hueso envejecido hay menos osteoblastos activos sobre la superficie ósea. Cada ciclo de remodelado repone menos hueso del que se reabsorbió."
-requeridas: [osteocito_senescente, laguna_mineralizada, microfisura, medula_adiposa, matriz_colageno_age]
+requeridos: [osteocito_senescente, laguna_mineralizada, microfisura, medula_adiposa, matriz_colageno_age]
 ```
 
 ##### Actividad m6_2_quiz_envejecimiento
@@ -492,7 +497,7 @@ Con menos hueso y peor calidad, la resistencia cae hasta que una caída leve, o 
 
 ![Comparación esquemática de un cuerpo vertebral y de una cortical, normales y osteoporóticos](m6_hueso_normal_osteoporotico)
 
-*Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorar cada capa.*
+*Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorarlos en 3D.*
 
 **Cantidad frente a calidad**
 
@@ -546,18 +551,19 @@ Explora ahora la comparación entre hueso normal y osteoporótico, relaciona los
 ##### Actividad m6_3_multicapa_normal_osteoporotico
 
 ```yaml
-tipo: multicapa
+tipo: exploracion-3d
 titulo: "Hueso normal frente a hueso osteoporótico"
-instrucciones: "Toca cada capa para leer qué muestra y compara el panel normal con el osteoporótico (con teclado, usa Tab para pasar de una capa a otra y Enter para abrir su descripción; también puedes usar la lista de capas bajo la imagen). Visita al menos las cinco capas marcadas como requeridas."
+instrucciones: "Gira el modelo con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): a la izquierda, hueso normal; a la derecha, osteoporótico, a la misma escala. Arriba, un cuerpo vertebral serrado; abajo, la diáfisis de un hueso largo cortada. Toca cada estructura para leer qué muestra. Con teclado, Tab y Enter, o usa la lista bajo el modelo. Visita las cinco requeridas."
 obligatoria: true
 puntaje_max: 30
 concepto: "Osteoporosis: calidad frente a cantidad"
 retroalimentacion:
   acierto: "Muy bien. Ya ves que la osteoporosis no es solo menos mineral: cambian la arquitectura de las trabéculas, el grosor y la porosidad de la cortical, y el riesgo de fractura."
   error: "Todavía quedan capas por visitar. Compara siempre el panel normal con el osteoporótico: fíjate en la conectividad de las trabéculas y en el grosor de la cortical."
-svg: m6_hueso_normal_osteoporotico
-modo: explorar
-capas:
+# 2026-10-18: pasa de la multicapa sobre el SVG m6_hueso_normal_osteoporotico (con una ilustración hecha con
+# IA que tenía errores) a un modelo 3D construido por código. Mismas estructuras, textos y requeridas.
+modelo: hueso_osteoporotico
+hotspots:
   - id: trabeculas_normales
     etiqueta: "Trabéculas conectadas (hueso normal)"
     descripcion: "En el hueso normal, las trabéculas verticales y horizontales forman una red interconectada que reparte la carga y se apoya entre sí."
@@ -582,7 +588,7 @@ capas:
   - id: colapso_vertebral
     etiqueta: "Aplastamiento vertebral (fractura por fragilidad)"
     descripcion: "Fractura típica de la osteoporosis: el cuerpo vertebral se comprime con cargas cotidianas. Puede pasar inadvertida y sumarse hasta causar una joroba (cifosis) y pérdida de estatura."
-requeridas: [trabeculas_normales, trabeculas_osteoporoticas, perforacion_trabecular, cortical_adelgazada, colapso_vertebral]
+requeridos: [trabeculas_normales, trabeculas_osteoporoticas, perforacion_trabecular, cortical_adelgazada, colapso_vertebral]
 ```
 
 ##### Actividad m6_3_relacion_factores
@@ -1474,7 +1480,7 @@ Estas son las afirmaciones marcadas con [verificar] en el cuerpo, y otras cifras
 6. **Nombres comerciales y dosis.** No se incluyó ninguno. Confirmar si el docente quiere mencionar fármacos con más detalle o dejar solo los mecanismos.
 7. **Cronología de las etapas del reborde.** Se ligaron las seis etapas ilustradas a las clases I a VI de Cawood y Howell de forma esquemática: el paso de una clase a otra no es una cronología uniforme, varía entre personas. Confirmar que el docente acepta esa equivalencia.
 8. **Mayor pérdida de la pared vestibular.** Se dijo "la pared más delgada, a menudo la vestibular", limitado a sitios anteriores y premolares; en la figura de la región posterior se pide grosor variable de ambas tablas (en molares mandibulares la cortical vestibular suele ser gruesa por la línea oblicua externa). La reabsorción del reborde difiere entre la región anterior y la posterior, y entre maxilar y mandíbula (en la mandíbula el reborde suele resorberse hacia abajo y hacia afuera). Confirmar el nivel de detalle.
-9. **Duración y reparto de tiempos.** Los 40 minutos (rango de 35 a 45) y el reparto por sección son estimados de este borrador: lectura de unas 3000 palabras (unos 14 a 15 min) más unos 25 a 30 min de actividades obligatorias. Conviene probarlos con estudiantes. El módulo tiene bastante contenido para la densidad media; si excede, pasar la ATM y los AGE detallados a recuadros opcionales o reducir a cuatro las capas requeridas de la multicapa de 6.3.
+9. **Duración y reparto de tiempos.** Los 40 minutos (rango de 35 a 45) y el reparto por sección son estimados de este borrador: lectura de unas 3000 palabras (unos 14 a 15 min) más unos 25 a 30 min de actividades obligatorias. Conviene probarlos con estudiantes. El módulo tiene bastante contenido para la densidad media; si excede, pasar la ATM y los AGE detallados a recuadros opcionales o reducir a cuatro las estructuras requeridas de la exploración 3D de 6.3.
 10. **Puntajes y número de preguntas.** Los `puntaje_max`, la cantidad de preguntas y qué actividades son opcionales son una propuesta y deben acordarse con el docente y con el diseño de gamificación. Los quizzes no siguen exactamente la guía de 10 puntos por pregunta del esquema de contenido, que es orientativa: los quizzes opcionales de 3 o 4 preguntas valen 20 o 30 y la evaluación final (8 preguntas) vale 100 para que el cierre del módulo pese más que las prácticas opcionales. El total (440) queda dentro del rango de 100 a 600.
 11. **Referencias a los módulos 1 a 5.** Se aludió a mecanotransducción (módulo 3), mineralización (módulo 4) y remodelado con RANKL/OPG (módulo 5) según el briefing. Confirmar que esos módulos cubren esos temas con esos nombres.
 12. **Decisiones de alcance.** Se incluyeron farmacología básica (mecanismos, no dosis) y ONM con prudencia clínica porque el briefing lo pide como aplicación de los mecanismos. Confirmar con el docente el nivel de detalle clínico deseado para pregrado.

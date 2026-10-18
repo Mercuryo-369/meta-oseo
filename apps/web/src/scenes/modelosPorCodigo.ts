@@ -37,6 +37,22 @@ export const MODELOS_POR_CODIGO: Readonly<Partial<Record<Modelo3d, Cargador>>> =
       puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
     };
   },
+  tejido_oseo_envejecido: async () => {
+    const m = await import('./tejido_oseo_envejecido/modeloTejidoOseoEnvejecido');
+    return {
+      crear: m.crearTejidoOseoEnvejecido,
+      esRegion: m.esRegionTejidoEnvejecido,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
+  hueso_osteoporotico: async () => {
+    const m = await import('./hueso_osteoporotico/modeloHuesoOsteoporotico');
+    return {
+      crear: m.crearHuesoOsteoporotico,
+      esRegion: m.esRegionHuesoOsteoporotico,
+      puntoDeRegion: (id) => m.puntoDeRegion(id as Parameters<typeof m.puntoDeRegion>[0]),
+    };
+  },
 };
 
 export function esModeloPorCodigo(modelo: Modelo3d): boolean {

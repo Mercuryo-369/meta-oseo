@@ -3,8 +3,8 @@
 Nota de diseño de `hueso_trabecular_tiempo`, escena **procedural** del OVA (el formato lo explica
 [escena-3d-bmu.md](escena-3d-bmu.md); la plantilla de código es la del hueso largo,
 [escena-3d-hueso.md](escena-3d-hueso.md)). Es una actividad **opcional** del módulo 6, `m6_3_trabecular_3d`
-(sección 6.3 "Osteoporosis: calidad, cantidad y riesgo", 30 puntos), que acompaña a la actividad multicapa
-`m6_3_multicapa_normal_osteoporotico`: el mismo contraste del dibujo `m6_hueso_normal_osteoporotico.svg`, pero
+(sección 6.3 "Osteoporosis: calidad, cantidad y riesgo", 30 puntos), que acompaña a la exploración 3D
+`m6_3_multicapa_normal_osteoporotico` (modelo `hueso_osteoporotico`): el mismo contraste del dibujo `m6_hueso_normal_osteoporotico.svg`, pero
 visto ocurrir en un cubo de hueso a lo largo de cinco décadas.
 
 ## 1. Qué hace el estudiante

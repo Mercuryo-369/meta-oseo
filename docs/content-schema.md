@@ -939,16 +939,18 @@ El video se carga con `preload="none"`, sin autoplay y con subtítulos en españ
 
 ### 7.6 `exploracion-3d`: modelo 3D (solo mandíbula y células)
 
-El 3D de exploración es para la mandíbula, las células y el hueso largo de m1 (desde 2026-10-17). Hay cuatro valores
-de `modelo`: `mandibula`, `celulas` y `hueso_largo` (modelos con nodos: el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a
-él) y `procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
+El 3D de exploración es para la mandíbula, las células, el hueso largo de m1 (desde 2026-10-17) y los modelos que
+sustituyen a ilustraciones de multicapa (desde 2026-10-18). Los valores de `modelo` son `mandibula`, `celulas` y
+los construidos por código de la sección 9 (`hueso_largo`, `tejido_oseo_envejecido`, `hueso_osteoporotico`), que son
+modelos con nodos (el estudiante gira el modelo, toca un nodo y lee su ficha; la cámara se acerca a él), y
+`procedural` (una escena hecha por código con **línea de tiempo**, ver "Variante procedural" más
 abajo). Se completa al visitar los `requeridos`.
 
 | Campo de `config` | Regla |
 |---|---|
-| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), `hueso_largo` (construido por código, con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
+| `modelo` | `mandibula` o `celulas` (con GLB y `nodos`), uno construido por código (sección 9, con `nodos`) o `procedural` (escena por código con `linea_de_tiempo`) |
 | `alt` | Plano, 10 a 300: descripción del modelo |
-| `nodos[]` | Solo en `mandibula`, `celulas` y `hueso_largo` (en `procedural` no va). 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
+| `nodos[]` | En todos los modelos salvo `procedural`. 2 a 12. `id` (**nodo del catálogo del modelo**, sección 9, o un id libre si lleva `ancla`), `etiqueta` (plano, 2 a 60), `descripcion` (línea, 10 a 500), `ancla` y `camara` opcionales |
 | `ancla` | Solo en `mandibula`. `{ x, y, z }`, cada uno de 0 a 1 en la caja envolvente del modelo (sección 9). Para zonas que **no son una pieza** del modelo |
 | `camara` | `vista` (por defecto `frontal`) y `zoom` (0,5 a 3; por defecto 1) |
 | `requeridos` | 1 a 12 ids de nodos (o de pasos, en `procedural`), sin repetir, todos existentes |
@@ -1189,6 +1191,17 @@ mientras no haya un modelo suyo.
 `linea_epifisaria`, `metafisis`, `diafisis`, `cavidad_medular`, `arteria_nutricia`. Es un hueso largo serrado
 a lo largo que se construye por código (`apps/web/src/scenes/hueso_largo/modeloHuesoLargo.ts`), sin GLB: cada nodo
 es una región del modelo con ese nombre, y la etiqueta va al punto que da el modelo. **No admite `ancla`**.
+
+**Modelo `tejido_oseo_envejecido`** (2026-10-18, actividad m6_2_multicapa_tejido_envejecido): `osteocito_senescente`,
+`red_canalicular_reducida`, `laguna_mineralizada`, `microfisura`, `poro_cortical`, `medula_adiposa`,
+`matriz_colageno_age`, `superficie_osteoblastos_escasos`. Bloque de hueso cortical envejecido en corte transversal
+(`apps/web/src/scenes/tejido_oseo_envejecido/`). Construido por código, como `hueso_largo`, y **no admite `ancla`**.
+
+**Modelo `hueso_osteoporotico`** (2026-10-18, actividad m6_3_multicapa_normal_osteoporotico): `trabeculas_normales`,
+`trabeculas_osteoporoticas`, `perforacion_trabecular`, `cortical_normal`, `cortical_adelgazada`,
+`porosidad_cortical`, `cavidad_medular_ampliada`, `colapso_vertebral`. Cuerpo vertebral en corte sagital y diáfisis
+en corte transversal, normales y osteoporóticos a la misma escala (`apps/web/src/scenes/hueso_osteoporotico/`).
+Construido por código, como `hueso_largo`, y **no admite `ancla`**.
 
 **Ejes del ancla** (del sujeto, no de la pantalla; el GLB definitivo usa `+Y` arriba y `+Z` hacia delante):
 `x` 0 es el lado derecho del sujeto y 1 el izquierdo; `y` 0 es el borde inferior del hueso y 1 la punta del

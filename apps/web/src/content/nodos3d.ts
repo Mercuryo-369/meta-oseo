@@ -17,7 +17,13 @@
  * deben respetar. Si el modelador cambia un nombre, se cambia aquí y en el contenido.
  */
 
-export const MODELOS_3D = ['mandibula', 'celulas', 'hueso_largo'] as const;
+export const MODELOS_3D = [
+  'mandibula',
+  'celulas',
+  'hueso_largo',
+  'tejido_oseo_envejecido',
+  'hueso_osteoporotico',
+] as const;
 export type Modelo3d = (typeof MODELOS_3D)[number];
 
 export interface NodoCatalogo {
@@ -66,10 +72,42 @@ const NODOS_HUESO_LARGO: readonly NodoCatalogo[] = [
   { id: 'arteria_nutricia', etiqueta: 'Arteria nutricia' },
 ];
 
+/**
+ * Hueso cortical envejecido en corte transversal (`scenes/tejido_oseo_envejecido/`, actividad
+ * m6_2_multicapa_tejido_envejecido; desde 2026-10-18 sustituye a la ilustración de esa multicapa).
+ */
+const NODOS_TEJIDO_OSEO_ENVEJECIDO: readonly NodoCatalogo[] = [
+  { id: 'osteocito_senescente', etiqueta: 'Osteocito senescente' },
+  { id: 'red_canalicular_reducida', etiqueta: 'Red canalicular empobrecida' },
+  { id: 'laguna_mineralizada', etiqueta: 'Laguna mineralizada (micropetrosis)' },
+  { id: 'microfisura', etiqueta: 'Microfisura' },
+  { id: 'poro_cortical', etiqueta: 'Poro cortical ampliado' },
+  { id: 'medula_adiposa', etiqueta: 'Médula con más grasa' },
+  { id: 'matriz_colageno_age', etiqueta: 'Colágeno con productos de glicación (AGE)' },
+  { id: 'superficie_osteoblastos_escasos', etiqueta: 'Superficie con pocos osteoblastos' },
+];
+
+/**
+ * Hueso normal frente a osteoporótico: cuerpo vertebral en corte sagital y diáfisis en corte transversal
+ * (`scenes/hueso_osteoporotico/`, actividad m6_3_multicapa_normal_osteoporotico; desde 2026-10-18).
+ */
+const NODOS_HUESO_OSTEOPOROTICO: readonly NodoCatalogo[] = [
+  { id: 'trabeculas_normales', etiqueta: 'Trabéculas conectadas (hueso normal)' },
+  { id: 'trabeculas_osteoporoticas', etiqueta: 'Trabéculas adelgazadas (hueso osteoporótico)' },
+  { id: 'perforacion_trabecular', etiqueta: 'Trabécula perforada o desconectada' },
+  { id: 'cortical_normal', etiqueta: 'Cortical gruesa (hueso normal)' },
+  { id: 'cortical_adelgazada', etiqueta: 'Cortical adelgazada' },
+  { id: 'porosidad_cortical', etiqueta: 'Porosidad cortical aumentada' },
+  { id: 'cavidad_medular_ampliada', etiqueta: 'Cavidad medular ampliada' },
+  { id: 'colapso_vertebral', etiqueta: 'Aplastamiento vertebral (fractura por fragilidad)' },
+];
+
 export const CATALOGO_NODOS: Readonly<Record<Modelo3d, readonly NodoCatalogo[]>> = {
   mandibula: NODOS_MANDIBULA,
   celulas: NODOS_CELULAS,
   hueso_largo: NODOS_HUESO_LARGO,
+  tejido_oseo_envejecido: NODOS_TEJIDO_OSEO_ENVEJECIDO,
+  hueso_osteoporotico: NODOS_HUESO_OSTEOPOROTICO,
 };
 
 /**
