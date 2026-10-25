@@ -342,9 +342,37 @@ def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
     print(f"fondo en: {', '.join(tocadas) or '(ninguna multicapa)'}; otros usos del SVG: {otros or 'ninguno'}")
 
 
+def figura(e: dict, semilla: int, sufijo: str) -> None:
+    """Imagen final con los rótulos del dibujo encima (texto nítido), para los usos sin capas táctiles: bloques
+    `imagen`, fondos de arrastre y portadas. Se guarda como {nombre}_figura.webp y se cambia en content.json."""
+    carpeta = TRABAJO / e["nombre"]
+    svg = ruta_svg(e)
+    texto = svg.read_text(encoding="utf-8")
+    if svg_fondo.MARCA in texto:
+        sys.exit(f"{svg.name} es un SVG de zonas: usar el original")
+    vw, vh = svg_fondo.viewbox(svg_fondo.leer(texto))
+    alto = round(ANCHO_WEBP * vh / vw)
+    base = Image.open(carpeta / f"s{semilla}{sufijo}.png").convert("RGB").resize((ANCHO_WEBP, alto), Image.LANCZOS)
+    base = recortar_a_silueta(base, texto)
+    encima = svg_fondo.svg_como_zonas(texto, e.get("glifos", []), [], "(figura)", e.get("colores", []))
+    rotulos = png_de_svg(encima, ANCHO_WEBP, alto, fondo=None)
+    final = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    final.alpha_composite(base)
+    final.alpha_composite(rotulos)
+    destino = svg.with_name(f"{svg.stem}_figura.webp")
+    final.save(destino, "WEBP", quality=82, method=6)
+    ruta = f"/images/{e['modulo']}/{svg.name}"
+    figura_ruta = f"/images/{e['modulo']}/{destino.name}"
+    modulo = next((RAIZ / "apps/web/src/modules").glob(f"{e['modulo']}_*/content.json"))
+    tocadas = svg_fondo.usar_figura(modulo, ruta, figura_ruta, ANCHO_WEBP, alto)
+    print(
+        f"{destino.relative_to(RAIZ)} ({destino.stat().st_size // 1024} KB); usada en: {', '.join(tocadas) or 'nada'}"
+    )
+
+
 def main() -> None:
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    a.add_argument("accion", choices=["preparar", "generar", "corregir", "integrar"])
+    a.add_argument("accion", choices=["preparar", "generar", "corregir", "integrar", "figura"])
     a.add_argument("nombres", nargs="*", help="encargos (por defecto, todos los de encargos.yaml)")
     a.add_argument("--n", type=int, default=4)
     a.add_argument("--semilla", type=int, default=1)
@@ -376,6 +404,10 @@ def main() -> None:
         pipes = cargar_pipeline([t for e in elegidos for t in textos_correccion(e)])
         for e in elegidos:
             corregir(pipes, e, args.n, args.pasos)
+    elif args.accion == "figura":
+        if len(elegidos) != 1:
+            a.error("figura: un solo encargo y su --semilla")
+        figura(elegidos[0], args.semilla, args.sufijo)
     else:
         if len(elegidos) != 1:
             a.error("integrar: un solo encargo y su --semilla")

@@ -126,6 +126,38 @@ encargos:
   # m3_osteoide_hueso_inmaduro: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
   # m3_osteocito_red_lacuno_canalicular: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
 
+  - nombre: m3_sensores_mecanicos
+    modulo: m3
+    glifos: []
+    prompt: "(texturizado: la forma sale del SVG)"
+    semilla:
+    tejidos:
+      "#d98aa2": hueso_cortical
+      "#dbe3fa": liquido
+      "#d4eefa": liquido
+      "#8a4f7c": colageno@original
+      "#8fbccf": colageno@original
+      "#6b3f7a": colageno@original
+      "#e6c58a": membrana_lipidica
+      "#f7e7c6": membrana_lipidica@original
+      "#f0eaff": citoplasma
+      "#9a86c8": actina
+      "#8a6fe0": proteina@original
+      "#b3a3f4": proteina@original
+      "#2bb0c8": proteina@original
+      "#3ec3da": proteina@original
+      "#eafcff": proteina@original
+      "#4fae6a": proteina@original
+      "#eafbea": proteina@original
+      "#f2b62c": liso@original
+      "#fff6cf": liso@original
+      "#e56a94": liso@original
+      "#e8fbff": liso@original
+      "#f6ecf4": citoplasma@original
+      "#6f93e2": celula@original
+      "#3b2f86": nucleo
+      "#e58c3c": proteina@original
+
   # --- Módulo 4 ---
   # m4_frente_mineralizacion: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
 

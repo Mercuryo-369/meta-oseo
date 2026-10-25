@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Bloque `imagen`: `alt` obligatorio (lo exige el esquema), pie con Markdown de una línea y
- * crédito. Si el archivo no carga, se muestra el texto alternativo en un recuadro para que el
+ * crédito. Si hay `figura` (la versión realista del dibujo), se muestra esa. Si el archivo no carga, se muestra el texto alternativo en un recuadro para que el
  * contenido no se pierda.
  */
 import { ref } from 'vue';
@@ -18,7 +18,7 @@ const fallo = ref(false);
   <figure :id="`bloque-${bloque.id}`" class="space-y-2" data-testid="bloque-imagen">
     <img
       v-if="!fallo"
-      :src="bloque.src"
+      :src="bloque.figura ?? bloque.src"
       :alt="bloque.alt"
       :width="bloque.ancho"
       :height="bloque.alto"

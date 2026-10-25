@@ -447,6 +447,11 @@ export const ConfigArrastreMolecularSchema = z
       viewBox,
       /** SVG de fondo opcional (por ejemplo la membrana celular); sin él, la escena es lisa. */
       fondo_svg: rutaSvg.optional(),
+      /**
+       * Versión realista del fondo (webp…), con la misma geometría que `fondo_svg` (tools/imagenes): si está, se
+       * muestra en lugar del SVG, que sigue siendo el dibujo validado.
+       */
+      fondo: rutaImagen.optional(),
       alt: textoPlano(10, 300),
     }),
     moleculas: z.array(MoleculaSchema).min(2).max(8),
@@ -1110,6 +1115,11 @@ export const BloqueImagenSchema = z
     id: IdSchema,
     tipo: z.literal('imagen'),
     src: rutaImagen,
+    /**
+     * Versión realista del dibujo `src`, con su misma geometría y sus rótulos (tools/imagenes): si está, se muestra
+     * en lugar de `src`, que sigue siendo el dibujo validado.
+     */
+    figura: rutaImagen.optional(),
     /** Texto alternativo OBLIGATORIO: describe lo que la imagen enseña, no que "es una imagen". */
     alt: textoPlano(10, 250),
     pie: markdownLinea(5, 250),

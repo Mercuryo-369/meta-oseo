@@ -294,7 +294,7 @@ quien es de posgrado; también existe en `imagen`, `callout` y `tabla`).
 ### `imagen`
 
 `id`, `tipo: "imagen"`, `src` (ruta pública, sección 2; svg, webp, png, jpg o avif), **`alt` obligatorio**
-(plano, 10 a 250), **`pie`** (línea, 5 a 250), `credito` opcional (autoría y licencia si no es propia),
+(plano, 10 a 250), **`pie`** (línea, 5 a 250), `figura` opcional (versión realista del dibujo `src`, con su geometría y sus rótulos, hecha con `tools/imagenes`: se muestra en su lugar), `credito` opcional (autoría y licencia si no es propia),
 `ancho` y `alto` opcionales (juntos; evitan saltos al cargar) y `nivel` opcional.
 
 El `alt` describe **lo que la imagen enseña**, no que "es una imagen": "Corte de un hueso largo con el
@@ -549,7 +549,7 @@ y el receptor de una lista.
 
 | Campo de `config` | Regla |
 |---|---|
-| `escena` | `viewBox` (como en multicapa), `alt` (plano, 10 a 300: describe la escena) y `fondo_svg` opcional (un SVG de fondo, como la membrana de una célula) |
+| `escena` | `viewBox` (como en multicapa), `alt` (plano, 10 a 300: describe la escena) y `fondo_svg` opcional (un SVG de fondo, como la membrana de una célula). `fondo` opcional: su versión realista (webp, misma geometría, hecha con `tools/imagenes`), que se muestra en lugar del SVG |
 | `moleculas[]` | 2 a 8 (**los distractores cuentan dentro de esta lista**). `id`, `etiqueta` (plano, 1 a 40), `descripcion` (línea, 10 a 300), `forma` (`circulo`, `hexagono`, `triangulo`, `rombo` o `cuadrado`; por defecto `circulo`), `rechazo` (línea, 10 a 300: por qué no encaja donde la soltó; **obligatorio en los distractores**) |
 | `receptores[]` | 1 a 6. `id`, `etiqueta`, `descripcion` y `posicion: { x, y }` (porcentaje del ancho y del alto de la escena, de 5 a 95, y además dentro de los márgenes en píxeles de abajo) |
 | `pares[]` | 1 a 6. `id`, `molecula`, `receptor` y `efecto` |

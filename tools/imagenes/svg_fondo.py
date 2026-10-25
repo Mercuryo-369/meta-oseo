@@ -311,3 +311,39 @@ def usos_del_svg(raiz_repo: Path, svg: str) -> list[tuple[str, str]]:
             tipos = re.findall(r'"tipo":\s*"([^"]+)"', antes)
             usos.append((ids[-1] if ids else "?", tipos[-1] if tipos else "?"))
     return usos
+
+
+def usar_figura(content_json: Path, svg: str, figura: str, ancho: int, alto: int) -> list[str]:
+    """Añade la `figura` (raster con rótulos) donde el dibujo es solo una imagen: `figura` en los bloques `imagen`
+    con ese `src` y `fondo` en las escenas de `arrastre-molecular` con ese `fondo_svg`. El SVG se conserva como
+    dibujo validado. Devuelve qué tocó."""
+    datos = json.loads(content_json.read_text(encoding="utf-8"))
+    tocadas: list[str] = []
+
+    def recorrer(nodo):
+        if isinstance(nodo, list):
+            for x in nodo:
+                recorrer(x)
+        elif isinstance(nodo, dict):
+            if nodo.get("tipo") == "imagen" and nodo.get("src") == svg:
+                nuevo = {}
+                for k, v in nodo.items():
+                    if k == "figura":
+                        continue
+                    nuevo[k] = v
+                    if k == "src":
+                        nuevo["figura"] = figura
+                nodo.clear()
+                nodo.update(nuevo)
+                tocadas.append(f"{nodo.get('id', '?')} (imagen)")
+            escena = nodo.get("escena") if isinstance(nodo.get("escena"), dict) else None
+            if escena and escena.get("fondo_svg") == svg:
+                escena["fondo"] = figura
+                tocadas.append("escena de arrastre")
+            for v in nodo.values():
+                recorrer(v)
+
+    recorrer(datos)
+    if tocadas:
+        content_json.write_text(json.dumps(datos, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    return tocadas

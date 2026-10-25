@@ -603,7 +603,10 @@ function alHacerClic(evento: MouseEvent): void {
  * Fondo de la escena
  * ----------------------------------------------------------------------------------------- */
 
-const fondo = computed(() => props.actividad.config?.escena?.fondo_svg);
+// La versión realista (`fondo`), si la hay; si no, el dibujo validado.
+const fondo = computed(
+  () => props.actividad.config?.escena?.fondo ?? props.actividad.config?.escena?.fondo_svg,
+);
 const fondoEstado = ref<'cargando' | 'listo' | 'error'>('cargando');
 watch(fondo, () => {
   fondoEstado.value = 'cargando';

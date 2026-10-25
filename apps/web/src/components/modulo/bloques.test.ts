@@ -56,6 +56,13 @@ describe('BloqueImagen', () => {
     expect(wrapper.get('figcaption').text()).toContain('Crédito: Autor de prueba');
   });
 
+  it('con figura (versión realista del dibujo) muestra la figura y no el SVG', () => {
+    const wrapper = mount(BloqueImagen, {
+      props: { bloque: { ...bloque, src: '/images/m1/x.svg', figura: '/images/m1/x_figura.webp' } },
+    });
+    expect(wrapper.get('img').attributes('src')).toBe('/images/m1/x_figura.webp');
+  });
+
   it('si la imagen no carga muestra el texto alternativo en vez de un hueco', async () => {
     const wrapper = mount(BloqueImagen, { props: { bloque } });
     await wrapper.get('img').trigger('error');

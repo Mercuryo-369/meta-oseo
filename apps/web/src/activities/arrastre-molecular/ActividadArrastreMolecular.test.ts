@@ -1883,6 +1883,15 @@ describe('ActividadArrastreMolecular: contenido adversarial', () => {
     expect(completadas(roto)).toHaveLength(1);
   });
 
+  it('con fondo (versión realista) lo muestra en lugar del SVG', () => {
+    const { wrapper } = montar(
+      variante((c) => void (c.escena.fondo = '/images/m1/membrana_celular_figura.webp')),
+    );
+    expect(wrapper.get('img.fondo').attributes('src')).toBe(
+      '/images/m1/membrana_celular_figura.webp',
+    );
+  });
+
   it('sin fondo_svg no hay imagen ni estado de carga', () => {
     const { wrapper } = montar(
       variante((c) => void delete (c.escena as { fondo_svg?: string }).fondo_svg),
