@@ -1,0 +1,1036 @@
+# Texturizado exacto (texturizar.py): color del dibujo -> material, y prompt del repintado realista (0,5).
+# Mapas preparados el 2026-10-25 a partir de cada SVG (y de su guion). tipo: escena | grafica.
+- nombre: m1_corte_hueso_capas_rotulado
+  modulo: m1
+  tipo: escena
+  prompt: 'Photorealistic longitudinal section of the end of an adult long bone, specimen photograph with fine histological
+    detail: two-layered periosteum, ivory cortical bone thick in the diaphysis and thin in the epiphysis, trabecular arcades
+    with red marrow, yellow fatty marrow in the medullary cavity, thin endosteum.'
+  tejidos:
+    '#c7bcec': periostio
+    '#8f80c9': periostio@#d9aa9c
+    '#f1ecfb': periostio@#efe3dc
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_trabecular@#d6c49e
+    '#7d6fd0': periostio@#e0b9ad
+    '#f3e6b3': medula_amarilla
+    '#f0b8ae': medula_roja
+    '#f7efc9': medula_amarilla@#f1e2a6
+    '#b39a52': medula_amarilla@#c9a557
+    '#b8302f': sangre
+    '#3b2f86': nucleo
+- nombre: m1_entretejido_laminar
+  modulo: m1
+  tipo: escena
+  prompt: 'Brightfield histology micrograph of bone matrix in two panels at equal scale: woven bone with coarse randomly interlaced
+    collagen bundles and many large disordered osteocytes; lamellar bone with parallel lamellae of alternating fiber direction
+    and fewer flattened aligned osteocytes linked by fine canaliculi.'
+  tejidos:
+    '#e2a6ba': hueso_inmaduro
+    '#efc3d3': colageno
+    '#8f4a69': colageno@#b08a5a
+    '#d98aa2': hueso_cortical
+    '#eab7c8': hueso_cortical@#efe4cc
+    '#b56b8a': colageno@#c9a77a
+    '#a5587a': colageno@#bf9a6c
+    '#6f93e2': celula@#8c6f5c
+    '#3b2f86': nucleo@#3e2a4a
+    '#2b2350': celula@#5c4636
+- nombre: m1_hormonas_oseas_escena
+  modulo: m1
+  tipo: grafica
+  prompt: 'Clean scientific illustration with soft realistic shading: a bone segment containing an osteocyte and osteoblasts,
+    a branching blood vessel with red blood cells, and three target cells, renal tubule cell, pancreatic beta cell and hypothalamic
+    neurons, each with a distinct membrane receptor, plain light background.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_cortical@#d4c3a0
+    '#f9dbe4': hueso_cortical@#efe4cc
+    '#8b7bdc': celula@original
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo@original
+    '#d9574a': arteria
+    '#f8b9ad': sangre@#d9786a
+    '#b8302f': sangre
+    '#ffffff': liso@original
+    '#f3c7b4': citoplasma@original
+    '#c9846a': organo@original
+    '#c9c0f0': membrana_lipidica@original
+    '#f4d59d': citoplasma@original
+    '#d6457e': proteina@original
+    '#cfc4f2': celula@original
+    '#3bb3a9': proteina@original
+    '#9b73d6': proteina@original
+    '#f0a03c': proteina@original
+    '#251d52': proteina@original
+- nombre: m1_hueso_largo_macro
+  modulo: m1
+  tipo: escena
+  prompt: 'Anatomical specimen photograph of an adult long bone end sawn longitudinally: glossy hyaline articular cartilage,
+    cancellous epiphysis with thin cortex, dense epiphyseal line, metaphysis, thick ivory diaphyseal cortex around a yellow
+    fatty medullary cavity, nutrient artery entering the shaft.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_cortical@#d6c6a4
+    '#f3cfdb': hueso_cortical@#efe6d2
+    '#f3e6b3': medula_amarilla
+    '#f7efc9': medula_amarilla@#f1e2a6
+    '#b39a52': medula_amarilla@#c9a557
+    '#8f80c9': periostio@#e0b9ad
+    '#86b3da': cartilago
+    '#d3e6f5': cartilago@#eef4f6
+    '#d9574a': arteria
+    '#f8b9ad': arteria@#d97a6c
+- nombre: m1_matriz_composicion
+  modulo: m1
+  tipo: escena
+  prompt: 'Scientific molecular visualization: inset of an osteon fragment, and a type I collagen fibril of staggered triple-helix
+    molecules with periodic banding and gap zones, thin plate-like hydroxyapatite crystals along it, small globular noncollagenous
+    proteins, soft studio lighting, neutral background.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#e9b3c4': hueso_cortical@#efe4cc
+    '#b0607d': hueso_cortical@#d4c3a0
+    '#fbeed7': ligamento@#efd8cc
+    '#d9574a': arteria
+    '#6f93e2': celula@#8c6f5c
+    '#a8748c': colageno
+    '#5c3a52': colageno@#8a6a4a
+    '#d9bccb': colageno@#f0e0c6
+    '#e6c4d6': colageno@#efdcc0
+    '#7fd0e0': liquido@original
+    '#fff3d6': mineral@#f1ead8
+    '#7a5a1e': mineral@#a89c80
+    '#8b5fc0': proteina@original
+    '#2fa8a0': proteina@original
+    '#e0892c': proteina@original
+    '#e9862f': liso@original
+    '#3d8fd1': liso@original
+    '#ffffff': liso@original
+    '#f2b62c': liso@original
+  solo_video: true
+- nombre: m1_proceso_alveolar_corte
+  modulo: m1
+  tipo: escena
+  prompt: 'Anatomical specimen photograph of a vestibulolingual cross-section of the human mandibular body through a tooth
+    root: ivory cortical plates, cancellous bone with marrow, thin perforated alveolar bone proper, periodontal ligament,
+    root dentin with cementum and pulp, neurovascular bundle in the mandibular canal.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_trabecular@#d6c49e
+    '#f3e6b3': medula_amarilla
+    '#7d6fd0': hueso_cortical@#efe6d2
+    '#b9cf8f': ligamento
+    '#6f8f48': ligamento@#b9786f
+    '#c0648a': hueso_alveolar_propio
+    '#f2e5b6': dentina
+    '#d9b26a': cemento
+    '#f0a9a0': pulpa
+    '#fffaf0': esmalte
+    '#f6e9c0': medula_amarilla@#eedcb0
+    '#e7c84f': nervio
+    '#f6e08a': nervio@#f1e3a8
+    '#d9574a': arteria
+    '#f8b9ad': arteria@#d97a6c
+    '#5b7fb3': vena
+    '#a9c1e4': vena@#7480a8
+- nombre: m1_proceso_alveolar_corte_rotulado
+  modulo: m1
+  tipo: escena
+  prompt: 'Anatomical specimen photograph of a vestibulolingual cross-section of the human mandibular body through a tooth
+    root: ivory cortical plates, cancellous bone with marrow, thin perforated alveolar bone proper, periodontal ligament,
+    root dentin with cementum and pulp, neurovascular bundle in the mandibular canal.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_trabecular@#d6c49e
+    '#f3e6b3': medula_amarilla
+    '#7d6fd0': hueso_cortical@#efe6d2
+    '#b9cf8f': ligamento
+    '#6f8f48': ligamento@#b9786f
+    '#c0648a': hueso_alveolar_propio
+    '#f2e5b6': dentina
+    '#d9b26a': cemento
+    '#f0a9a0': pulpa
+    '#fffaf0': esmalte
+    '#f6e9c0': medula_amarilla@#eedcb0
+    '#e7c84f': nervio
+    '#f6e08a': nervio@#f1e3a8
+    '#d9574a': arteria
+    '#f8b9ad': arteria@#d97a6c
+    '#5b7fb3': vena
+    '#a9c1e4': vena@#7480a8
+- nombre: m1_wolff_femur
+  modulo: m1
+  tipo: escena
+  prompt: 'Anatomical specimen photograph of a frontal section of the proximal human femur: ivory cortical bone thickest at
+    the medial neck and shaft, cancellous head and neck showing crossing compressive and tensile trabecular systems at near
+    right angles, marrow-filled intertrabecular spaces.'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#f3e6b3': medula_mixta
+    '#3d8fd1': hueso_trabecular@original
+    '#e9862f': hueso_trabecular@original
+    '#f2b62c': liso@original
+- nombre: m2_arbol_linajes_oseos
+  modulo: m2
+  tipo: grafica
+  prompt: 'Clean scientific illustration of two bone cell lineages in columns, realistic softly shaded cells like a stained
+    cell micrograph: mesenchymal stem cell to osteoblast, osteocyte and lining cell; hematopoietic stem cell to multinucleated
+    osteoclast; small signaling molecules and membrane receptors, plain light background.'
+  tejidos:
+    '#d5cbef': celula@original
+    '#c9a0dc': celula@original
+    '#a7a3ba': nucleo@original
+    '#3b2f86': nucleo@original
+    '#8f86e0': nucleo@original
+    '#b8adf0': celula@original
+    '#9a8ce4': celula@original
+    '#8b7bdc': celula@original
+    '#6f93e2': celula@original
+    '#a99ee8': celula@original
+    '#c6c1dc': celula@original
+    '#e3c4ee': celula@original
+    '#dcb5e8': celula@original
+    '#d4a9e2': celula@original
+    '#cfa3df': celula@original
+    '#f4d3dd': citoplasma@original
+    '#e2a12e': proteina@original
+    '#8a6fe0': proteina@original
+    '#2bb0c8': proteina@original
+    '#4fae6a': proteina@original
+    '#e56a94': proteina@original
+    '#2fa88c': proteina@original
+- nombre: m2_origen_mandibula
+  modulo: m2
+  tipo: escena
+  prompt: 'Embryology scientific illustration with realistic tissue rendering: lateral view of a four to five week human embryo
+    head with neural tube and migrating cranial neural crest cells filling the first pharyngeal arch; developing hemimandible
+    with Meckel cartilage, intramembranous bone and condylar cartilage.'
+  tejidos:
+    '#f4d3dd': tejido_embrionario
+    '#f1ecfb': tejido_embrionario@#f2ece8
+    '#3b2f86': nucleo@#2e2430
+    '#d9574a': organo@#c0504a
+    '#e7c84f': nervio
+    '#e58c3c': celula@original
+    '#d5cbef': celula@original
+    '#b95f12': liso@original
+    '#86b3da': cartilago@#bcd2e0
+    '#d3e6f5': cartilago
+    '#d98aa2': hueso_inmaduro
+    '#a8748c': hueso_inmaduro@#c99a8a
+    '#b0607d': hueso_inmaduro@#c99a8a
+    '#8b7bdc': celula@original
+  solo_video: true
+- nombre: m2_osteoblasto_activo
+  modulo: m2
+  tipo: escena
+  prompt: Photorealistic scientific visualization of an active cuboidal osteoblast on a layer of unmineralized osteoid, with
+    nucleus, abundant rough endoplasmic reticulum, Golgi stack and secretory vesicles; mineralization front and mineralized
+    bone below; a flat bone lining cell beside, membrane proteins and gap junctions.
+  tejidos:
+    '#fbe6ec': hueso_cortical@#efe4cc
+    '#d98aa2': hueso_cortical
+    '#a8748c': colageno@#c9a27a
+    '#f4d3dd': osteoide
+    '#fff4f8': mineral@#f3efe6
+    '#b0607d': hueso_cortical@#d9c9a6
+    '#bdb3ee': celula@original
+    '#a598e6': celula@original
+    '#a99ee8': celula@original
+    '#3b2f86': nucleo@original
+    '#8f86e0': nucleo@original
+    '#5a4bb8': membrana_lipidica@original
+    '#e9c46a': membrana_lipidica@original
+    '#fbf1f6': membrana_lipidica@original
+    '#e2a12e': proteina@original
+    '#c65ab3': proteina@original
+    '#e56a94': proteina@original
+    '#2fa88c': proteina@original
+    '#4fae6a': proteina@original
+    '#eaf7ee': liquido@original
+- nombre: m2_osteocito_lagunar
+  modulo: m2
+  tipo: escena
+  prompt: Photorealistic scientific visualization of a stellate osteocyte inside its lacuna within mineralized bone matrix,
+    long dendrites in fluid-filled canaliculi linking neighboring lacunae and surface osteoblasts and lining cells, gap junctions
+    at dendrite tips, a capillary in its canal, and a canaliculus cross-section.
+  tejidos:
+    '#fbe6ec': hueso_cortical@#efe4cc
+    '#d98aa2': hueso_cortical
+    '#a8748c': colageno@#c9a27a
+    '#e6f4fa': liquido@original
+    '#bfe3f2': liquido@original
+    '#6f93e2': celula@original
+    '#e4ecfb': celula@original
+    '#3b2f86': nucleo@original
+    '#8f86e0': nucleo@original
+    '#a99ee8': celula@original
+    '#a598e6': celula@original
+    '#4fae6a': proteina@original
+    '#eaf7ee': liquido@original
+    '#e46b3a': proteina@original
+    '#b8302f': sangre
+    '#d9574a': arteria@#c95a4e
+    '#f8b9ad': sangre@#d9786a
+    '#f8ecef': ligamento@#efd8cc
+- nombre: m3_bmp_runx2_osterix
+  modulo: m3
+  tipo: escena
+  prompt: cutaway of a single osteoprogenitor cell, lipid bilayer plasma membrane with transmembrane receptor complexes, translucent
+    granular cytoplasm with ribosomes and elongated mitochondria, large oval nucleus with chromatin and gene segments, globular
+    signalling proteins, scientific molecular visualization, soft studio lighting
+  tejidos:
+    '#cfc7f5': citoplasma
+    '#e6c58a': membrana_lipidica
+    '#eab8c6': mitocondria
+    '#5b4fb8': nucleo@original
+    '#8bd3b0': adn@original
+    '#e9e5fb': adn@original
+    '#b7b0e8': adn@original
+    '#9d97cc': proteina@original
+    '#f1eeff': proteina@original
+    '#ee9f4a': proteina@original
+    '#ffe0b5': proteina@original
+    '#4aa3d8': proteina@original
+    '#c65ab3': proteina@original
+    '#e79bd8': proteina@original
+    '#fff3c4': proteina@original
+- nombre: m3_mandibula_desarrollo
+  modulo: m3
+  tipo: escena
+  prompt: lateral view of a cleared fetal hemimandible around week 12, thin red-stained woven bone plate forming an open trough,
+    blue translucent Meckel cartilage rod medial to it, small cartilage caps at condyle, coronoid and symphysis, soft tooth
+    buds, yellow nerve, anatomical specimen macro photograph
+  tejidos:
+    '#d98aa2': hueso_inmaduro
+    '#6f93e2': hueso_inmaduro@#cf9a88
+    '#b0607d': hueso_inmaduro@#c47a68
+    '#f4d3dd': osteoide
+    '#86b3da': cartilago
+    '#d3e6f5': cartilago@#eef4f7
+    '#f2e5b6': germen_dental
+    '#e7c84f': nervio
+    '#9c7f1c': nervio@#c9a957
+- nombre: m3_mecanostato_ventanas
+  modulo: m3
+  tipo: grafica
+  prompt: clean scientific chart on matte paper, horizontal logarithmic strain axis divided into soft coloured vertical bands,
+    small bone icons inside each band, crisp flat shading, subtle paper texture, sober academic figure style
+  tejidos:
+    '#9db4ea': liso@original
+    '#86cfa8': liso@original
+    '#f2cb6b': liso@original
+    '#e9806c': liso@original
+    '#b9405e': liso@original
+    '#d98aa2': hueso_cortical@original
+    '#f4d3dd': hueso_cortical@original
+    '#fff': liso@original
+    '#fbe6ec': liso@original
+- nombre: m3_osteocito_red_lacuno_canalicular
+  modulo: m3
+  tipo: escena
+  prompt: ultrastructural cutaway of an osteocyte in its lacuna within mineralized lamellar bone, dendritic processes running
+    through fluid-filled canaliculi, tethering fibres across the pericellular space, lining cells on thin osteoid at the surface,
+    Haversian capillary, scientific visualization in transmission electron micrograph style
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#f6ecf4': liquido
+    '#9bd8ee': liquido
+    '#6b3f7a': proteina@original
+    '#6f93e2': celula@original
+    '#c9d6f7': celula@original
+    '#3b2f86': nucleo
+    '#8a6fe0': proteina@original
+    '#2bb0c8': proteina@original
+    '#4fae6a': proteina@original
+    '#e9fbe9': proteina@original
+    '#e58c3c': proteina@original
+    '#7a4a1c': proteina@original
+    '#d9574a': arteria
+    '#f8b9ad': sangre@#e6a596
+    '#b8302f': sangre
+    '#8b7bdc': celula@original
+    '#a99ee8': celula@original
+    '#f4d3dd': osteoide
+    '#e56a94': liso@original
+    '#e8fbff': liso@original
+    '#0f8aa0': liso@original
+  solo_video: true
+- nombre: m3_rutas_formacion_osea
+  modulo: m3
+  tipo: escena
+  prompt: 'two histology panels, H&E stained light micrograph: intramembranous ossification with condensed mesenchyme, capillaries,
+    cuboidal osteoblasts on pale osteoid and woven bone trabeculae with osteocytes; endochondral ossification with hyaline
+    cartilage, columnar growth plate, hypertrophic chondrocytes, periosteal bone collar, invading blood vessels'
+  tejidos:
+    '#e2dbf4': ligamento@#e3c9cf
+    '#a8748c': ligamento
+    '#d5cbef': mesenquima
+    '#b8adf0': celula@original
+    '#3b2f86': nucleo
+    '#d9574a': arteria
+    '#f8b9ad': sangre@#e6a596
+    '#b8302f': sangre
+    '#f4d3dd': osteoide
+    '#d98aa2': hueso_inmaduro
+    '#6f93e2': celula@original
+    '#8b7bdc': celula@original
+    '#86b3da': cartilago
+    '#d3e6f5': celula@#e6eef3
+    '#5b7fb3': cartilago@#8fa3c7
+- nombre: m3_sensores_mecanicos
+  modulo: m3
+  tipo: escena
+  prompt: 'out-of-scale molecular cutaway of an osteocyte dendritic process membrane: canalicular bone wall, fluid pericellular
+    matrix with tethering fibres, lipid bilayer studded with integrins, Piezo1 and connexin hemichannels, actin filaments
+    beneath; inset of osteocyte body in lacuna with primary cilium, scientific molecular visualization'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#d4eefa': liquido
+    '#dbe3fa': citoplasma
+    '#6b3f7a': proteina@original
+    '#8a4f7c': proteina@original
+    '#8fbccf': proteina@original
+    '#e6c58a': membrana_lipidica
+    '#f7e7c6': membrana_lipidica@original
+    '#9a86c8': actina
+    '#f0eaff': actina@original
+    '#8a6fe0': proteina@original
+    '#b3a3f4': proteina@original
+    '#2bb0c8': proteina@original
+    '#3ec3da': proteina@original
+    '#eafcff': proteina@original
+    '#4fae6a': proteina@original
+    '#eafbea': proteina@original
+    '#f2b62c': liso@original
+    '#fff6cf': liso@original
+    '#e56a94': liso@original
+    '#e8fbff': liso@original
+    '#0f8aa0': liso@original
+    '#f6ecf4': liquido
+    '#9bd8ee': liquido
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+    '#e58c3c': proteina@original
+    '#7a4a1c': proteina@original
+- nombre: m3_via_wnt_esclerostina
+  modulo: m3
+  tipo: escena
+  prompt: 'molecular cutaway of a bone-lining osteoblast: lipid bilayer with seven-pass Frizzled, single-pass LRP5/6 and PTH
+    receptor, cytoplasmic destruction complex and beta-catenin moving to the nucleus; below, an osteocyte in mineralized matrix
+    releasing sclerostin particles through canaliculi, scientific molecular visualization'
+  tejidos:
+    '#cfc7f5': citoplasma
+    '#f4d3dd': osteoide
+    '#d98aa2': hueso_cortical
+    '#a8748c': colageno
+    '#e46b3a': proteina@original
+    '#f8c9b3': membrana_lipidica@original
+    '#9bd8ee': liquido
+    '#f6ecf4': liquido
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+    '#e6c58a': membrana_lipidica
+    '#f7e7c6': membrana_lipidica@original
+    '#4f86d9': proteina@original
+    '#dbe8ff': proteina@original
+    '#2f9fbf': proteina@original
+    '#d5f3fa': proteina@original
+    '#b672d6': proteina@original
+    '#f4e6fb': proteina@original
+    '#d3a8e8': proteina@original
+    '#dcbdec': proteina@original
+    '#7c8bb0': proteina@original
+    '#93a1c6': proteina@original
+    '#6a7aa2': proteina@original
+    '#a6b3d4': proteina@original
+    '#eef1fb': proteina@original
+    '#f6c15a': liso@original
+    '#a6cf3c': proteina@original
+    '#f0ffc9': proteina@original
+    '#5b4fb8': nucleo@original
+    '#9d97cc': proteina@original
+    '#f1eeff': proteina@original
+    '#8b84c2': proteina@original
+    '#8bd3b0': adn@original
+    '#e9e5fb': adn@original
+    '#b7b0e8': adn@original
+- nombre: m4_composicion_matriz
+  modulo: m4
+  tipo: grafica
+  prompt: stacked bar chart of bone matrix composition, segments filled with tiny hydroxyapatite plate crystals, banded collagen
+    fibres, violet protein dots and water droplets, clean scientific figure, soft realistic material textures, sober academic
+    style, matte paper
+  tejidos:
+    '#b3cdee': mineral@original
+    '#eef5fe': mineral@original
+    '#f0c26b': colageno@original
+    '#d9993a': colageno@original
+    '#f9dc9a': colageno@original
+    '#a898ea': proteina@original
+    '#6e5bc8': proteina@original
+    '#e3dcfb': proteina@original
+    '#8fd0ea': liquido@original
+    '#e6f6fc': liquido@original
+- nombre: m4_fibrilla_colageno
+  modulo: m4
+  tipo: escena
+  prompt: longitudinal view of a type I collagen fibril, rows of rod-like triple-helix tropocollagen molecules staggered by
+    one D-period, alternating gap and overlap zones, covalent cross-links between molecule ends, banding pattern beneath,
+    scientific molecular visualization, soft lighting
+  tejidos:
+    '#f0c26b': colageno@original
+    '#f7e2b0': colageno@original
+    '#d9993a': colageno@original
+    '#fff4d6': colageno@original
+    '#c9772a': colageno@original
+    '#e5533f': liso@original
+    '#b0651f': colageno@original
+    '#f6dfa8': colageno@original
+    '#e3b64f': liso@original
+    '#f6e3b0': liso@original
+- nombre: m4_fibrilla_mineralizada
+  modulo: m4
+  tipo: escena
+  prompt: mineralized type I collagen fibril, staggered triple-helix molecules with thin hydroxyapatite platelets inside the
+    gap zones, extrafibrillar crystal aggregates between fibrils, a radial mineral nodule of vesicular origin touching the
+    fibril, scientific molecular visualization, soft lighting
+  tejidos:
+    '#f0c26b': colageno@original
+    '#d9993a': colageno@original
+    '#fff4d6': colageno@original
+    '#cfe2f8': mineral
+    '#8db4e0': mineral@original
+    '#6a5ad8': liso@original
+- nombre: m4_frente_mineralizacion
+  modulo: m4
+  tipo: escena
+  prompt: 'undecalcified histology section of a forming bone surface: row of cuboidal osteoblasts, pale osteoid seam with
+    matrix vesicles, dotted mineralization front with mineral nodules, lamellar mineralized bone with osteocytes in lacunae
+    linked by canaliculi, light micrograph, fine detail'
+  tejidos:
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_cortical@#cdbb98
+    '#f4d3dd': osteoide
+    '#c9a1b3': osteoide@#e2bfb2
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#5a4ec0': nucleo@original
+    '#d9d2f7': citoplasma@original
+    '#e79db6': osteoide@#e3b9b0
+    '#cfe2f8': mineral
+    '#8db4e0': mineral@original
+    '#eef3fc': membrana_lipidica@original
+    '#6f93e2': celula@original
+    '#f6e2e9': liquido
+    '#f5d63c': liso@original
+    '#7a5c00': liso@original
+- nombre: m4_homeostasis_calcio_fosfato
+  modulo: m4
+  tipo: escena
+  prompt: realistic anatomical illustration of a human body with semi-transparent skin under sunlight, visible liver, both
+    kidneys, coiled small intestine and femur, posterior neck view of thyroid lobes with four parathyroid glands, magnified
+    bone with osteocytes, medical atlas style, soft lighting
+  tejidos:
+    '#f2cdb0': piel
+    '#a8583d': organo@#8a3a2c
+    '#e0a58e': organo@#b0604a
+    '#cc7f5a': organo@#9c4a3a
+    '#f0c9b0': organo@#e3c09a
+    '#efb480': organo@#e2a593
+    '#f9d9b8': organo@#f0c4b0
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_cortical@#cdbb98
+    '#f6e2e9': liquido
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+    '#b58ad6': organo@#a5524a
+    '#5a2a8a': celula@original
+    '#e7c84f': organo@#c99a52
+    '#fff3b0': organo@#dcb873
+    '#f6c945': liso@original
+    '#c98a0f': liso@original
+    '#e9a72a': liso@original
+    '#e2733a': liso@original
+    '#b04fc4': liso@original
+    '#22a3b8': liso@original
+    '#3fa860': liso@original
+    '#8a7fc0': liso@original
+    '#f4eef8': liso@original
+- nombre: m4_osteoide_normal_vs_osteomalacia
+  modulo: m4
+  tipo: escena
+  prompt: 'two stacked undecalcified bone biopsy sections with double tetracycline labelling: above, thin osteoid seam under
+    cuboidal osteoblasts over mineralized lamellar bone with two sharp parallel labels; below, osteomalacia with a much wider
+    osteoid seam, reduced mineralized bone and faint diffuse labels, light micrograph'
+  tejidos:
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#d98aa2': hueso_cortical
+    '#e6b3c5': hueso_cortical@#ebdfc8
+    '#b0607d': hueso_cortical@#cdbb98
+    '#f4d3dd': osteoide
+    '#c9a1b3': osteoide@#e2bfb2
+    '#f5d63c': liso@original
+    '#7a5c00': liso@original
+- nombre: m4_vesicula_matriz
+  modulo: m4
+  tipo: escena
+  prompt: 'molecular cutaway of a matrix vesicle budding from an osteoblast into osteoid: phospholipid bilayer with annexin
+    channels, PiT-1 transporter, GPI-anchored TNAP and ENPP1 outside, calcium and phosphate ions inside, nascent hydroxyapatite
+    crystal piercing the membrane, collagen fibril below, scientific molecular visualization'
+  tejidos:
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#5a4ec0': nucleo@original
+    '#e3dcfb': citoplasma@original
+    '#d9993a': colageno@original
+    '#f0c26b': colageno@original
+    '#fff4d6': colageno@original
+    '#e8effb': liquido@original
+    '#f6c6d6': membrana_lipidica@original
+    '#c2417c': membrana_lipidica@original
+    '#e58fab': membrana_lipidica@original
+    '#e39a62': proteina@original
+    '#7a3a12': proteina@original
+    '#7aaee6': proteina@original
+    '#8ed0c4': proteina@original
+    '#c98bd6': proteina@original
+    '#7ac7c0': proteina@original
+    '#f2b62c': liso@original
+    '#2fa37f': liso@original
+    '#dd5a4c': liso@original
+    '#6a5ad8': liso@original
+    '#cfe2f8': mineral
+    '#8db4e0': mineral@original
+- nombre: m6_atm_cambios_degenerativos
+  modulo: m6
+  tipo: escena
+  prompt: 'anatomical specimen photograph, sagittal section of human temporomandibular joint, mouth closed: temporal glenoid
+    fossa and articular eminence, rounded mandibular condyle with cancellous core, thin white fibrocartilage, biconcave articular
+    disc; lower view degenerative: flattened sclerotic condyle, anterior osteophyte, thin anteriorly displaced disc'
+  tejidos:
+    '#fbfaff': liso
+    '#f1edfa': liso
+    '#d98aa2': hueso_cortical
+    '#b0607d': hueso_cortical@#dccaa4
+    '#a8506f': hueso_cortical@#d3bf96
+    '#ecb8c8': hueso_trabecular
+    '#c87a97': hueso_trabecular@#d6c29c
+    '#5d8fbf': fibrocartilago@#f0ebe0
+    '#86b3da': fibrocartilago
+- nombre: m6_curva_masa_osea
+  modulo: m6
+  tipo: grafica
+  prompt: clean minimal scientific line chart on matte paper, two smooth curves rising to a plateau and declining, soft translucent
+    vertical bands, muted clinical colours, flat even lighting
+  tejidos:
+    '#f1edfa': liso@original
+    '#cad1f2': liso@original
+    '#cbdedb': liso@original
+    '#e6b86b': liso@original
+    '#e3d1ef': liso@original
+    '#d0d1b5': liso@original
+    '#c2417c': liso@original
+    '#3b6fb0': liso@original
+    '#b8302f': liso@original
+    '#e2a12e': liso@original
+- nombre: m6_escena_estrogeno_rankl
+  modulo: m6
+  tipo: escena
+  prompt: scientific visualization of the bone marrow microenvironment, translucent stromal osteoblastic cell with large dark
+    nucleus and membrane-anchored ligands, small round T lymphocyte, three mononuclear osteoclast precursors with surface
+    receptors resting above a mineralized bone surface, soft lighting
+  tejidos:
+    '#f1edfa': liquido@original
+    '#d98aa2': hueso_cortical
+    '#c57590': hueso_cortical@#d9c9a6
+    '#f8e3ea': celula@original
+    '#b8adf0': citoplasma@original
+    '#cfe2f8': citoplasma@original
+    '#e3d3f0': citoplasma@original
+    '#c9a0dc': citoplasma@original
+    '#efe4f6': proteina@original
+    '#3b2f86': nucleo
+    '#8b7bdc': celula@original
+    '#e2a12e': proteina@original
+    '#2fa88c': proteina@original
+    '#5d8fbf': proteina@original
+    '#86b3da': proteina@original
+    '#e58c3c': proteina@original
+    '#d9574a': proteina@original
+    '#c2417c': liso@original
+- nombre: m6_hueso_normal_osteoporotico
+  modulo: m6
+  tipo: escena
+  prompt: 'anatomical specimen photographs at equal scale: sagittally cut vertebral bodies, normal dense connected trabecular
+    lattice versus osteoporotic thin sparse vertical trabeculae with anterior wedge collapse; below, diaphysis cross-sections,
+    thick compact cortex versus thin porous cortex with wide fatty marrow cavity'
+  tejidos:
+    '#fbfaff': liso
+    '#f1edfa': liso
+    '#d98aa2': hueso_cortical
+    '#c0718c': hueso_cortical@#dccca9
+    '#e2d9f5': medula_mixta
+    '#f3e39a': medula_amarilla
+- nombre: m6_prevencion_mapa
+  modulo: m6
+  tipo: grafica
+  prompt: clean flat medical infographic, central ivory bone icon, surrounding rounded panels with simple pictograms, muted
+    clinical palette, matte paper, minimal shading
+  tejidos:
+    '#f1edfa': liso@original
+    '#d98aa2': hueso_cortical@original
+    '#b0607d': hueso_cortical@original
+    '#e2a12e': liso@original
+    '#f8e3ea': liso@original
+    '#b9cf8f': liso@original
+    '#cfe2f8': liso@original
+- nombre: m6_reborde_alveolar_cascada
+  modulo: m6
+  tipo: escena
+  prompt: six anatomical specimen photographs of vestibulolingual sections through the posterior human mandibular body, progressive
+    alveolar ridge resorption from molar in socket to thin basal bone, cortical plates, cancellous bone, mandibular canal
+    with nerve and vessels, white background
+  tejidos:
+    '#f1edfa': liso
+    '#fbfaff': liso
+    '#d98aa2': hueso_cortical
+    '#ecb8c8': hueso_trabecular
+    '#c87a97': hueso_trabecular@#d6c4a0
+    '#a8506f': hueso_alveolar_propio
+    '#b9cf8f': ligamento
+    '#6f8a3a': ligamento@#b97c72
+    '#f2e5b6': dentina
+    '#f6c6d6': pulpa
+    '#f8e3ea': sangre@#8f2b26
+    '#f0d36b': nervio
+    '#d9574a': arteria
+- nombre: m6_tejido_oseo_envejecido
+  modulo: m6
+  tipo: escena
+  prompt: 'histology micrograph, H&E stained transverse section of aged human cortical bone: osteon with concentric lamellae
+    around an enlarged Haversian canal, osteocytes in lacunae, microcrack stopping at the cement line, sparse flat endosteal
+    cells over fatty marrow with large adipocytes'
+  tejidos:
+    '#f1edfa': liso
+    '#d98aa2': hueso_cortical@#e4a3bb
+    '#e9b3c6': hueso_cortical@#eebfd0
+    '#c87996': hueso_cortical@#d48ca7
+    '#c77795': hueso_cortical@#d48ca7
+    '#c27796': hueso_cortical@#d995ae
+    '#ce8aa5': hueso_cortical@#d48ca7
+    '#6f93e2': celula@original
+    '#d8a32f': celula@original
+    '#ec8a2f': proteina@original
+    '#d24a2e': proteina@original
+    '#433e94': nucleo
+    '#43378f': nucleo
+    '#4d4189': nucleo
+    '#3b2f86': nucleo
+    '#5a3660': mineral@original
+    '#2d1d3a': liso@original
+    '#f6e3ea': liquido@original
+    '#d24c5e': sangre
+    '#e1daf4': medula_mixta@#d7a7bd
+    '#9c8ee1': celula@original
+    '#8b7bdc': celula@original
+    '#f3e39a': medula_amarilla@#f6efd6
+    '#f8f0c8': medula_amarilla@#f6efd6
+    '#e3c58a': colageno
+    '#deaa95': colageno@original
+    '#eee4e4': mineral@original
+- nombre: m5_acoplamiento_matriz_esclerostina
+  modulo: m5
+  tipo: escena
+  prompt: 'scientific 3D visualization of a bone remodeling site: multinucleated osteoclast resorbing ivory bone matrix, released
+    growth factor molecules, recruited spindle mesenchymal cell, row of cuboidal osteoblasts on pale osteoid, osteocyte in
+    its lacuna deep in the bone'
+  tejidos:
+    '#f1edfa': liquido@original
+    '#d98aa2': hueso_cortical
+    '#c77791': hueso_cortical
+    '#f4d3dd': osteoide
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#b8adf0': celula@original
+    '#a7c4ec': celula@original
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#5b7fd6': proteina@original
+    '#e2a12e': proteina@original
+    '#3fa66a': proteina@original
+    '#3f5bb5': proteina@original
+    '#a89500': proteina@original
+    '#e46b3a': proteina@original
+    '#1f7a8c': proteina@original
+    '#5b3f9e': proteina@original
+    '#2fa88c': proteina@original
+- nombre: m5_bmu_cortical_longitudinal
+  modulo: m5
+  tipo: escena
+  prompt: 'histology micrograph H&E, longitudinal section of cortical bone with a basic multicellular unit: multinucleated
+    osteoclasts at the cutting cone tip, reversal zone, cuboidal osteoblasts lining pale osteoid, central capillary with red
+    cells, lamellar bone with osteocyte lacunae'
+  tejidos:
+    '#d98aa2': hueso_cortical@original
+    '#c2738e': hueso_cortical@original
+    '#c4708c': hueso_cortical@original
+    '#b46380': hueso_cortical@original
+    '#e3a0b5': hueso_cortical@original
+    '#b56683': hueso_cortical@original
+    '#5a2f6e': hueso_cortical@original
+    '#f4d3dd': osteoide@original
+    '#f9e3e6': liquido@original
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#d5b3e6': celula@original
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#d9574a': arteria
+    '#f8b9ad': liquido@original
+    '#b8302f': sangre
+  solo_video: true
+- nombre: m5_cicatrizacion_alveolo_fases
+  modulo: m5
+  tipo: escena
+  prompt: 'low magnification H&E histology micrograph, buccolingual section of a healing tooth extraction socket: dark red
+    blood clot under thin gingival epithelium, pink vascular granulation tissue, woven bone trabeculae with osteoblasts, cortical
+    plates, cancellous bone and marrow spaces'
+  tejidos:
+    '#f1edfa': liso@#f5f7fa
+    '#f5d0cf': encia@original
+    '#ecbcbc': encia@original
+    '#e7a3c6': piel@original
+    '#f3d4e6': piel@original
+    '#cf7d97': hueso_cortical@original
+    '#bc6c87': hueso_cortical@original
+    '#d98aa2': hueso_alveolar_propio@original
+    '#e3a0b5': hueso_trabecular@original
+    '#e2d9f5': medula_roja@#e8d3e3
+    '#f3e39a': medula_amarilla@#fbf8f0
+    '#f3b8b0': tejido_granulacion
+    '#b8adf0': celula@original
+    '#e9def5': celula@original
+    '#d9574a': arteria
+    '#f8b9ad': liquido@original
+    '#b4413a': sangre@original
+    '#b8302f': sangre@original
+    '#e9877d': sangre@original
+    '#e2a12e': celula@original
+    '#efc6c0': colageno@original
+    '#f6dccd': osteoide@original
+    '#e9adc0': hueso_inmaduro@original
+    '#8b7bdc': celula@original
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+- nombre: m5_ciclo_remodelado_bmu
+  modulo: m5
+  tipo: escena
+  prompt: 'histology micrograph H&E of a bone surface undergoing remodeling: flat lining cells, multinucleated osteoclast
+    in a resorption pit, mononuclear reversal cells, cuboidal osteoblasts on pale osteoid, osteocytes in lamellar bone, loose
+    marrow with fat cells and a capillary above'
+  tejidos:
+    '#d98aa2': hueso_cortical@original
+    '#c57590': hueso_cortical@original
+    '#e3a0b5': hueso_cortical@original
+    '#5a2f6e': hueso_cortical@original
+    '#f4d3dd': osteoide@original
+    '#e2d9f5': medula_roja@#e8d3e3
+    '#f3e39a': medula_amarilla@#fbf8f0
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#a99ee8': celula@original
+    '#e3d3f0': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#d5b3e6': celula@original
+    '#8b7bdc': celula@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#d9574a': arteria
+    '#f8b9ad': liquido@original
+    '#b8302f': sangre
+- nombre: m5_equilibrio_remodelado_alteraciones
+  modulo: m5
+  tipo: escena
+  prompt: 'four-panel H&E histology micrograph of trabecular bone: normal trabeculae with marrow; osteopetrosis with thick
+    dense trabeculae and retained calcified cartilage cores; Paget disease with mosaic cement lines and fibrovascular marrow;
+    osteoporosis with thin disconnected trabeculae and fatty marrow'
+  tejidos:
+    '#d98aa2': hueso_trabecular@original
+    '#5a2f6e': hueso_trabecular@original
+    '#6d3d76': hueso_trabecular@original
+    '#86b3da': cartilago@#aab9d9
+    '#e2d9f5': medula_roja@#e8d3e3
+    '#d5cbef': mesenquima@#ecd0dc
+    '#f3e39a': medula_amarilla@#fbf8f0
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#8b7bdc': celula@original
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#d9574a': arteria
+    '#f8b9ad': liquido@original
+- nombre: m5_hormonas_regulacion_calcemia
+  modulo: m5
+  tipo: grafica
+  prompt: 'clean medical schematic of calcium homeostasis: parathyroid and thyroid glands, kidney, small intestine, ovary,
+    a plasma drop with red cells, bone surface with osteoblasts and an osteoclast, smooth glossy organ surfaces, flat light
+    background'
+  tejidos:
+    '#f1edfa': liso@original
+    '#efb9a4': organo@original
+    '#e2a12e': organo@original
+    '#d99a86': organo@original
+    '#b0607d': organo@original
+    '#f3d19a': organo@original
+    '#e2b874': organo@original
+    '#f0cbb8': organo@original
+    '#fbeee8': organo@original
+    '#f2a7b8': celula@original
+    '#a99ee8': celula@original
+    '#f4d3dd': liquido@original
+    '#c65ab3': proteina@original
+    '#f8b9ad': liquido@original
+    '#d9574a': liso@original
+    '#b8302f': sangre@original
+    '#e9877d': sangre@original
+    '#d98aa2': hueso_cortical@original
+    '#c77791': hueso_cortical@original
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#8b7bdc': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#e56a94': proteina@original
+    '#2fa88c': proteina@original
+    '#f2b62c': liso@original
+    '#1b7f5f': liso@original
+    '#c2384f': liso@original
+- nombre: m5_hueso_cortical_trabecular_alveolar
+  modulo: m5
+  tipo: escena
+  prompt: 'anatomical specimen photograph, buccolingual cross-section of the human mandible with one single-rooted premolar:
+    white enamel crown, ivory dentin, red pulp canal, thin periodontal ligament, compact alveolar bone, buccal and lingual
+    cortical plates, cancellous bone, basal bone with mandibular canal'
+  tejidos:
+    '#f1edfa': liso@#f5f7fa
+    '#fdf8e6': esmalte
+    '#f2e5b6': dentina
+    '#d9b26a': cemento
+    '#f8b9ad': pulpa
+    '#b9cf8f': ligamento
+    '#738d3e': ligamento
+    '#798943': ligamento
+    '#cf7d97': hueso_cortical
+    '#bc6c87': hueso_cortical
+    '#d98aa2': hueso_cortical
+    '#c97993': hueso_cortical
+    '#e3a0b5': hueso_trabecular
+    '#e2d9f5': medula_mixta
+    '#f3e39a': medula_amarilla
+    '#f4e3a1': nervio@#efe2bd
+    '#e7c84f': nervio
+    '#b8302f': arteria
+    '#6f93e2': vena
+- nombre: m5_movimiento_ortodontico_pdl
+  modulo: m5
+  tipo: escena
+  prompt: 'histology micrograph H&E, transverse section of a single tooth root in its socket: ivory dentin ring, red pulp,
+    cementum, periodontal ligament compressed and hyalinized on one side with osteoclasts, stretched fibers with osteoblasts
+    on the other side, alveolar bone with osteocytes'
+  tejidos:
+    '#d98aa2': hueso_alveolar_propio@original
+    '#cb7b95': hueso_alveolar_propio@original
+    '#f4d3dd': osteoide@original
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#f2e5b6': dentina
+    '#d9b26a': cemento
+    '#f8b9ad': pulpa
+    '#b9cf8f': ligamento@#f0c8c8
+    '#6f8a3a': colageno@#e2a3ad
+    '#738d3e': colageno@#e2a3ad
+    '#dfeaf3': ligamento_hialinizado
+    '#9bb3cb': ligamento_hialinizado
+    '#d9574a': arteria
+    '#f1edfa': medula_roja@#e8d3e3
+    '#8b7bdc': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+- nombre: m5_osteoclastogenesis_rank_rankl_opg
+  modulo: m5
+  tipo: escena
+  prompt: 'scientific 3D visualization: large flat osteoblastic cell above a round mononuclear osteoclast precursor, membrane-bound
+    signaling proteins and Y-shaped receptors between them, a multinucleated osteoclast on an ivory bone surface with a shallow
+    resorption pit, pale extracellular fluid'
+  tejidos:
+    '#f1edfa': liquido@original
+    '#d98aa2': hueso_cortical
+    '#c57590': hueso_cortical
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#8b7bdc': celula@original
+    '#e3d3f0': celula@original
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#e56a94': proteina@original
+    '#4a3fa3': proteina@original
+    '#2fa88c': proteina@original
+    '#a5a2b8': proteina@original
+    '#a9a6bb': proteina@original
+    '#a89fb6': proteina@original
+    '#4fae6a': proteina@original
+    '#2f7d57': proteina@original
+    '#f5d442': proteina@original
+    '#f4d44b': proteina@original
+  glifos:
+  - balanza_rankl_opg
+- nombre: m5_reparacion_fractura_fases
+  modulo: m5
+  tipo: escena
+  prompt: 'low magnification H&E histology micrograph, longitudinal section of a long bone shaft with a transverse fracture:
+    cortical bone, periosteum, marrow cavity with fat cells, fracture hematoma, cartilaginous soft callus and woven bone hard
+    callus bridging the gap'
+  tejidos:
+    '#f1edfa': liso@#f5f7fa
+    '#d98aa2': hueso_cortical@original
+    '#c97993': hueso_cortical@original
+    '#c77791': hueso_cortical@original
+    '#e3a0b5': hueso_cortical@original
+    '#d5cbef': periostio@original
+    '#e2d9f5': medula_roja@#e8d3e3
+    '#f3e39a': medula_amarilla@#fbf8f0
+    '#f8e3ea': liquido@original
+    '#6f93e2': celula@original
+    '#3b2f86': nucleo
+    '#8f86e0': nucleo@original
+    '#b4413a': sangre@original
+    '#b8302f': sangre@original
+    '#e9877d': sangre@original
+    '#c9b7ec': celula@original
+    '#e2a12e': celula@original
+    '#b8adf0': celula@original
+    '#f8b9ad': arteria@original
+    '#86b3da': cartilago@#aab9d9
+    '#d3e6f5': cartilago@#e6edf6
+    '#e9adc0': hueso_inmaduro@original
+    '#d9574a': arteria
+    '#c9a0dc': celula@original
+    '#efe4f6': citoplasma@original
+  solo_video: true

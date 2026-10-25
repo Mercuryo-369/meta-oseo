@@ -255,7 +255,10 @@ describe('ilustraciones SVG del módulo 5', () => {
     for (const nombre of ARCHIVOS) {
       expect(existe(nombre), `falta ${nombre}.svg`).toBe(true);
     }
-    const enCarpeta = Object.keys(CRUDOS).map((r) => /\/([^/]+)\.svg$/.exec(r)?.[1] ?? r);
+    // `X_zonas.svg` es la versión de capas de `X.svg` que va sobre su ilustración realista (tools/imagenes).
+    const enCarpeta = Object.keys(CRUDOS)
+      .map((r) => /\/([^/]+)\.svg$/.exec(r)?.[1] ?? r)
+      .filter((n) => !n.endsWith('_zonas'));
     expect([...enCarpeta].sort()).toEqual([...ARCHIVOS].sort());
   });
 
@@ -423,6 +426,12 @@ describe('ilustraciones SVG del módulo 5', () => {
       'm5_equilibrio_remodelado_alteraciones',
     ]) {
       const svg = leer(nombre);
+      // Un SVG que ya es la capa de zonas sobre su ilustración realista conserva los rellenos (con opacidad 0), pero
+      // no los trazos: la paleta se comprueba en los rellenos de núcleos y en el dibujo original (historial de git).
+      if (svg.includes('Zonas sobre la ilustración')) {
+        expect(svg, `${nombre}: núcleos`).toContain(COLOR_NUCLEO);
+        continue;
+      }
       expect(svg, `${nombre}: hueso mineralizado`).toContain(COLOR_HUESO);
       expect(svg, `${nombre}: núcleos`).toContain(COLOR_NUCLEO);
     }

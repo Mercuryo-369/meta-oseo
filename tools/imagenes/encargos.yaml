@@ -34,13 +34,7 @@ encargos:
       around a red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
       bone with marrow, mandibular canal with nerve and vessels
     negativo: red crown, wood, bark, extra teeth, neighbouring teeth, gums, mouth
-    semilla: 7  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "corona con vasos rojos sobre el esmalte y forma irreal"
-      - "la raíz parece tener varios conductos"
-      - "conducto mandibular sin paquete vasculonervioso definido"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
     # Texturizado exacto (texturizar.py): color del dibujo -> tejido de la paleta común.
     tejidos:
       "#d98aa2": hueso_cortical
@@ -68,12 +62,7 @@ encargos:
     prompt: >-
       dry bone specimen of the upper femur sawn in half lengthwise, femoral head, neck and shaft, thin compact cortex,
       inner cancellous bone with oriented trabecular struts, isolated on white background
-    semilla: 10  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "cabeza femoral sin forma anatómica (no esférica, cuello mal definido)"
-      - "las trabéculas pintadas no siguen los sistemas de compresión y tracción (las del dibujo van encima)"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
 
   # --- Módulo 2 ---
   - nombre: m2_osteoblasto_activo
@@ -84,13 +73,7 @@ encargos:
       round nucleus, stacked rough endoplasmic reticulum, Golgi and secretory granules, thin flat lining cell on the right,
       electron microscopy inspired
     negativo: boxes, jellyfish, glass, plastic
-    semilla: 9  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "osteoblastos como cajas rectangulares"
-      - "retículo, Golgi y vesículas no reconocibles"
-      - "la célula de revestimiento no es plana"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
   - nombre: m2_osteocito_lagunar
     modulo: m2
     glifos: [esclerostina, osteocito_lagunar_uniones_comunicantes, fondo_rotulo_inset]
@@ -98,13 +81,7 @@ encargos:
       violet star-shaped osteocyte with dark nucleus inside a pale lacuna in pink mineralized bone matrix, thin
       dendrites in canaliculi linking to neighbouring osteocytes, flat cells on the top surface, small capillary in the corner
     negativo: spider, flower, mouth, red center
-    semilla: 10  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "núcleo gigante separado del cuerpo celular"
-      - "las prolongaciones no salen del cuerpo del osteocito"
-      - "lagunas vecinas dibujadas como dianas"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
   # m2_ligamento_periodontal: retirado el 2026-10-18. La ilustración tenía una raíz irreal y células como anillos;
   # la actividad pasó a la exploración 3D `ligamento_periodontal` (apps/web/src/scenes/ligamento_periodontal).
 
@@ -116,13 +93,7 @@ encargos:
       cleared and stained fetal mandible specimen, alizarin red stained developing bone and alcian blue stained
       Meckel cartilage rod, unerupted tooth germs inside the jaw, translucent embryo tissue, macro photograph, white background
     negativo: adult teeth, erupted teeth, skull, gums, mouth, smile
-    semilla: 5  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "no distingue el cartílago de Meckel del hueso intramembranoso"
-      - "gérmenes dentales con forma de coronas adultas"
-      - "proporciones de mandíbula adulta, no fetal"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
   # m3_osteoide_hueso_inmaduro: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
   # m3_osteocito_red_lacuno_canalicular: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).
 
@@ -170,12 +141,7 @@ encargos:
       with red pulp canal, thin periodontal ligament, alveolar bone proper, buccal and lingual cortical plates, spongy
       bone, basal bone with mandibular canal
     negativo: red crown, wood, bark, screw, implant, extra teeth, neighbouring teeth
-    semilla: 7  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "premolar con dos raíces (el dibujo tiene una) y corona irreal"
-      - "hueso basal y conducto mandibular poco definidos"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
   - nombre: m5_movimiento_ortodontico_pdl
     modulo: m5
     glifos: [fuerza_ortodontica, senales_compresion, senales_tension]
@@ -184,13 +150,7 @@ encargos:
       central pulp canal, periodontal ligament fibers compressed on the right and stretched on the left, osteoclasts and
       osteoblasts on the socket wall, bone with osteocytes
     negativo: teeth, crowns, molars, mouth, gums, smile
-    semilla: 8  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "dentina naranja con estrías radiales"
-      - "diente vecino inventado a la derecha"
-      - "el ligamento no diferencia compresión y tensión"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
   - nombre: m5_cicatrizacion_alveolo_fases
     modulo: m5
     glifos: [remodelado_del_reborde]
@@ -199,12 +159,7 @@ encargos:
       granulation tissue, new woven bone and trabecular bone filling the socket between the cortical walls, gum covering
       the top
     negativo: teeth, crowns, molars, roots, mouth
-    semilla: 7  # PROVISIONAL desde 2026-10-25: la más reciente y parecida, con errores
-    sufijo: _r2
-    estado: provisional
-    corregir:
-      - "cavidades rojas a los lados que parecen alvéolos o dientes"
-      - "coágulo, tejido de granulación y hueso nuevo no diferenciados"
+    semilla:   # 2026-10-25: sustituida por la versión texturizada exacta (texturizado.yaml)
 
   # --- Módulo 6 ---
   # m6_tejido_oseo_envejecido: retirado el 2026-10-18; la actividad pasó a exploración 3D (modelo construido por código).

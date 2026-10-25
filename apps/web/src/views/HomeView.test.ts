@@ -119,7 +119,7 @@ describe('HomeView: tarjetas de módulo', () => {
     expect(new Set(acentos).size).toBe(6);
     const portadas = t.map((x) => x.get('[data-testid="portada-modulo"] img').attributes('src'));
     expect(new Set(portadas).size).toBe(6);
-    expect(portadas[3]).toBe('/images/m4/m4_fibrilla_mineralizada.svg');
+    expect(portadas[3]).toBe('/images/m4/m4_fibrilla_mineralizada_figura.webp');
     const rotulos = t.map((x) => x.get('[data-testid="rotulo-modulo"]').text());
     expect(new Set(rotulos).size).toBe(6);
     // Las ilustraciones son decorativas y se cargan bajo demanda.

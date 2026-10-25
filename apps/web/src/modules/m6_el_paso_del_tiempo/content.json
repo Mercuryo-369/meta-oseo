@@ -515,6 +515,7 @@
           "id": "i_curva_masa_osea",
           "tipo": "imagen",
           "src": "/images/m6/m6_curva_masa_osea.svg",
+          "figura": "/images/m6/m6_curva_masa_osea_figura.webp",
           "alt": "Curva esquemática de la masa ósea a lo largo de la vida en mujeres y hombres, con el pico, la meseta y la pérdida acelerada de la menopausia",
           "pie": "Figura 6.1. Curva esquemática de la masa ósea. Es un modelo, no los datos de una persona."
         },
@@ -698,7 +699,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m6/m6_escena_estrogeno_rankl.svg",
-                "alt": "Arriba a la izquierda, una célula osteoblástica con un receptor de estrógeno dentro y moléculas de RANKL ancladas en su membrana (sitio de unión de la OPG; el RANKL que se arrastra hacia RANK es el mismo ligando, presentado al precursor)."
+                "alt": "Arriba a la izquierda, una célula osteoblástica con un receptor de estrógeno dentro y moléculas de RANKL ancladas en su membrana (sitio de unión de la OPG; el RANKL que se arrastra hacia RANK es el mismo ligando, presentado al precursor).",
+                "fondo": "/images/m6/m6_escena_estrogeno_rankl_figura.webp"
               },
               "moleculas": [
                 {
@@ -947,6 +949,7 @@
           "id": "i_tejido_oseo_envejecido",
           "tipo": "imagen",
           "src": "/images/m6/m6_tejido_oseo_envejecido.svg",
+          "figura": "/images/m6/m6_tejido_oseo_envejecido_figura.webp",
           "alt": "Corte esquemático de hueso cortical envejecido con osteocitos senescentes, una microfisura, un poro ampliado y una médula con más grasa",
           "pie": "Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorarlo en 3D."
         },
@@ -1237,6 +1240,7 @@
           "id": "i_hueso_normal_osteoporotico",
           "tipo": "imagen",
           "src": "/images/m6/m6_hueso_normal_osteoporotico.svg",
+          "figura": "/images/m6/m6_hueso_normal_osteoporotico_figura.webp",
           "alt": "Comparación esquemática de un cuerpo vertebral y de una cortical, normales y osteoporóticos",
           "pie": "Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorarlos en 3D."
         },
@@ -1714,6 +1718,7 @@
           "id": "i_reborde_alveolar_cascada",
           "tipo": "imagen",
           "src": "/images/m6/m6_reborde_alveolar_cascada.svg",
+          "figura": "/images/m6/m6_reborde_alveolar_cascada_figura.webp",
           "alt": "Cortes transversales de la región posterior de la mandíbula en seis etapas, desde el diente presente hasta el reborde deprimido",
           "pie": "Figura 6.4. Etapas del reborde alveolar (esquema). Equivalen a las clases I a VI de Cawood y Howell."
         },
@@ -1750,6 +1755,7 @@
           "id": "i_atm_cambios_degenerativos",
           "tipo": "imagen",
           "src": "/images/m6/m6_atm_cambios_degenerativos.svg",
+          "figura": "/images/m6/m6_atm_cambios_degenerativos_figura.webp",
           "alt": "Corte sagital de la articulación temporomandibular, normal y con cambios degenerativos",
           "pie": "Figura 6.5. ATM normal y con cambios degenerativos (esquema)."
         },
@@ -2121,6 +2127,7 @@
           "id": "i_prevencion_mapa",
           "tipo": "imagen",
           "src": "/images/m6/m6_prevencion_mapa.svg",
+          "figura": "/images/m6/m6_prevencion_mapa_figura.webp",
           "alt": "Mapa de medidas de prevención y de fármacos conectadas con el mecanismo óseo sobre el que actúan",
           "pie": "Figura 6.6. Cada medida apunta a un mecanismo de los módulos anteriores."
         },

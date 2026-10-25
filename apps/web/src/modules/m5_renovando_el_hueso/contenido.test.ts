@@ -377,7 +377,8 @@ describe('módulo 5: cobertura del guion', () => {
       } else if (a.tipo === 'arrastre-molecular') {
         usada = a.config.escena.fondo_svg;
       }
-      expect(usada, g.id).toBe(ruta);
+      // La multicapa con ilustración usa `X_zonas.svg`, la versión de capas de `X.svg` (tools/imagenes).
+      expect(usada?.replace(/_zonas\.svg$/, '.svg'), g.id).toBe(ruta);
       expect(archivosPublicos.has(`/public${ruta}`), ruta).toBe(true);
       comprobadas++;
     }

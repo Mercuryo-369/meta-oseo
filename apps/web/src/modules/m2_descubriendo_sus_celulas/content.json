@@ -384,14 +384,6 @@
       {
         "id": "ligamento_periodontal",
         "nota": "Confirmar: «Mide aproximadamente entre 0,15 y 0,4 mm de ancho»"
-      },
-      {
-        "id": "m2_multicapa_osteoblasto",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: osteoblastos como cajas rectangulares; retículo, Golgi y vesículas no reconocibles; la célula de revestimiento no es plana."
-      },
-      {
-        "id": "m2_multicapa_osteocito",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: núcleo gigante separado del cuerpo celular; las prolongaciones no salen del cuerpo del osteocito; lagunas vecinas dibujadas como dianas."
       }
     ]
   },
@@ -1925,7 +1917,8 @@
               "escena": {
                 "viewBox": "0 0 1000 1540",
                 "fondo_svg": "/images/m2/m2_arbol_linajes_oseos.svg",
-                "alt": "Árbol de dos linajes. A la izquierda, el osteoblástico: célula madre mesenquimal, preosteoblasto con RUNX2 sin osterix y osteoblasto con un ligando expuesto. A la derecha, el osteoclástico: precursor con c-Fms y preosteoclasto con RANK. Los acoples tienen contorno punteado; abajo, siete moléculas."
+                "alt": "Árbol de dos linajes. A la izquierda, el osteoblástico: célula madre mesenquimal, preosteoblasto con RUNX2 sin osterix y osteoblasto con un ligando expuesto. A la derecha, el osteoclástico: precursor con c-Fms y preosteoclasto con RANK. Los acoples tienen contorno punteado; abajo, siete moléculas.",
+                "fondo": "/images/m2/m2_arbol_linajes_oseos_figura.webp"
               },
               "moleculas": [
                 {

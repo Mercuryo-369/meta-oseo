@@ -564,7 +564,7 @@ pasos:
 ##### Actividad m2_multicapa_osteoblasto
 
 ```yaml
-# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
+# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
 tipo: multicapa
 titulo: "Dentro de un osteoblasto activo"
 instrucciones: "Toca cada parte del dibujo para leer qué es y qué hace. Visita las ocho capas marcadas con un punto para completar la actividad. Con teclado: Tab pasa de una capa a otra y Enter la abre. Nada depende de pasar el mouse por encima."
@@ -657,7 +657,7 @@ El conjunto de lagunas, canalículos y dendritas es la **red lacuno-canalicular*
 ##### Actividad m2_multicapa_osteocito
 
 ```yaml
-# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
+# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
 tipo: multicapa
 titulo: "El osteocito en su laguna"
 instrucciones: "Toca cada parte del dibujo para leer qué es y qué hace. Visita las siete capas marcadas con un punto para completar la actividad. Con teclado: Tab pasa de una capa a otra y Enter la abre. Nada depende de pasar el mouse por encima."

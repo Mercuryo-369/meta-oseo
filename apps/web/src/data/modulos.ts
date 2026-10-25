@@ -106,7 +106,7 @@ export const MODULOS: readonly Modulo[] = [
       icono: 'construccion',
       // Con rótulos (nota del recuadro en la parte baja): se muestra entera, sobre fondo claro.
       portada: {
-        src: '/images/m3/m3_sensores_mecanicos.svg',
+        src: '/images/m3/m3_sensores_mecanicos_figura.webp',
         ajuste: 'contener',
         posicion: 'center',
         fondo: 'papel',
@@ -126,7 +126,7 @@ export const MODULOS: readonly Modulo[] = [
       icono: 'mineral',
       // Lleva «Eje c» y «Esquema: no está a escala» al pie: se muestra entera (su fondo oscuro es propio).
       portada: {
-        src: '/images/m4/m4_fibrilla_mineralizada.svg',
+        src: '/images/m4/m4_fibrilla_mineralizada_figura.webp',
         ajuste: 'contener',
         posicion: 'center',
       },
@@ -165,7 +165,7 @@ export const MODULOS: readonly Modulo[] = [
       icono: 'tiempo',
       // Gráfico con rótulos en todos los bordes («Pico de masa ósea», «Edad (años)»): entero.
       portada: {
-        src: '/images/m6/m6_curva_masa_osea.svg',
+        src: '/images/m6/m6_curva_masa_osea_figura.webp',
         ajuste: 'contener',
         posicion: 'center',
         fondo: 'papel',

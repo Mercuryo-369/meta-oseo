@@ -123,25 +123,35 @@ Las 8 multicapa que no lograron una candidata exacta siguen con su SVG:
 con la histología ni con los dientes. Solo sirve para escenas celulares sencillas. Cada ilustración la revisa a tamaño
 completo alguien con formación en histología y la aprueba el docente. Ante la duda, un modelo 3D por código.
 
-## Provisionales en uso (2026-10-25)
+## Método vigente: texturizado exacto (2026-10-25)
 
-Decisión de la usuaria: hasta que estén las versiones exactas, se usan las candidatas más recientes y más parecidas a
-su dibujo, aunque tengan errores. Cada una está marcada con `estado: provisional` y la lista `corregir` en
-[encargos.yaml](encargos.yaml), y como pendiente en `estado_revision` de su módulo (aparece en
-docs/revision-docente.md):
+Todos los dibujos del OVA, salvo las animaciones paso a paso, tienen su versión realista hecha con
+[texturizar.py](texturizar.py):
+- **Geometría:** sale del SVG validado, píxel a píxel. Cada color del dibujo es un material
+  ([texturizado.yaml](texturizado.yaml)).
+- **Aspecto real:** cada material recibe una textura fotográfica de su tejido (biblioteca en `~/ova-imagenes/texturas`,
+  con la paleta común de docs/realismo-3d.md) y un repintado suave a 0,5. A esa intensidad se conservan las formas y
+  no se inventa anatomía.
 
-| SVG | Errores a corregir |
-|---|---|
-| `m1_proceso_alveolar_corte` | Corona con vasos y forma irreal; raíz con aspecto de varios conductos; conducto mandibular sin paquete definido |
-| `m1_wolff_femur` | Cabeza femoral sin forma anatómica; trabéculas pintadas que no siguen los sistemas del dibujo |
-| `m2_osteoblasto_activo` | Osteoblastos como cajas; orgánulos no reconocibles; célula de revestimiento no plana |
-| `m2_osteocito_lagunar` | Núcleo gigante separado del cuerpo; prolongaciones que no salen del cuerpo; lagunas como dianas |
-| `m3_mandibula_desarrollo` | No distingue Meckel del hueso intramembranoso; gérmenes como coronas adultas; proporciones adultas |
-| `m5_hueso_cortical_trabecular_alveolar` | Premolar con dos raíces (el dibujo tiene una); hueso basal y conducto poco definidos |
-| `m5_movimiento_ortodontico_pdl` | Dentina naranja con estrías; diente vecino inventado; ligamento sin compresión y tensión |
-| `m5_cicatrizacion_alveolo_fases` | Cavidades a los lados que parecen alvéolos; fases de cicatrización no diferenciadas |
+`imagenes.py aplicar` lleva la candidata elegida a todos los usos del dibujo:
+- **Multicapa:** la ilustración va debajo y las zonas táctiles encima.
+- **Bloques de imagen:** `figura` con los rótulos nítidos encima.
+- **Arrastre:** `escena.fondo`.
+- **Portada del módulo.**
 
-**Cómo se corregirán.** Con `texturizar.py` (en preparación). La forma sale del SVG validado, píxel a píxel, y la IA
-solo pone texturas de tejido real con la paleta común de docs/realismo-3d.md. Así no puede inventar anatomía. El mapa
-color del dibujo → tejido de cada encargo va en `tejidos`.
+```bash
+PY=~/ova-imagenes/.venv/Scripts/python.exe
+$PY tools/imagenes/texturizar.py NOMBRE...                        # base exacta + 2 candidatas realistas, hoja_texia.png
+$PY tools/imagenes/imagenes.py aplicar NOMBRE... --semilla 1 --sufijo _texia
+```
 
+**Rendimiento en la RTX 4060 (8 GB).** Son unos 5 s por candidata si el modelo cabe entero en la tarjeta. Por eso:
+- Se carga una sola vez.
+- El adaptador de bordes no se sube.
+- El VAE decodifica por bloques.
+- Hay que cerrar los programas que usen la GPU (navegador con escenas 3D, editores de vídeo).
+
+Si la tarjeta desborda a la memoria compartida, cada imagen tarda minutos.
+
+**Pendiente:** las animaciones paso a paso (video-texto) siguen en SVG; sus capas se encienden por pasos y aún no
+admiten un fondo realista.

@@ -613,18 +613,6 @@
       {
         "id": "c_clinico_en_la_radiografia",
         "nota": "Confirmar: «La relación entre la osteoporosis y la pérdida de hueso alveolar o de dientes se ha propuesto, pero no está establecida con certeza»"
-      },
-      {
-        "id": "m5_alveolar_multicapa",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: premolar con dos raíces (el dibujo tiene una) y corona irreal; hueso basal y conducto mandibular poco definidos."
-      },
-      {
-        "id": "m5_ortodoncia_multicapa",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: dentina naranja con estrías radiales; diente vecino inventado a la derecha; el ligamento no diferencia compresión y tensión."
-      },
-      {
-        "id": "m5_alveolo_multicapa",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: cavidades rojas a los lados que parecen alvéolos o dientes; coágulo, tejido de granulación y hueso nuevo no diferenciados."
       }
     ]
   },
@@ -937,6 +925,7 @@
             "config": {
               "svg": "/images/m5/m5_ciclo_remodelado_bmu.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_ciclo_remodelado_bmu.webp",
               "alt": "Seis fases del ciclo de remodelado sobre una superficie ósea: quiescencia, activación, resorción, inversión, formación y mineralización.",
               "modo": "explorar",
               "capas": [
@@ -1395,7 +1384,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m5/m5_osteoclastogenesis_rank_rankl_opg.svg",
-                "alt": "Corte esquemático de una superficie ósea. Arriba, una célula de linaje osteoblástico con RANKL anclado en su membrana (la diana de la OPG). Abajo, un precursor mononuclear de osteoclasto con dos receptores: c-Fms y RANK. Un indicador de resorción sube al formarse un osteoclasto y baja al frenarse."
+                "alt": "Corte esquemático de una superficie ósea. Arriba, una célula de linaje osteoblástico con RANKL anclado en su membrana (la diana de la OPG). Abajo, un precursor mononuclear de osteoclasto con dos receptores: c-Fms y RANK. Un indicador de resorción sube al formarse un osteoclasto y baja al frenarse.",
+                "fondo": "/images/m5/m5_osteoclastogenesis_rank_rankl_opg_figura.webp"
               },
               "moleculas": [
                 {
@@ -1756,8 +1746,9 @@
             },
             "concepto": "Acoplamiento entre resorción y formación; esclerostina y vía Wnt",
             "config": {
-              "svg": "/images/m5/m5_acoplamiento_matriz_esclerostina.svg",
+              "svg": "/images/m5/m5_acoplamiento_matriz_esclerostina_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_acoplamiento_matriz_esclerostina.webp",
               "alt": "Tras la resorción, los factores liberados de la matriz reclutan y diferencian osteoblastos; el osteocito frena la formación con esclerostina.",
               "modo": "explorar",
               "capas": [
@@ -1833,7 +1824,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m5/m5_acoplamiento_matriz_esclerostina.svg",
-                "alt": "Corte de una laguna de resorción terminada. A la izquierda, una célula mesenquimal con receptor de TGF-β; en el centro, un preosteoblasto con receptor de IGF-1; a la derecha, un osteoblasto formador con Frizzled y LRP5/6. Un indicador de osteoide sube con la formación y baja con la esclerostina."
+                "alt": "Corte de una laguna de resorción terminada. A la izquierda, una célula mesenquimal con receptor de TGF-β; en el centro, un preosteoblasto con receptor de IGF-1; a la derecha, un osteoblasto formador con Frizzled y LRP5/6. Un indicador de osteoide sube con la formación y baja con la esclerostina.",
+                "fondo": "/images/m5/m5_acoplamiento_matriz_esclerostina_figura.webp"
               },
               "moleculas": [
                 {
@@ -2180,6 +2172,7 @@
             "config": {
               "svg": "/images/m5/m5_hormonas_regulacion_calcemia.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_hormonas_regulacion_calcemia.webp",
               "alt": "Esquema de regulación del calcio: la PTH y el calcitriol lo suben, la calcitonina lo baja, los estrógenos frenan la resorción.",
               "modo": "explorar",
               "capas": [
@@ -3720,6 +3713,7 @@
             "config": {
               "svg": "/images/m5/m5_equilibrio_remodelado_alteraciones.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_equilibrio_remodelado_alteraciones.webp",
               "alt": "Comparación de hueso trabecular normal con osteopetrosis, enfermedad de Paget y osteoporosis.",
               "modo": "identificar",
               "capas": [

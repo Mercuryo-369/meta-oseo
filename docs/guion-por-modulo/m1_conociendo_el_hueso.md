@@ -1178,7 +1178,7 @@ requeridos: [cuerpo, rama, angulo, condilo, apofisis_coronoides, sinfisis, foram
 ##### Actividad m1_5_proceso_alveolar
 
 ```yaml
-# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
+# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
 tipo: multicapa
 titulo: "El hueso alveolar por dentro"
 instrucciones: "La aplicación te pedirá tocar, una por una, cuatro estructuras del corte (con teclado, Tab y Enter; también puedes elegir en la lista de estructuras bajo la imagen). Si te equivocas, verás una pista y podrás intentarlo de nuevo."
@@ -1268,7 +1268,7 @@ pares:
 ##### Actividad m1_5_wolff_femur
 
 ```yaml
-# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
+# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
 tipo: multicapa
 titulo: "Las trabéculas siguen la carga"
 instrucciones: "Toca cada zona del fémur para ver cómo se orienta el hueso según la carga (con teclado, Tab para pasar de una zona a otra y Enter para abrir su descripción). Esta actividad es opcional."

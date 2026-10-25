@@ -555,6 +555,7 @@
           "id": "i_composicion_matriz",
           "tipo": "imagen",
           "src": "/images/m4/m4_composicion_matriz.svg",
+          "figura": "/images/m4/m4_composicion_matriz_figura.webp",
           "alt": "Barra apilada de la matriz ósea madura con cuatro segmentos: fase mineral, colágeno tipo I, proteínas no colágenas y agua.",
           "pie": "Composición de la matriz ósea madura.",
           "ancho": 800,
@@ -642,8 +643,9 @@
             },
             "concepto": "Composición de la matriz ósea",
             "config": {
-              "svg": "/images/m4/m4_composicion_matriz.svg",
+              "svg": "/images/m4/m4_composicion_matriz_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m4/m4_composicion_matriz.webp",
               "alt": "Barra apilada de la matriz ósea madura con cuatro segmentos tocables.",
               "modo": "explorar",
               "capas": [
@@ -788,6 +790,7 @@
           "id": "i_fibrilla_colageno",
           "tipo": "imagen",
           "src": "/images/m4/m4_fibrilla_colageno.svg",
+          "figura": "/images/m4/m4_fibrilla_colageno_figura.webp",
           "alt": "Fibrilla de colágeno I en corte longitudinal: cinco moléculas de tropocolágeno escalonadas, con el patrón de bandas del periodo D.",
           "pie": "Cinco moléculas de tropocolágeno escalonadas. Cada periodo D alterna una zona de hueco y una de solapamiento.",
           "ancho": 800,
@@ -826,8 +829,9 @@
             },
             "concepto": "Estructura de la fibrilla de colágeno I",
             "config": {
-              "svg": "/images/m4/m4_fibrilla_colageno.svg",
+              "svg": "/images/m4/m4_fibrilla_colageno_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m4/m4_fibrilla_colageno.webp",
               "alt": "Fibrilla de colágeno I en corte longitudinal: cinco moléculas de tropocolágeno escalonadas, con el patrón de bandas del periodo D.",
               "modo": "identificar",
               "capas": [
@@ -1070,6 +1074,7 @@
           "id": "i_vesicula_matriz",
           "tipo": "imagen",
           "src": "/images/m4/m4_vesicula_matriz.svg",
+          "figura": "/images/m4/m4_vesicula_matriz_figura.webp",
           "alt": "Vesícula de matriz que brota de la membrana del osteoblasto hacia el osteoide, con sus proteínas, iones y un cristal de hidroxiapatita en formación.",
           "pie": "Vesícula de matriz con sus canales de anexina, el transportador de fosfato, PHOSPHO1, la TNAP y un cristal naciente.",
           "ancho": 800,
@@ -1259,7 +1264,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m4/m4_vesicula_matriz.svg",
-                "alt": "Una vesícula de matriz recién brotada del osteoblasto, en el osteoide, con un canal de anexina y un transportador de fosfato en su membrana, TNAP anclada por fuera y un cristal de hidroxiapatita naciente. Las moléculas esperan en una bandeja debajo de la escena."
+                "alt": "Una vesícula de matriz recién brotada del osteoblasto, en el osteoide, con un canal de anexina y un transportador de fosfato en su membrana, TNAP anclada por fuera y un cristal de hidroxiapatita naciente. Las moléculas esperan en una bandeja debajo de la escena.",
+                "fondo": "/images/m4/m4_vesicula_matriz_figura.webp"
               },
               "moleculas": [
                 {
@@ -1560,6 +1566,7 @@
           "id": "i_fibrilla_mineralizada",
           "tipo": "imagen",
           "src": "/images/m4/m4_fibrilla_mineralizada.svg",
+          "figura": "/images/m4/m4_fibrilla_mineralizada_figura.webp",
           "alt": "La fibrilla de colágeno de la sección 4.2 ya mineralizada: cristales dentro de las zonas de hueco y agregados entre fibrillas.",
           "pie": "Cristales dentro de las zonas de hueco y agregados entre fibrillas. Esquema sin escala.",
           "ancho": 800,
@@ -1605,8 +1612,9 @@
             },
             "concepto": "Mineral intrafibrilar y extrafibrilar",
             "config": {
-              "svg": "/images/m4/m4_fibrilla_mineralizada.svg",
+              "svg": "/images/m4/m4_fibrilla_mineralizada_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m4/m4_fibrilla_mineralizada.webp",
               "alt": "La misma fibrilla de la sección 4.2 ya mineralizada: cristales dentro de las zonas de hueco y agregados entre fibrillas.",
               "modo": "explorar",
               "capas": [
@@ -2138,6 +2146,7 @@
           "id": "i_frente_mineralizacion",
           "tipo": "imagen",
           "src": "/images/m4/m4_frente_mineralizacion.svg",
+          "figura": "/images/m4/m4_frente_mineralizacion_figura.webp",
           "alt": "Corte de una superficie ósea en formación, de la superficie hacia el interior: osteoblastos, osteoide, frente de mineralización, hueso mineralizado y osteocito con sus canalículos.",
           "pie": "Corte de una superficie ósea en formación.",
           "ancho": 800,
@@ -2453,6 +2462,7 @@
           "id": "i_homeostasis_calcio_fosfato",
           "tipo": "imagen",
           "src": "/images/m4/m4_homeostasis_calcio_fosfato.svg",
+          "figura": "/images/m4/m4_homeostasis_calcio_fosfato_figura.webp",
           "alt": "Esquema del cuerpo con los órganos que regulan el calcio y el fosfato, y las flechas de cada hormona.",
           "pie": "Órganos que regulan el calcio y el fosfato.",
           "ancho": 800,
@@ -2567,8 +2577,9 @@
             },
             "concepto": "Órganos y hormonas de la homeostasis del calcio y del fosfato",
             "config": {
-              "svg": "/images/m4/m4_homeostasis_calcio_fosfato.svg",
+              "svg": "/images/m4/m4_homeostasis_calcio_fosfato_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m4/m4_homeostasis_calcio_fosfato.webp",
               "alt": "Esquema del cuerpo con los órganos que regulan el calcio y el fosfato, y las flechas de cada hormona.",
               "modo": "identificar",
               "capas": [
@@ -2807,6 +2818,7 @@
           "id": "i_osteoide_normal_vs_osteomalacia",
           "tipo": "imagen",
           "src": "/images/m4/m4_osteoide_normal_vs_osteomalacia.svg",
+          "figura": "/images/m4/m4_osteoide_normal_vs_osteomalacia_figura.webp",
           "alt": "Dos paneles comparados de una superficie ósea, normal y con osteomalacia, con marcaje doble de tetraciclina.",
           "pie": "Superficie ósea normal y con osteomalacia: la costura de osteoide se ensancha y el marcaje se vuelve difuso.",
           "ancho": 800,

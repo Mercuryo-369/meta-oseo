@@ -73,6 +73,43 @@ TEJIDOS: dict[str, tuple[str, str]] = {
     "nucleo": ("#3b2f86", "cell nucleus chromatin, dark granular speckled texture, microscopy"),
     "sangre": ("#c9473e", "red blood cells packed in plasma, glossy red discs, microscopy"),
     "organo": ("#c98a70", "glossy organ surface, smooth moist tissue, anatomical specimen"),
+    "periostio": (
+        "#e3cabd",
+        "thin glistening dense fibrous connective tissue membrane, whitish pink, fine parallel collagen fibres, tiny vessels",
+    ),
+    "fibrocartilago": (
+        "#ece6d8",
+        "dense white fibrocartilage, opaque smooth glossy surface with faint parallel collagen fibre striations",
+    ),
+    "tejido_embrionario": (
+        "#ecc9bd",
+        "translucent pale pink embryonic tissue, smooth moist surface, soft subsurface scattering, fine cellular grain",
+    ),
+    "mesenquima": (
+        "#e6d9e6",
+        "loose embryonic mesenchyme, translucent gelatinous ground substance with sparse stellate cells and fine fibrils",
+    ),
+    "germen_dental": ("#efe0c8", "soft translucent embryonic tooth bud, glossy gelatinous surface"),
+    "adn": (
+        "#b7b0e8",
+        "DNA double helix strands, twisted backbones with base-pair rungs, smooth molecular surface rendering",
+    ),
+    "mitocondria": (
+        "#d9a69c",
+        "elongated mitochondrion with folded inner cristae, smooth outer membrane, granular pale matrix, electron micrograph",
+    ),
+    "tejido_granulacion": (
+        "#e9a79f",
+        "granulation tissue, soft moist pink loose connective tissue dotted with tiny capillary loops and cells",
+    ),
+    "ligamento_hialinizado": (
+        "#ecdde4",
+        "hyalinized periodontal ligament, glassy homogeneous acellular pale pink connective tissue, smooth",
+    ),
+    "piel": (
+        "#e8c2a8",
+        "human skin surface, fine pores and subtle creases, soft subsurface scattering, even natural tone",
+    ),
 }
 
 ESTILO_TEXTURA = "seamless flat texture, macro photograph, even diffuse lighting, no shadows, sharp focus, top view"
@@ -83,7 +120,9 @@ MEDIO = (LUZ + np.array([0, 0, 1.0])) / np.linalg.norm(LUZ + np.array([0, 0, 1.0
 
 
 def hex_rgb(h: str) -> np.ndarray:
-    h = h.lstrip("#")
+    h = h.strip().lstrip("#")
+    if len(h) == 3:  # #fff -> #ffffff
+        h = "".join(c * 2 for c in h)
     return np.array([int(h[i : i + 2], 16) for i in (0, 2, 4)], np.float32) / 255
 
 
@@ -110,6 +149,20 @@ def mapa_de_tejidos(texto: str, tejidos: dict[str, str], ancho: int) -> tuple[np
     etiqueta = np.where(distancia.min(axis=2) < 0.035, indices[cercano], -1).astype(np.int32)
     dentro = nitido[..., 3] > 0.5
     etiqueta[~dentro] = -2
+    # Zonas grandes sin tejido asignado (fondos de panel, rellenos semitransparentes): conservan su propio color, con
+    # textura lisa. Las pequeñas (contornos, trazos de dibujo) se reparten abajo entre los tejidos vecinos.
+    sin = (etiqueta == -1).astype(np.uint8)
+    n, comp, stats, _ = cv2.connectedComponentsWithStats(sin, connectivity=4)
+    minimo = 0.004 * etiqueta.size
+    for k in range(1, n):
+        if stats[k, cv2.CC_STAT_AREA] < minimo:
+            continue
+        zona = comp == k
+        tono = np.median(rgb[zona], axis=0)
+        nombre = "liso@#" + "".join(f"{round(float(c) * 255):02x}" for c in tono)
+        if nombre not in nombres:
+            nombres.append(nombre)
+        etiqueta[zona] = nombres.index(nombre)
     # Contornos y colores sin tejido: al tejido más cercano.
     sin = etiqueta == -1
     if sin.any():
@@ -178,8 +231,21 @@ def componer(
 BIBLIOTECA = imagenes.TRABAJO.parent / "texturas"
 
 
-def generar_texturas(nombres: list[str], semilla: int) -> dict[str, np.ndarray]:
-    """Texturas de la biblioteca (~/ova-imagenes/texturas/{tejido}_s{semilla}.png); genera solo las que faltan."""
+def texturas_que_faltan(nombres: list[str], semilla: int = 1) -> list[str]:
+    return [n for n in nombres if not (BIBLIOTECA / f"{n}_s{semilla}.png").exists()]
+
+
+def texto_textura(n: str) -> tuple[str, str]:
+    return (f"{TEJIDOS[n][1]}, {ESTILO_TEXTURA}", NEGATIVO_TEXTURA)
+
+
+def texto_realismo(e: dict) -> tuple[str, str]:
+    return (f"{e['prompt'].strip()}, photorealistic, highly detailed", imagenes.NEGATIVO)
+
+
+def generar_texturas(nombres: list[str], semilla: int, pipes=None) -> dict[str, np.ndarray]:
+    """Texturas de la biblioteca (~/ova-imagenes/texturas/{tejido}_s{semilla}.png); genera solo las que faltan, con
+    el modelo ya cargado (`pipes`): cargarlo dos veces desborda los 8 GB y lo hace todo unas cinco veces más lento."""
     BIBLIOTECA.mkdir(parents=True, exist_ok=True)
     texturas = {}
     faltan = []
@@ -190,18 +256,18 @@ def generar_texturas(nombres: list[str], semilla: int) -> dict[str, np.ndarray]:
         else:
             faltan.append(n)
     if faltan:
-        for n, t in _generar(faltan, semilla).items():
+        for n, t in _generar(faltan, semilla, pipes).items():
             Image.fromarray((t * 255).astype(np.uint8)).save(BIBLIOTECA / f"{n}_s{semilla}.png")
             texturas[n] = t
     return texturas
 
 
-def _generar(nombres: list[str], semilla: int) -> dict[str, np.ndarray]:
+def _generar(nombres: list[str], semilla: int, pipes) -> dict[str, np.ndarray]:
     import torch
     from diffusers import StableDiffusionXLPipeline
 
-    textos = [(f"{TEJIDOS[n][1]}, {ESTILO_TEXTURA}", NEGATIVO_TEXTURA) for n in nombres]
-    pipe, _, codificados, _ = imagenes.cargar_pipeline(textos)
+    textos = [texto_textura(n) for n in nombres]
+    pipe, _, codificados, _ = pipes
     t2i = StableDiffusionXLPipeline(
         vae=pipe.vae,
         text_encoder=None,
@@ -239,14 +305,7 @@ def tejidos_de(e: dict) -> dict[str, str]:
     return tejidos
 
 
-def svg_original(e: dict) -> str:
-    texto = imagenes.ruta_svg(e).read_text(encoding="utf-8")
-    if svg_fondo.MARCA in texto:
-        sys.exit(f"{e['nombre']}: el SVG ya es de zonas; restaurar el original antes de texturizar")
-    return texto
-
-
-def realismo(elegidos: list[dict], fuerza: float, n: int) -> None:
+def realismo(elegidos: list[dict], fuerza: float, n: int, pipes) -> None:
     """Repintado fotorrealista suave (img2img, sin bordes) sobre la base texturizada: s{k}_texia.png, k = 1..n.
 
     A 0,5 conserva la geometría del dibujo y da aspecto real; por encima empieza a inventar (probado el 2026-10-25).
@@ -255,8 +314,8 @@ def realismo(elegidos: list[dict], fuerza: float, n: int) -> None:
 
     import torch
 
-    textos = [(f"{e['prompt'].strip()}, photorealistic, highly detailed", imagenes.NEGATIVO) for e in elegidos]
-    _, refinador, codificados, _ = imagenes.cargar_pipeline(textos)
+    textos = [texto_realismo(e) for e in elegidos]
+    _, refinador, codificados, _ = pipes
     for e, (prompt, _) in zip(elegidos, textos, strict=True):
         carpeta = imagenes.TRABAJO / e["nombre"]
         base = Image.open(carpeta / "s1_tex.png").convert("RGBA")
@@ -290,31 +349,39 @@ def main() -> None:
     a.add_argument("nombres", nargs="+")
     a.add_argument("--ancho", type=int, default=1600)
     a.add_argument("--realismo", type=float, default=0.5, help="fuerza del repintado realista (0 = solo texturas)")
-    a.add_argument("--n", type=int, default=3)
+    a.add_argument("--n", type=int, default=2)
+    a.add_argument("--rehacer", action="store_true", help="rehace también lo que ya existe")
     args = a.parse_args()
     todos = imagenes.encargos()
     elegidos = [todos[x] for x in args.nombres]
+
+    def hecho(e: dict, archivo: str) -> bool:
+        return not args.rehacer and (imagenes.TRABAJO / e["nombre"] / archivo).exists()
+
+    sin_base = [e for e in elegidos if not hecho(e, "s1_tex.png")]
+    sin_realismo = [e for e in elegidos if args.realismo > 0 and not hecho(e, f"s{args.n}_texia.png")]
     mapas = {}
-    materiales = set()
-    for e in elegidos:
-        etiqueta, nombres, alfa = mapa_de_tejidos(svg_original(e), tejidos_de(e), args.ancho)
+    materiales: set[str] = set()
+    for e in sin_base:
+        etiqueta, nombres, alfa = mapa_de_tejidos(imagenes.svg_original(e), tejidos_de(e), args.ancho)
         mapas[e["nombre"]] = (etiqueta, nombres, alfa)
         materiales |= {x.split("@")[0] for x in nombres}
-    texturas = generar_texturas(sorted(materiales), 1)
-    for e in elegidos:
+    faltan = texturas_que_faltan(sorted(materiales))
+    # Un solo modelo en la GPU para todo: texturas que falten y repintado.
+    pipes = None
+    if faltan or sin_realismo:
+        pipes = imagenes.cargar_pipeline(
+            [texto_textura(m) for m in faltan] + [texto_realismo(e) for e in sin_realismo], con_adaptador=False
+        )
+    texturas = generar_texturas(sorted(materiales), 1, pipes)
+    for e in sin_base:
         carpeta = imagenes.TRABAJO / e["nombre"]
         carpeta.mkdir(parents=True, exist_ok=True)
         etiqueta, nombres, alfa = mapas[e["nombre"]]
         componer(etiqueta, nombres, alfa, texturas).save(carpeta / "s1_tex.png")
         print(f"{e['nombre']}: base texturizada", flush=True)
-    if args.realismo > 0:
-        import gc
-
-        import torch
-
-        gc.collect()
-        torch.cuda.empty_cache()
-        realismo(elegidos, args.realismo, args.n)
+    if sin_realismo:
+        realismo(sin_realismo, args.realismo, args.n, pipes)
 
 
 if __name__ == "__main__":

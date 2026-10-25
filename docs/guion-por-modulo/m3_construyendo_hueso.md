@@ -279,7 +279,7 @@ El **cartílago condilar** es el único que persiste como sitio de crecimiento. 
 ##### Actividad m3_multicapa_mandibula_fetal
 
 ```yaml
-# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
+# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
 tipo: multicapa
 titulo: "Encuentra las piezas de la mandíbula fetal"
 instrucciones: "La aplicación te pide una estructura por su nombre y tú la tocas en el esquema. Al acertar se abre su descripción. Sin ratón, usa Tab para recorrer las estructuras y Enter para elegir la que buscas; también puedes pedir una pista para resaltar una zona. Debes identificar las 7 estructuras obligatorias."

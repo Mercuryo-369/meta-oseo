@@ -633,10 +633,6 @@
       {
         "id": "zona_fractura",
         "nota": "Confirmar: «Deformaciones cercanas a 25 000 microdeformaciones, es decir 2,5 %»"
-      },
-      {
-        "id": "m3_multicapa_mandibula_fetal",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: no distingue el cartílago de Meckel del hueso intramembranoso; gérmenes dentales con forma de coronas adultas; proporciones de mandíbula adulta, no fetal."
       }
     ]
   },
@@ -743,6 +739,7 @@
             "config": {
               "svg": "/images/m3/m3_rutas_formacion_osea.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_rutas_formacion_osea.webp",
               "alt": "Dos paneles lado a lado: A, osificación intramembranosa; B, osificación endocondral en un hueso largo.",
               "modo": "explorar",
               "capas": [
@@ -1693,7 +1690,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m3/m3_bmp_runx2_osterix.svg",
-                "alt": "Una célula osteoprogenitora de un mesénquima condensado. En su membrana hay un receptor de BMP (complejo de receptor tipo I y tipo II). En el citoplasma hay moléculas Smad1/5/8 y Smad4 en reposo. En el núcleo hay dos interruptores apagados: RUNX2 y osterix (SP7)."
+                "alt": "Una célula osteoprogenitora de un mesénquima condensado. En su membrana hay un receptor de BMP (complejo de receptor tipo I y tipo II). En el citoplasma hay moléculas Smad1/5/8 y Smad4 en reposo. En el núcleo hay dos interruptores apagados: RUNX2 y osterix (SP7).",
+                "fondo": "/images/m3/m3_bmp_runx2_osterix_figura.webp"
               },
               "moleculas": [
                 {
@@ -2163,6 +2161,7 @@
             "config": {
               "svg": "/images/m3/m3_sensores_mecanicos.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_sensores_mecanicos.webp",
               "alt": "Ampliación esquemática (fuera de escala) de la membrana de un proceso dendrítico con sus sensores y mensajeros, más un recuadro aparte con el cuerpo del osteocito en su laguna, donde se dibuja el cilio primario.",
               "modo": "identificar",
               "capas": [
@@ -2582,7 +2581,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m3/m3_via_wnt_esclerostina.svg",
-                "alt": "Corte de la superficie ósea. Abajo, la membrana de un osteoblasto con tres receptores: Frizzled, LRP5/6 y el receptor de PTH (PTH1R). Dentro del osteoblasto, el complejo de destrucción (Axin, APC, GSK3β) degrada partículas de β-catenina y el núcleo tiene TCF/LEF apagado."
+                "alt": "Corte de la superficie ósea. Abajo, la membrana de un osteoblasto con tres receptores: Frizzled, LRP5/6 y el receptor de PTH (PTH1R). Dentro del osteoblasto, el complejo de destrucción (Axin, APC, GSK3β) degrada partículas de β-catenina y el núcleo tiene TCF/LEF apagado.",
+                "fondo": "/images/m3/m3_via_wnt_esclerostina_figura.webp"
               },
               "moleculas": [
                 {
@@ -3022,6 +3022,7 @@
             "config": {
               "svg": "/images/m3/m3_mecanostato_ventanas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_mecanostato_ventanas.webp",
               "alt": "Gráfico esquemático del mecanostato de Frost: eje horizontal con la deformación del hueso (en microdeformaciones, escala logarítmica) y bandas de respuesta.",
               "modo": "explorar",
               "capas": [

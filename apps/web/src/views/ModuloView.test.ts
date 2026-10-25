@@ -938,7 +938,7 @@ describe('ModuloView: bloqueo de módulos', () => {
     expect(wrapper.get('[data-testid="rotulo-modulo"]').text()).toContain('Formación');
     expect(wrapper.get('[data-testid="portada-modulo"]').attributes('data-modulo')).toBe('3');
     expect(wrapper.get('[data-testid="portada-modulo"] img').attributes('src')).toBe(
-      '/images/m3/m3_sensores_mecanicos.svg',
+      '/images/m3/m3_sensores_mecanicos_figura.webp',
     );
     expect(cabecera.attributes('style')).toContain('--acento: var(--acento-m3)');
     // Sin avance ni puntaje del módulo: aún no se puede estudiar.

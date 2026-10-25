@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+<!-- Zonas sobre la ilustración /images/m5/m5_acoplamiento_matriz_esclerostina.webp (tools/imagenes): las estructuras son invisibles y tocables; quedan dibujadas solo las capas (ninguna). -->
+<title>Acoplamiento y esclerostina</title>
+<desc>Tras la resorción, los factores liberados de la matriz reclutan y diferencian osteoblastos; el osteocito frena la formación con esclerostina.</desc>
+<g id="fondo_escena">
+<rect x="10" y="10" width="780" height="580" rx="14" fill="#f1edfa" stroke="none" stroke-width="4" stroke-linejoin="round" fill-opacity="0" />
+</g>
+<g id="matriz_con_factores">
+<path d="M10 384 L36 384  C41 389.9 55.9 411.4 65.8 419.2 C75.8 426.9 85.7 425.9 95.7 430.5 C105.6 435.1 115.6 443.6 125.5 446.7 C135.5 449.8 145.4 447.1 155.4 449.1 C165.3 451.1 175.3 457.6 185.2 459 C195.2 460.4 205.1 457.1 215.1 457.6 C225 458.1 235 462.5 244.9 462.2 C254.9 461.9 264.8 457 274.8 455.8 C284.7 454.6 294.7 457.3 304.6 455 C314.6 452.7 324.5 445.1 334.5 441.8 C344.4 438.5 354.4 439.6 364.3 435.1 C374.3 430.6 384.2 423.3 394.2 414.7 C404.1 406.2 419 389.1 424 384 L790 384 L790 576 Q790 590 776 590 L24 590 Q10 590 10 576 Z" fill="#d98aa2" stroke="none" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="18" y1="424" x2="782" y2="424" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="446" x2="782" y2="446" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="468" x2="782" y2="468" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="490" x2="782" y2="490" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="512" x2="782" y2="512" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="534" x2="782" y2="534" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="556" x2="782" y2="556" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<line x1="18" y1="578" x2="782" y2="578" stroke="none" stroke-width="2" stroke-linecap="round" opacity="0.45" fill-opacity="0" />
+<circle cx="277.7" cy="495.8" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M391.8 452.8 L399.8 462 L391.8 471.2 L383.8 462Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="54.1" y="448.9" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="289.6" cy="476.7" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M214.9 482.8 L222.9 492 L214.9 501.2 L206.9 492Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="241.4" y="475.4" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="157.9" cy="488.6" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M113.2 449.7 L121.2 458.9 L113.2 468.1 L105.2 458.9Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="258.8" y="468.2" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="357.9" cy="456.4" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M408.2 427.1 L416.2 436.3 L408.2 445.5 L400.2 436.3Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="388.2" y="444.3" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="131.7" cy="479.1" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M402.8 431.2 L410.8 440.4 L402.8 449.6 L394.8 440.4Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="167.9" y="470.9" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="470" cy="460" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M520 520.8 L528 530 L520 539.2 L512 530Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="102.8" y="512.8" width="14.4" height="14.4" rx="2" fill="#3fa66a" stroke="none" stroke-width="2" stroke-linejoin="round" fill-opacity="0" />
+<circle cx="300" cy="540" r="8" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M720 538.8 L728 548 L720 557.2 L712 548Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g data-zona-toque=""><path d="M10 384 L36 384  C41 389.9 55.9 411.4 65.8 419.2 C75.8 426.9 85.7 425.9 95.7 430.5 C105.6 435.1 115.6 443.6 125.5 446.7 C135.5 449.8 145.4 447.1 155.4 449.1 C165.3 451.1 175.3 457.6 185.2 459 C195.2 460.4 205.1 457.1 215.1 457.6 C225 458.1 235 462.5 244.9 462.2 C254.9 461.9 264.8 457 274.8 455.8 C284.7 454.6 294.7 457.3 304.6 455 C314.6 452.7 324.5 445.1 334.5 441.8 C344.4 438.5 354.4 439.6 364.3 435.1 C374.3 430.6 384.2 423.3 394.2 414.7 C404.1 406.2 419 389.1 424 384 L790 384 L790 576 Q790 590 776 590 L24 590 Q10 590 10 576 Z" fill="transparent" /></g>
+</g>
+<g id="osteoclasto_resorbiendo">
+<path d="M96 434 C70 420.2 76 365 105.2 346 C134.2 331 174.8 334.6 180.6 350 C208 369.6 208 424.8 184 434 Z" fill="#c9a0dc" stroke="none" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<path d="M88 420 L107.5 420 L107.5 434 L96 434 Z" fill="#efe4f6" fill-opacity="0" stroke="none" />
+<path d="M192 420 L172.5 420 L172.5 434 L184 434 Z" fill="#efe4f6" fill-opacity="0" stroke="none" />
+<path d="M107.5 434 Q115.6 422 123.8 434 Q131.9 422 140 434 Q148.1 422 156.2 434 Q164.4 422 172.5 434" fill="#c9a0dc" stroke="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g transform="rotate(-17.5 116 376.2)"><ellipse cx="116" cy="376.2" rx="13.9" ry="16.7" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="112.5" cy="372.8" rx="3.9" ry="4.7" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<g transform="rotate(-21.4 140 377.3)"><ellipse cx="140" cy="377.3" rx="13.9" ry="16.7" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="136.5" cy="373.9" rx="3.9" ry="4.7" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<g transform="rotate(-6.7 164 380.4)"><ellipse cx="164" cy="380.4" rx="13.9" ry="16.7" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="160.5" cy="377.1" rx="3.9" ry="4.7" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<line x1="105" y1="440" x2="105" y2="447.2" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M105 456 L99 445 L111 445Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="140" y1="440" x2="140" y2="447.2" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M140 456 L133.9 445 L146.1 445Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="175" y1="440" x2="175" y2="447.2" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M175 456 L168.9 445 L181.1 445Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g data-zona-toque=""><rect x="64" y="332" width="150" height="136" fill="transparent" /></g>
+</g>
+<g id="factores_liberados">
+<circle cx="262" cy="400" r="9" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M300 413.6 L309 424 L300 434.4 L291 424Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<circle cx="338" cy="396" r="9" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<path d="M372 419.6 L381 430 L372 440.4 L363 430Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<path d="M314 361.6 L323 372 L314 382.4 L305 372Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<circle cx="274" cy="366" r="9" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<circle cx="392" cy="392" r="9" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<line x1="290" y1="352" x2="293.7" y2="337.3" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M296 328 L299.5 341.2 L286.7 338Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="352" y1="350" x2="355.7" y2="335.3" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M358 326 L361.5 339.2 L348.7 336Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="326" y1="372" x2="329.7" y2="357.3" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M332 348 L335.5 361.2 L322.7 358Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="29" y="22.7" width="150" height="42.6" rx="21.3" fill="#fbfaff" stroke="#2b2350" stroke-width="2.2" stroke-linejoin="round" /><text x="104" y="54.2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#2b2350" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">TGF-β1</text>
+<circle cx="210" cy="44" r="11" fill="#5b7fd6" stroke="none" stroke-width="2" fill-opacity="0" />
+<rect x="29" y="70.7" width="150" height="42.6" rx="21.3" fill="#fbfaff" stroke="#2b2350" stroke-width="2.2" stroke-linejoin="round" /><text x="104" y="102.2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#2b2350" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">IGF-1</text>
+<path d="M210 79.3 L221 92 L210 104.7 L199 92Z" fill="#e2a12e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g data-zona-toque=""><rect x="236" y="336" width="204" height="124" fill="transparent" /><rect x="20" y="20" width="260" height="110" fill="transparent" /></g>
+</g>
+<g id="celula_mesenquimal_reclutada">
+<g transform="rotate(-16 236 290)"><ellipse cx="236" cy="290" rx="78" ry="26" fill="#b8adf0" stroke="none" stroke-width="3.5" fill-opacity="0" /><g><ellipse cx="236" cy="290" rx="30" ry="15" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="228.5" cy="287" rx="8.4" ry="4.2" fill="#8f86e0" fill-opacity="0" stroke="none" /></g></g>
+<g transform="translate(248 316) rotate(164)"><line x1="0" y1="0" x2="0" y2="-22" stroke="none" stroke-width="6" stroke-linecap="round" fill-opacity="0" /><circle cx="0" cy="-30" r="9" fill="#3f5bb5" stroke="none" stroke-width="2" fill-opacity="0" /></g>
+<g transform="translate(206 310) rotate(164)"><line x1="0" y1="0" x2="0" y2="-22" stroke="none" stroke-width="6" stroke-linecap="round" fill-opacity="0" /><circle cx="0" cy="-30" r="9" fill="#3f5bb5" stroke="none" stroke-width="2" fill-opacity="0" /></g>
+<path d="M300 372 C 312 350 300 330 282 310" fill="none" stroke="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 6" fill-opacity="0" /><path d="M282 310 L294.3 316 L283.5 323.6Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g data-zona-toque=""><rect x="146" y="236" width="200" height="176" fill="transparent" /></g>
+</g>
+<g id="preosteoblasto_igf1">
+<ellipse cx="430" cy="296" rx="46" ry="38" fill="#a7c4ec" stroke="none" stroke-width="3.5" fill-opacity="0" />
+<g><ellipse cx="430" cy="292" rx="20" ry="15" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="425" cy="289" rx="5.6" ry="4.2" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<g transform="translate(422 332) rotate(175)"><line x1="0" y1="0" x2="0" y2="-22" stroke="none" stroke-width="6" stroke-linecap="round" fill-opacity="0" /><path d="M0 -39.2 L8 -30 L0 -20.8 L-8 -30Z" fill="#a89500" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" /></g>
+<g transform="translate(450 328) rotate(165)"><line x1="0" y1="0" x2="0" y2="-22" stroke="none" stroke-width="6" stroke-linecap="round" fill-opacity="0" /><path d="M0 -39.2 L8 -30 L0 -20.8 L-8 -30Z" fill="#a89500" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" /></g>
+<g data-zona-toque=""><rect x="366" y="240" width="128" height="140" fill="transparent" /></g>
+</g>
+<g id="osteocito_esclerostina">
+<line x1="690" y1="486" x2="690" y2="378" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="628" y2="404" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="752" y2="414" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="600" y2="500" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="770" y2="520" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="650" y2="566" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<line x1="690" y1="486" x2="730" y2="568" stroke="none" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill-opacity="0" />
+<ellipse cx="690" cy="486" rx="34" ry="22" fill="#f8e3ea" stroke="none" stroke-width="3" fill-opacity="0" /><ellipse cx="690" cy="486" rx="26" ry="16" fill="#6f93e2" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="690" cy="486" rx="11" ry="8" fill="#3b2f86" fill-opacity="0" stroke="none" />
+<path d="M699 448 L694.5 455.8 L685.5 455.8 L681 448 L685.5 440.2 L694.5 440.2Z" fill="#e46b3a" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<path d="M699 424 L694.5 431.8 L685.5 431.8 L681 424 L685.5 416.2 L694.5 416.2Z" fill="#e46b3a" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<path d="M699 404 L694.5 411.8 L685.5 411.8 L681 404 L685.5 396.2 L694.5 396.2Z" fill="#e46b3a" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="460" y="430.7" width="176" height="42.6" rx="21.3" fill="#fbfaff" stroke="#2b2350" stroke-width="2.2" stroke-linejoin="round" /><text x="548" y="462.2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#2b2350" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Esclerostina</text>
+<g data-zona-toque=""><rect x="536" y="394" width="250" height="196" fill="transparent" /></g>
+</g>
+<g id="osteoblasto_formador">
+<path d="M470 384 Q500 360 540 360 L790 360 L790 384 Z" fill="#f4d3dd" stroke="none" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<rect x="532" y="286" width="68" height="74" rx="6" fill="#8b7bdc" stroke="none" stroke-width="3" stroke-linejoin="round" fill-opacity="0" /><g><ellipse cx="566" cy="308.2" rx="20.4" ry="17.8" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="560.9" cy="304.6" rx="5.7" ry="5" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<rect x="612" y="286" width="68" height="74" rx="6" fill="#8b7bdc" stroke="none" stroke-width="3" stroke-linejoin="round" fill-opacity="0" /><g><ellipse cx="646" cy="308.2" rx="20.4" ry="17.8" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="640.9" cy="304.6" rx="5.7" ry="5" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<rect x="692" y="286" width="68" height="74" rx="6" fill="#8b7bdc" stroke="none" stroke-width="3" stroke-linejoin="round" fill-opacity="0" /><g><ellipse cx="726" cy="308.2" rx="20.4" ry="17.8" fill="#3b2f86" stroke="none" stroke-width="2.5" fill-opacity="0" /><ellipse cx="720.9" cy="304.6" rx="5.7" ry="5" fill="#8f86e0" fill-opacity="0" stroke="none" /></g>
+<line x1="624" y1="286" x2="624" y2="260" stroke="none" stroke-width="7" stroke-linecap="round" fill-opacity="0" /><circle cx="624" cy="252" r="11" fill="#1f7a8c" stroke="none" stroke-width="2" fill-opacity="0" />
+<line x1="660" y1="286" x2="660" y2="240" stroke="none" stroke-width="8" stroke-linecap="round" fill-opacity="0" /><path d="M648 224 L672 224 L672 242 L648 242 Z" fill="#5b3f9e" stroke="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<g data-zona-toque=""><rect x="510" y="216" width="280" height="160" fill="transparent" /></g>
+</g>
+<g id="via_wnt_lrp5_6">
+<circle cx="626" cy="198" r="14" fill="#2fa88c" stroke="none" stroke-width="2.5" fill-opacity="0" /><path d="M626 212 Q640 228 648 234" fill="none" stroke="none" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="560" y1="168" x2="597.3" y2="185.9" stroke="none" stroke-width="3.5" stroke-linecap="round" fill-opacity="0" /><path d="M606 190 L592.3 190.8 L598 178.9Z" fill="#2b2350" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<path d="M719 202 L711.5 215 L696.5 215 L689 202 L696.5 189 L711.5 189Z" fill="#e46b3a" stroke="none" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" /><path d="M694 220 Q684 230 672 236" fill="none" stroke="none" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" fill-opacity="0" />
+<line x1="742" y1="164" x2="714" y2="186" stroke="none" stroke-width="4" stroke-linecap="round" fill-opacity="0" /><line x1="707.2" y1="177.4" x2="720.8" y2="194.6" stroke="none" stroke-width="5" stroke-linecap="round" fill-opacity="0" />
+<rect x="464" y="130.7" width="84" height="42.6" rx="21.3" fill="#fbfaff" stroke="#2b2350" stroke-width="2.2" stroke-linejoin="round" /><text x="506" y="162.2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#2b2350" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Wnt</text>
+<rect x="596" y="106.7" width="184" height="42.6" rx="21.3" fill="#fbfaff" stroke="#2b2350" stroke-width="2.2" stroke-linejoin="round" /><text x="688" y="138.2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#2b2350" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Esclerostina</text>
+<g data-zona-toque=""><rect x="480" y="60" width="310" height="150" fill="transparent" /></g>
+</g>
+</svg>

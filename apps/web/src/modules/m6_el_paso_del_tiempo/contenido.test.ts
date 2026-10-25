@@ -366,9 +366,12 @@ describe('módulo 6: cobertura del guion', () => {
     },
   );
 
-  it('no quedan las ilustraciones hechas con IA ni sus capas de zonas', () => {
-    expect(archivosM6.filter((r) => /\.webp$|_zonas\.svg$/.test(r))).toEqual([]);
-    expect(contenidoTexto).not.toMatch(/"fondo"|_zonas/);
+  it('las figuras realistas (tools/imagenes) acompañan a su dibujo validado, que se conserva', () => {
+    // Desde 2026-10-25 cada bloque de imagen lleva `figura`: la versión realista exacta del mismo SVG.
+    for (const r of archivosM6.filter((x) => /_figura\.webp$/.test(x))) {
+      expect(archivosM6, r).toContain(r.replace('_figura.webp', '.svg'));
+    }
+    expect(archivosM6.filter((r) => /_zonas\.svg$/.test(r))).toEqual([]);
   });
 
   it.each(EXTRAS_3D)(

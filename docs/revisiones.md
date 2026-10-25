@@ -111,7 +111,7 @@ real de Anthropic; nada se ha probado en un teléfono real; Docker nunca se ha c
    - las <!--c:decisiones-->20<!--/c--> decisiones de diseño (entre ellas el umbral del certificado, el acierto mínimo de las
      evaluaciones finales, la penalización por intento, los tipos de identificación de Colombia, las hormonas óseas
      controvertidas del módulo 1 y las hipótesis en disputa);
-   - las <!--c:pendientes-->298<!--/c--> cifras y afirmaciones pendientes en el contenido, con sus
+   - las <!--c:pendientes-->290<!--/c--> cifras y afirmaciones pendientes en el contenido, con sus
      <!--c:notas-->221<!--/c--> notas de verificación;
    - las <!--c:referencias-->125<!--/c--> referencias bibliográficas.
 3. Indicar si dispone de **videos**, de un **modelo 3D propio** de la mandíbula o de material del curso (documentos,

@@ -73,8 +73,23 @@ def _hijos_dibujados(e: ET.Element) -> list[ET.Element]:
 
 
 def _es_anotacion(e: ET.Element) -> bool:
-    """Grupo sin id con un texto directo: un rótulo con sus líneas guía (no es una estructura)."""
-    return _local(e.tag) == "g" and not e.get("id") and any(_local(c.tag) == "text" for c in e)
+    """Grupo sin id con un texto directo y nada más que rótulo: textos, líneas guía (line/polyline o trazos sin
+    relleno) y marcas pequeñas. Un grupo que además lleva formas rellenas grandes (un panel con su título dentro) NO lo
+    es: de él solo se quitan los textos."""
+    if _local(e.tag) != "g" or e.get("id") or not any(_local(c.tag) == "text" for c in e):
+        return False
+    for c in e.iter():
+        if c is e or _local(c.tag) in {"", "title", "desc", "text", "tspan", "line", "polyline", "g"}:
+            continue
+        if _local(c.tag) not in FORMAS:
+            continue
+        relleno = (c.get("fill") or "").strip().lower()
+        if relleno in {"none", "transparent"}:
+            continue
+        area = _area(c)
+        if area is None or area > 400:  # un path relleno o una forma grande: es dibujo, no rótulo
+            return False
+    return True
 
 
 def _area(e: ET.Element) -> float | None:
@@ -91,16 +106,37 @@ def _area(e: ET.Element) -> float | None:
     return None
 
 
+def _contiene(forma: ET.Element, x: float, y: float) -> bool:
+    """¿El punto (x, y) cae dentro del rect, círculo o elipse (sin transformaciones)?"""
+    try:
+        if _local(forma.tag) == "rect":
+            fx, fy = float(forma.get("x", 0)), float(forma.get("y", 0))
+            return fx <= x <= fx + float(forma.get("width", 0)) and fy <= y <= fy + float(forma.get("height", 0))
+        cx, cy = float(forma.get("cx", 0)), float(forma.get("cy", 0))
+        rx = float(forma.get("rx", forma.get("r", 0)))
+        ry = float(forma.get("ry", forma.get("r", 0)))
+        return rx > 0 and ry > 0 and ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1
+    except ValueError:
+        return False
+
+
 def _pastillas(raiz: ET.Element) -> set[ET.Element]:
-    """Rect, círculo o elipse PEQUEÑO (menos del 3 % del dibujo) justo antes de un texto en el mismo grupo: el fondo
-    del rótulo («Vestibular», «Tiempo»). Un panel grande seguido de su título no lo es."""
+    """Rect, círculo o elipse PEQUEÑO (menos del 3 % del dibujo) justo antes de un texto en el mismo grupo y que
+    CONTIENE el punto de anclaje del texto: el fondo del rótulo («Vestibular», «Tiempo»). Un orgánulo que solo va
+    antes de un texto en el código, o un panel grande con su título, no lo es."""
     ancho, alto = viewbox(raiz)
     pastillas = set()
     for padre in raiz.iter():
         hijos = _hijos_dibujados(padre)
         for anterior, actual in itertools.pairwise(hijos):
             area = _area(anterior)
-            if _local(actual.tag) == "text" and area is not None and area <= 0.03 * ancho * alto:
+            if _local(actual.tag) != "text" or area is None or area > 0.03 * ancho * alto:
+                continue
+            try:
+                x, y = float(actual.get("x", "nan")), float(actual.get("y", "nan"))
+            except ValueError:
+                continue
+            if _contiene(anterior, x, y) or _contiene(anterior, x, y - 4):
                 pastillas.add(anterior)
     return pastillas
 
@@ -262,7 +298,7 @@ def poner_fondo(content_json: Path, svg: str, fondo: str, svg_nuevo: str | None 
         elif isinstance(nodo, dict):
             if nodo.get("tipo") == "multicapa" and isinstance(nodo.get("config"), dict):
                 config = nodo["config"]
-                if config.get("svg") == svg:
+                if config.get("svg") in (svg, svg.replace(".svg", "_zonas.svg")):
                     nueva = {}
                     for k, v in config.items():
                         if k == "fondo":
@@ -291,7 +327,11 @@ def capas_de(content_json: Path, svg: str) -> list[str]:
                 recorrer(x)
         elif isinstance(nodo, dict):
             config = nodo.get("config")
-            if nodo.get("tipo") == "multicapa" and isinstance(config, dict) and config.get("svg") == svg:
+            if (
+                nodo.get("tipo") == "multicapa"
+                and isinstance(config, dict)
+                and config.get("svg") in (svg, svg.replace(".svg", "_zonas.svg"))
+            ):
                 ids.extend(c["id"] for c in config.get("capas", []) if c.get("id") not in ids)
             for v in nodo.values():
                 recorrer(v)

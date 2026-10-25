@@ -139,3 +139,20 @@ def test_svg_solo_capas_deja_solo_las_formas_pedidas():
     assert raiz.find(".//*[@id='nucleo']/s:ellipse", NS) is not None
     assert raiz.find(".//*[@id='hueso']/s:path", NS) is None
     assert not raiz.findall(".//s:text", NS)
+
+
+PANEL = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+<g transform="translate(10,10)"><path d="M0,0 L300,0 L300,200 L0,200 Z" fill="#d98aa2"/><text x="5" y="20">Etapa 1</text></g>
+<g id="celula"><circle cx="500" cy="300" r="6" fill="#8b7bdc"/><text x="600" y="400">Núcleo</text></g>
+</svg>"""
+
+
+def test_un_panel_con_su_titulo_dentro_no_es_anotacion():
+    raiz = svg_fondo.leer(svg_fondo.svg_sin_capas(PANEL, []))
+    assert raiz.find(".//s:path", NS) is not None  # el panel sigue
+    assert not raiz.findall(".//s:text", NS)  # su título se quita
+
+
+def test_una_forma_pequena_antes_de_un_texto_lejano_no_es_pastilla():
+    raiz = svg_fondo.leer(svg_fondo.svg_sin_capas(PANEL, []))
+    assert raiz.find(".//*[@id='celula']/s:circle", NS) is not None

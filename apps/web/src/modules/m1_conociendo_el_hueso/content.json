@@ -371,14 +371,6 @@
       {
         "id": "m1_e_q13",
         "nota": "Confirmar: «En los primeros meses se reabsorbe sobre todo el hueso alveolar propio, con el remodelado de cicatrización»"
-      },
-      {
-        "id": "m1_5_proceso_alveolar",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: corona con vasos rojos sobre el esmalte y forma irreal; la raíz parece tener varios conductos; conducto mandibular sin paquete vasculonervioso definido."
-      },
-      {
-        "id": "m1_5_wolff_femur",
-        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: cabeza femoral sin forma anatómica (no esférica, cuello mal definido); las trabéculas pintadas no siguen los sistemas de compresión y tracción (las del dibujo van encima)."
       }
     ]
   },
@@ -469,6 +461,7 @@
           "id": "i_hueso_largo_macro",
           "tipo": "imagen",
           "src": "/images/m1/m1_hueso_largo_macro.svg",
+          "figura": "/images/m1/m1_hueso_largo_macro_figura.webp",
           "alt": "Corte longitudinal de un hueso largo con sus regiones y la arteria nutricia",
           "pie": "Corte longitudinal de un hueso largo con sus regiones y la arteria nutricia.",
           "ancho": 800,
@@ -916,7 +909,8 @@
               "escena": {
                 "viewBox": "0 0 800 600",
                 "fondo_svg": "/images/m1/m1_hormonas_oseas_escena.svg",
-                "alt": "A la izquierda, un hueso con un osteocito y un osteoblasto. Un vaso sanguíneo lo conecta con tres órganos a la derecha: el riñón (túbulo proximal), el páncreas (una célula beta) y el hipotálamo (neuronas). Cada órgano muestra en su superficie un receptor con una forma distinta."
+                "alt": "A la izquierda, un hueso con un osteocito y un osteoblasto. Un vaso sanguíneo lo conecta con tres órganos a la derecha: el riñón (túbulo proximal), el páncreas (una célula beta) y el hipotálamo (neuronas). Cada órgano muestra en su superficie un receptor con una forma distinta.",
+                "fondo": "/images/m1/m1_hormonas_oseas_escena_figura.webp"
               },
               "moleculas": [
                 {
@@ -1279,6 +1273,7 @@
           "id": "i_entretejido_laminar",
           "tipo": "imagen",
           "src": "/images/m1/m1_entretejido_laminar.svg",
+          "figura": "/images/m1/m1_entretejido_laminar_figura.webp",
           "alt": "Comparación entre hueso entretejido y hueso laminar",
           "pie": "Comparación entre hueso entretejido y hueso laminar.",
           "ancho": 800,
@@ -1816,6 +1811,7 @@
           "id": "i_corte_hueso_capas",
           "tipo": "imagen",
           "src": "/images/m1/m1_corte_hueso_capas_rotulado.svg",
+          "figura": "/images/m1/m1_corte_hueso_capas_rotulado_figura.webp",
           "alt": "Corte longitudinal de un hueso largo, de la superficie al interior",
           "pie": "Corte longitudinal de un hueso largo, de la superficie al interior.",
           "ancho": 800,
@@ -2308,6 +2304,7 @@
           "id": "i_proceso_alveolar_corte",
           "tipo": "imagen",
           "src": "/images/m1/m1_proceso_alveolar_corte_rotulado.svg",
+          "figura": "/images/m1/m1_proceso_alveolar_corte_rotulado_figura.webp",
           "alt": "Corte transversal del cuerpo mandibular a la altura de una raíz dentaria",
           "pie": "Corte transversal del cuerpo mandibular a la altura de una raíz dentaria.",
           "ancho": 800,
@@ -2329,6 +2326,7 @@
           "id": "i_wolff_femur",
           "tipo": "imagen",
           "src": "/images/m1/m1_wolff_femur.svg",
+          "figura": "/images/m1/m1_wolff_femur_figura.webp",
           "alt": "Corte frontal del fémur proximal con la orientación de las trabéculas",
           "pie": "Corte frontal del fémur proximal con la orientación de las trabéculas.",
           "ancho": 800,

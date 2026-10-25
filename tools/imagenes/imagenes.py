@@ -43,8 +43,29 @@ ANCHO_WEBP = 1200
 
 
 def encargos() -> dict[str, dict]:
-    datos = yaml.safe_load((Path(__file__).parent / "encargos.yaml").read_text(encoding="utf-8"))
-    return {e["nombre"]: e for e in datos["encargos"]}
+    """Encargos de encargos.yaml y, encima, los de texturizado.yaml (mapa de tejidos y prompt de realismo de cada
+    dibujo para texturizar.py): si un dibujo está en los dos, manda texturizado.yaml en las claves que define."""
+    carpeta = Path(__file__).parent
+    datos = yaml.safe_load((carpeta / "encargos.yaml").read_text(encoding="utf-8"))
+    todos = {e["nombre"]: e for e in datos["encargos"]}
+    texturizado = carpeta / "texturizado.yaml"
+    if texturizado.exists():
+        for e in yaml.safe_load(texturizado.read_text(encoding="utf-8")) or []:
+            base = todos.get(e["nombre"], {"glifos": []})
+            todos[e["nombre"]] = {**base, **e}
+    return todos
+
+
+def svg_original(e: dict) -> str:
+    """El SVG validado del encargo. Si ya se transformó en zonas (lleva la ilustración debajo), el original que se
+    guardó al integrarlo (trabajo/NOMBRE/original.svg)."""
+    texto = ruta_svg(e).read_text(encoding="utf-8")
+    if svg_fondo.MARCA not in texto:
+        return texto
+    guardado = TRABAJO / e["nombre"] / "original.svg"
+    if not guardado.exists():
+        sys.exit(f"{e['nombre']}: el SVG es de zonas y no hay original guardado en {guardado}")
+    return guardado.read_text(encoding="utf-8")
 
 
 def ruta_svg(e: dict) -> Path:
@@ -102,7 +123,7 @@ def prompts(e: dict) -> tuple[str, str]:
     return f"{e['prompt'].strip()}, {ESTILO}", f"{NEGATIVO}, {e.get('negativo', '')}".strip(", ")
 
 
-def cargar_pipeline(textos: list[tuple[str, str]]):
+def cargar_pipeline(textos: list[tuple[str, str]], con_adaptador: bool = True):
     """Carga SDXL + adaptador y codifica de una vez los textos de todos los encargos.
 
     Reparto de los 8 GB a mano (sin `enable_model_cpu_offload`, cuyos ganchos se pisan entre las dos pasadas y
@@ -147,8 +168,13 @@ def cargar_pipeline(textos: list[tuple[str, str]]):
     pipe.text_encoder_2.to("cpu")
     pipe.text_encoder = pipe.text_encoder_2 = None  # así el dispositivo de ejecución es la GPU del UNet
     torch.cuda.empty_cache()
-    for modulo in (pipe.unet, pipe.vae, pipe.adapter):
+    # Sin bordes (texturizado: texturas y repintado), el adaptador se queda en la RAM: cada MB cuenta en 8 GB.
+    for modulo in (pipe.unet, pipe.vae, *([pipe.adapter] if con_adaptador else [])):
         modulo.to("cuda")
+    # Decodificar por bloques: el VAE a 1024 px pide ~3 GB de pico y, con lo que ya ocupan el escritorio y el
+    # navegador, desborda los 8 GB a la memoria compartida (de segundos a minutos por imagen).
+    pipe.vae.enable_tiling()
+    pipe.vae.enable_slicing()
     # Construida a mano con los MISMOS módulos: `from_pipe` duplicaba el UNet en la GPU (5,6 -> 10,9 GB).
     refinador = StableDiffusionXLImg2ImgPipeline(
         vae=pipe.vae,
@@ -309,9 +335,7 @@ def hoja(carpeta: Path, candidatas: list[tuple[int, Image.Image]], bordes: Image
 def integrar(e: dict, semilla: int, sufijo: str = "") -> None:
     carpeta = TRABAJO / e["nombre"]
     svg = ruta_svg(e)
-    texto = svg.read_text(encoding="utf-8")
-    if svg_fondo.MARCA in texto:
-        sys.exit(f"{svg.name} ya es un SVG de zonas: restaurar el original (git checkout) antes de integrar de nuevo")
+    texto = svg_original(e)
     (carpeta / "original.svg").write_text(texto, encoding="utf-8")
     raiz = svg_fondo.leer(texto)
     vw, vh = svg_fondo.viewbox(raiz)
@@ -347,9 +371,7 @@ def figura(e: dict, semilla: int, sufijo: str) -> None:
     `imagen`, fondos de arrastre y portadas. Se guarda como {nombre}_figura.webp y se cambia en content.json."""
     carpeta = TRABAJO / e["nombre"]
     svg = ruta_svg(e)
-    texto = svg.read_text(encoding="utf-8")
-    if svg_fondo.MARCA in texto:
-        sys.exit(f"{svg.name} es un SVG de zonas: usar el original")
+    texto = svg_original(e)
     vw, vh = svg_fondo.viewbox(svg_fondo.leer(texto))
     alto = round(ANCHO_WEBP * vh / vw)
     base = Image.open(carpeta / f"s{semilla}{sufijo}.png").convert("RGB").resize((ANCHO_WEBP, alto), Image.LANCZOS)
@@ -370,9 +392,31 @@ def figura(e: dict, semilla: int, sufijo: str) -> None:
     )
 
 
+def aplicar(e: dict, semilla: int, sufijo: str) -> None:
+    """Lleva la candidata elegida a TODOS los usos de su dibujo: ilustración bajo las zonas en las multicapa,
+    figura con rótulos en bloques de imagen, fondos de arrastre y portada del módulo. Las animaciones (video-texto)
+    siguen con el SVG."""
+    ruta = f"/images/{e['modulo']}/{e['nombre']}.svg"
+    usos = {tipo for _, tipo in svg_fondo.usos_del_svg(RAIZ, ruta)}
+    usos |= {tipo for _, tipo in svg_fondo.usos_del_svg(RAIZ, ruta.replace(".svg", "_zonas.svg"))}
+    portadas = RAIZ / "apps/web/src/data/modulos.ts"
+    en_portada = f"'{ruta}'" in portadas.read_text(encoding="utf-8")
+    if "multicapa" in usos:
+        integrar(e, semilla, sufijo)
+    if usos & {"imagen", "arrastre-molecular"} or en_portada:
+        figura(e, semilla, sufijo)
+    if en_portada:
+        figura_ruta = ruta.replace(".svg", "_figura.webp")
+        texto = portadas.read_text(encoding="utf-8").replace(f"'{ruta}'", f"'{figura_ruta}'")
+        portadas.write_text(texto, encoding="utf-8", newline="\n")
+        print(f"portada del módulo: {figura_ruta}")
+    if usos == {"video-texto"} and not en_portada:
+        print(f"{e['nombre']}: solo lo usa una animación; sigue en SVG")
+
+
 def main() -> None:
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    a.add_argument("accion", choices=["preparar", "generar", "corregir", "integrar", "figura"])
+    a.add_argument("accion", choices=["preparar", "generar", "corregir", "integrar", "figura", "aplicar"])
     a.add_argument("nombres", nargs="*", help="encargos (por defecto, todos los de encargos.yaml)")
     a.add_argument("--n", type=int, default=4)
     a.add_argument("--semilla", type=int, default=1)
@@ -404,6 +448,9 @@ def main() -> None:
         pipes = cargar_pipeline([t for e in elegidos for t in textos_correccion(e)])
         for e in elegidos:
             corregir(pipes, e, args.n, args.pasos)
+    elif args.accion == "aplicar":
+        for e in elegidos:
+            aplicar(e, args.semilla, args.sufijo)
     elif args.accion == "figura":
         if len(elegidos) != 1:
             a.error("figura: un solo encargo y su --semilla")
