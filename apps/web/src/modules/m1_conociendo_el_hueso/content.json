@@ -371,6 +371,14 @@
       {
         "id": "m1_e_q13",
         "nota": "Confirmar: «En los primeros meses se reabsorbe sobre todo el hueso alveolar propio, con el remodelado de cicatrización»"
+      },
+      {
+        "id": "m1_5_proceso_alveolar",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: corona con vasos rojos sobre el esmalte y forma irreal; la raíz parece tener varios conductos; conducto mandibular sin paquete vasculonervioso definido."
+      },
+      {
+        "id": "m1_5_wolff_femur",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: cabeza femoral sin forma anatómica (no esférica, cuello mal definido); las trabéculas pintadas no siguen los sistemas de compresión y tracción (las del dibujo van encima)."
       }
     ]
   },
@@ -2492,6 +2500,7 @@
             "config": {
               "svg": "/images/m1/m1_proceso_alveolar_corte.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m1/m1_proceso_alveolar_corte.webp",
               "alt": "Corte transversal (vestibulolingual) del cuerpo mandibular a la altura de una raíz dentaria.",
               "modo": "identificar",
               "capas": [
@@ -2741,8 +2750,9 @@
             },
             "concepto": "Ley de Wolff",
             "config": {
-              "svg": "/images/m1/m1_wolff_femur.svg",
+              "svg": "/images/m1/m1_wolff_femur_zonas.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m1/m1_wolff_femur.webp",
               "alt": "Corte frontal de la extremidad proximal del fémur con la orientación de las trabéculas.",
               "modo": "explorar",
               "capas": [

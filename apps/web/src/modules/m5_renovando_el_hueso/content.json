@@ -613,6 +613,18 @@
       {
         "id": "c_clinico_en_la_radiografia",
         "nota": "Confirmar: «La relación entre la osteoporosis y la pérdida de hueso alveolar o de dientes se ha propuesto, pero no está establecida con certeza»"
+      },
+      {
+        "id": "m5_alveolar_multicapa",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: premolar con dos raíces (el dibujo tiene una) y corona irreal; hueso basal y conducto mandibular poco definidos."
+      },
+      {
+        "id": "m5_ortodoncia_multicapa",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: dentina naranja con estrías radiales; diente vecino inventado a la derecha; el ligamento no diferencia compresión y tensión."
+      },
+      {
+        "id": "m5_alveolo_multicapa",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: cavidades rojas a los lados que parecen alvéolos o dientes; coágulo, tejido de granulación y hueso nuevo no diferenciados."
       }
     ]
   },
@@ -2568,6 +2580,7 @@
             "config": {
               "svg": "/images/m5/m5_hueso_cortical_trabecular_alveolar.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_hueso_cortical_trabecular_alveolar.webp",
               "alt": "Corte transversal de la mandíbula con la raíz de un premolar, ligamento periodontal, hueso alveolar propio, tablas corticales, hueso esponjoso y hueso basal.",
               "modo": "identificar",
               "capas": [
@@ -2779,6 +2792,7 @@
             "config": {
               "svg": "/images/m5/m5_movimiento_ortodontico_pdl.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_movimiento_ortodontico_pdl.webp",
               "alt": "Un canino empujado hacia distal: el ligamento se comprime y el hueso se resorbe en el lado distal; el ligamento se estira y se forma hueso en el lado mesial.",
               "modo": "identificar",
               "capas": [
@@ -3347,6 +3361,7 @@
             "config": {
               "svg": "/images/m5/m5_cicatrizacion_alveolo_fases.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m5/m5_cicatrizacion_alveolo_fases.webp",
               "alt": "Cicatrización del alveolo postextracción: coágulo, tejido de granulación, hueso inmaduro, hueso laminar y reducción del reborde.",
               "modo": "explorar",
               "capas": [

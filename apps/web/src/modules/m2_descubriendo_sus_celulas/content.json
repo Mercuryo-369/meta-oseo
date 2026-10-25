@@ -384,6 +384,14 @@
       {
         "id": "ligamento_periodontal",
         "nota": "Confirmar: «Mide aproximadamente entre 0,15 y 0,4 mm de ancho»"
+      },
+      {
+        "id": "m2_multicapa_osteoblasto",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: osteoblastos como cajas rectangulares; retículo, Golgi y vesículas no reconocibles; la célula de revestimiento no es plana."
+      },
+      {
+        "id": "m2_multicapa_osteocito",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: núcleo gigante separado del cuerpo celular; las prolongaciones no salen del cuerpo del osteocito; lagunas vecinas dibujadas como dianas."
       }
     ]
   },
@@ -1198,6 +1206,7 @@
             "config": {
               "svg": "/images/m2/m2_osteoblasto_activo.svg",
               "viewBox": "0 0 1000 760",
+              "fondo": "/images/m2/m2_osteoblasto_activo.webp",
               "alt": "Osteoblasto cúbico sobre una capa de osteoide, con sus orgánulos, y una célula de revestimiento vecina sobre una superficie en reposo.",
               "modo": "explorar",
               "capas": [
@@ -1379,6 +1388,7 @@
             "config": {
               "svg": "/images/m2/m2_osteocito_lagunar.svg",
               "viewBox": "0 0 1000 1230",
+              "fondo": "/images/m2/m2_osteocito_lagunar.webp",
               "alt": "Osteocito estrellado dentro de su laguna, con canalículos, dendritas, uniones comunicantes, vaso sanguíneo y la superficie con células de revestimiento.",
               "modo": "explorar",
               "capas": [

@@ -633,6 +633,10 @@
       {
         "id": "zona_fractura",
         "nota": "Confirmar: «Deformaciones cercanas a 25 000 microdeformaciones, es decir 2,5 %»"
+      },
+      {
+        "id": "m3_multicapa_mandibula_fetal",
+        "nota": "Ilustración provisional (IA, 2026-10-25) por rehacer exacta. Errores: no distingue el cartílago de Meckel del hueso intramembranoso; gérmenes dentales con forma de coronas adultas; proporciones de mandíbula adulta, no fetal."
       }
     ]
   },
@@ -1102,6 +1106,7 @@
             "config": {
               "svg": "/images/m3/m3_mandibula_desarrollo.svg",
               "viewBox": "0 0 800 600",
+              "fondo": "/images/m3/m3_mandibula_desarrollo.webp",
               "alt": "Vista lateral esquemática de una hemimandíbula fetal (aproximadamente entre las semanas 10 y 14 de desarrollo, contadas desde la fecundación): hueso intramembranoso lateral al cartílago de Meckel y cartílagos secundarios.",
               "modo": "identificar",
               "capas": [

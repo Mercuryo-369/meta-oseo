@@ -1347,6 +1347,7 @@ El movimiento suele describirse en tres fases: una **inicial**, de desplazamient
 ##### Actividad m5_alveolar_multicapa
 
 ```yaml
+# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
 tipo: multicapa
 titulo: "Identifica los tejidos del proceso alveolar"
 instrucciones: "En el corte transversal de la mandíbula, toca la estructura que se pide en cada consigna. Al terminar podrás explorar cada capa libremente."
@@ -1469,6 +1470,7 @@ requeridos: [proceso_alveolar, cresta_alveolar, tabla_cortical_vestibular, tabla
 ##### Actividad m5_ortodoncia_multicapa
 
 ```yaml
+# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
 tipo: multicapa
 titulo: "Tensión y compresión alrededor del canino"
 instrucciones: "En el corte del canino, toca la capa que responde a cada consigna. Al terminar podrás explorar cada capa libremente."
@@ -1743,6 +1745,7 @@ preguntas:
 ##### Actividad m5_alveolo_multicapa
 
 ```yaml
+# Ilustración provisional hecha con IA (2026-10-25), con errores por corregir [verificar]: ver tools/imagenes/encargos.yaml.
 tipo: multicapa
 titulo: "Cicatrización del alvéolo: recorre las fases"
 instrucciones: "Toca (o pasa el cursor por) cada capa del alvéolo para ver qué ocurre en esa fase. Debes visitar las seis capas marcadas como requeridas."
