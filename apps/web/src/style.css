@@ -306,6 +306,15 @@
   }
 }
 
+/* Paneles de la portada del módulo: blanco translúcido con desenfoque, para flotar sobre la ilustración a sangre. */
+@utility cristal-portada {
+  background: color-mix(in oklab, var(--card) 84%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  box-shadow: 0 10px 30px -14px rgb(15 27 45 / 0.28);
+}
+
 @utility objetivo-tactil {
   /* Objetivo táctil mínimo de 44 x 44 px. */
   min-height: 2.75rem;

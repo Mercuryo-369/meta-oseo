@@ -1204,8 +1204,11 @@ export const SeccionSchema = z
   .strictObject({
     id: IdSchema,
     titulo: textoPlano(3, 100),
-    /** Una frase que resume la sección (menú, mentor, vista previa). */
-    resumen: markdownLinea(10, 300).optional(),
+    /**
+     * Entrada de la sección: se lee en el panel de la portada del módulo cuando la sección está activa, con sus
+     * **palabras clave** en azul (también la usan el menú y el mentor).
+     */
+    resumen: markdownLinea(10, 600).optional(),
     bloques: z.array(BloqueSchema).min(1).max(16),
   })
   .superRefine((seccion, ctx) => {

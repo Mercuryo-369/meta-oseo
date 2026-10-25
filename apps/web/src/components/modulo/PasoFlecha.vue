@@ -35,8 +35,8 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
       actual
         ? 'bg-primary text-primary-foreground'
         : estado === 'bloqueada'
-          ? 'bg-muted text-muted-foreground'
-          : 'bg-secondary text-foreground group-hover:bg-muted',
+          ? 'cristal-paso text-muted-foreground opacity-80'
+          : 'cristal-paso text-foreground group-hover:bg-card',
     ]"
     data-testid="nodo-paso"
   >
@@ -67,6 +67,12 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
 </template>
 
 <style scoped>
+/* Pasos no activos: blanco translúcido con desenfoque, como el título, sobre la ilustración de la portada. */
+.cristal-paso {
+  background: color-mix(in oklab, var(--card) 84%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
 /* Flecha: punta a la derecha y muesca a la izquierda, del mismo tamaño (encajan al solaparse). */
 .paso-flecha {
   clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%, 1rem 50%);

@@ -227,7 +227,8 @@ confirma. Una referencia dudosa es peor que ninguna.
 
 Una sección es una unidad de estudio de 5 a 10 minutos: bloques de lectura seguidos de una o dos
 actividades. Tiene `id` (no puede ser `inicio`), `titulo` (plano, 3 a 100), `resumen` opcional (línea,
-10 a 300) y de 1 a 16 `bloques`. **Pon la actividad obligatoria al final de la sección:** una sección
+10 a 600: es la entrada que lee el panel de la portada del módulo con la sección activa, con sus
+**palabras clave** en azul) y de 1 a 16 `bloques`. **Pon la actividad obligatoria al final de la sección:** una sección
 está completada cuando todas sus actividades obligatorias lo están (sección 11).
 
 ```json ejemplo:seccion

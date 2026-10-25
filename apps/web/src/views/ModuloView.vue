@@ -500,6 +500,7 @@ onBeforeUnmount(() => {
         :puntaje-obtenido="puntajeObtenido"
         :revision="esDocente"
         :texto-continuar="textoContinuar"
+        :texto-seccion="secciones[indice]?.resumen"
         @continuar="alContinuar"
       >
         <template #pasos>
@@ -508,6 +509,7 @@ onBeforeUnmount(() => {
             :estados="estados"
             :indice="indice"
             :numero-modulo="n"
+            encadenada
             @ir="irA"
             @bloqueada="alIntentarSeccionBloqueada"
           />

@@ -16,13 +16,12 @@ function modulo(numero: number, cambios?: (d: Record<string, unknown>) => void):
 const avance = (m: ModuloContenido) => progresoDeModulo(m, new Set<string>());
 
 describe('CabeceraModulo: identidad', () => {
-  it('muestra rótulo, frase y portada del módulo y fija su acento', () => {
+  it('muestra rótulo y portada del módulo y fija su acento', () => {
     const m = modulo(5);
     const w = mount(CabeceraModulo, { props: { modulo: m, avance: avance(m) } });
     const raiz = w.get('[data-testid="cabecera-modulo"]');
     expect(raiz.attributes('style')).toContain('--acento: var(--acento-m5)');
     expect(w.get('[data-testid="rotulo-modulo"]').text()).toBe('Remodelado');
-    expect(w.get('[data-testid="frase-modulo"]').text()).toBe('Un ciclo que nunca se detiene');
     expect(w.get('[data-testid="portada-modulo"]').attributes('aria-hidden')).toBe('true');
     expect(w.get('[data-testid="portada-modulo"] img').attributes('alt')).toBe('');
   });
@@ -30,7 +29,8 @@ describe('CabeceraModulo: identidad', () => {
   it('la portada de la cabecera se pide ya (no perezosa) y con prioridad alta', () => {
     const m = modulo(2);
     const w = mount(CabeceraModulo, { props: { modulo: m, avance: avance(m) } });
-    const img = w.get('[data-testid="portada-modulo"] img');
+    // Sin ilustración a sangre, la portada del módulo hace de fondo de la cabecera.
+    const img = w.get('[data-testid="fondo-provisional"]');
     expect(img.attributes('loading')).toBe('eager');
     expect(img.attributes('fetchpriority')).toBe('high');
   });
@@ -55,13 +55,53 @@ describe('CabeceraModulo: identidad', () => {
     expect(w.find('[data-testid="apertura-modulo"]').exists()).toBe(false);
   });
 
-  it('impares: ilustración a la izquierda y panel a la derecha; los pares lo invierten', () => {
-    const impar = mount(CabeceraModulo, {
-      props: { modulo: modulo(3), avance: avance(modulo(3)) },
+  it('todos los módulos: ilustración a la izquierda y panel de cristal a la derecha (diseño de referencia)', () => {
+    for (const n of [3, 4]) {
+      const w = mount(CabeceraModulo, { props: { modulo: modulo(n), avance: avance(modulo(n)) } });
+      const html = w.html();
+      expect(html.indexOf('data-testid="portada-modulo"')).toBeLessThan(
+        html.indexOf('data-testid="panel-portada"'),
+      );
+    }
+  });
+
+  it('el título es la primera flecha de la fila y los pasos la continúan', () => {
+    const m = modulo(3);
+    const w = mount(CabeceraModulo, {
+      props: { modulo: m, avance: avance(m) },
+      slots: { pasos: '<nav data-testid="pasos">pasos</nav>' },
     });
-    const par = mount(CabeceraModulo, { props: { modulo: modulo(4), avance: avance(modulo(4)) } });
-    expect(impar.get('[data-testid="portada-modulo"]').classes()).not.toContain('md:order-last');
-    expect(par.get('[data-testid="portada-modulo"]').classes()).toContain('md:order-last');
+    const html = w.html();
+    expect(w.get('[data-testid="titulo-flecha"]').find('h1').exists()).toBe(true);
+    expect(html.indexOf('titulo-flecha')).toBeLessThan(html.indexOf('data-testid="pasos"'));
+    expect(html.indexOf('data-testid="pasos"')).toBeLessThan(html.indexOf('panel-portada'));
+  });
+
+  it('el panel lee la entrada de la sección activa, con sus palabras clave', () => {
+    const m = modulo(3);
+    const w = mount(CabeceraModulo, {
+      props: {
+        modulo: m,
+        avance: avance(m),
+        textoSeccion: 'El osteoblasto queda en el **espacio subcanopy**, rico en **señales**.',
+      },
+    });
+    const panel = w.get('[data-testid="apertura-modulo"]');
+    expect(panel.text()).toContain('espacio subcanopy');
+    expect(panel.findAll('strong').map((x) => x.text())).toEqual(['espacio subcanopy', 'señales']);
+  });
+
+  it('sin entrada de sección, el panel muestra la apertura del módulo', () => {
+    const m = modulo(3, (d) => {
+      d.subtitulo = 'Mecanotransducción y formación ósea';
+      d.resumen = 'Mecanotransducción y formación ósea. La mandíbula es el mejor caso de estudio.';
+    });
+    const w = mount(CabeceraModulo, {
+      props: { modulo: m, avance: avance(m), textoSeccion: '  ' },
+    });
+    expect(w.get('[data-testid="apertura-modulo"]').text()).toBe(
+      'La mandíbula es el mejor caso de estudio.',
+    );
   });
 
   it('los pasos van en su ranura junto al título y la flecha emite «continuar»', async () => {

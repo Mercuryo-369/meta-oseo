@@ -1,20 +1,22 @@
 <script setup lang="ts">
 /**
- * Portada de la página de módulo, con el diseño de referencia del OVA:
+ * Portada de la página de módulo, con el diseño de referencia de la usuaria (portada del módulo 3, 2026-10-25):
  *
- *   ┌ tarjeta de título ┐
- *   ┌ 3.1 ─ 3.2 ─ 3.3 ─ … (ranura `pasos`, a todo el ancho) ───┐
- *   ┌ ilustración del módulo ─────────────┐ ┌ panel translúcido: frase, apertura,  ┐
- *   │                                     │ │ datos del módulo y botón «continuar» │
+ *   ┌ ▶ Módulo 3 · título ▶ 3.1 ▶ 3.2 ▶ 3.3 ▶ 3.4 ───────────────────────────────┐  flechas encadenadas
+ *   │                                                     ┌ panel de cristal ────┐ │
+ *   │      ilustración a sangre (`identidad.heroe`),      │ entrada de la sección│ │
+ *   │      con el motivo en los dos tercios izquierdos    │ activa, con palabras │ │
+ *   │                                                     │ clave en azul     ➜  │ │
+ *   └─────────────────────────────────────────────────────┴──────────────────────┘ ┘
+ *   rótulo · notas · duración · avance · puntaje (línea de datos, fuera de la portada)
  *
- * Todo va sobre un fondo degradado azulado (`.fondo-portada` en style.css). Si el módulo tiene una
- * ilustración pintada a sangre (`identidad.heroe`), esa ocupa todo el fondo y el panel flota encima;
- * si no, se muestra la portada SVG del módulo en un marco. Los módulos pares invierten la posición
- * de la ilustración y del panel para que la apertura no sea idéntica en los seis.
+ * El título es la primera flecha de la fila y los pasos (ranura `pasos`) la continúan. El panel lee la entrada de
+ * la sección activa (`textoSeccion`, su `resumen`) o, si no la hay, la apertura del módulo (tomada del resumen, sin
+ * editar `content.json`). Sin ilustración a sangre, la portada del módulo ocupa el hueco de la izquierda. En móvil
+ * todo se apila: título, pasos, ilustración y panel.
  *
- * Contiene el título (el único `h1`), rótulo temático, subtítulo, frase y apertura (tomada del
- * resumen, sin editar `content.json`), duración, avance, objetivos y, mientras el docente no apruebe
- * el contenido, una nota «Contenido en revisión» (se oculta con `MOSTRAR_NOTA_REVISION`).
+ * Contiene el título (el único `h1`), subtítulo, rótulo temático, duración, avance, objetivos y, mientras el
+ * docente no apruebe el contenido, una nota «Contenido en revisión» (se oculta con `MOSTRAR_NOTA_REVISION`).
  *
  * También sirve para la página de un módulo bloqueado (`bloqueado`, sin `avance`): la ranura por
  * defecto va entre la presentación y los objetivos (ahí se explica el bloqueo) y no se muestran el
@@ -45,6 +47,8 @@ const props = withDefaults(
     revision?: boolean;
     /** Texto accesible del botón de la flecha (por ejemplo «Empezar: Dos rutas para construir hueso»). */
     textoContinuar?: string;
+    /** Entrada de la sección activa (Markdown de una línea, con **palabras clave**). */
+    textoSeccion?: string;
   }>(),
   {
     avance: null,
@@ -52,6 +56,7 @@ const props = withDefaults(
     bloqueado: false,
     revision: false,
     textoContinuar: 'Ir a la sección',
+    textoSeccion: undefined,
   },
 );
 
@@ -65,157 +70,102 @@ const porcentaje = computed(() => Math.round((props.avance?.fraccion ?? 0) * 100
 const mostrarAvance = computed(() => props.avance !== null && !props.bloqueado && !props.revision);
 const apertura = computed(() => aperturaDelResumen(props.modulo.resumen, props.modulo.subtitulo));
 const identidad = computed(() => moduloPorNumero(props.modulo.numero)?.identidad);
-/** Módulos pares: la ilustración va a la derecha y el panel a la izquierda en pantallas anchas. */
-const invertida = computed(() => props.modulo.numero % 2 === 0);
 const heroe = computed(() => identidad.value?.heroe);
+/** Fondo de la portada: la ilustración a sangre o, mientras no exista, la portada del módulo. */
+const fondo = computed(() => heroe.value ?? identidad.value?.portada.src);
+/** Lo que lee el panel: la entrada de la sección activa o, si no la hay, la apertura del módulo. */
+const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
 </script>
 
 <template>
   <header
-    class="space-y-5"
+    class="space-y-4"
     :style="estiloAcento(modulo.numero)"
     :data-modulo="modulo.numero"
     :data-bloqueado="bloqueado ? 'true' : undefined"
     data-testid="cabecera-modulo"
   >
     <div
-      class="fondo-portada relative isolate overflow-hidden rounded-3xl border p-3 shadow-sm md:p-5"
+      class="fondo-portada relative isolate overflow-hidden rounded-3xl border shadow-sm"
+      data-testid="portada-cabecera"
     >
-      <!-- Ilustración a sangre (opcional, por módulo) -->
+      <!-- Ilustración a sangre: en pantallas anchas ocupa todo el fondo, con los pasos y el panel encima; en móvil va
+           en su hueco, más abajo. Mientras el módulo no tenga la suya (`identidad.heroe`), hace de fondo su portada. -->
       <img
-        v-if="heroe"
-        :src="heroe"
+        v-if="fondo"
+        :src="fondo"
         alt=""
         aria-hidden="true"
         loading="eager"
         fetchpriority="high"
         decoding="async"
         draggable="false"
-        class="absolute inset-0 -z-10 size-full object-cover"
-        data-testid="heroe-modulo"
+        class="absolute inset-0 -z-10 hidden size-full object-cover md:block"
+        :data-testid="heroe ? 'heroe-modulo' : 'fondo-provisional'"
       />
 
-      <!-- Fila superior: título -->
-      <div class="panel-cristal flex items-center gap-4 rounded-2xl px-4 py-3 lg:max-w-xl">
-        <span
-          class="border-primary/30 text-primary hidden size-14 shrink-0 items-center justify-center rounded-xl border sm:flex"
-          aria-hidden="true"
+      <!-- Fila de flechas encadenadas: el título y, a continuación, los pasos -->
+      <div class="flex flex-col gap-2 p-3 md:flex-row md:items-stretch md:gap-0 md:p-4">
+        <div
+          class="flecha-titulo cristal-portada flex shrink-0 items-center gap-3 py-3 pr-9 pl-4 md:w-[22rem] lg:w-[26rem]"
+          data-testid="titulo-flecha"
         >
-          <IconoModulo v-if="identidad" :icono="identidad.icono" class="size-9" />
-        </span>
-        <div class="min-w-0">
-          <p class="text-primary text-sm font-bold">
-            Módulo {{ modulo.numero }}
-            <span class="text-muted-foreground font-medium">de {{ TOTAL_MODULOS }}</span>
-          </p>
-          <h1
-            id="titulo-modulo"
-            class="text-2xl leading-tight font-semibold tracking-tight md:text-3xl"
-            data-testid="titulo-modulo"
-          >
-            {{ modulo.titulo }}
-          </h1>
-          <p class="text-foreground/80 mt-0.5 text-base">{{ modulo.subtitulo }}</p>
+          <span class="text-primary hidden shrink-0 sm:block" aria-hidden="true">
+            <IconoModulo v-if="identidad" :icono="identidad.icono" class="size-11" />
+          </span>
+          <div class="min-w-0">
+            <p class="text-primary text-sm font-bold">
+              Módulo {{ modulo.numero }}
+              <span class="text-muted-foreground font-medium">de {{ TOTAL_MODULOS }}</span>
+            </p>
+            <h1
+              id="titulo-modulo"
+              class="text-2xl leading-tight font-bold tracking-tight lg:text-[1.75rem]"
+              data-testid="titulo-modulo"
+            >
+              {{ modulo.titulo }}
+            </h1>
+            <p class="text-foreground/80 mt-0.5 text-sm md:text-base">{{ modulo.subtitulo }}</p>
+          </div>
+        </div>
+        <div v-if="slots.pasos" class="min-w-0 flex-1 md:-ml-3">
+          <slot name="pasos" />
         </div>
       </div>
 
-      <!-- Pasos (secciones) a todo el ancho de la portada -->
-      <div v-if="slots.pasos" class="panel-cristal mt-3 rounded-2xl px-2 py-2">
-        <slot name="pasos" />
-      </div>
-
-      <!-- Fila principal: ilustración y panel -->
+      <!-- Escena a la izquierda y panel de cristal a la derecha -->
       <div
-        class="mt-4 grid gap-4 md:gap-6"
-        :class="
-          invertida
-            ? 'md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]'
-            : 'md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]'
-        "
+        class="grid gap-4 px-3 pb-3 md:min-h-[26rem] md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:px-5 md:pb-5 lg:min-h-[30rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]"
       >
-        <PortadaModulo
-          :numero="modulo.numero"
-          prioritaria
-          class="aspect-[16/10] w-full shadow-md md:aspect-auto md:min-h-80"
-          :class="[invertida ? 'md:order-last' : '', heroe ? 'invisible' : '']"
-        />
+        <!-- Hueco de la escena: en pantallas anchas la ilustración es el fondo; en móvil va aquí. -->
+        <div class="min-h-0 md:invisible" aria-hidden="true">
+          <img
+            v-if="heroe"
+            :src="heroe"
+            alt=""
+            draggable="false"
+            class="aspect-[16/10] w-full rounded-2xl object-cover md:hidden"
+          />
+          <PortadaModulo v-else :numero="modulo.numero" class="aspect-[16/10] w-full md:hidden" />
+        </div>
 
-        <div class="panel-cristal flex flex-col gap-4 rounded-3xl p-5 md:p-7">
-          <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <RotuloModulo :numero="modulo.numero" />
-            <p
-              v-if="bloqueado"
-              class="bg-muted text-foreground inline-flex items-center gap-1.5 rounded-full border border-dashed px-2.5 py-0.5 text-xs font-medium"
-              data-testid="etiqueta-bloqueado"
-            >
-              <Lock class="size-3.5" aria-hidden="true" />
-              Bloqueado
-            </p>
-            <p
-              v-if="revision"
-              class="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-              role="note"
-              title="Estás viendo el módulo como docente: todo está abierto y no se guarda nada."
-              data-testid="etiqueta-docente"
-            >
-              <Eye class="size-3.5" aria-hidden="true" />
-              Vista de docente
-            </p>
-            <p
-              v-if="enRevision"
-              class="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
-              role="note"
-              title="Este contenido es un borrador que el docente aún debe validar."
-              data-testid="nota-revision"
-            >
-              <NotebookPen class="size-3.5" aria-hidden="true" />
-              Contenido en revisión
-            </p>
-          </div>
-
-          <p
-            v-if="identidad"
-            class="text-acento font-serif text-xl leading-snug font-semibold"
-            data-testid="frase-modulo"
-          >
-            {{ identidad.frase }}
-          </p>
-
+        <div
+          class="cristal-portada flex flex-col gap-4 rounded-3xl p-5 md:p-7"
+          data-testid="panel-portada"
+        >
           <TextoRico
-            v-if="apertura"
-            :texto="apertura"
+            v-if="textoPanel"
+            :texto="textoPanel"
             modo="linea"
-            class="[&_strong]:text-primary block text-lg leading-relaxed [&_strong]:font-bold"
+            class="[&_strong]:text-primary block text-lg leading-relaxed [&_strong]:font-bold lg:text-xl lg:leading-relaxed"
             data-testid="apertura-modulo"
           />
-
           <p v-if="revision" class="text-muted-foreground text-sm" data-testid="aviso-docente">
             Como docente puedes recorrer todo el módulo sin desbloquear nada. Mientras revisas no se
             guarda avance, puntaje ni tiempo, así que no altera las estadísticas de los estudiantes.
           </p>
-
-          <div class="mt-auto flex items-end justify-between gap-4">
-            <ul class="text-muted-foreground flex flex-col gap-1.5 text-sm" role="list">
-              <li class="inline-flex items-center gap-1.5" data-testid="duracion">
-                <Clock class="text-primary size-4" aria-hidden="true" />
-                <span class="sr-only">Duración estimada:</span>
-                {{ textoDuracion(modulo.duracion_estimada_min) }}
-              </li>
-              <template v-if="mostrarAvance && avance">
-                <li class="inline-flex items-center gap-1.5" data-testid="avance-obligatorias">
-                  <ListChecks class="text-primary size-4" aria-hidden="true" />
-                  {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} actividades
-                  obligatorias ({{ porcentaje }} %)
-                </li>
-                <li class="inline-flex items-center gap-1.5" data-testid="puntaje-modulo">
-                  <Trophy class="text-primary size-4" aria-hidden="true" />
-                  {{ puntajeObtenido }} de {{ avance.puntajeMaximo }} puntos
-                </li>
-              </template>
-            </ul>
-
+          <div v-if="!bloqueado" class="mt-auto flex justify-end">
             <button
-              v-if="!bloqueado"
               type="button"
               class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               :aria-label="textoContinuar"
@@ -228,6 +178,60 @@ const heroe = computed(() => identidad.value?.heroe);
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Datos del módulo, fuera de la portada para que esta quede limpia -->
+    <div
+      class="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-sm"
+      data-testid="datos-modulo"
+    >
+      <RotuloModulo :numero="modulo.numero" />
+      <p
+        v-if="bloqueado"
+        class="bg-muted text-foreground inline-flex items-center gap-1.5 rounded-full border border-dashed px-2.5 py-0.5 text-xs font-medium"
+        data-testid="etiqueta-bloqueado"
+      >
+        <Lock class="size-3.5" aria-hidden="true" />
+        Bloqueado
+      </p>
+      <p
+        v-if="revision"
+        class="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+        role="note"
+        title="Estás viendo el módulo como docente: todo está abierto y no se guarda nada."
+        data-testid="etiqueta-docente"
+      >
+        <Eye class="size-3.5" aria-hidden="true" />
+        Vista de docente
+      </p>
+      <p
+        v-if="enRevision"
+        class="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
+        role="note"
+        title="Este contenido es un borrador que el docente aún debe validar."
+        data-testid="nota-revision"
+      >
+        <NotebookPen class="size-3.5" aria-hidden="true" />
+        Contenido en revisión
+      </p>
+      <ul class="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1" role="list">
+        <li class="inline-flex items-center gap-1.5" data-testid="duracion">
+          <Clock class="text-primary size-4" aria-hidden="true" />
+          <span class="sr-only">Duración estimada:</span>
+          {{ textoDuracion(modulo.duracion_estimada_min) }}
+        </li>
+        <template v-if="mostrarAvance && avance">
+          <li class="inline-flex items-center gap-1.5" data-testid="avance-obligatorias">
+            <ListChecks class="text-primary size-4" aria-hidden="true" />
+            {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} actividades
+            obligatorias ({{ porcentaje }} %)
+          </li>
+          <li class="inline-flex items-center gap-1.5" data-testid="puntaje-modulo">
+            <Trophy class="text-primary size-4" aria-hidden="true" />
+            {{ puntajeObtenido }} de {{ avance.puntajeMaximo }} puntos
+          </li>
+        </template>
+      </ul>
     </div>
 
     <slot />
@@ -247,3 +251,17 @@ const heroe = computed(() => identidad.value?.heroe);
     </section>
   </header>
 </template>
+
+<style scoped>
+/* Primera flecha de la fila: sin muesca a la izquierda y con la punta a la derecha, del mismo tamaño que la de los
+   pasos (PasoFlecha.vue), para que encajen al solaparse. En móvil la fila se apila y la tarjeta es redondeada. */
+.flecha-titulo {
+  border-radius: 1rem;
+}
+@media (min-width: 768px) {
+  .flecha-titulo {
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+    border-radius: 1rem 0 0 1rem;
+  }
+}
+</style>

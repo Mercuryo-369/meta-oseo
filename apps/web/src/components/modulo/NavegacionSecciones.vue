@@ -27,6 +27,8 @@ const props = defineProps<{
   indice: number;
   /** Número del módulo, para rotular los pasos «3.1», «3.2»… (sin él, «1», «2»…). */
   numeroModulo?: number;
+  /** La fila continúa otra flecha (el título del módulo en la portada): el primer paso también lleva muesca. */
+  encadenada?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -105,8 +107,9 @@ watch(
       <li
         v-for="item in items"
         :key="item.id"
-        class="min-w-[10rem] flex-1 snap-start"
-        :class="item.i === 0 ? '' : '-ml-2'"
+        class="flex-1 snap-start"
+        :style="{ minWidth: encadenada ? '13rem' : '10rem' }"
+        :class="item.i === 0 && !encadenada ? '' : '-ml-2'"
       >
         <button
           :ref="(el) => (botones[item.i] = el as HTMLElement)"
@@ -124,7 +127,7 @@ watch(
             :etiqueta="item.etiqueta"
             :estado="item.marca"
             :actual="item.actual"
-            :primero="item.i === 0"
+            :primero="item.i === 0 && !encadenada"
           />
         </button>
       </li>
