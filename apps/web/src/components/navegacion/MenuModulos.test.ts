@@ -36,7 +36,7 @@ beforeEach(() => {
 });
 
 describe('MenuModulos', () => {
-  it('lista los seis módulos con enlace, estado en texto y el avance del curso', async () => {
+  it('lista los seis módulos con enlace y estado en texto', async () => {
     const { wrapper } = await montar();
     const nav = wrapper.get('nav[aria-label="Módulos"]');
     const enlaces = nav.findAll('[data-modulo]');
@@ -45,8 +45,8 @@ describe('MenuModulos', () => {
     );
     expect(enlaces[0]!.attributes('data-estado')).toBe('completada');
     expect(enlaces[2]!.text()).toContain('Completa el módulo 2 para abrirlo');
-    expect(nav.text()).toContain('1 de 6');
-    expect(nav.get('[role="progressbar"]').attributes('aria-valuenow')).toBe('1');
+    // Sin barra de avance desde el 2026-10-25 (se quitó «Tu recorrido»).
+    expect(nav.find('[role="progressbar"]').exists()).toBe(false);
     // Accesos generales.
     const destinos = nav.findAll('ul a').map((a) => a.attributes('href'));
     expect(destinos).toEqual(['/', '/logros', '/certificado']);

@@ -77,7 +77,7 @@ async function salir(): Promise<void> {
 
         <RouterLink
           :to="{ name: 'inicio' }"
-          class="text-foreground flex min-h-11 shrink-0 items-center gap-2.5 rounded-md pr-1 text-base font-semibold tracking-tight lg:w-[16.25rem]"
+          class="text-foreground flex min-h-11 shrink-0 items-center gap-2.5 rounded-md pr-1 text-base font-semibold tracking-tight"
           aria-label="Metabolismo óseo, ir al inicio"
         >
           <img :src="LOGO" alt="" class="size-8" width="32" height="32" />
@@ -120,13 +120,12 @@ async function salir(): Promise<void> {
 
     <MenuModulos />
 
-    <!-- lg:pl-68 deja libre la barra lateral del menú; el padding inferior evita que el botón
-         flotante del mentor tape el final del contenido en móvil. -->
+    <!-- El padding inferior evita que el botón flotante del mentor tape el final del contenido en móvil. -->
     <main
       id="contenido"
       ref="contenido"
       tabindex="-1"
-      class="flex-1 outline-none lg:pl-68"
+      class="flex-1 outline-none"
       style="padding-bottom: max(6rem, calc(var(--area-segura-abajo) + 5rem))"
     >
       <RouterView />

@@ -19,7 +19,7 @@ const completados = computed(() => progreso.modulosCompletados.length);
   <button
     :id="ID_CONTROL_MENU"
     type="button"
-    class="hover:bg-muted focus-visible:ring-ring inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium outline-none focus-visible:ring-2 lg:hidden"
+    class="hover:bg-muted focus-visible:ring-ring inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium outline-none focus-visible:ring-2"
     :aria-expanded="abierto ? 'true' : 'false'"
     :aria-controls="ID_MENU"
     data-testid="menu-control"

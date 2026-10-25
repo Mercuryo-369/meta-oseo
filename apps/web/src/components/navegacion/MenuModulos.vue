@@ -5,11 +5,11 @@
  * menú es un recorrido vertical: un nodo por módulo unido por un riel, con el estado en el propio nodo
  * (número, marca de completado o candado) y en texto debajo del título.
  *
- *  - Pantallas anchas (`lg`): barra lateral fija bajo la cabecera, siempre a la vista: avance del curso,
- *    el recorrido de los seis módulos y los accesos a inicio, logros y certificado.
- *  - Pantallas estrechas: el mismo contenido en un panel que se desliza desde la izquierda al pulsar
- *    «Módulos» en la cabecera (`BotonModulos`), con un velo detrás. Se cierra al elegir un destino, con
- *    Escape (el foco vuelve al botón) o tocando el velo.
+ *  - En todas las pantallas es un panel que se desliza desde la izquierda al pulsar «Módulos» en la cabecera
+ *    (`BotonModulos`), con un velo detrás: el recorrido de los seis módulos y los accesos a inicio, logros y
+ *    certificado. Se cierra al elegir un destino, con Escape (el foco vuelve al botón) o tocando el velo.
+ *    Hasta el 2026-10-25 era además una barra lateral fija («Tu recorrido») en pantallas anchas; se quitó a
+ *    pedido de la usuaria para que la portada del módulo ocupe todo el ancho.
  *
  * El estado de cada módulo es el de las tarjetas del inicio (`usePasosModulos`) y se dice con icono y texto.
  * El módulo abierto lleva `aria-current="page"`. Un módulo bloqueado sigue siendo un enlace: su página explica
@@ -20,12 +20,11 @@ import { RouterLink, useRoute } from 'vue-router';
 import { Award, Check, House, Lock, Trophy } from '@lucide/vue';
 import { moduloDeLaRuta } from '@/components/menu/estados';
 import { usePasosModulos } from '@/components/modulo/usePasosModulos';
-import { MODULOS } from '@/data/modulos';
 import { ID_CONTROL_MENU, ID_MENU, useMenuModulos } from './useMenuModulos';
 
 const route = useRoute();
 const { abierto, cerrar } = useMenuModulos();
-const { pasos, completados } = usePasosModulos();
+const { pasos } = usePasosModulos();
 
 const moduloActual = computed(() => moduloDeLaRuta(route));
 
@@ -67,10 +66,10 @@ const ENLACES = [
 </script>
 
 <template>
-  <!-- Velo (solo en pantallas estrechas con el panel abierto) -->
+  <!-- Velo (con el panel abierto) -->
   <div
     v-if="abierto"
-    class="fixed inset-0 z-40 bg-slate-950/40 lg:hidden"
+    class="fixed inset-0 z-40 bg-slate-950/40"
     aria-hidden="true"
     data-testid="velo-menu"
     @click="cerrar"
@@ -79,7 +78,7 @@ const ENLACES = [
   <nav
     :id="ID_MENU"
     aria-label="Módulos"
-    class="bg-card fixed bottom-0 left-0 z-50 w-[min(19rem,86vw)] flex-col overflow-y-auto border-r shadow-xl lg:z-20 lg:flex lg:w-68 lg:shadow-none"
+    class="bg-card fixed bottom-0 left-0 z-50 w-[min(19rem,86vw)] flex-col overflow-y-auto border-r shadow-xl"
     :class="abierto ? 'flex' : 'hidden'"
     style="
       top: calc(var(--altura-cabecera) + 1px + var(--area-segura-arriba));
@@ -88,37 +87,7 @@ const ENLACES = [
     data-testid="menu-modulos"
     @keydown.escape="alPulsarEscape"
   >
-    <!-- Avance: un segmento por módulo, en el mismo orden que el recorrido -->
-    <div class="px-5 pt-5 pb-4">
-      <div class="flex items-baseline justify-between gap-3">
-        <p class="text-base font-semibold tracking-tight">Tu recorrido</p>
-        <p class="text-muted-foreground text-sm tabular-nums">
-          <span class="text-foreground font-semibold">{{ completados }}</span>
-          de {{ MODULOS.length }}
-        </p>
-      </div>
-      <div
-        class="mt-3 flex gap-1"
-        role="progressbar"
-        aria-label="Módulos completados"
-        aria-valuemin="0"
-        :aria-valuemax="MODULOS.length"
-        :aria-valuenow="completados"
-      >
-        <span
-          v-for="p in pasos"
-          :key="p.m.numero"
-          class="h-1 flex-1 rounded-full"
-          :class="
-            p.marca === 'completada'
-              ? 'bg-success'
-              : moduloActual === p.m.numero || p.actual
-                ? 'bg-primary'
-                : 'bg-muted'
-          "
-        />
-      </div>
-    </div>
+    <p class="px-5 pt-5 pb-2 text-base font-semibold tracking-tight">Módulos</p>
 
     <ol class="flex-1 px-2 pb-2" role="list">
       <li v-for="(p, i) in pasos" :key="p.m.numero">
