@@ -128,7 +128,7 @@ const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
             <p class="text-foreground/80 mt-0.5 text-sm md:text-base">{{ modulo.subtitulo }}</p>
           </div>
         </div>
-        <div v-if="slots.pasos" class="min-w-0 flex-1 md:-ml-3">
+        <div v-if="slots.pasos" class="min-w-0 flex-1 md:flex">
           <slot name="pasos" />
         </div>
       </div>

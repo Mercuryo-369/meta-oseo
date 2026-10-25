@@ -99,8 +99,13 @@ watch(
 </script>
 
 <template>
-  <nav aria-label="Secciones del módulo" data-testid="navegacion-secciones">
+  <nav
+    aria-label="Secciones del módulo"
+    :class="encadenada ? 'md:flex md:min-w-0 md:flex-1 md:flex-col' : ''"
+    data-testid="navegacion-secciones"
+  >
     <ol
+      :class="encadenada ? 'md:flex-1' : ''"
       class="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       data-testid="indice-secciones"
     >
