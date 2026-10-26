@@ -19,6 +19,12 @@
  *    `useTiempoModulo`. Contexto del mentor: `stores/contextoPedagogico.ts`.
  *  - La sección abierta vive en la URL (`?s=id_seccion`): el botón «atrás» funciona y se puede
  *    compartir el enlace.
+ *  - MODO DIAPOSITIVA (pedido de la usuaria, 2026-10-25): sin `?s` se ve la PORTADA del módulo (su información
+ *    general y la imagen de fondo); su flecha inicia el recorrido. Cada sección es una diapositiva con la misma
+ *    portada (el panel lee la entrada de la sección) y, debajo, su contenido. La flecha del panel pasa a la
+ *    sección siguiente y, en la última, al módulo siguiente. El cambio se anima deslizando en horizontal: hacia
+ *    delante, la nueva entra por la derecha; hacia atrás, por la izquierda (sin animación con
+ *    `prefers-reduced-motion`).
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
@@ -47,6 +53,7 @@ import {
 import { EVENTO_GLOSARIO } from '@/components/modulo/glosario';
 import { estiloAcento } from '@/components/modulo/identidad';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
+import { TOTAL_MODULOS } from '@/config';
 import { useTiempoModulo } from '@/components/modulo/useTiempoModulo';
 import { Button } from '@/components/ui/button';
 import { idDeBloque, visibleParaNivel } from '@/content/consultas';
@@ -207,10 +214,22 @@ const indiceActual = computed(() => {
   return i >= 0 ? i : 0;
 });
 const indice = computed(() => indiceSolicitado.value ?? indiceBase.value ?? indiceActual.value);
+/** Portada del módulo (sin `?s`): solo la información general; la flecha inicia las diapositivas. */
+// Copia de `?s` que se actualiza con la navegación (watch con flush 'pre'): al cerrar la app, vue-router vacía la
+// ruta ANTES de desmontar la vista, y así la sección sigue contando como mostrada y su tiempo se envía.
+const seccionEnUrl = ref(route.query.s);
+watch(
+  () => route.query.s,
+  (s) => {
+    seccionEnUrl.value = s;
+  },
+);
+const enPortada = computed(() => !seccionEnUrl.value);
 const seccion = computed(() => secciones.value[indice.value] ?? null);
 const seccionBloqueada = computed(() => estados.value[indice.value] === 'bloqueada');
 const mostrando = computed(
-  () => fase.value === 'listo' && moduloAbierto.value && !seccionBloqueada.value,
+  () =>
+    fase.value === 'listo' && moduloAbierto.value && !enPortada.value && !seccionBloqueada.value,
 );
 const idSeccionMostrada = computed(() => (mostrando.value ? (seccion.value?.id ?? null) : null));
 
@@ -254,21 +273,60 @@ function alIntentarSeccionBloqueada(i: number): void {
       : '');
 }
 
-/** Texto del botón de la flecha en la portada: a qué sección lleva. */
+const esUltimaSeccion = computed(() => indice.value === secciones.value.length - 1);
+const siguienteModulo = computed(() => (props.n < TOTAL_MODULOS ? props.n + 1 : null));
+
+/** Texto de la flecha del panel: a qué diapositiva lleva. */
 const textoContinuar = computed(() => {
-  const s = secciones.value[indice.value];
-  if (!s) return 'Ir a la sección';
-  const verbo = indice.value === 0 && estados.value[0] !== 'completada' ? 'Empezar' : 'Continuar';
-  return `${verbo}: ${textoPlanoDeMarkdown(s.titulo)}`;
+  if (enPortada.value) {
+    const s = secciones.value[indice.value];
+    if (!s) return 'Empezar';
+    const verbo = indice.value === 0 && estados.value[0] !== 'completada' ? 'Empezar' : 'Continuar';
+    return `${verbo}: ${textoPlanoDeMarkdown(s.titulo)}`;
+  }
+  if (!esUltimaSeccion.value) {
+    const s = secciones.value[indice.value + 1];
+    return siguienteAbierta.value
+      ? `Siguiente: ${textoPlanoDeMarkdown(s?.titulo ?? '')}`
+      : 'Termina las actividades obligatorias para seguir';
+  }
+  if (siguienteModulo.value === null) return 'Terminaste el último módulo';
+  return completoLocal.value && siguienteModuloAbierto.value
+    ? `Ir al módulo ${siguienteModulo.value}`
+    : 'Termina las actividades obligatorias para seguir';
 });
 
-/** La flecha de la portada lleva al título de la sección que se está leyendo. */
+/**
+ * Flecha del panel: en la portada inicia las diapositivas (la sección en curso); en una sección pasa a la
+ * siguiente o, si aún faltan actividades obligatorias, lleva a la primera pendiente; en la última, al módulo
+ * siguiente.
+ */
 function alContinuar(): void {
-  const el = tituloSeccion.value;
-  if (!el) return;
-  el.focus({ preventScroll: true });
-  desplazarA(el);
+  if (enPortada.value) {
+    irA(indice.value);
+    return;
+  }
+  if (!esUltimaSeccion.value) {
+    if (siguienteAbierta.value) irA(indice.value + 1);
+    else irAlPrimeroPendiente();
+    return;
+  }
+  if (siguienteModulo.value !== null && completoLocal.value && siguienteModuloAbierto.value) {
+    void router.push({ name: 'modulo', params: { n: siguienteModulo.value } });
+  } else {
+    irAlPrimeroPendiente();
+  }
 }
+
+/* ----- Diapositivas: sentido del deslizamiento ----- */
+
+/** Posición de la diapositiva visible: -1 la portada, 0… las secciones. */
+const posicion = computed(() => (enPortada.value ? -1 : indice.value));
+const claveDiapositiva = computed(() => `${props.n}:${posicion.value}`);
+const sentido = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
+watch(posicion, (nueva, previa) => {
+  sentido.value = nueva >= previa ? 'diapo-adelante' : 'diapo-atras';
+});
 
 function irAlPrimeroPendiente(): void {
   const primera = pendientes.value[0];
@@ -295,14 +353,13 @@ function desplazarA(el: HTMLElement): void {
 
 const tituloSeccion = ref<HTMLElement | null>(null);
 
-watch(indice, (nuevo, previo) => {
-  if (nuevo === previo || fase.value !== 'listo') return;
+// Cada diapositiva empieza arriba, con su portada a la vista (el foco, al título de la sección).
+watch(posicion, (nueva, previa) => {
+  if (nueva === previa || fase.value !== 'listo') return;
   // Tras el foco que el shell da a <main> al cambiar la ruta.
   setTimeout(() => {
-    const el = tituloSeccion.value;
-    if (!el) return;
-    el.focus({ preventScroll: true });
-    desplazarA(el);
+    window.scrollTo?.({ top: 0, behavior: 'auto' });
+    tituloSeccion.value?.focus({ preventScroll: true });
   }, 0);
 });
 
@@ -493,147 +550,160 @@ onBeforeUnmount(() => {
     />
 
     <!-- Módulo -->
-    <template v-else-if="modulo && avance">
-      <CabeceraModulo
-        :modulo="modulo"
-        :avance="avance"
-        :puntaje-obtenido="puntajeObtenido"
-        :revision="esDocente"
-        :texto-continuar="textoContinuar"
-        :texto-seccion="secciones[indice]?.resumen"
-        @continuar="alContinuar"
+    <Transition v-else-if="modulo && avance" :name="sentido" mode="out-in">
+      <div
+        :key="claveDiapositiva"
+        class="diapositiva"
+        data-testid="diapositiva"
+        :data-posicion="posicion"
       >
-        <template #pasos>
-          <NavegacionSecciones
-            :secciones="secciones"
-            :estados="estados"
-            :indice="indice"
-            :numero-modulo="n"
-            encadenada
-            @ir="irA"
-            @bloqueada="alIntentarSeccionBloqueada"
-          />
-        </template>
-      </CabeceraModulo>
+        <CabeceraModulo
+          :modulo="modulo"
+          :avance="avance"
+          :puntaje-obtenido="puntajeObtenido"
+          :revision="esDocente"
+          :texto-continuar="textoContinuar"
+          :texto-seccion="enPortada ? undefined : secciones[indice]?.resumen"
+          :encabezado-seccion="
+            enPortada || !seccion
+              ? undefined
+              : `${n}.${indice + 1} · ${textoPlanoDeMarkdown(seccion.titulo)}`
+          "
+          @continuar="alContinuar"
+        >
+          <template #pasos>
+            <NavegacionSecciones
+              :secciones="secciones"
+              :estados="estados"
+              :indice="indice"
+              :numero-modulo="n"
+              encadenada
+              @ir="irA"
+              @bloqueada="alIntentarSeccionBloqueada"
+            />
+          </template>
+        </CabeceraModulo>
 
-      <p
-        v-if="store.errorEnvio"
-        class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-        role="status"
-        data-testid="error-envio"
-      >
-        <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-        <span>{{ store.errorEnvio }}</span>
-      </p>
+        <p
+          v-if="store.errorEnvio"
+          class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+          role="status"
+          data-testid="error-envio"
+        >
+          <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <span>{{ store.errorEnvio }}</span>
+        </p>
 
-      <p
-        v-if="avisoBloqueo"
-        class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-        role="status"
-        data-testid="aviso-seccion-bloqueada"
-      >
-        <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-        <span>{{ avisoBloqueo }}</span>
-      </p>
+        <p
+          v-if="avisoBloqueo"
+          class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+          role="status"
+          data-testid="aviso-seccion-bloqueada"
+        >
+          <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <span>{{ avisoBloqueo }}</span>
+        </p>
 
-      <div class="mx-auto mt-8 max-w-4xl">
-        <div class="min-w-0">
-          <!-- Sección bloqueada: se explica qué falta -->
-          <section
-            v-if="seccion && seccionBloqueada"
-            class="bg-card space-y-3 rounded-xl border border-dashed p-5"
-            aria-labelledby="titulo-seccion"
-            data-testid="seccion-bloqueada"
-          >
-            <h2
-              id="titulo-seccion"
-              ref="tituloSeccion"
-              tabindex="-1"
-              class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
+        <div v-if="!enPortada" class="mx-auto mt-8 max-w-4xl">
+          <div class="min-w-0">
+            <!-- Sección bloqueada: se explica qué falta -->
+            <section
+              v-if="seccion && seccionBloqueada"
+              class="bg-card space-y-3 rounded-xl border border-dashed p-5"
+              aria-labelledby="titulo-seccion"
+              data-testid="seccion-bloqueada"
             >
-              <Lock class="text-acento size-5" aria-hidden="true" />
-              Esta sección todavía está bloqueada
-            </h2>
-            <p>
-              Las secciones se estudian en orden. Antes de abrir «{{
-                textoPlanoDeMarkdown(seccion.titulo)
-              }}» termina la sección «{{
-                textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
-              }}».
-            </p>
-            <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
-            <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
-              Ir a la sección «{{ textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '') }}»
-            </Button>
-          </section>
-
-          <!-- Sección abierta -->
-          <section
-            v-else-if="seccion"
-            :key="seccion.id"
-            class="min-w-0 space-y-6"
-            aria-labelledby="titulo-seccion"
-            data-testid="seccion"
-            :data-seccion="seccion.id"
-          >
-            <header class="border-l-acento space-y-1 border-l-4 pl-3">
               <h2
                 id="titulo-seccion"
                 ref="tituloSeccion"
                 tabindex="-1"
-                class="scroll-mt-20 font-serif text-2xl font-semibold outline-none md:text-3xl"
+                class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
               >
-                {{ seccion.titulo }}
+                <Lock class="text-acento size-5" aria-hidden="true" />
+                Esta sección todavía está bloqueada
               </h2>
-              <p v-if="seccion.resumen" class="text-muted-foreground max-w-prose">
-                <TextoRico :texto="seccion.resumen" modo="linea" />
+              <p>
+                Las secciones se estudian en orden. Antes de abrir «{{
+                  textoPlanoDeMarkdown(seccion.titulo)
+                }}» termina la sección «{{
+                  textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
+                }}».
               </p>
-            </header>
+              <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
+              <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
+                Ir a la sección «{{ textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '') }}»
+              </Button>
+            </section>
 
-            <template v-for="bloque in bloquesVisibles" :key="idDeBloque(bloque)">
-              <BloqueTexto v-if="bloque.tipo === 'texto'" :bloque="bloque" />
-              <BloqueCallout v-else-if="bloque.tipo === 'callout'" :bloque="bloque" />
-              <BloqueImagen v-else-if="bloque.tipo === 'imagen'" :bloque="bloque" />
-              <BloqueTabla v-else-if="bloque.tipo === 'tabla'" :bloque="bloque" />
-              <BloqueActividad
-                v-else-if="bloque.tipo === 'actividad'"
-                :actividad="bloque.actividad"
-                :modulo="n as NumeroModulo"
-                :solo-lectura="esDocente"
+            <!-- Sección abierta -->
+            <section
+              v-else-if="seccion"
+              :key="seccion.id"
+              class="min-w-0 space-y-6"
+              aria-labelledby="titulo-seccion"
+              data-testid="seccion"
+              :data-seccion="seccion.id"
+            >
+              <header class="border-l-acento space-y-1 border-l-4 pl-3">
+                <h2
+                  id="titulo-seccion"
+                  ref="tituloSeccion"
+                  tabindex="-1"
+                  class="scroll-mt-20 font-serif text-2xl font-semibold outline-none md:text-3xl"
+                >
+                  {{ seccion.titulo }}
+                </h2>
+                <p v-if="seccion.resumen" class="text-muted-foreground max-w-prose">
+                  <TextoRico :texto="seccion.resumen" modo="linea" />
+                </p>
+              </header>
+
+              <template v-for="bloque in bloquesVisibles" :key="idDeBloque(bloque)">
+                <BloqueTexto v-if="bloque.tipo === 'texto'" :bloque="bloque" />
+                <BloqueCallout v-else-if="bloque.tipo === 'callout'" :bloque="bloque" />
+                <BloqueImagen v-else-if="bloque.tipo === 'imagen'" :bloque="bloque" />
+                <BloqueTabla v-else-if="bloque.tipo === 'tabla'" :bloque="bloque" />
+                <BloqueActividad
+                  v-else-if="bloque.tipo === 'actividad'"
+                  :actividad="bloque.actividad"
+                  :modulo="n as NumeroModulo"
+                  :solo-lectura="esDocente"
+                />
+              </template>
+
+              <PieSeccion
+                :indice="indice"
+                :total="secciones.length"
+                :siguiente-abierta="siguienteAbierta"
+                :texto-pendiente="textoPendientes(pendientes)"
+                :hay-pendiente="pendientes.length > 0"
+                @anterior="irA(indice - 1)"
+                @siguiente="irA(indice + 1)"
+                @ir-a-pendiente="irAlPrimeroPendiente"
               />
-            </template>
 
-            <PieSeccion
-              :indice="indice"
-              :total="secciones.length"
-              :siguiente-abierta="siguienteAbierta"
-              :texto-pendiente="textoPendientes(pendientes)"
-              :hay-pendiente="pendientes.length > 0"
-              @anterior="irA(indice - 1)"
-              @siguiente="irA(indice + 1)"
-              @ir-a-pendiente="irAlPrimeroPendiente"
-            />
-
-            <ModuloCompletado
-              v-if="mostrarCompletado"
-              :numero="n"
-              :puntaje-obtenido="puntajeObtenido"
-              :puntaje-maximo="avance.puntajeMaximo"
-              :guardado="moduloYaCompletado"
-              :faltantes="titulosFaltantes"
-              :siguiente-abierto="siguienteModuloAbierto"
-            />
-          </section>
+              <ModuloCompletado
+                v-if="mostrarCompletado"
+                :numero="n"
+                :puntaje-obtenido="puntajeObtenido"
+                :puntaje-maximo="avance.puntajeMaximo"
+                :guardado="moduloYaCompletado"
+                :faltantes="titulosFaltantes"
+                :siguiente-abierto="siguienteModuloAbierto"
+              />
+            </section>
+          </div>
         </div>
-      </div>
 
-      <GlosarioYReferencias :modulo="modulo" />
-      <GlosarioHoja
-        :termino="terminoAbierto"
-        :disparador="disparadorGlosario"
-        @cerrar="cerrarGlosario"
-      />
-    </template>
+        <GlosarioYReferencias :modulo="modulo" />
+      </div>
+    </Transition>
+    <GlosarioHoja
+      v-if="modulo && avance"
+      :termino="terminoAbierto"
+      :disparador="disparadorGlosario"
+      @cerrar="cerrarGlosario"
+    />
 
     <AvisosLogro />
     <p class="sr-only" role="status" aria-live="polite" data-testid="anuncio-vivo">
@@ -641,3 +711,33 @@ onBeforeUnmount(() => {
     </p>
   </div>
 </template>
+
+<style scoped>
+/* Diapositivas: la nueva entra deslizando en horizontal y la anterior sale por el lado contrario. */
+.diapo-adelante-enter-active,
+.diapo-adelante-leave-active,
+.diapo-atras-enter-active,
+.diapo-atras-leave-active {
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.32s ease;
+}
+.diapo-adelante-enter-from,
+.diapo-atras-leave-to {
+  transform: translateX(14%);
+  opacity: 0;
+}
+.diapo-adelante-leave-to,
+.diapo-atras-enter-from {
+  transform: translateX(-14%);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .diapo-adelante-enter-active,
+  .diapo-adelante-leave-active,
+  .diapo-atras-enter-active,
+  .diapo-atras-leave-active {
+    transition: none;
+  }
+}
+</style>

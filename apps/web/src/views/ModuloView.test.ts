@@ -158,6 +158,8 @@ function respuestaModulo(modulo: ModuloContenido): ResultadoCarga {
  * ----------------------------------------------------------------------------------------- */
 
 interface OpcionesMontaje extends OpcionesApi {
+  /** No pulsar la flecha de la portada: la prueba mira la portada misma. */
+  quedarseEnPortada?: boolean;
   n?: number;
   ruta?: string;
   modulo?: ModuloContenido;
@@ -214,6 +216,15 @@ async function montar(opciones: OpcionesMontaje = {}): Promise<Montaje> {
   });
   montados.push(wrapper);
   await flushPromises();
+  // Modo diapositiva: sin `?s` se abre la portada; su flecha lleva a la sección en curso, como haría el
+  // estudiante. Las pruebas de la propia portada piden `quedarseEnPortada`.
+  if (!opciones.quedarseEnPortada && router.currentRoute.value.query.s === undefined) {
+    const flecha = wrapper.find('[data-testid="continuar-modulo"]');
+    if (flecha.exists()) {
+      await flecha.trigger('click');
+      await flushPromises();
+    }
+  }
 
   return {
     wrapper: wrapper as unknown as VueWrapper,
@@ -399,6 +410,9 @@ describe('ModuloView: restauración del estado', () => {
 
     await vi.advanceTimersByTimeAsync(3_100);
     await flushPromises();
+    // Agotada la espera se abre la portada; su flecha lleva a la sección.
+    await wrapper.get('[data-testid="continuar-modulo"]').trigger('click');
+    await flushPromises();
     const primera = wrapper.get('[data-testid="actividad-falsa"]');
     expect(primera.attributes('data-servidor')).toBe('null');
   });
@@ -459,6 +473,48 @@ describe('ModuloView: restauración del estado', () => {
 /* -------------------------------------------------------------------------------------------
  * Bloques
  * ----------------------------------------------------------------------------------------- */
+
+describe('ModuloView: modo diapositiva', () => {
+  it('sin ?s abre la portada del módulo, sin contenido de sección', async () => {
+    const { wrapper } = await montar({ quedarseEnPortada: true });
+    expect(wrapper.get('[data-testid="diapositiva"]').attributes('data-posicion')).toBe('-1');
+    expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="continuar-modulo"]').attributes('aria-label')).toContain(
+      'Empezar',
+    );
+  });
+
+  it('la flecha de la portada abre la sección en curso como diapositiva', async () => {
+    const { wrapper, router } = await montar({ quedarseEnPortada: true });
+    await wrapper.get('[data-testid="continuar-modulo"]').trigger('click');
+    await flushPromises();
+    expect(router.currentRoute.value.query.s).toBe('tejido_dinamico');
+    expect(wrapper.get('[data-testid="diapositiva"]').attributes('data-posicion')).toBe('0');
+    expect(wrapper.get('[data-testid="seccion"]').attributes('data-seccion')).toBe(
+      'tejido_dinamico',
+    );
+  });
+
+  it('en una sección, la flecha del panel pasa a la siguiente cuando está abierta', async () => {
+    cfg.bloqueo = false;
+    const { wrapper, router } = await montar({ ruta: '/modulo/1?s=tejido_dinamico' });
+    const flecha = wrapper.get('[data-testid="continuar-modulo"]');
+    expect(flecha.attributes('aria-label')).toContain('Siguiente');
+    await flecha.trigger('click');
+    await flushPromises();
+    expect(router.currentRoute.value.query.s).not.toBe('tejido_dinamico');
+    expect(wrapper.get('[data-testid="diapositiva"]').attributes('data-posicion')).toBe('1');
+  });
+
+  it('con actividades obligatorias pendientes la flecha no salta de sección', async () => {
+    const { wrapper, router } = await montar({ ruta: '/modulo/1?s=tejido_dinamico' });
+    const flecha = wrapper.get('[data-testid="continuar-modulo"]');
+    expect(flecha.attributes('aria-label')).toContain('Termina las actividades obligatorias');
+    await flecha.trigger('click');
+    await flushPromises();
+    expect(router.currentRoute.value.query.s).toBe('tejido_dinamico');
+  });
+});
 
 describe('ModuloView: bloques', () => {
   it('pinta texto, callout, imagen y actividad de la primera sección, con encabezados en orden', async () => {
@@ -555,7 +611,7 @@ describe('ModuloView: bloqueo de secciones', () => {
     await wrapper.findAll('[data-testid="indice-secciones"] button')[2]!.trigger('click');
     await flushPromises();
 
-    expect(router.currentRoute.value.query.s).toBeUndefined();
+    expect(router.currentRoute.value.query.s).toBe('tejido_dinamico');
     const aviso = wrapper.get('[data-testid="aviso-seccion-bloqueada"]');
     expect(aviso.attributes('role')).toBe('status');
     expect(aviso.text()).toContain('todavía está bloqueada');
@@ -586,7 +642,7 @@ describe('ModuloView: bloqueo de secciones', () => {
 
     await siguiente.trigger('click');
     await flushPromises();
-    expect(router.currentRoute.value.query.s).toBeUndefined();
+    expect(router.currentRoute.value.query.s).toBe('tejido_dinamico');
     expect(wrapper.find('[data-testid="seccion-bloqueada"]').exists()).toBe(false);
   });
 
@@ -627,7 +683,7 @@ describe('ModuloView: bloqueo de secciones', () => {
     expect(opciones[1]).toContain('bloqueada');
     await select.setValue('3');
     await flushPromises();
-    expect(router.currentRoute.value.query.s).toBeUndefined();
+    expect(router.currentRoute.value.query.s).toBe('tejido_dinamico');
     expect((select.element as HTMLSelectElement).value).toBe('0');
   });
 
@@ -909,7 +965,7 @@ describe('ModuloView: bloqueo de módulos', () => {
     const { router } = await montar({ n: 1, ruta: '/modulo/1', conGuard: true });
     await router.push('/modulo/3');
     await flushPromises();
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
+    expect(router.currentRoute.value.path).toBe('/modulo/3');
   });
 
   it('un módulo bloqueado se muestra EN SU SITIO con su identidad y sin secciones ni actividades', async () => {
@@ -920,7 +976,7 @@ describe('ModuloView: bloqueo de módulos', () => {
       modulo: moduloConNumero(3),
     });
     // Sin redirigir ni avisos de rebote.
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
+    expect(router.currentRoute.value.path).toBe('/modulo/3');
     expect(wrapper.find('[data-testid="aviso-redirigido"]').exists()).toBe(false);
 
     // Presentación del módulo: título, subtítulo, duración y objetivos (la cabecera bloqueada).
@@ -985,7 +1041,7 @@ describe('ModuloView: bloqueo de módulos', () => {
       completados: [1, 2],
       modulo: moduloConNumero(3),
     });
-    expect(router.currentRoute.value.fullPath).toBe('/modulo/3');
+    expect(router.currentRoute.value.path).toBe('/modulo/3');
     expect(wrapper.find('[data-testid="modulo-bloqueado"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="cabecera-modulo"]').attributes('data-bloqueado')).toBe(

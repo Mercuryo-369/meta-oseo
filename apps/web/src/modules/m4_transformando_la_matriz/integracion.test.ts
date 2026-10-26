@@ -322,6 +322,9 @@ beforeAll(async () => {
     global: { plugins: [pinia, router] },
   }) as unknown as VueWrapper;
   await esperar(() => expect(wrapper.find('[data-testid="cabecera-modulo"]').exists()).toBe(true));
+  // Modo diapositiva: la portada del módulo se abre primero y su flecha lleva a la sección en curso.
+  await wrapper.get('[data-testid="continuar-modulo"]').trigger('click');
+  await esperar(() => expect(wrapper.find('[data-testid="seccion"]').exists()).toBe(true));
 });
 
 // La configuración de vitest restaura espías y globales entre pruebas (`restoreMocks`,

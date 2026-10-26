@@ -49,6 +49,8 @@ const props = withDefaults(
     textoContinuar?: string;
     /** Entrada de la sección activa (Markdown de una línea, con **palabras clave**). */
     textoSeccion?: string;
+    /** Diapositiva de una sección: su número y título, como encabezado del panel («1.2 · Para qué sirve…»). */
+    encabezadoSeccion?: string;
   }>(),
   {
     avance: null,
@@ -57,6 +59,7 @@ const props = withDefaults(
     revision: false,
     textoContinuar: 'Ir a la sección',
     textoSeccion: undefined,
+    encabezadoSeccion: undefined,
   },
 );
 
@@ -153,6 +156,14 @@ const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
           class="cristal-portada flex flex-col gap-4 rounded-3xl p-5 md:p-7"
           data-testid="panel-portada"
         >
+          <!-- Párrafo, no encabezado: el título de la sección ya es el h2 del contenido, más abajo. -->
+          <p
+            v-if="encabezadoSeccion"
+            class="text-primary font-serif text-2xl leading-tight font-bold"
+            data-testid="encabezado-diapositiva"
+          >
+            {{ encabezadoSeccion }}
+          </p>
           <TextoRico
             v-if="textoPanel"
             :texto="textoPanel"
