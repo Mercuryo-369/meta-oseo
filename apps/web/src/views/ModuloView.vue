@@ -257,6 +257,8 @@ function irA(i: number): void {
   const destino = secciones.value[i];
   if (!destino) return;
   avisoBloqueo.value = '';
+  // La nueva diapositiva entra arriba, con su portada a la vista mientras se desliza.
+  window.scrollTo?.({ top: 0, behavior: 'auto' });
   void router.push({ name: 'modulo', params: { n: props.n }, query: { s: destino.id } });
 }
 
@@ -312,6 +314,7 @@ function alContinuar(): void {
     return;
   }
   if (siguienteModulo.value !== null && completoLocal.value && siguienteModuloAbierto.value) {
+    window.scrollTo?.({ top: 0, behavior: 'auto' });
     void router.push({ name: 'modulo', params: { n: siguienteModulo.value } });
   } else {
     irAlPrimeroPendiente();
@@ -550,154 +553,159 @@ onBeforeUnmount(() => {
     />
 
     <!-- Módulo -->
-    <Transition v-else-if="modulo && avance" :name="sentido" mode="out-in">
-      <div
-        :key="claveDiapositiva"
-        class="diapositiva"
-        data-testid="diapositiva"
-        :data-posicion="posicion"
-      >
-        <CabeceraModulo
-          :modulo="modulo"
-          :avance="avance"
-          :puntaje-obtenido="puntajeObtenido"
-          :revision="esDocente"
-          :texto-continuar="textoContinuar"
-          :texto-seccion="enPortada ? undefined : secciones[indice]?.resumen"
-          :encabezado-seccion="
-            enPortada || !seccion
-              ? undefined
-              : `${n}.${indice + 1} · ${textoPlanoDeMarkdown(seccion.titulo)}`
-          "
-          @continuar="alContinuar"
+    <!-- Escenario de las diapositivas: la que entra y la que sale se deslizan a la vez, como en una presentación. -->
+    <div v-else-if="modulo && avance" class="escenario relative overflow-x-clip">
+      <Transition :name="sentido">
+        <div
+          :key="claveDiapositiva"
+          class="diapositiva"
+          data-testid="diapositiva"
+          :data-posicion="posicion"
         >
-          <template #pasos>
-            <NavegacionSecciones
-              :secciones="secciones"
-              :estados="estados"
-              :indice="indice"
-              :numero-modulo="n"
-              encadenada
-              @ir="irA"
-              @bloqueada="alIntentarSeccionBloqueada"
-            />
-          </template>
-        </CabeceraModulo>
+          <CabeceraModulo
+            :modulo="modulo"
+            :avance="avance"
+            :puntaje-obtenido="puntajeObtenido"
+            :revision="esDocente"
+            :texto-continuar="textoContinuar"
+            :texto-seccion="enPortada ? undefined : secciones[indice]?.resumen"
+            :encabezado-seccion="
+              enPortada || !seccion
+                ? undefined
+                : `${n}.${indice + 1} · ${textoPlanoDeMarkdown(seccion.titulo)}`
+            "
+            @continuar="alContinuar"
+          >
+            <template #pasos>
+              <NavegacionSecciones
+                :secciones="secciones"
+                :estados="estados"
+                :indice="indice"
+                :numero-modulo="n"
+                encadenada
+                @ir="irA"
+                @bloqueada="alIntentarSeccionBloqueada"
+              />
+            </template>
+          </CabeceraModulo>
 
-        <p
-          v-if="store.errorEnvio"
-          class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-          role="status"
-          data-testid="error-envio"
-        >
-          <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <span>{{ store.errorEnvio }}</span>
-        </p>
+          <p
+            v-if="store.errorEnvio"
+            class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+            role="status"
+            data-testid="error-envio"
+          >
+            <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <span>{{ store.errorEnvio }}</span>
+          </p>
 
-        <p
-          v-if="avisoBloqueo"
-          class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-          role="status"
-          data-testid="aviso-seccion-bloqueada"
-        >
-          <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <span>{{ avisoBloqueo }}</span>
-        </p>
+          <p
+            v-if="avisoBloqueo"
+            class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+            role="status"
+            data-testid="aviso-seccion-bloqueada"
+          >
+            <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <span>{{ avisoBloqueo }}</span>
+          </p>
 
-        <div v-if="!enPortada" class="mx-auto mt-8 max-w-4xl">
-          <div class="min-w-0">
-            <!-- Sección bloqueada: se explica qué falta -->
-            <section
-              v-if="seccion && seccionBloqueada"
-              class="bg-card space-y-3 rounded-xl border border-dashed p-5"
-              aria-labelledby="titulo-seccion"
-              data-testid="seccion-bloqueada"
-            >
-              <h2
-                id="titulo-seccion"
-                ref="tituloSeccion"
-                tabindex="-1"
-                class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
+          <div v-if="!enPortada" class="mx-auto mt-8 max-w-4xl">
+            <div class="min-w-0">
+              <!-- Sección bloqueada: se explica qué falta -->
+              <section
+                v-if="seccion && seccionBloqueada"
+                class="bg-card space-y-3 rounded-xl border border-dashed p-5"
+                aria-labelledby="titulo-seccion"
+                data-testid="seccion-bloqueada"
               >
-                <Lock class="text-acento size-5" aria-hidden="true" />
-                Esta sección todavía está bloqueada
-              </h2>
-              <p>
-                Las secciones se estudian en orden. Antes de abrir «{{
-                  textoPlanoDeMarkdown(seccion.titulo)
-                }}» termina la sección «{{
-                  textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
-                }}».
-              </p>
-              <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
-              <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
-                Ir a la sección «{{ textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '') }}»
-              </Button>
-            </section>
-
-            <!-- Sección abierta -->
-            <section
-              v-else-if="seccion"
-              :key="seccion.id"
-              class="min-w-0 space-y-6"
-              aria-labelledby="titulo-seccion"
-              data-testid="seccion"
-              :data-seccion="seccion.id"
-            >
-              <header class="border-l-acento space-y-1 border-l-4 pl-3">
                 <h2
                   id="titulo-seccion"
                   ref="tituloSeccion"
                   tabindex="-1"
-                  class="scroll-mt-20 font-serif text-2xl font-semibold outline-none md:text-3xl"
+                  class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
                 >
-                  {{ seccion.titulo }}
+                  <Lock class="text-acento size-5" aria-hidden="true" />
+                  Esta sección todavía está bloqueada
                 </h2>
-                <p v-if="seccion.resumen" class="text-muted-foreground max-w-prose">
-                  <TextoRico :texto="seccion.resumen" modo="linea" />
+                <p>
+                  Las secciones se estudian en orden. Antes de abrir «{{
+                    textoPlanoDeMarkdown(seccion.titulo)
+                  }}» termina la sección «{{
+                    textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
+                  }}».
                 </p>
-              </header>
+                <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
+                <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
+                  Ir a la sección «{{
+                    textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
+                  }}»
+                </Button>
+              </section>
 
-              <template v-for="bloque in bloquesVisibles" :key="idDeBloque(bloque)">
-                <BloqueTexto v-if="bloque.tipo === 'texto'" :bloque="bloque" />
-                <BloqueCallout v-else-if="bloque.tipo === 'callout'" :bloque="bloque" />
-                <BloqueImagen v-else-if="bloque.tipo === 'imagen'" :bloque="bloque" />
-                <BloqueTabla v-else-if="bloque.tipo === 'tabla'" :bloque="bloque" />
-                <BloqueActividad
-                  v-else-if="bloque.tipo === 'actividad'"
-                  :actividad="bloque.actividad"
-                  :modulo="n as NumeroModulo"
-                  :solo-lectura="esDocente"
+              <!-- Sección abierta -->
+              <section
+                v-else-if="seccion"
+                :key="seccion.id"
+                class="min-w-0 space-y-6"
+                aria-labelledby="titulo-seccion"
+                data-testid="seccion"
+                :data-seccion="seccion.id"
+              >
+                <header class="border-l-acento space-y-1 border-l-4 pl-3">
+                  <h2
+                    id="titulo-seccion"
+                    ref="tituloSeccion"
+                    tabindex="-1"
+                    class="scroll-mt-20 font-serif text-2xl font-semibold outline-none md:text-3xl"
+                  >
+                    {{ seccion.titulo }}
+                  </h2>
+                  <p v-if="seccion.resumen" class="text-muted-foreground max-w-prose">
+                    <TextoRico :texto="seccion.resumen" modo="linea" />
+                  </p>
+                </header>
+
+                <template v-for="bloque in bloquesVisibles" :key="idDeBloque(bloque)">
+                  <BloqueTexto v-if="bloque.tipo === 'texto'" :bloque="bloque" />
+                  <BloqueCallout v-else-if="bloque.tipo === 'callout'" :bloque="bloque" />
+                  <BloqueImagen v-else-if="bloque.tipo === 'imagen'" :bloque="bloque" />
+                  <BloqueTabla v-else-if="bloque.tipo === 'tabla'" :bloque="bloque" />
+                  <BloqueActividad
+                    v-else-if="bloque.tipo === 'actividad'"
+                    :actividad="bloque.actividad"
+                    :modulo="n as NumeroModulo"
+                    :solo-lectura="esDocente"
+                  />
+                </template>
+
+                <PieSeccion
+                  :indice="indice"
+                  :total="secciones.length"
+                  :siguiente-abierta="siguienteAbierta"
+                  :texto-pendiente="textoPendientes(pendientes)"
+                  :hay-pendiente="pendientes.length > 0"
+                  @anterior="irA(indice - 1)"
+                  @siguiente="irA(indice + 1)"
+                  @ir-a-pendiente="irAlPrimeroPendiente"
                 />
-              </template>
 
-              <PieSeccion
-                :indice="indice"
-                :total="secciones.length"
-                :siguiente-abierta="siguienteAbierta"
-                :texto-pendiente="textoPendientes(pendientes)"
-                :hay-pendiente="pendientes.length > 0"
-                @anterior="irA(indice - 1)"
-                @siguiente="irA(indice + 1)"
-                @ir-a-pendiente="irAlPrimeroPendiente"
-              />
-
-              <ModuloCompletado
-                v-if="mostrarCompletado"
-                :numero="n"
-                :puntaje-obtenido="puntajeObtenido"
-                :puntaje-maximo="avance.puntajeMaximo"
-                :guardado="moduloYaCompletado"
-                :faltantes="titulosFaltantes"
-                :siguiente-abierto="siguienteModuloAbierto"
-              />
-            </section>
+                <ModuloCompletado
+                  v-if="mostrarCompletado"
+                  :numero="n"
+                  :puntaje-obtenido="puntajeObtenido"
+                  :puntaje-maximo="avance.puntajeMaximo"
+                  :guardado="moduloYaCompletado"
+                  :faltantes="titulosFaltantes"
+                  :siguiente-abierto="siguienteModuloAbierto"
+                />
+              </section>
+            </div>
           </div>
-        </div>
 
-        <GlosarioYReferencias :modulo="modulo" />
-      </div>
-    </Transition>
+          <GlosarioYReferencias :modulo="modulo" />
+        </div>
+      </Transition>
+    </div>
     <GlosarioHoja
       v-if="modulo && avance"
       :termino="terminoAbierto"
@@ -713,24 +721,27 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Diapositivas: la nueva entra deslizando en horizontal y la anterior sale por el lado contrario. */
+/* Diapositivas: la nueva entra deslizándose desde un lado mientras la anterior sale por el otro, a la vez (la que
+   sale queda superpuesta en su sitio, en absoluto, para que no empuje a la que entra). */
 .diapo-adelante-enter-active,
 .diapo-adelante-leave-active,
 .diapo-atras-enter-active,
 .diapo-atras-leave-active {
-  transition:
-    transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
-    opacity 0.32s ease;
+  transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.25, 1);
+  will-change: transform;
+}
+.diapo-adelante-leave-active,
+.diapo-atras-leave-active {
+  position: absolute;
+  inset: 0 0 auto 0;
 }
 .diapo-adelante-enter-from,
 .diapo-atras-leave-to {
-  transform: translateX(14%);
-  opacity: 0;
+  transform: translateX(100%);
 }
 .diapo-adelante-leave-to,
 .diapo-atras-enter-from {
-  transform: translateX(-14%);
-  opacity: 0;
+  transform: translateX(-100%);
 }
 @media (prefers-reduced-motion: reduce) {
   .diapo-adelante-enter-active,
