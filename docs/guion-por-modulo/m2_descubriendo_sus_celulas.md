@@ -1,18 +1,24 @@
 # Modulo 2: Descubriendo sus células
 
-> BORRADOR redactado por IA, pendiente de validacion del docente.
+> Contenido tomado al pie de la letra del documento del docente «Modulos del 1 al 3, completados, listos para
+> desarrollar» (PDF entregado el 2026-10-25), que es la fuente de verdad. Reestructurado el 2026-10-25: secciones,
+> títulos, textos, actividades y preguntas de evaluación son los del PDF. Las imágenes del PDF quedan pendientes
+> (ver «Ilustraciones y modelos requeridos»).
 
 ## Ficha
 
-- **Foco:** Origen y procesos de diferenciación celular. De la cresta neural y la médula ósea a las células que forman, mantienen y reabsorben el hueso mandibular.
+- **Foco:** Origen y diferenciación celular
 - **Densidad:** Media
-- **Duracion estimada:** 40 a 50 minutos siguiendo solo las actividades obligatorias [verificar]. Las actividades de refuerzo (`obligatoria: false`) añaden unos 5 minutos. Si el curso lo prefiere, se puede repartir en dos sesiones (secciones 2.1 a 2.3 y 2.4 a 2.5).
-- **Nivel:** Pregrado y posgrado en ciencias de la salud. Los avisos «Dato» con detalle molecular son de profundización para posgrado.
-- **Logro que se otorga:** `celula_por_celula` (insignia «Célula por célula»). Condición propuesta, a confirmar con el docente: completar todas las actividades obligatorias y alcanzar al menos 70 % en la evaluación final.
+- **Duracion estimada:** 40 a 50 minutos siguiendo solo las actividades obligatorias [verificar]
+- **Nivel:** Pregrado y posgrado en ciencias de la salud.
+- **Logro que se otorga:** `celula_por_celula` (insignia «Célula por célula»). Condición propuesta, a confirmar con el docente: completar todas las actividades obligatorias.
 - **Secciones:** 5
-- **Puntaje máximo:** 380 puntos (340 en actividades obligatorias y 40 en actividades de refuerzo).
+- **Puntaje máximo:** 305 puntos (todas las actividades son obligatorias).
 
 ## Objetivos de aprendizaje
+
+<!-- El PDF no trae objetivos para el módulo 2: se conservan los anteriores. Algunos nombran temas que el PDF ya no
+desarrolla en este módulo (cartílago de Meckel, ligamento periodontal, ortodoncia); revisarlos con el docente. -->
 
 1. Describir el origen embrionario craneofacial de la mandíbula (cresta neural, ectomesénquima y cartílago de Meckel) y diferenciar la osificación intramembranosa de la osificación endocondral secundaria del cóndilo.
 2. Ordenar las etapas del linaje osteoblástico (de célula madre mesenquimal a osteocito) y del osteoclástico (de célula madre hematopoyética a osteoclasto), indicando el factor o la señal que impulsa cada paso.
@@ -21,1462 +27,1017 @@
 5. Relacionar cada célula ósea (progenitora, osteoblasto, revestimiento, osteocito, osteoclasto) con su función y con su marcador o señal principal.
 6. Describir las células del ligamento periodontal y su relación con el hueso alveolar, y aplicarlo a la respuesta ósea ante una fuerza ortodóncica (lado de presión y lado de tensión).
 
-## Conexion con el hueso mandibular
-
-La mandíbula es un buen ejemplo para estudiar las células óseas porque reúne rasgos que otros huesos no tienen:
-
-- **Origen craneofacial.** Su hueso procede de la cresta neural (ectomesénquima), no del mesodermo que forma el esqueleto de los miembros.
-- **Dos mecanismos de osificación.** El cuerpo y la rama se forman por osificación intramembranosa junto al cartílago de Meckel. El cóndilo crece por osificación endocondral a partir de un cartílago secundario.
-- **Hueso ligado al diente.** El proceso alveolar y el ligamento periodontal se forman con el diente y dependen de él. Sin diente, el hueso alveolar se reabsorbe.
-- **Célula y clínica a la vista.** Los procesos celulares de este módulo explican la ortodoncia (lado de presión y de tensión), la pérdida de hueso alveolar en la periodontitis, la osteonecrosis de los maxilares por fármacos antirresortivos (más frecuente en la mandíbula que en el maxilar), la displasia cleidocraneal (RUNX2) y la esclerosteosis (sin esclerostina, con sobrecrecimiento del cráneo y de la mandíbula).
-
-Cómo se aplica en cada sección:
-
-| Sección | Aplicación a la mandíbula |
-|---|---|
-| 2.1 | Explorar la mandíbula en 3D y ubicar qué zonas se formaron por osificación intramembranosa y cuáles por osificación endocondral secundaria |
-| 2.2 | Las células madre y osteoblastos del hueso mandibular descienden del ectomesénquima |
-| 2.3 | Los osteocitos del hueso alveolar y del cuerpo mandibular detectan la carga masticatoria (se amplía en el módulo 3) |
-| 2.4 | La resorción del hueso alveolar permite la erupción y el movimiento dentario, y los antirresortivos la frenan |
-| 2.5 | El ligamento periodontal conecta el diente con el hueso alveolar y regula su remodelado |
-
-Este módulo prepara los siguientes: el módulo 3 (mecanotransducción, osteocitos y esclerostina), el módulo 4 (mineralización, osteoblasto y fosfatasa alcalina) y el módulo 5 (remodelado, osteoclastos y RANKL/OPG).
-
 ## Ilustraciones y modelos requeridos
 
-Las células se dibujan en SVG multicapa, salvo las del ligamento periodontal (sección 2.5), que desde 2026-10-18 van en el modelo 3D `ligamento_periodontal`, construido por código: una raíz en su alvéolo, en corte, con sus células. Los otros modelos 3D son la mandíbula (una sola malla, con hotspots con nombre) y las escenas procedurales de refuerzo. Este módulo no usa el modelo 3D `celulas`.
+Todas las imágenes de este módulo son las del PDF del docente. **PENDIENTE PDF:** todavía no se integran (fase
+siguiente); mientras tanto las secciones solo muestran texto y actividades. Las ilustraciones, multicapas y modelos 3D
+de la versión anterior del módulo (`m2_origen_mandibula`, `m2_arbol_linajes_oseos`, `m2_osteoblasto_activo`,
+`m2_osteocito_lagunar`, `m2_osteoclasto_resorcion`, los modelos `mandibula` y `ligamento_periodontal` y las escenas
+procedurales del osteocito y del osteoclasto) ya no se usan: sus textos no son los del PDF.
 
-Convenciones de producción (aplican a todos los SVG):
+Indicación general de la usuaria: la Imagen #2 de la sección 2.1 («Células madre y progenitoras esqueléticas») se usa
+de fondo en todo el módulo 2 para las definiciones sin imagen propia o cuando las imágenes son cortas («Recuerda que en
+todo este módulo 2 usaremos esta de fondo cuando haga falta»; «Usemos este fondo para poner la información de abajo»).
 
-- Cada capa es un grupo `<g id="...">` con `<title>` (etiqueta) y `<desc>` (texto alternativo). Las capas de fondo no son interactivas y no aparecen en las tablas.
-- Cada capa interactiva debe medir al menos 44 x 44 píxeles en un teléfono; si el dibujo es más pequeño, se añade un área de toque transparente mayor.
-- Ninguna información depende solo del color ni del hover: cada capa se distingue por forma o rotulado, y se selecciona con toque, clic o teclado.
-- Alternativas táctil y de teclado: las construyen los componentes con los datos del contenido (toque para elegir y tocar el destino en lugar de arrastrar; Tab, Enter y Escape; lista de textos si no hay 3D). Las `instrucciones` solo resumen qué hacer y cuándo termina la actividad (10 a 300 caracteres).
-- Orden de dibujo de cada SVG, de fondo a superficie: primero las capas de fondo (matriz, hueso, ligamento), luego las células y, al final, las etiquetas y marcadores. Las capas interactivas pequeñas (por ejemplo las del osteoclasto) miden al menos 12 % del ancho del `viewBox` o llevan un área de toque transparente mayor.
-- Formato cuadrado o vertical (por ejemplo `viewBox` de 1000 x 1000) para que ocupe el ancho de un teléfono.
-- Convención de las escenas video-texto: `mostrar` son las capas con opacidad completa en ese paso (el resto del SVG se atenúa), `resaltar` son las capas con contorno de énfasis y pulso, `animacion` es el movimiento específico del paso.
-
-| id_archivo | Qué muestra | Se usa en |
-|---|---|---|
-| `m2_origen_mandibula` | Panel A: cabeza de un embrión hacia la cuarta o quinta semana, con el tubo neural, la cresta neural, la migración hacia el primer arco faríngeo y el ectomesénquima. Panel B: hemimandíbula en desarrollo (esquema compuesto de las semanas 6 a 14) en vista lateral con el cartílago de Meckel, el hueso intramembranoso, el cartílago condilar y el hueso endocondral del cóndilo | `m2_video_origen_mandibula` |
-| `m2_arbol_linajes_oseos` | Árbol de los dos linajes con sus etapas (mesenquimal a la izquierda, hematopoyético a la derecha), los iconos de las señales (RUNX2, osterix, M-CSF, RANKL, OPG) y las zonas de acople para la actividad de arrastre | `m2_video_linaje_osteoblastico`, `m2_arrastre_senales_linajes` |
-| `m2_osteoblasto_activo` | Osteoblasto cúbico sobre una capa de osteoide, con sus orgánulos, y una célula de revestimiento vecina sobre una superficie en reposo | `m2_multicapa_osteoblasto` |
-| `m2_osteocito_lagunar` | Osteocito estrellado dentro de su laguna, con canalículos, dendritas, uniones comunicantes, vaso sanguíneo y la superficie con células de revestimiento | `m2_multicapa_osteocito` |
-| `m2_osteoclasto_resorcion` | Osteoclasto multinucleado sobre la superficie ósea, con zona clara, borde festoneado, laguna de Howship y la maquinaria de acidificación y digestión | `m2_multicapa_osteoclasto` |
-| `ligamento_periodontal` (modelo 3D, por código) | Corte longitudinal de la raíz de un diente en su alvéolo: cemento, ligamento periodontal con sus células, fibras de Sharpey y hueso alveolar; con la raíz sometida a una fuerza lateral para mostrar el lado de presión y el lado de tensión. Sustituye desde 2026-10-18 al dibujo `m2_ligamento_periodontal` | `m2_multicapa_ligamento_periodontal` |
-| `mandibula` (modelo 3D) | Mandíbula humana completa, una sola malla, con hotspots con nombre | `m2_3d_origen_mandibula` |
-
-Junto al texto de cada sección se muestra una ilustración de apoyo (encima del texto en móvil y al lado en pantallas anchas), con todas sus capas visibles y sin interacción. La misma ilustración se reutiliza después en la actividad de la sección:
-
-| Sección | Ilustración junto al texto |
-|---|---|
-| 2.1 | `m2_origen_mandibula` |
-| 2.2 | `m2_arbol_linajes_oseos` (mitad mesenquimal) y `m2_osteoblasto_activo` |
-| 2.3 | `m2_osteocito_lagunar` |
-| 2.4 | `m2_osteoclasto_resorcion` y `m2_arbol_linajes_oseos` (mitad hematopoyética) |
-| 2.5 | Ninguna: el corte del ligamento es el modelo 3D `ligamento_periodontal` de la actividad |
-
-**Capas de `m2_origen_mandibula`**
-
-| id_capa | Etiqueta |
-|---|---|
-| `tubo_neural` | Tubo neural |
-| `cresta_neural` | Cresta neural craneal |
-| `corriente_migratoria` | Corriente de migración de la cresta neural |
-| `primer_arco_faringeo` | Primer arco faríngeo (arco mandibular) |
-| `ectomesenquima` | Ectomesénquima |
-| `cartilago_meckel` | Cartílago de Meckel |
-| `hueso_intramembranoso` | Hueso mandibular intramembranoso |
-| `extremo_posterior_meckel` | Extremo posterior del cartílago de Meckel (martillo y yunque) |
-| `cartilago_condilar` | Cartílago condilar (secundario) |
-| `hueso_endocondral_condilo` | Hueso endocondral del cóndilo |
-
-**Capas de `m2_arbol_linajes_oseos`**
-
-| id_capa | Etiqueta |
-|---|---|
-| `celula_madre_mesenquimal` | Célula madre mesenquimal |
-| `celula_osteoprogenitora` | Célula osteoprogenitora |
-| `preosteoblasto` | Preosteoblasto |
-| `osteoblasto` | Osteoblasto |
-| `osteocito` | Osteocito |
-| `celula_de_revestimiento` | Célula de revestimiento óseo |
-| `destino_apoptosis` | Destino del osteoblasto: apoptosis |
-| `celula_madre_hematopoyetica` | Célula madre hematopoyética |
-| `progenitor_mieloide` | Progenitor mieloide |
-| `precursor_monocito_macrofago` | Precursor monocito-macrófago |
-| `preosteoclasto` | Preosteoclasto |
-| `osteoclasto` | Osteoclasto |
-| `senal_runx2` | Señal RUNX2 |
-| `senal_osterix` | Señal osterix |
-| `senal_mcsf` | Señal M-CSF |
-| `senal_rankl` | Señal RANKL |
-| `senal_opg` | Señal OPG |
-| `zona_etapa_mesenquimal` | Zona de acople: célula mesenquimal sin factores osteoblásticos |
-| `zona_etapa_preosteoblasto` | Zona de acople: preosteoblasto con RUNX2 y sin osterix |
-| `zona_receptor_cfms` | Zona de acople: receptor c-Fms del precursor monocito-macrófago |
-| `zona_receptor_rank` | Zona de acople: receptor RANK del preosteoclasto |
-| `zona_ligando_osteoblasto` | Zona de acople: ligando expuesto por el osteoblasto (diana de OPG) |
-
-**Capas de `m2_osteoblasto_activo`**
-
-| id_capa | Etiqueta |
-|---|---|
-| `nucleo_osteoblasto` | Núcleo |
-| `reticulo_endoplasmico_rugoso` | Retículo endoplasmático rugoso |
-| `aparato_golgi` | Aparato de Golgi |
-| `vesiculas_secrecion` | Vesículas de secreción |
-| `osteoide` | Osteoide |
-| `fosfatasa_alcalina` | Fosfatasa alcalina |
-| `osteocalcina` | Osteocalcina |
-| `ligandos_rankl_opg` | RANKL y OPG |
-| `uniones_comunicantes` | Uniones comunicantes |
-| `frente_mineralizacion` | Frente de mineralización |
-| `hueso_mineralizado` | Hueso mineralizado |
-| `celula_revestimiento` | Célula de revestimiento óseo |
-
-**Capas de `m2_osteocito_lagunar`**
-
-| id_capa | Etiqueta |
-|---|---|
-| `cuerpo_osteocito` | Cuerpo del osteocito |
-| `nucleo_osteocito` | Núcleo |
-| `laguna_osteocitica` | Laguna |
-| `canaliculos` | Canalículos |
-| `dendritas` | Dendritas |
-| `uniones_comunicantes` | Uniones comunicantes |
-| `liquido_lacunocanalicular` | Líquido lacuno-canalicular |
-| `matriz_mineralizada` | Matriz mineralizada |
-| `esclerostina` | Esclerostina |
-| `celulas_superficie` | Osteoblastos y células de revestimiento |
-| `vaso_sanguineo` | Vaso sanguíneo |
-
-**Capas de `m2_osteoclasto_resorcion`**
-
-| id_capa | Etiqueta |
-|---|---|
-| `nucleos_multiples` | Núcleos múltiples |
-| `zona_clara` | Zona clara |
-| `borde_festoneado` | Borde festoneado |
-| `bomba_protones` | Bomba de protones (V-ATPasa) |
-| `canal_cloruro` | Canal de cloruro (ClC-7) |
-| `anhidrasa_carbonica_ii` | Anhidrasa carbónica II |
-| `catepsina_k` | Catepsina K |
-| `trap` | Fosfatasa ácida resistente al tartrato (TRAP) |
-| `laguna_howship` | Laguna de Howship |
-| `matriz_mineralizada` | Matriz mineralizada |
-| `receptores_rank_cfms` | Receptores RANK y c-Fms |
-
-**Nodos del modelo 3D `ligamento_periodontal`** (construido por código; los ids coinciden con el catálogo `apps/web/src/content/nodos3d.ts`)
-
-| id_nodo | Etiqueta |
-|---|---|
-| `cemento_radicular` | Cemento radicular |
-| `ligamento_periodontal` | Ligamento periodontal |
-| `fibras_sharpey` | Fibras de Sharpey |
-| `hueso_alveolar_propio` | Hueso alveolar propio |
-| `fibroblastos_periodontales` | Fibroblastos periodontales |
-| `celulas_progenitoras_perivasculares` | Células progenitoras perivasculares |
-| `cementoblastos` | Cementoblastos |
-| `osteoblastos_alveolares` | Osteoblastos alveolares |
-| `osteoclastos_alveolares` | Osteoclastos alveolares |
-| `restos_epiteliales_malassez` | Restos epiteliales de Malassez |
-| `lado_presion` | Lado de presión |
-| `lado_tension` | Lado de tensión |
-
-**Hotspots del modelo 3D `mandibula`** (una sola malla; los ids coinciden con el catálogo `apps/web/src/content/nodos3d.ts`)
-
-| id_hotspot | Etiqueta | Zona anatómica |
-|---|---|---|
-| `cuerpo` | Cuerpo mandibular | Porción horizontal entre la sínfisis y el ángulo, por debajo del proceso alveolar |
-| `foramen_mentoniano` | Foramen mentoniano | Cara externa del cuerpo, a la altura de los premolares |
-| `sinfisis` | Sínfisis mentoniana | Línea media del mentón |
-| `rama` | Rama mandibular | Porción vertical posterior |
-| `condilo` | Cóndilo mandibular | Extremo superior y posterior de la rama, que se articula con el temporal |
-| `apofisis_coronoides` | Apófisis coronoides | Extremo superior y anterior de la rama, delante de la escotadura mandibular |
-| `proceso_alveolar` | Proceso alveolar | Borde superior del cuerpo, que aloja los alvéolos dentarios |
-
-**Notas de precisión anatómica**
-
-- `m2_origen_mandibula`. Distribución de capas por panel: en el panel A van `tubo_neural`, `cresta_neural`, `corriente_migratoria`, `primer_arco_faringeo` y `ectomesenquima`; en el panel B van `ectomesenquima` (condensado alrededor de la barra de cartílago), `cartilago_meckel`, `hueso_intramembranoso`, `extremo_posterior_meckel`, `cartilago_condilar` y `hueso_endocondral_condilo`. La capa `ectomesenquima` existe en los dos paneles, y así el paso 3 del video la muestra en el panel B. El panel B es un compuesto: los pasos 3 y 4 corresponden al periodo embrionario (semanas 6 y 7) y el paso 6 al periodo fetal temprano (semanas 10 a 14). El panel A es un esquema de un embrión de cuarta o quinta semana; la cresta neural migra en corrientes ventrolaterales y no debe dibujarse como una masa única. En el panel B el hueso intramembranoso se dibuja al lado (lateral) del cartílago de Meckel, nunca como su continuación. El cartílago condilar es un cartílago aparte, en el extremo posterosuperior de la rama, sin continuidad con el de Meckel. El extremo posterior de Meckel se dibuja hacia el oído medio.
-- `m2_arbol_linajes_oseos`. Las zonas de acople (`zona_*`) son contornos punteados alrededor de la célula o del receptor, sin relleno, que no tapan a las células dibujadas debajo. El linaje del osteoclasto nace en la célula madre hematopoyética, no en el osteoblasto ni en la célula madre mesenquimal: las dos ramas no deben cruzarse. El preosteoclasto es mononuclear y el osteoclasto tiene tres o más núcleos dibujados. RUNX2 se ubica en la transición de célula madre a osteoprogenitora y osterix en la transición de preosteoblasto a osteoblasto, en ese orden. RANKL se dibuja anclado a la membrana del osteoblasto, RANK en la membrana del preosteoclasto, y OPG como una molécula libre que se une a RANKL.
-- `m2_osteoblasto_activo`. El osteoblasto activo es cúbico, con el núcleo en el polo opuesto al hueso, retículo rugoso y Golgi visibles. El osteoide queda entre la célula y el hueso mineralizado, y el frente de mineralización es el límite entre ambos. La célula de revestimiento se dibuja plana y alargada, sobre una superficie sin osteoide.
-- `m2_osteocito_lagunar`. El cuerpo del osteocito ocupa la laguna; las dendritas ocupan los canalículos y dejan un espacio con líquido (mayor en el canalículo que el grosor de la dendrita). Las uniones comunicantes se dibujan en los extremos de las dendritas, no en el cuerpo. La red debe llegar a la superficie ósea y a un vaso.
-- `m2_osteoclasto_resorcion`. La zona clara (zona de sellado) es un anillo que rodea al borde festoneado y apoya sobre el hueso. La laguna de Howship es la depresión del hueso bajo el borde festoneado. La bomba de protones, el canal de cloruro y el borde festoneado son adyacentes: se dibujan con un área de toque de al menos 12 % del ancho del `viewBox` y sin solaparse. La bomba de protones y el canal de cloruro se ubican en el borde festoneado; la anhidrasa carbónica II, en el citoplasma; la catepsina K, en el espacio sellado.
-- Modelo 3D `ligamento_periodontal` (2026-10-18; sustituye al dibujo `m2_ligamento_periodontal`, cuya ilustración hecha con IA tenía una raíz de morfología irreal y células como anillos). Una sola raíz cónica de unos 13 mm, cortada a lo largo: dentina, conducto pulpar central y estrecho que se afina hasta el foramen apical, y una capa fina de cemento, más gruesa hacia el ápice. La raíz y el hueso tienen proporciones reales; el ligamento (0,85 mm en reposo frente a los 0,15 a 0,38 mm reales) y las células (unas diez veces) están ampliados para que se vean, y el texto alternativo lo dice. Los haces principales son oblicuos (se insertan en el hueso más arriba que en el cemento), horizontales junto a la cresta y en abanico en el ápice; sus extremos incluidos en el cemento y en el hueso alveolar propio son las fibras de Sharpey (`fibras_sharpey` marca solo esos extremos). La lámina (hueso alveolar propio) está perforada por conductos vasculares por los que pasan vasos del ligamento. Una fuerza lateral (flecha) empuja la raíz hacia la derecha, en bloque: a la izquierda (lado de tensión) el ligamento es ancho y sus haces están rectos y tensos, con osteoblastos cúbicos sobre una capa de osteoide; a la derecha (lado de presión) es estrecho, sus haces están ondulados y hay osteoclastos multinucleados en lagunas de Howship, donde los haces han perdido su inserción. `lado_presion` y `lado_tension` son dos pares de flechas por delante del ligamento (que se acercan y que se alejan), no áreas que tapen a las células. Fibroblastos fusiformes entre los haces y alineados con ellos; células progenitoras junto a los vasos; cementoblastos cúbicos en fila sobre el cemento; restos de Malassez en nidos de seis células cerca del cemento.
-- Modelo 3D `mandibula`. Los hotspots son puntos con nombre sobre una sola malla: no se separan piezas. La ubicación de `foramen_mentoniano` y `sinfisis` debe coincidir con la anatomía de la malla.
+| Imagen del PDF | Sección | Dónde va | Indicación de la usuaria |
+|---|---|---|---|
+| Imagen #1 | 2.1 | Inicio de la sección, con el texto de entrada | — |
+| Imagen #2 | 2.1 | «El linaje mesenquimal: origen de los progenitores esqueléticos» / «Células madre y progenitoras esqueléticas» | Fondo de todo el capítulo para las definiciones sin imagen propia |
+| Imagen #3 | 2.1 | «Diferencia entre MSC y SSC» | El texto ya está en la imagen: no hay texto aparte |
+| Imagen #4 | 2.1 | «¿Dónde se encuentran?» | Hacerla interactiva si se puede (periostio, endostio, estroma medular y regiones perivasculares, cartílago de crecimiento); la nota va en un cuadrito al final |
+| Imagen #5 | 2.1 | «Marcadores moleculares» | El texto ya está en la imagen: no hay texto aparte |
+| Imagen #6 | 2.1 | «Potencial de diferenciación» | — |
+| Imagen #7 | 2.1 | «El linaje hematopoyético…» / «De la célula hematopoyética al precursor mieloide» | — |
+| Imagen #8 a #12 | 2.1 | «Dos vías para formar el tejido óseo» / «Osificación intramembranosa» | Recrear la secuencia como actividad si se puede; si no, la secuencia de imágenes grandes con el texto de arriba compartido |
+| Imagen #13 | 2.1 | «Osificación endocondral» | Secuencia de 10 pasos (modelo cartilaginoso hialino a hueso maduro y línea epifisaria) |
+| Imagen #1 | 2.2 | «¿Qué es un osteoblasto?» | Fondo de todo el módulo 2 cuando haga falta |
+| Imagen #2 a #7 | 2.2 | «Del progenitor esquelético al osteoblasto», «Identidad osteoblástica», «Marcadores de diferenciación», «Morfología y características del osteoblasto», «Organelos principales», «¿Dónde se encuentran?» | — |
+| Imagen #8 | 2.2 | «Señales osteoinductoras: Wnt/β-catenina y BMP» | — |
+| Imagen #9 | 2.2 | «Regulación hormonal y sistémica» | Que el estudiante explore cada segmento (interactiva) |
+| Imagen #10 a #12 | 2.2 | Funciones del osteoblasto más allá de formar matriz | — |
+| Imagen #13 a #15 | 2.2 | Destinos: osteocito, célula de revestimiento, apoptosis | — |
+| Imagen #16 | 2.2 | Final de la sección: «Imagen integradora» | — |
+| Imagen #1 | 2.3 | «¿Qué es un osteocito?» | — |
+| Imagen #2 | 2.3 | «Morfología y organización celular del osteocito» (Fuente: Adaptada de Qin et al. (2020), bajo licencia CC BY 4.0) | Al pasar por cada parte (centroid, MTs, IFs, etc.) debe salir un recuadro con su información: hoy es una lista |
+| Imagen #3 y #4 | 2.3 | «Formación de las lagunas y los canalículos», «Organización del sistema lacunocanalicular» | — |
+| Imagen #5 | 2.3 | «Osteocito en el sistema lacuno-canalicular» (Fuente: Adaptada de Qin et al. (2020), bajo licencia CC BY 4.0) | Definiciones de cada parte: hoy es una lista |
+| Imagen #6 a #9 | 2.3 | Regulador del remodelado, metabolismo mineral, remodelado perilacunar, microdaño | «Mantenimiento de la matriz y respuesta al microdaño» usa el fondo del módulo |
+| Imagen #1 a #5 | 2.4 | Una por subtítulo (¿Qué es?, Del progenitor hematopoyético al osteoclasto, Morfología, ¿Dónde se encuentran?, Homeostasis) | — |
+| Imagen #1 a #7 | 2.5 | Una por población (progenitoras y estromales, endoteliales, inmunitarias, osteomacs, adipocitos, nerviosas, la red) | — |
 
 ## Secciones
 
-### Seccion 2.1: Del ectomesénquima a la mandíbula (id "m2_1_origen_craneofacial")
+### Seccion 2.1: El origen de las células óseas (id "m2_1_origen_celulas_oseas")
+
+<!-- Entrada de la sección (texto de la Imagen #1): 840 caracteres, más que el máximo del «resumen» de sección (600);
+por eso va como primer párrafo del contenido. -->
 
 #### Contenido
 
-Ningún hueso aparece de la nada: sus células vienen de otras células. Antes de conocer al osteoblasto, al osteocito y al osteoclasto, conviene saber de dónde salen y por qué la mandíbula tiene una historia propia.
+El tejido óseo alberga poblaciones celulares con distintos orígenes y capacidades de diferenciación; algunas proceden del linaje mesenquimal y dan lugar a las células encargadas de producir y mantener la matriz ósea, mientras que otras derivan del sistema hematopoyético y pueden originar las células especializadas en su resorción. Esta diversidad de origen permite comprender cómo el hueso dispone de poblaciones celulares capaces de participar en su formación, mantenimiento y renovación a lo largo de la vida; sin embargo, ambos linajes no funcionan de manera aislada, sino que interactúan mediante señales moleculares y relaciones con el microambiente, coordinando de forma dinámica los procesos que permiten mantener la homeostasis esquelética.
 
-**Un origen distinto al de los huesos de los miembros**
+**El linaje mesenquimal: origen de los progenitores esqueléticos**
 
-Mientras se cierra el tubo neural, un grupo de células de la cresta neural craneal se desprende y migra hacia el futuro rostro y cuello. Se detienen en los arcos faríngeos. El primero, el arco mandibular, aparece hacia la cuarta semana de desarrollo.
+**Células madre y progenitoras esqueléticas.** Las células madre y progenitoras esqueléticas constituyen un conjunto heterogéneo de poblaciones celulares con capacidad para mantener y regenerar distintos componentes del esqueleto; se encuentran en microambientes especializados del periostio, el endostio, las regiones asociadas al cartílago de crecimiento y el estroma de la médula ósea, donde participan de manera diferente en el crecimiento, mantenimiento y reparación del tejido. Estas poblaciones difieren en su capacidad de autorrenovación y potencial de diferenciación, por lo que no deben interpretarse como una población única y uniforme, sino como un conjunto de progenitores cuya identidad y función dependen, en parte, de su localización y del contexto biológico.
 
-En la cabeza, estas células forman el **ectomesénquima**: un tejido embrionario de origen neural que se comporta como mesénquima. De él salen el hueso de la mandíbula, la dentina, la pulpa, el cemento y el ligamento periodontal. En el tronco y en los miembros, el hueso y el cartílago derivan del mesodermo.
+**¿Dónde se encuentran?**
 
-> Dato: Las células de la cresta neural que colonizan el primer arco no expresan genes Hox, una característica que forma parte de su identidad mandibular (profundización para posgrado).
+- **Periostio:** Especialmente su capa interna o cambium, donde existen progenitores relacionados con el crecimiento por aposición y la reparación.
+- **Endostio:** Superficies internas del hueso que albergan poblaciones celulares implicadas en el mantenimiento y la reparación.
+- **Estroma medular y regiones perivasculares:** Microambientes asociados a vasos sanguíneos que contienen poblaciones estromales y progenitores esqueléticos.
+- **Regiones asociadas al cartílago de crecimiento:** Nichos relevantes para el desarrollo y el crecimiento de los huesos largos.
 
-**Dos maneras de formar hueso en una misma mandíbula**
+> Atencion: Estas ubicaciones no son compartimentos exclusivos; diferentes poblaciones de células madre y progenitoras esqueléticas pueden solaparse entre distintos nichos, y su contribución al crecimiento, mantenimiento y reparación del tejido puede variar según la edad, el hueso y el contexto fisiológico.
 
-| | Osificación intramembranosa | Osificación endocondral secundaria |
-|---|---|---|
-| Molde | El ectomesénquima se condensa; no hay cartílago | Un cartílago secundario, el condilar |
-| Células | El ectomesénquima se diferencia directamente en osteoblastos | Progenitores, condroblastos y condrocitos hipertróficos; después el hueso reemplaza al cartílago |
-| Dónde | Cuerpo, rama y proceso alveolar | Cóndilo |
-| Cuándo empieza | Hacia la sexta o séptima semana [verificar] | Entre las semanas 10 y 14 aproximadamente [verificar] |
+**Potencial de diferenciación**
 
-**El cartílago de Meckel es una guía, no el molde de la mandíbula**
+Los progenitores esqueléticos pueden dar origen a diferentes tipos celulares según su identidad, su estado de diferenciación y las señales que reciben de su nicho celular, entendido como el microambiente que los rodea y que incluye células vecinas, matriz extracelular, vasos sanguíneos y moléculas de señalización; entre los destinos descritos se encuentran los linajes osteogénico, condrogénico y adipogénico, que conducen, respectivamente, a la formación de células del linaje osteoblástico, células formadoras de cartílago y adipocitos, incluidos los de la médula ósea. Este potencial no es idéntico en todas las poblaciones progenitoras, pues algunas se encuentran más comprometidas con un destino particular mientras que otras conservan una mayor capacidad de diferenciación; por ello, el destino celular resulta de la interacción entre las características del progenitor y las señales de su nicho, que pueden favorecer o restringir determinados procesos de diferenciación.
 
-Hacia la sexta semana, el ectomesénquima del arco mandibular se condensa y forma, a cada lado, una barra de cartílago: el cartílago de Meckel. La mandíbula no se forma osificándolo. El hueso aparece junto a él, por osificación intramembranosa, hacia la región del futuro foramen mentoniano, donde el nervio alveolar inferior se divide en sus ramas mentoniana e incisiva [verificar].
+> Atencion: La capacidad de generar varios linajes se ha demostrado en poblaciones progenitoras específicas; no todas las MSC o SSC adultas poseen el mismo potencial de diferenciación ni generan todos estos linajes en condiciones fisiológicas.
 
-Después, el extremo posterior del cartílago de Meckel forma el martillo y el yunque del oído medio. Su porción media desaparece o se transforma en tejido fibroso, y una parte contribuye a ligamentos como el esfenomandibular [verificar].
+**El linaje hematopoyético: origen de los precursores osteoclásticos**
 
-> Recuerda: El cartílago de Meckel es primario y actúa como guía. El cartílago condilar es secundario: aparece después, cuando ya existe hueso intramembranoso.
+**De la célula hematopoyética al precursor mieloide.** El linaje hematopoyético origina las células de la sangre y diversas poblaciones inmunitarias; dentro de este sistema, los progenitores de la línea monocito-macrófago pueden dar lugar a precursores capaces de diferenciarse en osteoclastos, por lo que estas células no derivan de las células madre mesenquimales que originan el linaje osteoblástico, sino que tienen un origen hematopoyético. Su diferenciación está regulada por señales provenientes del microambiente óseo, entre ellas el factor estimulante de colonias de macrófagos (M-CSF) y el ligando del receptor activador del factor nuclear κB (RANKL), que favorecen la supervivencia, proliferación y diferenciación de los precursores osteoclásticos hasta su maduración. Mediante este proceso se originan células multinucleadas especializadas en la resorción de la matriz ósea mineralizada, cuya actividad resulta indispensable para la renovación y el mantenimiento del tejido esquelético; esta relación conecta la biología ósea con la hematopoyesis y la inmunología, y permite comprender cómo la actividad osteoclástica depende de la comunicación con otras células y componentes del microambiente óseo. Aunque el origen hematopoyético de los osteoclastos y su relación con precursores de la línea monocítica están bien establecidos, la contribución relativa de diferentes poblaciones progenitoras puede variar durante el desarrollo, el mantenimiento del esqueleto adulto y los procesos de reparación, de acuerdo con el contexto biológico.
 
-**El cóndilo crece por osificación endocondral secundaria**
+**Dos vías para formar el tejido óseo**
 
-Entre las semanas 10 y 14 aproximadamente [verificar] aparecen cartílagos secundarios, sobre todo el condilar. Se llaman secundarios porque no derivan del cartílago de Meckel y surgen cuando ya hay hueso membranoso. El cartílago condilar crece, sus condrocitos se hipertrofian y el hueso lo reemplaza por osificación endocondral. Por eso el cóndilo es un centro de crecimiento de la mandíbula.
+**Osificación intramembranosa.** La osificación intramembranosa es el proceso mediante el cual el hueso se forma directamente a partir de células mesenquimales, sin la presencia de un molde cartilaginoso previo; las células mesenquimales se condensan, adquieren un fenotipo osteogénico y se diferencian en osteoblastos, que producen osteoide y posteriormente permiten su mineralización. Este mecanismo es característico de gran parte del esqueleto craneofacial, incluyendo la mayor parte del maxilar, cuerpo y rama de la mandíbula, además de los huesos nasales, cigomáticos, lagrimales, palatinos y gran parte de los huesos planos de la bóveda craneal; también participa en la formación de la clavícula, aunque esta presenta una contribución endocondral en algunas regiones durante su desarrollo.
 
-También se describen cartílagos secundarios más pequeños, en la apófisis coronoides y en la sínfisis [verificar].
+**Osificación endocondral**
 
-> Clinico: Cuando falla el desarrollo de la cresta neural craneal, la mandíbula suele estar afectada. Un ejemplo es el síndrome de Treacher Collins (mutaciones en TCOF1), con hipoplasia mandibular.
-
-**Dos familias de células mantienen el hueso**
-
-Con la mandíbula formada, dos familias de células con orígenes distintos la mantienen toda la vida:
-
-| Linaje | Célula de partida | Células que origina | Papel |
-|---|---|---|---|
-| Mesenquimal (osteoblástico) | Célula madre mesenquimal; en la mandíbula, de origen ectomesenquimal | Osteoprogenitora, osteoblasto, célula de revestimiento, osteocito | Formar y mantener la matriz |
-| Hematopoyético (monocito-macrófago) | Célula madre hematopoyética de la médula ósea | Precursor monocito-macrófago, preosteoclasto, osteoclasto | Reabsorber hueso |
-
-> Atencion: Los osteoclastos no derivan de los osteoblastos. Vienen de la médula ósea, como las células de la sangre. Aun así, los osteoblastos les envían las señales que los forman y los regulan (M-CSF, RANKL y OPG).
-
-En las secciones siguientes recorrerás cada linaje, célula por célula.
+La osificación endocondral es el proceso mediante el cual el tejido óseo se forma a partir de un molde previo de cartílago, que posteriormente es reemplazado de manera progresiva por hueso; este mecanismo es característico de los huesos largos y también participa en el desarrollo de estructuras craneofaciales específicas. En el complejo maxilofacial, la mayor parte del maxilar y del cuerpo mandibular se desarrolla mediante osificación intramembranosa, mientras que el cóndilo mandibular constituye una estructura especializada que se desarrolla principalmente mediante osificación endocondral, a través del cartílago condilar, contribuyendo al crecimiento y adaptación de la mandíbula.
 
 #### Actividades
 
-##### Actividad m2_video_origen_mandibula
+##### Actividad m2_1_ordena_osificacion
 
 ```yaml
-tipo: video-texto
-titulo: "Del embrión a la mandíbula en seis pasos"
-instrucciones: "Toca Siguiente para avanzar por los seis pasos y observa cómo cambia el dibujo; con Anterior vuelves. Con teclado: Tab hasta el botón y Enter, o las flechas. Nada avanza solo ni depende de pasar el mouse por encima."
-obligatoria: true
-puntaje_max: 10
-concepto: "osificacion_mandibular"
-retroalimentacion:
-  acierto: "Recorriste los seis pasos. Recuerda la secuencia: cresta neural, arco mandibular, cartílago de Meckel, hueso intramembranoso, destino de Meckel y cartílago condilar con osificación endocondral."
-  error: "Todavía faltan pasos por ver. Toca Siguiente hasta llegar al último paso para completar la actividad."
-ilustracion: m2_origen_mandibula
-pasos:
-  - id: paso_cresta_neural
-    titulo: "La cresta neural craneal"
-    texto: "Mientras se cierra el tubo neural, células de la cresta neural craneal se desprenden de su borde superior. Son multipotentes y migran hacia la región que será la cara y el cuello. En la cabeza formarán tejidos, como el hueso y el cartílago, que en el tronco y los miembros derivan del mesodermo."
-    cambia_escena:
-      mostrar: [tubo_neural, cresta_neural]
-      resaltar: [cresta_neural]
-      animacion: "Puntos de color se separan del borde dorsal del tubo neural con un pulso de la capa cresta_neural."
-  - id: paso_primer_arco
-    titulo: "Migración al primer arco faríngeo"
-    texto: "Las células migran en corrientes hacia los arcos faríngeos. Hacia la cuarta semana, el primer arco o arco mandibular se llena de un tejido llamado ectomesénquima. De él saldrán el hueso de la mandíbula, la dentina, la pulpa y el ligamento periodontal."
-    cambia_escena:
-      mostrar: [tubo_neural, cresta_neural, corriente_migratoria, primer_arco_faringeo, ectomesenquima]
-      resaltar: [ectomesenquima]
-      animacion: "Flechas discontinuas recorren la capa corriente_migratoria y llenan el arco con puntos de color que representan células."
-  - id: paso_meckel
-    titulo: "El cartílago de Meckel"
-    texto: "Hacia la sexta semana, el ectomesénquima se condensa y forma una barra de cartílago a cada lado: el cartílago de Meckel. No se convierte en la mandíbula. Funciona como guía del hueso que se forma junto a él."
-    cambia_escena:
-      mostrar: [ectomesenquima, cartilago_meckel]
-      resaltar: [cartilago_meckel]
-      animacion: "La vista pasa del panel A (embrión) al panel B (hemimandíbula en desarrollo) con un fundido, y la barra de cartílago se dibuja de atrás hacia adelante."
-  - id: paso_intramembranosa
-    titulo: "Osificación intramembranosa"
-    texto: "Junto al cartílago de Meckel, hacia el futuro foramen mentoniano, el ectomesénquima se condensa. Sus células se diferencian directamente en osteoblastos, sin pasar por cartílago, y depositan hueso. Ese hueso se extiende hacia atrás y hacia adelante y forma el cuerpo y la rama."
-    cambia_escena:
-      mostrar: [cartilago_meckel, hueso_intramembranoso]
-      resaltar: [hueso_intramembranoso]
-      animacion: "Aparecen puntos de osteoblastos al costado del cartílago y la capa hueso_intramembranoso crece hacia atrás y hacia adelante."
-  - id: paso_destino_meckel
-    titulo: "El destino del cartílago de Meckel"
-    texto: "Mientras el hueso se consolida, la porción media del cartílago de Meckel desaparece o se transforma en tejido fibroso. Su extremo posterior forma el martillo y el yunque del oído medio. El hueso membranoso ya no necesita la guía."
-    cambia_escena:
-      mostrar: [cartilago_meckel, hueso_intramembranoso, extremo_posterior_meckel]
-      resaltar: [extremo_posterior_meckel]
-      animacion: "La porción media de la capa cartilago_meckel pierde color hasta desvanecerse; el extremo posterior permanece resaltado con un pulso."
-  - id: paso_condilar
-    titulo: "Cartílago condilar y osificación endocondral"
-    texto: "Entre las semanas 10 y 14 aproximadamente [verificar] aparece el cartílago condilar, un cartílago secundario en el extremo superior de la rama. Se llama secundario porque no viene de Meckel y surge cuando ya hay hueso membranoso. Sus condrocitos crecen y el hueso lo reemplaza por osificación endocondral. Por eso el cóndilo es un centro de crecimiento."
-    cambia_escena:
-      mostrar: [hueso_intramembranoso, cartilago_condilar, hueso_endocondral_condilo]
-      resaltar: [cartilago_condilar]
-      animacion: "La capa cartilago_condilar crece como un cono sobre la rama y, en su base, el color cambia gradualmente al de hueso_endocondral_condilo."
-```
-
-##### Actividad m2_3d_origen_mandibula
-
-```yaml
-tipo: exploracion-3d
-titulo: "Tu mandíbula, zona por zona"
-instrucciones: "Gira la mandíbula arrastrando con un dedo y acerca con un pellizco. Toca cada punto para leer cómo se formó esa zona; con teclado, Tab y Enter. Si no hay 3D verás una lista con los mismos textos. Es de refuerzo: no bloquea el avance."
-obligatoria: false
-puntaje_max: 20
-concepto: "osificacion_mandibular"
-retroalimentacion:
-  acierto: "Ya ubicas dónde actuó cada mecanismo: el cuerpo se formó junto al cartílago de Meckel, el cóndilo y la apófisis coronoides tuvieron cartílago secundario, y el proceso alveolar depende del diente."
-  error: "Faltan puntos por visitar. Los cuatro requeridos son el cuerpo, el cóndilo, la apófisis coronoides y el proceso alveolar."
-modelo: mandibula
-hotspots:
-  - id: cuerpo
-    etiqueta: "Cuerpo mandibular"
-    descripcion: "Se formó por osificación intramembranosa junto al cartílago de Meckel, que actuó como guía. Sus osteoblastos derivan del ectomesénquima de la cresta neural."
-    zona_anatomica: "Porción horizontal entre la sínfisis y el ángulo, por debajo del proceso alveolar."
-  - id: foramen_mentoniano
-    etiqueta: "Foramen mentoniano"
-    descripcion: "Hacia esta región apareció el primer centro de osificación, donde el nervio alveolar inferior se divide en sus ramas mentoniana e incisiva [verificar]."
-    zona_anatomica: "Cara externa del cuerpo, a la altura de los premolares."
-  - id: sinfisis
-    etiqueta: "Sínfisis mentoniana"
-    descripcion: "Las dos hemimandíbulas se unen aquí por una articulación fibrosa con pequeños cartílagos secundarios. Se osifica y las dos mitades se fusionan durante el primer año de vida [verificar]."
-    zona_anatomica: "Línea media del mentón."
-  - id: rama
-    etiqueta: "Rama mandibular"
-    descripcion: "Se formó por osificación intramembranosa. En su extremo superior se desarrollan los cartílagos secundarios del cóndilo y de la apófisis coronoides."
-    zona_anatomica: "Porción vertical posterior."
-  - id: condilo
-    etiqueta: "Cóndilo mandibular"
-    descripcion: "Su cabeza crece a partir del cartílago condilar, un cartílago secundario que se osifica por vía endocondral. Es un centro de crecimiento de la mandíbula."
-    zona_anatomica: "Extremo superior y posterior de la rama, que se articula con el hueso temporal."
-  - id: apofisis_coronoides
-    etiqueta: "Apófisis coronoides"
-    descripcion: "También tuvo un cartílago secundario, más pequeño y transitorio que el condilar [verificar]. Recibe la inserción del músculo temporal."
-    zona_anatomica: "Extremo superior y anterior de la rama, delante de la escotadura mandibular."
-  - id: proceso_alveolar
-    etiqueta: "Proceso alveolar"
-    descripcion: "Se forma junto con los dientes: las células del folículo dental originan el ligamento periodontal y contribuyen al hueso alveolar. Sin dientes, este hueso se reabsorbe."
-    zona_anatomica: "Borde superior del cuerpo, que aloja los alvéolos dentarios."
-requeridas: [cuerpo, condilo, apofisis_coronoides, proceso_alveolar]
-```
-
-##### Actividad m2_quiz_origen
-
-```yaml
+# PDF, 2.1 Actividad 2. «Escribe la secuencia correcta» pasa a ordenar los pasos tocándolos (no hay respuesta escrita).
+# PENDIENTE PDF (sin tipo de actividad para respuesta abierta): «Pregunta de aplicación: ¿Por qué la osificación
+# intramembranosa es especialmente relevante en el desarrollo craneofacial? Menciona dos estructuras anatómicas que se
+# formen mediante este proceso. Respuestas para el docente: - Aplicación: permite la formación directa de hueso a
+# partir de células mesenquimales y participa en el desarrollo de gran parte del esqueleto craneofacial, como la mayor
+# parte del maxilar y del cuerpo mandibular.»
+# PENDIENTE PDF: 2.1 Actividad 1 «¿De qué linaje proviene cada célula?» (Dificultad: básica · Tipo: arrastrar y
+# soltar. Objetivo: reconocer los dos grandes linajes celulares descritos en el documento y relacionarlos con su
+# función). El PDF no trae las células ni las respuestas: no se monta hasta tenerlas.
 tipo: quiz
-titulo: "¿De dónde sale la mandíbula?"
-instrucciones: "Responde cada pregunta y lee la explicación. Toca tu respuesta; en Ordenar pasos, toca los pasos en su orden y pulsa Comprobar. Con teclado: Tab hasta la opción o el paso y Enter."
+titulo: "Ordena la secuencia de osificación intramembranosa"
+instrucciones: "Objetivo: comprender las etapas de formación del tejido óseo a partir de células mesenquimales, sin la presencia de un molde cartilaginoso previo."
 obligatoria: true
-puntaje_max: 30
-concepto: "osificacion_mandibular"
+puntaje_max: 20
+concepto: "osificacion_intramembranosa"
 retroalimentacion:
-  acierto: "Muy bien. Ya puedes explicar de dónde vienen las células de la mandíbula y cómo se forma su hueso."
-  parcial: "Vas bien, pero repasa la secuencia: cresta neural, Meckel como guía, hueso membranoso a su lado y cartílago condilar secundario."
-  error: "Repasa la secuencia: cresta neural, cartílago de Meckel como guía, hueso membranoso a su lado y, más tarde, cartílago condilar secundario."
+  acierto: "Secuencia correcta: condensación mesenquimal, diferenciación osteoblástica, producción de osteoide, mineralización de la matriz y expansión del centro de osificación."
+  error: "La secuencia no es correcta. Vuelve a leer la osificación intramembranosa e inténtalo de nuevo."
 preguntas:
-  - id: m2_qo_1
+  - id: m2_1_ord_1
     formato: ordenar_pasos
-    enunciado: "Ordena, de la primera a la última, las etapas de la formación de la mandíbula."
+    enunciado: "Organiza los siguientes acontecimientos en el orden en que ocurren durante la osificación intramembranosa, desde el inicio del proceso hasta la formación de las trabéculas óseas."
     pasos:
-      - id: p_endocondral
-        texto: "Osificación endocondral del cartílago condilar"
-      - id: p_meckel
-        texto: "El ectomesénquima se condensa y forma el cartílago de Meckel"
-      - id: p_cresta
-        texto: "Células de la cresta neural craneal migran al primer arco faríngeo"
-      - id: p_condilar
-        texto: "Aparece el cartílago condilar secundario"
-      - id: p_membranosa
-        texto: "Osificación intramembranosa junto al cartílago de Meckel"
-    correcta: [p_cresta, p_meckel, p_membranosa, p_condilar, p_endocondral]
-    explicacion: "La cresta neural aporta las células; el cartílago de Meckel actúa como guía; el hueso membranoso aparece a su lado y, más tarde, el cartílago condilar secundario se osifica por vía endocondral."
-    dificultad: 2
-    concepto: "osificacion_mandibular"
-  - id: m2_qo_2
-    formato: opcion_multiple
-    enunciado: "¿De qué población de células embrionarias deriva la mayor parte del hueso de la mandíbula?"
-    opciones:
-      - id: a
-        texto: "De los somitas y el mesodermo paraxial del tronco"
-      - id: b
-        texto: "De la cresta neural craneal, que forma el ectomesénquima"
-      - id: c
-        texto: "Del mesodermo de la placa lateral de la región facial"
-      - id: d
-        texto: "Del endodermo de la faringe y de sus bolsas faríngeas"
-    correcta: b
-    explicacion: "En la cabeza, la cresta neural forma el ectomesénquima, que origina el hueso mandibular. El mesodermo forma el hueso de los miembros y del tronco."
-    dificultad: 1
-    concepto: "origen_craneofacial"
-  - id: m2_qo_3
-    formato: verdadero_falso
-    enunciado: "El cartílago de Meckel se osifica y se convierte en el cuerpo de la mandíbula."
-    opciones:
-      - id: verdadero
-        texto: "Verdadero"
-      - id: falso
-        texto: "Falso"
-    correcta: falso
-    explicacion: "El cuerpo mandibular se forma por osificación intramembranosa al lado del cartílago de Meckel, que solo actúa como guía. Su porción media desaparece y su extremo posterior forma el martillo y el yunque."
-    dificultad: 2
-    concepto: "cartilago_meckel"
-  - id: m2_qo_4
-    formato: opcion_multiple
-    enunciado: "¿Cómo se forma el hueso del cóndilo mandibular?"
-    opciones:
-      - id: a
-        texto: "Por osificación intramembranosa directa, sin ningún molde de cartílago"
-      - id: b
-        texto: "Por osificación endocondral del propio cartílago de Meckel en la rama"
-      - id: c
-        texto: "Por osificación endocondral que se extiende desde el hueso temporal"
-      - id: d
-        texto: "Por osificación endocondral, a partir de un cartílago secundario"
-    correcta: d
-    explicacion: "El cóndilo tiene un cartílago condilar secundario que crece y es reemplazado por hueso mediante osificación endocondral. Por eso es un centro de crecimiento."
-    dificultad: 2
-    concepto: "condilo_endocondral"
-```
-
-### Seccion 2.2: De célula madre a osteoblasto (id "m2_2_linea_osteoblastica")
-
-#### Contenido
-
-El hueso se sigue construyendo y renovando durante toda la vida. Esa construcción parte de una célula madre y sigue un camino con etapas ordenadas, gobernadas por dos factores de transcripción.
-
-**Las etapas del camino**
-
-| Etapa | Qué la caracteriza | Factor que la impulsa |
-|---|---|---|
-| Célula madre mesenquimal | Multipotente, se autorrenueva | Señales del nicho, por ejemplo BMP y Wnt |
-| Osteoprogenitora | Comprometida con el linaje óseo, fusiforme, todavía se divide | RUNX2 |
-| Preosteoblasto | Tiene RUNX2 y empieza a activar genes de la matriz | RUNX2 activa a osterix |
-| Osteoblasto | Cúbico, sintetiza el osteoide | Osterix, junto con RUNX2 |
-| Osteocito, célula de revestimiento o muerte celular | Destinos posibles del osteoblasto | Señales del hueso y del entorno |
-
-**Célula madre mesenquimal y osteoprogenitora**
-
-Las células madre mesenquimales viven en la médula ósea, el periostio y el ligamento periodontal, entre otros nichos. Se autorrenuevan y son multipotentes: según las señales que reciban, originan osteoblastos, condrocitos o adipocitos. En la mandíbula descienden del ectomesénquima de la sección anterior.
-
-La osteoprogenitora ya eligió el linaje óseo. Es fusiforme, con núcleo alargado y poco citoplasma, y conserva la capacidad de dividirse. Se encuentra en la capa interna del periostio y en el endostio.
-
-> Dato: Para llamar «célula estromal mesenquimal multipotente» a una célula cultivada, la Sociedad Internacional de Terapia Celular (ISCT, 2006) propone criterios mínimos: adherirse al plástico; expresar CD105, CD73 y CD90 y no expresar CD45, CD34, CD14 o CD11b, CD79α o CD19 ni HLA-DR; y diferenciarse in vitro a hueso, cartílago y grasa. El término «célula madre» se reserva para las que demuestran autorrenovación y diferenciación in vivo (profundización para posgrado).
-
-**Los interruptores: RUNX2 y osterix**
-
-Son factores de transcripción: proteínas que actúan dentro del núcleo y encienden genes.
-
-- **RUNX2** (también llamado Cbfa1) se activa primero y compromete a la célula con el linaje óseo. Los ratones sin RUNX2 no forman osteoblastos maduros ni hueso: su esqueleto queda cartilaginoso.
-- **Osterix** (Sp7) se activa después y depende de RUNX2. Junto con RUNX2 activa los genes de la matriz y lleva al preosteoblasto a completar su diferenciación en osteoblasto. Los ratones sin osterix tienen precursores con RUNX2, pero no forman hueso.
-
-> Recuerda: El orden es RUNX2 y luego osterix. Osterix está «aguas abajo» de RUNX2.
-
-> Atencion: RUNX2 y osterix no son hormonas ni ligandos de un receptor de membrana. Actúan dentro del núcleo, en una etapa determinada de la célula. Las señales que los activan, como las BMP y Wnt, sí actúan sobre receptores de membrana.
-
-> Clinico: La reducción de RUNX2 funcional causa la displasia cleidocraneal: clavículas hipoplásicas o ausentes, cierre tardío de las fontanelas, dientes supernumerarios y erupción dentaria retrasada.
-
-**El osteoblasto: la célula que forma hueso**
-
-El osteoblasto activo es cúbico, forma una capa sobre la superficie que está formando y tiene el núcleo en el polo opuesto al hueso. Su citoplasma es basófilo por la abundancia de retículo endoplasmático rugoso, y tiene un aparato de Golgi bien desarrollado. Cumple tres funciones:
-
-1. **Sintetiza y secreta el osteoide**, la matriz orgánica todavía sin mineralizar. Aproximadamente 90 % es colágeno tipo I [verificar]. El resto son proteoglucanos y proteínas no colágenas, como la osteocalcina, la osteopontina y la sialoproteína ósea.
-2. **Regula la mineralización.** La fosfatasa alcalina, anclada a su membrana y a las vesículas de la matriz, elimina el pirofosfato que inhibe la mineralización y aporta fosfato. La osteocalcina se une a la hidroxiapatita.
-3. **Coordina a los osteoclastos.** Produce M-CSF, RANKL y OPG.
-
-| Molécula | Qué es | Para qué sirve |
-|---|---|---|
-| Colágeno tipo I | Proteína estructural | Forma la trama del osteoide |
-| Fosfatasa alcalina | Enzima de membrana | Favorece la mineralización; marcador de formación |
-| Osteocalcina | Proteína no colágena | Se une a la hidroxiapatita; marcador tardío del osteoblasto |
-| RANKL | Ligando de membrana | Activa el receptor RANK del precursor del osteoclasto |
-| OPG | Receptor señuelo soluble | Se une a RANKL y lo bloquea |
-
-> Clinico: La fosfatasa alcalina ósea y la osteocalcina en sangre se usan como marcadores de formación ósea.
-
-**Destinos del osteoblasto y célula de revestimiento**
-
-Cuando el osteoblasto termina de formar hueso, tiene tres destinos:
-
-1. **Osteocito:** queda atrapado en la matriz que secretó.
-2. **Célula de revestimiento óseo:** se aplana y cubre la superficie del hueso que no se está formando ni reabsorbiendo. Tiene poco citoplasma y núcleo alargado. Está en reposo, pero puede reactivarse y volver a formar hueso.
-3. **Apoptosis:** se estima que entre 50 y 70 % de los osteoblastos mueren de esta forma [verificar].
-
-> Recuerda: La célula de revestimiento no es una célula distinta que llegó de fuera: es un osteoblasto en reposo.
-
-#### Actividades
-
-##### Actividad m2_video_linaje_osteoblastico
-
-```yaml
-tipo: video-texto
-titulo: "El camino de la línea osteoblástica"
-instrucciones: "Toca Siguiente para avanzar por las cinco etapas y observa cómo aparece cada célula y cada factor en el árbol. Con Anterior puedes volver. Con teclado: Tab hasta Siguiente o Anterior y Enter, o usa las flechas izquierda y derecha. No hay animación automática ni información que dependa del hover."
-obligatoria: true
-puntaje_max: 10
-concepto: "linaje_osteoblastico"
-retroalimentacion:
-  acierto: "Recorriste toda la línea osteoblástica. La secuencia es: célula madre mesenquimal, osteoprogenitora (RUNX2), preosteoblasto, osteoblasto (osterix) y sus destinos."
-  error: "Todavía faltan etapas por ver. Toca Siguiente hasta llegar a los destinos del osteoblasto."
-ilustracion: m2_arbol_linajes_oseos
-pasos:
-  - id: paso_celula_madre
-    titulo: "La célula madre mesenquimal"
-    texto: "En la médula ósea, el periostio y el ligamento periodontal hay células madre mesenquimales. Se autorrenuevan y pueden originar osteoblastos, condrocitos o adipocitos. En la mandíbula descienden del ectomesénquima de la cresta neural."
-    cambia_escena:
-      mostrar: [celula_madre_mesenquimal]
-      resaltar: [celula_madre_mesenquimal]
-      animacion: "La célula madre pulsa y se dibujan tres ramas tenues (hueso, cartílago y grasa); solo la rama del hueso se ilumina."
-  - id: paso_runx2
-    titulo: "RUNX2: el compromiso"
-    texto: "Cuando se activa RUNX2, la célula se compromete con el linaje óseo y se convierte en osteoprogenitora. Es una célula fusiforme que todavía se divide. Sin RUNX2 no se forman osteoblastos maduros."
-    cambia_escena:
-      mostrar: [celula_madre_mesenquimal, celula_osteoprogenitora, senal_runx2]
-      resaltar: [senal_runx2]
-      animacion: "El icono senal_runx2 entra al núcleo de la célula madre, que se alarga hasta convertirse en celula_osteoprogenitora."
-  - id: paso_osterix
-    titulo: "Osterix: la maduración"
-    texto: "Osterix se activa después de RUNX2 y depende de él. Junto con RUNX2 activa los genes de la matriz y lleva al preosteoblasto a completar su diferenciación en osteoblasto. Sin osterix hay precursores con RUNX2, pero no hay hueso."
-    cambia_escena:
-      mostrar: [celula_madre_mesenquimal, celula_osteoprogenitora, preosteoblasto, senal_runx2, senal_osterix]
-      resaltar: [senal_osterix, preosteoblasto]
-      animacion: "senal_runx2 enciende senal_osterix con una flecha; el preosteoblasto intensifica la secreción de matriz."
-  - id: paso_osteoblasto
-    titulo: "El osteoblasto activo"
-    texto: "El osteoblasto es cúbico, con mucho retículo rugoso, y secreta el osteoide. Expresa fosfatasa alcalina, osteocalcina y colágeno tipo I. También expresa RANKL y OPG, con los que se comunica con el linaje del osteoclasto."
-    cambia_escena:
-      mostrar: [celula_madre_mesenquimal, celula_osteoprogenitora, preosteoblasto, osteoblasto]
-      resaltar: [osteoblasto]
-      animacion: "El preosteoblasto se vuelve cúbico y libera gotas de osteoide hacia la superficie ósea."
-  - id: paso_destinos
-    titulo: "Tres destinos del osteoblasto"
-    texto: "Al terminar de formar hueso, el osteoblasto sigue uno de tres caminos. Puede quedar atrapado en la matriz y hacerse osteocito, aplanarse como célula de revestimiento o morir por apoptosis. Se estima que entre 50 y 70 % mueren [verificar]."
-    cambia_escena:
-      mostrar: [osteoblasto, osteocito, celula_de_revestimiento, destino_apoptosis]
-      resaltar: [osteocito, celula_de_revestimiento, destino_apoptosis]
-      animacion: "Del osteoblasto salen tres flechas que se iluminan una por una hacia osteocito, celula_de_revestimiento y destino_apoptosis."
-```
-
-##### Actividad m2_multicapa_osteoblasto
-
-```yaml
-# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
-tipo: multicapa
-titulo: "Dentro de un osteoblasto activo"
-instrucciones: "Toca cada parte del dibujo para leer qué es y qué hace. Visita las ocho capas marcadas con un punto para completar la actividad. Con teclado: Tab pasa de una capa a otra y Enter la abre. Nada depende de pasar el mouse por encima."
-obligatoria: true
-puntaje_max: 20
-concepto: "osteoblasto_funciones"
-retroalimentacion:
-  acierto: "Bien. El osteoblasto sintetiza el osteoide (colágeno tipo I), regula la mineralización con la fosfatasa alcalina y la osteocalcina, y controla al osteoclasto con RANKL y OPG. Su vecina de revestimiento es un osteoblasto en reposo."
-  error: "Faltan capas requeridas. Revisa las que no aparecen como visitadas; las clave son el osteoide, la fosfatasa alcalina, la osteocalcina, RANKL y OPG, y la célula de revestimiento vecina."
-svg: m2_osteoblasto_activo
-modo: explorar
-capas:
-  - id: nucleo_osteoblasto
-    etiqueta: "Núcleo"
-    descripcion: "Grande y ubicado en el polo de la célula más alejado del hueso. Aquí actúan RUNX2 y osterix, que mantienen encendidos los genes de la matriz."
-  - id: reticulo_endoplasmico_rugoso
-    etiqueta: "Retículo endoplasmático rugoso"
-    descripcion: "Muy abundante: sintetiza las cadenas de procolágeno tipo I y otras proteínas de la matriz. Por eso el citoplasma se tiñe con colorantes básicos (basofilia)."
-  - id: aparato_golgi
-    etiqueta: "Aparato de Golgi"
-    descripcion: "Bien desarrollado, junto al núcleo. Modifica las proteínas de la matriz y las empaqueta en vesículas de secreción."
-  - id: vesiculas_secrecion
-    etiqueta: "Vesículas de secreción"
-    descripcion: "Llevan procolágeno y otras proteínas hacia la membrana en contacto con el hueso, donde se liberan. Fuera de la célula, el procolágeno se procesa y se ensambla en fibras de colágeno tipo I."
-  - id: osteoide
-    etiqueta: "Osteoide"
-    descripcion: "Matriz orgánica recién secretada, aún sin mineralizar, entre el osteoblasto y el hueso mineralizado. Aproximadamente 90 % de su parte orgánica es colágeno tipo I [verificar]."
-  - id: fosfatasa_alcalina
-    etiqueta: "Fosfatasa alcalina"
-    descripcion: "Enzima anclada a la membrana del osteoblasto y a las vesículas de la matriz. Elimina el pirofosfato, que inhibe la mineralización, y aporta fosfato. Su forma ósea en sangre es un marcador de formación."
-  - id: osteocalcina
-    etiqueta: "Osteocalcina"
-    descripcion: "Una de las proteínas no colágenas más abundantes de la matriz. Se une a la hidroxiapatita y aparece en la etapa tardía del osteoblasto; su nivel en sangre indica actividad osteoblástica."
-  - id: ligandos_rankl_opg
-    etiqueta: "RANKL y OPG"
-    descripcion: "El osteoblasto muestra RANKL en su membrana y secreta OPG. RANKL activa el receptor RANK del precursor del osteoclasto; OPG captura RANKL y lo bloquea. La proporción entre ambos regula la resorción."
-  - id: uniones_comunicantes
-    etiqueta: "Uniones comunicantes"
-    descripcion: "Comunican a los osteoblastos entre sí y con las células de revestimiento y los osteocitos vecinos, y coordinan su actividad."
-  - id: frente_mineralizacion
-    etiqueta: "Frente de mineralización"
-    descripcion: "Límite entre el osteoide y el hueso mineralizado. Allí se depositan los cristales de hidroxiapatita (módulo 4)."
-  - id: hueso_mineralizado
-    etiqueta: "Hueso mineralizado"
-    descripcion: "Matriz ya endurecida por hidroxiapatita, que sostiene la capa de osteoide y de osteoblastos."
-  - id: celula_revestimiento
-    etiqueta: "Célula de revestimiento óseo"
-    descripcion: "Célula plana y alargada, con poco citoplasma, que cubre superficies sin formación ni resorción. Es un osteoblasto en reposo que puede reactivarse."
-requeridas: [nucleo_osteoblasto, reticulo_endoplasmico_rugoso, vesiculas_secrecion, osteoide, fosfatasa_alcalina, osteocalcina, ligandos_rankl_opg, celula_revestimiento]
-```
-
-### Seccion 2.3: El osteocito, sensor del hueso (id "m2_3_osteocito")
-
-#### Contenido
-
-Los osteocitos son osteoblastos que quedaron atrapados en la matriz que ellos mismos formaron. Son las células más abundantes del hueso adulto: aproximadamente 90 a 95 % [verificar]. El resto son osteoblastos, células de revestimiento y osteoclastos.
-
-No están dormidos. Forman una red que vigila el hueso y coordina a las demás células.
-
-**Cómo está construido**
-
-Al quedar atrapado, el osteoblasto emite prolongaciones, toma forma estrellada y reduce su retículo y su Golgi. Vive en una cavidad de la matriz y se comunica con sus vecinos a través de conductos finos.
-
-| Estructura | Qué es | Función |
-|---|---|---|
-| Laguna | Cavidad de la matriz mineralizada | Aloja el cuerpo del osteocito |
-| Canalículo | Conducto fino que atraviesa la matriz | Aloja una dendrita y un líquido; conecta lagunas |
-| Dendrita | Prolongación larga y delgada del osteocito | Contacta con otros osteocitos y con células de la superficie |
-| Unión comunicante | Canal entre células vecinas, formado sobre todo por conexina 43 | Deja pasar iones y moléculas pequeñas |
-
-El conjunto de lagunas, canalículos y dendritas es la **red lacuno-canalicular**. Llega hasta la superficie del hueso y hasta los vasos sanguíneos.
-
-> Recuerda: Laguna es el espacio del cuerpo, canalículo es el conducto y dendrita es la prolongación de la célula que viaja por el conducto.
-
-**Qué hace el osteocito**
-
-- **Percibe la carga mecánica.** Se propone que el flujo del líquido en los canalículos le informa cuánta fuerza recibe el hueso. En la mandíbula, la masticación y el movimiento dentario cargan al hueso alveolar y al cuerpo: allí los osteocitos traducen esa carga en señales de formación o de resorción. El módulo 3 lo desarrolla.
-- **Frena la formación con esclerostina.** La esclerostina se une a LRP5 y LRP6 y bloquea la vía Wnt/β-catenina en los osteoblastos.
-- **Regula la resorción.** Produce RANKL, y en ratones adultos es una fuente importante de RANKL en el remodelado [verificar]. Cuando un osteocito muere por apoptosis, se asocia con la llegada de osteoclastos.
-- **Regula el fosfato.** Produce FGF23, una hormona que controla la excreción renal de fosfato.
-
-> Dato: La carga mecánica reduce la producción de esclerostina y esto libera la formación de hueso. Por eso el hueso responde al uso (profundización para posgrado).
-
-> Clinico: Si la esclerostina falta o está muy reducida, como en la esclerosteosis (mutaciones de SOST) y en la enfermedad de van Buchem (deleción de un potenciador de SOST), el hueso se forma en exceso: hay sobrecrecimiento del cráneo y de la mandíbula. Al revés, el romosozumab, un anticuerpo que bloquea la esclerostina, se usa para tratar la osteoporosis.
-
-> Atencion: «Osteocito» no significa célula inactiva ni muerta. Es una célula viva, conectada y con funciones endocrinas y de señalización.
-
-#### Actividades
-
-##### Actividad m2_multicapa_osteocito
-
-```yaml
-# Ilustración realista exacta (tools/imagenes/texturizar.py, 2026-10-25): forma del dibujo validado, texturas de tejido real.
-tipo: multicapa
-titulo: "El osteocito en su laguna"
-instrucciones: "Toca cada parte del dibujo para leer qué es y qué hace. Visita las siete capas marcadas con un punto para completar la actividad. Con teclado: Tab pasa de una capa a otra y Enter la abre. Nada depende de pasar el mouse por encima."
-obligatoria: true
-puntaje_max: 20
-concepto: "osteocito_red"
-retroalimentacion:
-  acierto: "Bien. El osteocito vive en una laguna y se comunica por dendritas dentro de canalículos, con uniones comunicantes. Desde ahí detecta la carga y secreta esclerostina."
-  error: "Faltan capas requeridas. Revisa la laguna, los canalículos, las dendritas, las uniones comunicantes, la esclerostina y las células de la superficie."
-svg: m2_osteocito_lagunar
-modo: explorar
-capas:
-  - id: cuerpo_osteocito
-    etiqueta: "Cuerpo del osteocito"
-    descripcion: "Célula de forma estrellada, con núcleo grande y citoplasma escaso. Viene de un osteoblasto que quedó atrapado en el osteoide que secretó. Tiene menos retículo y Golgi que el osteoblasto."
-  - id: nucleo_osteocito
-    etiqueta: "Núcleo"
-    descripcion: "Ocupa gran parte del cuerpo celular. El osteocito mantiene actividad génica: por ejemplo, produce esclerostina y RANKL."
-  - id: laguna_osteocitica
-    etiqueta: "Laguna"
-    descripcion: "Cavidad de la matriz mineralizada que aloja el cuerpo del osteocito. Su forma refleja la de la célula."
-  - id: canaliculos
-    etiqueta: "Canalículos"
-    descripcion: "Conductos muy finos que salen de la laguna y atraviesan la matriz. Alojan las dendritas y un líquido, y conectan unas lagunas con otras."
-  - id: dendritas
-    etiqueta: "Dendritas"
-    descripcion: "Prolongaciones largas y delgadas del osteocito. Contactan con otros osteocitos, células de revestimiento y osteoblastos, y forman la red lacuno-canalicular."
-  - id: uniones_comunicantes
-    etiqueta: "Uniones comunicantes"
-    descripcion: "Canales formados sobre todo por conexina 43 en los puntos de contacto entre dendritas. Dejan pasar iones y moléculas pequeñas de una célula a otra."
-  - id: liquido_lacunocanalicular
-    etiqueta: "Líquido lacuno-canalicular"
-    descripcion: "Líquido que ocupa el espacio entre la dendrita y la pared del canalículo. Se propone que la carga mecánica lo desplaza y que el osteocito detecta ese flujo (módulo 3)."
-  - id: matriz_mineralizada
-    etiqueta: "Matriz mineralizada"
-    descripcion: "Hidroxiapatita y colágeno tipo I que rodean al osteocito. Los nutrientes llegan a las células profundas por la red de canalículos."
-  - id: esclerostina
-    etiqueta: "Esclerostina"
-    descripcion: "Proteína que secretan los osteocitos maduros. Se une a los correceptores LRP5 y LRP6 y frena la vía Wnt/β-catenina en los osteoblastos, con lo que se reduce la formación de hueso."
-  - id: celulas_superficie
-    etiqueta: "Osteoblastos y células de revestimiento"
-    descripcion: "En la superficie, los extremos de las dendritas contactan con estas células. Así el osteocito puede influir en lo que ocurre en la superficie del hueso."
-  - id: vaso_sanguineo
-    etiqueta: "Vaso sanguíneo"
-    descripcion: "Los vasos aportan oxígeno y nutrientes. El osteocito recibe su suministro por difusión a través de la red de canalículos."
-requeridas: [cuerpo_osteocito, laguna_osteocitica, canaliculos, dendritas, uniones_comunicantes, esclerostina, celulas_superficie]
-```
-
-##### Actividad m2_quiz_osteocito
-
-```yaml
-tipo: quiz
-titulo: "Repaso rápido del osteocito"
-instrucciones: "Responde tres preguntas y lee la explicación de cada una. Toca tu respuesta; con teclado, Tab hasta la opción y Enter. Esta actividad es de refuerzo: no bloquea el avance."
-obligatoria: false
-puntaje_max: 20
-concepto: "osteocito_red"
-retroalimentacion:
-  acierto: "Muy bien. Ya distingues las estructuras del osteocito y su papel con la esclerostina."
-  parcial: "Vas bien; repasa qué es cada estructura del osteocito y qué hace la esclerostina."
-  error: "Repasa la sección: el osteocito es la célula más abundante, vive en una laguna, extiende dendritas por canalículos y secreta esclerostina."
-preguntas:
-  - id: m2_qs_1
-    formato: opcion_multiple
-    enunciado: "¿Qué proporción aproximada de las células del hueso adulto son osteocitos?"
-    opciones:
-      - id: a
-        texto: "Menos de 5 %"
-      - id: b
-        texto: "Cerca de 50 %"
-      - id: c
-        texto: "Entre 90 y 95 %"
-      - id: d
-        texto: "Exactamente 100 %"
-    correcta: c
-    explicacion: "Los osteocitos son la gran mayoría de las células del hueso adulto: aproximadamente 90 a 95 %. Osteoblastos, células de revestimiento y osteoclastos suman el resto."
-    dificultad: 1
-    concepto: "osteocito_red"
-  - id: m2_qs_2
-    formato: opcion_multiple
-    enunciado: "¿Cuál es el efecto principal de la esclerostina secretada por los osteocitos?"
-    opciones:
-      - id: a
-        texto: "Frena la vía Wnt/β-catenina en los osteoblastos y reduce la formación ósea"
-      - id: b
-        texto: "Activa el receptor RANK y favorece la fusión de los precursores de osteoclastos"
-      - id: c
-        texto: "Aumenta la síntesis de colágeno tipo I y la actividad de los osteoblastos"
-      - id: d
-        texto: "Se une a RANKL, lo neutraliza e impide que active al receptor RANK"
-    correcta: a
-    explicacion: "La esclerostina se une a LRP5 y LRP6 y bloquea Wnt/β-catenina, un freno de la formación ósea. Neutralizar RANKL es función de la OPG, no de la esclerostina."
-    dificultad: 2
-    concepto: "esclerostina"
-  - id: m2_qs_3
-    formato: verdadero_falso
-    enunciado: "El cuerpo del osteocito se aloja en un canalículo y sus dendritas se alojan en la laguna."
-    opciones:
-      - id: verdadero
-        texto: "Verdadero"
-      - id: falso
-        texto: "Falso"
-    correcta: falso
-    explicacion: "Está al revés: el cuerpo del osteocito ocupa la laguna y las dendritas viajan por los canalículos."
-    dificultad: 1
-    concepto: "osteocito_red"
-```
-
-### Seccion 2.4: El osteoclasto, célula que reabsorbe (id "m2_4_osteoclasto")
-
-#### Contenido
-
-El osteoclasto es la célula que reabsorbe hueso. No viene del mesénquima: pertenece a la línea hematopoyética, la misma que forma las células de la sangre.
-
-**De monocito a osteoclasto**
-
-La secuencia es: célula madre hematopoyética, progenitor mieloide, precursor monocito-macrófago, preosteoclasto y osteoclasto multinucleado. Dos señales de los osteoblastos y de otras células del estroma dirigen su formación, y una tercera la frena:
-
-- **M-CSF** se une al receptor c-Fms del precursor. Mantiene vivos a los precursores, los hace dividirse y les induce el receptor RANK.
-- **RANKL** se une al receptor RANK del preosteoclasto. Activa las vías NF-κB y NFATc1, y con ellas la diferenciación, la fusión y la activación.
-- **OPG** es un receptor señuelo soluble. Se une a RANKL y le impide llegar a RANK. La proporción RANKL/OPG decide cuánto hueso se reabsorbe.
-
-> Recuerda: M-CSF permite que el precursor sobreviva y exprese RANK. RANKL lo convierte en osteoclasto. OPG frena a RANKL.
-
-> Dato: RANKL lo producen osteoblastos, células del estroma, osteocitos y células del ligamento periodontal. NFATc1 se considera el regulador maestro de la osteoclastogénesis (profundización para posgrado).
-
-**Un gigante multinucleado y polarizado**
-
-El osteoclasto se forma por la fusión de varios preosteoclastos, por eso tiene varios núcleos [verificar]. Cuando se activa, se polariza:
-
-- La **zona clara** es un anillo de citoplasma rico en actina que se adhiere a la matriz y sella el espacio de resorción.
-- Dentro del anillo, la membrana forma pliegues profundos: el **borde festoneado**, por donde salen protones y enzimas.
-- En el hueso queda una depresión, la **laguna de Howship**.
-
-**Cómo reabsorbe: primero el mineral, después el colágeno**
-
-1. Se adhiere a la matriz y sella con la zona clara.
-2. Acidifica el espacio sellado y disuelve la hidroxiapatita.
-3. Digiere el colágeno tipo I que queda expuesto.
-
-| Componente | Dónde está | Qué hace |
-|---|---|---|
-| Anhidrasa carbónica II | Citoplasma | Genera H+ y bicarbonato a partir de CO2 y agua |
-| Bomba de protones (V-ATPasa) | Borde festoneado | Bombea H+ al espacio sellado; el pH baja a aproximadamente 4,5 [verificar] |
-| Canal de cloruro (ClC-7) | Borde festoneado | Acompaña a los protones con Cl- y mantiene la neutralidad eléctrica |
-| Catepsina K | Espacio sellado | Corta el colágeno tipo I expuesto |
-| TRAP (fosfatasa ácida resistente al tartrato) | Osteoclasto | Marcador histoquímico de osteoclastos |
-
-> Clinico: Si el osteoclasto falla, el hueso se vuelve denso pero frágil (osteopetrosis). La deficiencia de anhidrasa carbónica II causa osteopetrosis con acidosis tubular renal. La deficiencia de catepsina K causa picnodisostosis, que incluye mandíbula pequeña con ángulo obtuso. Sin osteoclastos tampoco erupcionan los dientes, porque el hueso que los cubre no se reabsorbe.
-
-> Clinico: Los bisfosfonatos y el denosumab, un anticuerpo contra RANKL, reducen la actividad de los osteoclastos. Su uso se asocia a la osteonecrosis de los maxilares, que aparece con más frecuencia en la mandíbula que en el maxilar.
-
-> Atencion: Reabsorber no es «destruir». La resorción es la mitad del remodelado y libera factores del hueso que después estimulan la formación (módulo 5).
-
-#### Actividades
-
-##### Actividad m2_multicapa_osteoclasto
-
-```yaml
-tipo: multicapa
-titulo: "Identifica las partes del osteoclasto"
-instrucciones: "Lee la pista y toca la parte del dibujo que le corresponde. Si aciertas, se revela su nombre y su explicación; cada error resta una parte del puntaje. Con teclado: Tab recorre las capas y Enter elige la enfocada. Nada depende del mouse."
-obligatoria: true
-puntaje_max: 20
-concepto: "resorcion_osteoclastica"
-retroalimentacion:
-  acierto: "Bien. El osteoclasto se sella con la zona clara, acidifica con la bomba de protones y la anhidrasa carbónica II, y digiere el colágeno con catepsina K."
-  parcial: "Vas bien, pero algunas partes no coinciden con su pista. Repasa la tabla: primero el ácido disuelve el mineral y después la catepsina K digiere el colágeno."
-  error: "Alguna parte no coincide con su pista. Repasa la tabla de la sección: primero el mineral se disuelve con ácido y después el colágeno se digiere con catepsina K."
-svg: m2_osteoclasto_resorcion
-modo: identificar
-capas:
-  - id: nucleos_multiples
-    etiqueta: "Núcleos múltiples"
-    pista: "Varios centros de información genética dentro de una misma célula gigante."
-    descripcion: "Cada núcleo procede de un precursor mononuclear del linaje monocito-macrófago que se fusionó con otros; por eso la célula es gigante y multinucleada."
-  - id: zona_clara
-    etiqueta: "Zona clara"
-    pista: "Anillo de la célula, sin orgánulos, que se pega al hueso y aísla el espacio donde ocurre la resorción."
-    descripcion: "Anillo de citoplasma rico en filamentos de actina que se adhiere a la matriz mediante integrinas y sella el espacio de resorción. También se llama zona de sellado."
-  - id: borde_festoneado
-    etiqueta: "Borde festoneado"
-    pista: "Repliegues profundos de la membrana, dirigidos hacia el hueso, dentro del anillo de sellado."
-    descripcion: "Aumentan la superficie por la que salen protones y enzimas y entran los productos de degradación. También se llama borde rugoso."
-  - id: bomba_protones
-    etiqueta: "Bomba de protones (V-ATPasa)"
-    pista: "Complejo de membrana que gasta ATP para llevar H+ al espacio sellado."
-    descripcion: "Acidifica el espacio hasta un pH aproximado de 4,5 [verificar] y así disuelve la hidroxiapatita. Se ubica en el borde festoneado."
-  - id: canal_cloruro
-    etiqueta: "Canal de cloruro (ClC-7)"
-    pista: "Canal que acompaña a los protones con iones Cl- para mantener la neutralidad eléctrica."
-    descripcion: "Permite que se forme ácido clorhídrico en el espacio sellado; se ubica en el borde festoneado."
-  - id: anhidrasa_carbonica_ii
-    etiqueta: "Anhidrasa carbónica II"
-    pista: "Enzima del citoplasma que convierte CO2 y agua en ácido carbónico, fuente de los protones que se bombean."
-    descripcion: "El ácido carbónico se disocia en H+ y bicarbonato. Su deficiencia causa osteopetrosis con acidosis tubular renal."
-  - id: catepsina_k
-    etiqueta: "Catepsina K"
-    pista: "Proteasa que se secreta al espacio ácido y corta la proteína principal de la matriz orgánica."
-    descripcion: "Corta el colágeno tipo I que queda expuesto cuando el mineral se disuelve. Su deficiencia causa picnodisostosis."
-  - id: trap
-    etiqueta: "Fosfatasa ácida resistente al tartrato (TRAP)"
-    pista: "Enzima característica de estas células, detectable con una tinción histoquímica, que sobrevive a un inhibidor que apaga a las demás de su familia."
-    descripcion: "Permite reconocer a los osteoclastos en cortes histológicos; su isoforma 5b en sangre se usa como marcador de resorción."
-  - id: laguna_howship
-    etiqueta: "Laguna de Howship"
-    pista: "Depresión superficial excavada en el hueso, justo debajo de la célula que reabsorbe."
-    descripcion: "La célula se apoya dentro de ella. Después de la resorción, esa superficie excavada recibe a los osteoblastos que forman hueso nuevo (módulo 5)."
-  - id: matriz_mineralizada
-    etiqueta: "Matriz mineralizada"
-    pista: "Hueso que va a ser reabsorbido: cristales sobre una trama de colágeno."
-    descripcion: "Cristales de hidroxiapatita sobre una trama de colágeno tipo I. El ácido disuelve los cristales y después la catepsina K digiere el colágeno."
-  - id: receptores_rank_cfms
-    etiqueta: "Receptores RANK y c-Fms"
-    pista: "Proteínas de la membrana que reciben las señales de las células formadoras de hueso."
-    descripcion: "Reciben RANKL y M-CSF; de ellas depende que el precursor se diferencie, se fusione y se active. La OPG puede bloquear la señal de RANKL antes de que llegue a RANK."
-requeridas: [nucleos_multiples, zona_clara, borde_festoneado, bomba_protones, anhidrasa_carbonica_ii, catepsina_k, trap, laguna_howship, receptores_rank_cfms]
-```
-
-##### Actividad m2_arrastre_senales_linajes
-
-```yaml
-tipo: arrastre-molecular
-titulo: "Lleva cada señal a su lugar de acción"
-instrucciones: "Lleva cada señal hasta la etapa o el receptor donde actúa y observa el efecto. Arrastra con el dedo, o toca la molécula y luego el lugar; con teclado, Tab y Enter para tomar y soltar. Los fallos restan puntaje y hay moléculas que no encajan en ningún lugar."
-obligatoria: true
-puntaje_max: 40
-concepto: "senales_osteoclastogenicas"
-retroalimentacion:
-  acierto: "Muy bien. RUNX2 y osterix actúan dentro del núcleo, en ese orden, en la línea osteoblástica; M-CSF y RANKL actúan sobre receptores de membrana del linaje osteoclástico; y OPG intercepta a RANKL."
-  parcial: "Casi. Algunas señales están bien ubicadas. Recuerda: RUNX2 y osterix actúan en el núcleo del linaje osteoblástico; M-CSF se une a c-Fms, RANKL a RANK y OPG a RANKL."
-  error: "Alguna molécula no está en su lugar. Recuerda: los factores de transcripción (RUNX2, osterix) actúan en una etapa del osteoblasto; M-CSF se une a c-Fms; RANKL se une a RANK; OPG se une a RANKL."
-ilustracion: m2_arbol_linajes_oseos
-escena: "Árbol de dos linajes. A la izquierda, el osteoblástico: célula madre mesenquimal, preosteoblasto con RUNX2 sin osterix y osteoblasto con un ligando expuesto. A la derecha, el osteoclástico: precursor con c-Fms y preosteoclasto con RANK. Los acoples tienen contorno punteado; abajo, siete moléculas."
-moleculas:
-  - id: mol_runx2
-    nombre: "RUNX2"
-    descripcion: "Factor de transcripción (Cbfa1) que compromete a la célula mesenquimal con el linaje osteoblástico."
-  - id: mol_osterix
-    nombre: "Osterix (Sp7)"
-    descripcion: "Factor de transcripción que actúa después de RUNX2 y depende de él; necesario para formar osteoblastos funcionales."
-  - id: mol_mcsf
-    nombre: "M-CSF"
-    descripcion: "Factor estimulante de colonias de macrófagos, producido por osteoblastos y células del estroma."
-  - id: mol_rankl
-    nombre: "RANKL"
-    descripcion: "Ligando de la familia del TNF producido por osteoblastos, células del estroma y osteocitos; activa al receptor RANK."
-  - id: mol_opg
-    nombre: "OPG (osteoprotegerina)"
-    descripcion: "Receptor señuelo soluble producido por osteoblastos y células del estroma."
-  - id: mol_catepsina_k
-    nombre: "Catepsina K"
-    descripcion: "Proteasa de cisteína del osteoclasto maduro."
-  - id: mol_osteocalcina
-    nombre: "Osteocalcina"
-    descripcion: "Proteína de la matriz que secreta el osteoblasto maduro."
-receptores:
-  - id: rec_etapa_mesenquimal
-    nombre: "Etapa 1: célula mesenquimal sin factores osteoblásticos"
-    descripcion: "Célula madre mesenquimal que todavía no expresa RUNX2 ni osterix; su núcleo está gris."
-    capa: zona_etapa_mesenquimal
-  - id: rec_etapa_preosteoblasto
-    nombre: "Etapa 2: preosteoblasto con RUNX2 y sin osterix"
-    descripcion: "Célula ya comprometida con el linaje óseo que expresa RUNX2 pero aún no expresa osterix."
-    capa: zona_etapa_preosteoblasto
-  - id: rec_cfms
-    nombre: "Receptor c-Fms del precursor monocito-macrófago"
-    descripcion: "Receptor de membrana del precursor hematopoyético, todavía sin RANK."
-    capa: zona_receptor_cfms
-  - id: rec_rank
-    nombre: "Receptor RANK del preosteoclasto"
-    descripcion: "Receptor de membrana del preosteoclasto mononuclear."
-    capa: zona_receptor_rank
-  - id: rec_ligando_osteoblasto
-    nombre: "Ligando expuesto por el osteoblasto (diana de OPG)"
-    descripcion: "Molécula de la superficie del osteoblasto que activa al receptor RANK del preosteoclasto."
-    capa: zona_ligando_osteoblasto
-pares:
-  - molecula: mol_runx2
-    receptor: rec_etapa_mesenquimal
-    efecto:
-      titulo: "Compromiso con el linaje óseo"
-      descripcion: "RUNX2 se activa y la célula madre mesenquimal se convierte en osteoprogenitora comprometida. RUNX2 enciende genes osteoblásticos y el gen de osterix. Sin RUNX2 no se forman osteoblastos maduros."
-      que_se_anima: "senal_runx2 entra al núcleo de celula_madre_mesenquimal; el núcleo pasa de gris a color, la célula se alarga y cambia (fundido) a celula_osteoprogenitora."
-  - molecula: mol_osterix
-    receptor: rec_etapa_preosteoblasto
-    efecto:
-      titulo: "De preosteoblasto a osteoblasto"
-      descripcion: "Osterix, que actúa aguas abajo de RUNX2, lleva al preosteoblasto a completar su diferenciación y a expresar genes de la matriz (colágeno tipo I, osteopontina, osteocalcina). Así se convierte en osteoblasto que secreta osteoide. Sin osterix quedan precursores con RUNX2 y no se forma hueso."
-      que_se_anima: "senal_osterix entra al núcleo de preosteoblasto; la célula se vuelve cúbica (fundido a osteoblasto), el retículo rugoso se engruesa y se intensifica la secreción de osteoide hacia la superficie ósea."
-  - molecula: mol_mcsf
-    receptor: rec_cfms
-    efecto:
-      titulo: "Supervivencia y proliferación del precursor"
-      descripcion: "M-CSF se une a c-Fms. El precursor monocito-macrófago sobrevive, se divide y expresa el receptor RANK, con lo que queda listo para responder a RANKL."
-      que_se_anima: "senal_mcsf se acopla a zona_receptor_cfms; precursor_monocito_macrofago se divide en dos copias y aparece el símbolo del receptor RANK en su membrana."
-  - molecula: mol_rankl
-    receptor: rec_rank
-    efecto:
-      titulo: "Diferenciación, fusión y activación"
-      descripcion: "RANKL se une a RANK y activa las vías NF-κB y NFATc1. Los preosteoclastos se diferencian, se fusionan en una célula multinucleada y se activan. Esto ocurre solo si el precursor ya tiene RANK, lo que depende de M-CSF."
-      que_se_anima: "senal_rankl se acopla a zona_receptor_rank; dos o tres copias de preosteoclasto se acercan y se fusionan (fundido a osteoclasto) con varios núcleos visibles."
-  - molecula: mol_opg
-    receptor: rec_ligando_osteoblasto
-    efecto:
-      titulo: "Freno de la osteoclastogénesis"
-      descripcion: "OPG se une a RANKL y lo neutraliza. RANKL ya no llega a RANK: el preosteoclasto no se fusiona ni se activa y la resorción disminuye. La proporción RANKL/OPG regula el equilibrio de la resorción."
-      que_se_anima: "senal_opg cubre a senal_rankl en zona_ligando_osteoblasto; la flecha hacia el receptor RANK se corta con una cruz y el preosteoclasto vuelve a gris sin fusionarse."
-distractores:
-  - molecula: mol_catepsina_k
-    motivo: "La catepsina K es una enzima del osteoclasto ya maduro que degrada el colágeno tipo I. Es un producto de la célula diferenciada, no una señal que induzca la diferenciación, y no se une a ninguno de estos lugares."
-  - molecula: mol_osteocalcina
-    motivo: "La osteocalcina es una proteína de la matriz que secreta el osteoblasto maduro. Es un marcador de la diferenciación, no un factor que la dirija, y no actúa en ninguno de estos lugares."
-```
-
-##### Actividad m2_quiz_linajes
-
-```yaml
-tipo: quiz
-titulo: "Linajes y señales de las células óseas"
-instrucciones: "Responde cada pregunta y lee la explicación. En Ordenar pasos, toca los pasos en su orden (vuelve a tocar uno para quitarlo) y pulsa Comprobar. En opción múltiple, toca tu respuesta. Con teclado: Tab hasta el paso o la opción y Enter."
-obligatoria: true
-puntaje_max: 40
-concepto: "linaje_osteoclastico"
-retroalimentacion:
-  acierto: "Muy bien. Dominas los linajes: la ruta mesenquimal con RUNX2 y osterix, la ruta hematopoyética con M-CSF y RANKL, y el freno de OPG."
-  parcial: "Vas bien; repasa el orden de cada linaje y qué hace cada señal: RUNX2, osterix, M-CSF, RANKL y OPG."
-  error: "Repasa las secuencias: mesenquimal (célula madre, osteoprogenitora, preosteoblasto, osteoblasto, osteocito) y hematopoyética (célula madre, progenitor mieloide, precursor monocito-macrófago, preosteoclasto, osteoclasto)."
-preguntas:
-  - id: m2_ql_1
-    formato: ordenar_pasos
-    enunciado: "Ordena las etapas del linaje osteoblástico, de la primera a la última."
-    pasos:
-      - id: p_osteoblasto
-        texto: "Osteoblasto"
-      - id: p_madre
-        texto: "Célula madre mesenquimal"
-      - id: p_osteocito
-        texto: "Osteocito"
-      - id: p_preosteoblasto
-        texto: "Preosteoblasto"
-      - id: p_progenitora
-        texto: "Célula osteoprogenitora"
-    correcta: [p_madre, p_progenitora, p_preosteoblasto, p_osteoblasto, p_osteocito]
-    explicacion: "La célula madre mesenquimal se compromete (osteoprogenitora), se prepara (preosteoblasto), forma matriz (osteoblasto) y algunos osteoblastos quedan atrapados como osteocitos."
-    dificultad: 1
-    concepto: "linaje_osteoblastico"
-  - id: m2_ql_2
-    formato: ordenar_pasos
-    enunciado: "Ordena las etapas del linaje del osteoclasto, de la primera a la última."
-    pasos:
-      - id: p_osteoclasto
-        texto: "Osteoclasto multinucleado"
-      - id: p_preosteoclasto
-        texto: "Preosteoclasto mononuclear con RANK"
-      - id: p_hematopoyetica
-        texto: "Célula madre hematopoyética"
-      - id: p_monocito
-        texto: "Precursor monocito-macrófago"
-      - id: p_mieloide
-        texto: "Progenitor mieloide"
-    correcta: [p_hematopoyetica, p_mieloide, p_monocito, p_preosteoclasto, p_osteoclasto]
-    explicacion: "El osteoclasto viene de la médula ósea: célula madre hematopoyética, progenitor mieloide, precursor monocito-macrófago y preosteoclasto. La fusión de preosteoclastos da el osteoclasto multinucleado."
-    dificultad: 2
-    concepto: "linaje_osteoclastico"
-  - id: m2_ql_3
-    formato: ordenar_pasos
-    enunciado: "Ordena los eventos moleculares de la formación de hueso, del más temprano al más tardío."
-    pasos:
-      - id: p_osteocalcina
-        texto: "Se expresa osteocalcina durante la mineralización"
-      - id: p_osterix
-        texto: "Se activa osterix"
+      - id: p_condensacion
+        texto: "Condensación mesenquimal: las células mesenquimales se agrupan en una región donde comienza la formación ósea."
+      - id: p_diferenciacion
+        texto: "Diferenciación osteoblástica: las células mesenquimales adquieren un fenotipo osteogénico y se diferencian en osteoblastos."
       - id: p_osteoide
-        texto: "El osteoblasto maduro secreta osteoide"
-      - id: p_runx2
-        texto: "Se activa RUNX2"
-    correcta: [p_runx2, p_osterix, p_osteoide, p_osteocalcina]
-    explicacion: "RUNX2 se activa primero y compromete a la célula; osterix actúa después, aguas abajo de RUNX2, y completa la diferenciación del osteoblasto. El osteoblasto maduro secreta osteoide, y la osteocalcina es un marcador tardío asociado a la mineralización."
-    dificultad: 2
-    concepto: "factores_transcripcion"
-  - id: m2_ql_4
-    formato: ordenar_pasos
-    enunciado: "Ordena la señalización que forma un osteoclasto, de la primera a la última."
-    pasos:
-      - id: p_fusion
-        texto: "Los preosteoclastos se fusionan y forman una célula multinucleada"
-      - id: p_rankl
-        texto: "RANKL se une a RANK del preosteoclasto"
-      - id: p_adhesion
-        texto: "El osteoclasto multinucleado se activa, se polariza y forma la zona clara"
-      - id: p_mcsf
-        texto: "M-CSF se une a c-Fms y el precursor sobrevive y expresa RANK"
-    correcta: [p_mcsf, p_rankl, p_fusion, p_adhesion]
-    explicacion: "M-CSF va primero: mantiene vivo al precursor y le induce RANK. Luego RANKL activa la diferenciación, los preosteoclastos se fusionan y el osteoclasto se adhiere al hueso y se activa."
-    dificultad: 3
-    concepto: "senales_osteoclastogenicas"
-  - id: m2_ql_5
-    formato: opcion_multiple
-    enunciado: "¿Qué efecto tiene la osteoprotegerina (OPG)?"
-    opciones:
-      - id: a
-        texto: "Se une a c-Fms y bloquea la acción de M-CSF"
-      - id: b
-        texto: "Activa RANK y promueve la fusión de los preosteoclastos"
-      - id: c
-        texto: "Se une a RANKL y le impide activar el receptor RANK"
-      - id: d
-        texto: "Inhibe la anhidrasa carbónica II del osteoclasto maduro"
-    correcta: c
-    explicacion: "La OPG es un receptor señuelo soluble: captura RANKL y le impide unirse a RANK. Así frena la formación y la activación de osteoclastos."
-    dificultad: 2
-    concepto: "senales_osteoclastogenicas"
-  - id: m2_ql_6
-    formato: opcion_multiple
-    enunciado: "Un niño tiene clavículas hipoplásicas, fontanelas que cierran tarde y dientes que erupcionan con retraso. ¿Qué factor de transcripción está alterado?"
-    opciones:
-      - id: a
-        texto: "NFATc1, regulador maestro de la osteoclastogénesis"
-      - id: b
-        texto: "RUNX2, necesario para el compromiso con el linaje óseo"
-      - id: c
-        texto: "Osterix, necesario solo para la etapa final del osteoblasto"
-      - id: d
-        texto: "Esclerostina, que frena la vía Wnt en los osteoblastos"
-    correcta: b
-    explicacion: "Es el cuadro de la displasia cleidocraneal, por reducción de RUNX2 funcional. Sin RUNX2 suficiente, el linaje óseo no se compromete bien. La falta de esclerostina produce lo contrario: exceso de hueso."
-    dificultad: 3
-    concepto: "factores_transcripcion"
+        texto: "Producción de osteoide: los osteoblastos sintetizan la matriz orgánica que posteriormente se mineraliza."
+      - id: p_mineralizacion
+        texto: "Mineralización de la matriz: el osteoide adquiere componentes minerales que le confieren dureza y resistencia."
+      - id: p_expansion
+        texto: "Expansión del centro de osificación: aumenta la extensión de la matriz ósea y se incorporan osteocitos a medida que algunos osteoblastos quedan incluidos en ella."
+    correcta: [p_condensacion, p_diferenciacion, p_osteoide, p_mineralizacion, p_expansion]
+    explicacion: "Secuencia: condensación mesenquimal → diferenciación osteoblástica → producción de osteoide → mineralización de la matriz → expansión del centro de osificación."
 ```
 
-### Seccion 2.5: El ligamento periodontal y el hueso alveolar (id "m2_5_ligamento_periodontal")
-
-#### Contenido
-
-El diente no toca el hueso. Entre la raíz y el hueso alveolar hay un tejido conectivo fibroso, el **ligamento periodontal**, de aproximadamente 0,15 a 0,4 mm de ancho [verificar]. Los fibroblastos, cementoblastos y progenitores del ligamento derivan del folículo dental, es decir, del ectomesénquima de la cresta neural: la misma familia celular de la mandíbula. Los osteoclastos vienen de la médula ósea y los restos de Malassez son epiteliales.
-
-**Quién vive en el ligamento periodontal**
-
-| Célula | Qué hace | Relación con el hueso |
-|---|---|---|
-| Fibroblastos periodontales | Sintetizan y renuevan el colágeno; son la población más abundante | Expresan RANKL y OPG; algunos son progenitores |
-| Células progenitoras perivasculares | Reponen fibroblastos, cementoblastos y osteoblastos | Fuente de osteoblastos para el hueso alveolar |
-| Cementoblastos | Depositan el cemento sobre la raíz | Forman el cemento donde se insertan las fibras |
-| Osteoblastos | Se alinean en la cara del hueso alveolar que mira al ligamento | Forman hueso alveolar |
-| Osteoclastos | Aparecen en la superficie del hueso cuando hay resorción | Reabsorben el hueso alveolar |
-| Restos epiteliales de Malassez | Cúmulos de células epiteliales cerca del cemento; remanentes de la vaina epitelial de Hertwig | No son células óseas |
-
-**Fibras de Sharpey y hueso alveolar propio**
-
-Las fibras principales de colágeno del ligamento quedan incluidas, por sus extremos, en el cemento y en el hueso alveolar. Esos extremos son las fibras de Sharpey. Anclan el diente al alvéolo y transmiten al hueso las fuerzas de la masticación.
-
-El **hueso alveolar propio** es la lámina delgada de hueso compacto que reviste el alvéolo. Recibe las fibras de Sharpey y por eso se llama también hueso fasciculado. En las radiografías se ve como la lámina dura.
-
-> Recuerda: El hueso alveolar depende del diente. Se forma con la erupción y, si el diente se pierde, se reabsorbe de forma progresiva, más rápido en los primeros meses.
-
-**Fuerza y remodelado: el caso de la ortodoncia**
-
-Cuando una fuerza empuja un diente, el ligamento se comprime en un lado y se estira en el otro:
-
-- **Lado de presión:** aumenta RANKL, se forman osteoclastos y el hueso alveolar se reabsorbe. Así se abre espacio.
-- **Lado de tensión:** se estimula a los osteoblastos y se forma hueso.
-
-El diente se desplaza a través del hueso porque uno de los lados se reabsorbe y el otro se forma.
-
-> Dato: Las células del ligamento y los osteocitos detectan la deformación. Ese mecanismo se estudia en el módulo 3 (profundización para posgrado).
-
-> Clinico: En la periodontitis, la inflamación aumenta la proporción RANKL/OPG y se pierde hueso alveolar. Es el mismo eje RANKL/OPG de la ortodoncia, pero activado por la inflamación y no por una fuerza controlada.
-
-**Resumen del módulo**
-
-| Célula | Origen | Función | Marcador o señal principal |
-|---|---|---|---|
-| Osteoprogenitora | Mesenquimal | Se divide y forma osteoblastos | RUNX2 |
-| Osteoblasto | Mesenquimal | Forma el osteoide y regula la mineralización y a los osteoclastos | Osterix; colágeno tipo I, fosfatasa alcalina, osteocalcina; RANKL y OPG |
-| Célula de revestimiento | Mesenquimal | Cubre la superficie en reposo y puede reactivarse | Célula aplanada |
-| Osteocito | Mesenquimal | Percibe la carga y regula la formación y la resorción | Esclerostina |
-| Osteoclasto | Hematopoyético | Reabsorbe hueso | M-CSF y RANKL inducen; TRAP y catepsina K lo identifican |
-
-> Atencion: Que la mandíbula tenga origen en la cresta neural no cambia a sus osteoclastos: siguen viniendo de la médula ósea. Lo que cambia es el origen de las células formadoras.
-
-#### Actividades
-
-##### Actividad m2_multicapa_ligamento_periodontal
-
-```yaml
-tipo: exploracion-3d
-titulo: "Identifica las partes del ligamento periodontal"
-instrucciones: "Lee la pista y toca la parte del dibujo que le corresponde. Si aciertas, se revela su nombre y su explicación; cada error resta una parte del puntaje. Con teclado: Tab recorre las capas y Enter elige la enfocada. Nada depende del mouse."
-obligatoria: true
-puntaje_max: 20
-concepto: "Ligamento periodontal"
-retroalimentacion:
-  acierto: "Bien. Ubicaste las células del ligamento y del hueso alveolar, y entendiste qué ocurre en el lado de presión y en el lado de tensión."
-  parcial: "Vas bien; repasa la tabla de células del ligamento y qué ocurre en el lado de presión (resorción) y en el de tensión (formación)."
-  error: "Alguna capa no coincide con su pista. Repasa la tabla de células del ligamento y recuerda: presión, resorción por osteoclastos; tensión, formación por osteoblastos."
-# 2026-10-18: pasa del dibujo SVG (m2_ligamento_periodontal) a un modelo 3D de la raíz en su alvéolo construido por
-# código (la ilustración hecha con IA tenía errores). Mismas partes, textos, pistas, requeridas y puntaje; conserva el
-# modo identificar (exploración 3D con consignas).
-modelo: ligamento_periodontal
-modo: identificar
-hotspots:
-  - id: cemento_radicular
-    etiqueta: "Cemento radicular"
-    descripcion: "Tejido mineralizado que cubre la dentina de la raíz y recibe los extremos de las fibras que anclan el diente."
-  - id: ligamento_periodontal
-    etiqueta: "Ligamento periodontal"
-    descripcion: "Tejido conectivo fibroso, muy celular y vascularizado, situado entre la raíz y el hueso. Mide aproximadamente entre 0,15 y 0,4 mm de ancho [verificar] y amortigua las fuerzas de la masticación. En el modelo está ensanchado para que se vean sus células."
-  - id: fibras_sharpey
-    etiqueta: "Fibras de Sharpey"
-    descripcion: "Son los extremos de las fibras principales del ligamento. Transmiten al hueso alveolar las fuerzas de la masticación."
-    pista: "Extremos de los haces de colágeno que quedan incluidos en el cemento y en el hueso y anclan el diente."
-  - id: hueso_alveolar_propio
-    etiqueta: "Hueso alveolar propio"
-    descripcion: "También se llama hueso fasciculado. Está perforado por conductos vasculares y en la radiografía se ve como la lámina dura."
-    pista: "Lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de anclaje."
-  - id: fibroblastos_periodontales
-    etiqueta: "Fibroblastos periodontales"
-    descripcion: "Además expresan RANKL y OPG, con lo que participan en el control de los osteoclastos. Algunos son progenitores."
-    pista: "Células más abundantes del tejido fibroso situado entre la raíz y el hueso; renuevan su colágeno de forma continua."
-  - id: celulas_progenitoras_perivasculares
-    etiqueta: "Células progenitoras perivasculares"
-    descripcion: "Células madre mesenquimales cercanas a los vasos que reponen fibroblastos, cementoblastos y osteoblastos."
-  - id: cementoblastos
-    etiqueta: "Cementoblastos"
-    descripcion: "Forman el cemento radicular. Derivan del folículo dental, es decir, del ectomesénquima."
-    pista: "Células cúbicas sobre la superficie de la raíz que depositan el tejido mineralizado donde se insertan las fibras."
-  - id: osteoblastos_alveolares
-    etiqueta: "Osteoblastos alveolares"
-    descripcion: "Forman hueso alveolar, sobre todo en el lado de tensión. Sus progenitores provienen de células perivasculares del ligamento."
-    pista: "Células formadoras de hueso alineadas en la cara del hueso que mira al tejido fibroso entre la raíz y el hueso."
-  - id: osteoclastos_alveolares
-    etiqueta: "Osteoclastos alveolares"
-    descripcion: "Predominan en el lado de presión. Vienen de la médula ósea, no del folículo dental."
-    pista: "Células gigantes multinucleadas que, cuando hay resorción, se apoyan en depresiones de la superficie del hueso."
-  - id: restos_epiteliales_malassez
-    etiqueta: "Restos epiteliales de Malassez"
-    descripcion: "Son remanentes de la vaina epitelial radicular de Hertwig. No son células óseas ni mesenquimales."
-    pista: "Pequeños cúmulos de células cerca del cemento, vestigios de la estructura que guió la formación de la raíz."
-  - id: lado_presion
-    etiqueta: "Lado de presión"
-    descripcion: "Allí aumenta RANKL y predomina la resorción ósea, lo que abre espacio para el movimiento del diente."
-    pista: "Región del tejido fibroso entre la raíz y el hueso que se comprime cuando una fuerza empuja el diente."
-  - id: lado_tension
-    etiqueta: "Lado de tensión"
-    descripcion: "Allí se estimula a los osteoblastos y predomina la formación de hueso."
-    pista: "Región del tejido fibroso entre la raíz y el hueso que se estira cuando una fuerza empuja el diente."
-requeridos: [fibras_sharpey, hueso_alveolar_propio, fibroblastos_periodontales, cementoblastos, osteoblastos_alveolares, osteoclastos_alveolares, restos_epiteliales_malassez, lado_presion, lado_tension]
-```
-
-##### Actividad m2_relacion_celulas_funciones
-
-```yaml
-tipo: relacion-columnas
-titulo: "Une cada célula con su función"
-instrucciones: "Une cada célula de la izquierda con su función de la derecha: toca una célula y luego su función (o arrástrala); toca un par unido para deshacerlo. Con teclado: Tab y Enter. Ojo: hay funciones que no corresponden a ninguna célula."
-obligatoria: true
-puntaje_max: 30
-concepto: "funciones_celulas_oseas"
-retroalimentacion:
-  acierto: "Muy bien. Relacionas cada célula ósea con su función y su marcador principal."
-  parcial: "Vas bien, pero repasa qué célula forma hueso, cuál lo reabsorbe y cuál vive dentro de la matriz."
-  error: "Hay pares equivocados. Recuerda: el osteoblasto forma osteoide, el osteocito percibe la carga y secreta esclerostina, el osteoclasto reabsorbe, y la célula de revestimiento es un osteoblasto en reposo."
-izquierda:
-  - id: c_mesenquimal
-    texto: "Célula madre mesenquimal"
-  - id: c_osteoprogenitora
-    texto: "Célula osteoprogenitora"
-  - id: c_osteoblasto
-    texto: "Osteoblasto"
-  - id: c_revestimiento
-    texto: "Célula de revestimiento óseo"
-  - id: c_osteocito
-    texto: "Osteocito"
-  - id: c_osteoclasto
-    texto: "Osteoclasto"
-  - id: c_fibroblasto_pdl
-    texto: "Fibroblasto del ligamento periodontal"
-derecha:
-  - id: f_multipotente
-    texto: "Multipotente: puede originar osteoblastos, condrocitos y adipocitos"
-  - id: f_comprometida
-    texto: "Comprometida con el linaje óseo; fusiforme, se divide y expresa RUNX2"
-  - id: f_osteoide
-    texto: "Sintetiza el osteoide y expresa fosfatasa alcalina, osteocalcina, RANKL y OPG"
-  - id: f_reposo
-    texto: "Cubre superficies óseas en reposo y puede reactivarse como osteoblasto"
-  - id: f_esclerostina
-    texto: "Vigila la carga mecánica desde su laguna y secreta esclerostina"
-  - id: f_resorcion
-    texto: "Reabsorbe hueso con zona clara, borde festoneado, protones y catepsina K"
-  - id: f_colageno
-    texto: "Renueva de forma continua el colágeno de las fibras que anclan el diente al hueso alveolar"
-  - id: f_cartilago
-    texto: "Sintetiza matriz cartilaginosa rica en colágeno tipo II y agrecano"
-  - id: f_esmalte
-    texto: "Forma el esmalte dental"
-pares:
-  - izquierda: c_mesenquimal
-    derecha: f_multipotente
-    explicacion: "La célula madre mesenquimal se autorrenueva y, según las señales, origina osteoblastos, condrocitos o adipocitos."
-  - izquierda: c_osteoprogenitora
-    derecha: f_comprometida
-    explicacion: "RUNX2 compromete a la célula con el linaje óseo; la osteoprogenitora es fusiforme y todavía se divide."
-  - izquierda: c_osteoblasto
-    derecha: f_osteoide
-    explicacion: "El osteoblasto secreta el osteoide y expresa fosfatasa alcalina y osteocalcina; con RANKL y OPG regula a los osteoclastos."
-  - izquierda: c_revestimiento
-    derecha: f_reposo
-    explicacion: "La célula de revestimiento es un osteoblasto aplanado y en reposo que puede reactivarse."
-  - izquierda: c_osteocito
-    derecha: f_esclerostina
-    explicacion: "El osteocito vive en su laguna, percibe la carga mecánica y secreta esclerostina, que frena la formación de hueso."
-  - izquierda: c_osteoclasto
-    derecha: f_resorcion
-    explicacion: "El osteoclasto se sella con la zona clara, acidifica con protones y digiere el colágeno con catepsina K."
-  - izquierda: c_fibroblasto_pdl
-    derecha: f_colageno
-    explicacion: "Los fibroblastos del ligamento renuevan el colágeno de las fibras que anclan el diente al hueso alveolar."
-```
-
-##### Actividad m2_evaluacion_final
+##### Actividad m2_1_evaluacion
 
 ```yaml
 tipo: quiz
-titulo: "Evaluación final del módulo 2"
-instrucciones: "Responde las diez preguntas; tras cada una verás la explicación. Toca tu respuesta; en Ordenar pasos, toca los pasos en su orden y pulsa Comprobar. Con teclado: Tab y Enter. Cada pregunta vale 10 puntos; para el logro se sugiere alcanzar 70."
+titulo: "Evaluación: el origen de las células óseas"
+instrucciones: "Responde cada pregunta. Después de responder verás la justificación."
 obligatoria: true
-puntaje_max: 100
-concepto: "evaluacion_modulo_2"
+puntaje_max: 30
+concepto: "origen_celulas_oseas"
 retroalimentacion:
-  acierto: "Excelente. Completaste el módulo 2 y obtienes el logro «Célula por célula»."
-  parcial: "Vas por buen camino. Repasa las secciones donde fallaste; el mentor puede ayudarte con los conceptos que más te costaron."
-  error: "Repasa las secciones donde fallaste. El mentor puede ayudarte con los conceptos que más te costaron; después puedes repetir la evaluación."
+  acierto: "Respondiste correctamente las preguntas de esta evaluación."
+  parcial: "Algunas respuestas no son correctas. Lee la justificación de cada pregunta."
+  error: "Revisa la justificación de cada pregunta y vuelve a leer la sección."
 preguntas:
-  - id: m2_qf_1
+  - id: m2_1_e1
     formato: opcion_multiple
-    enunciado: "¿Cómo se forma el cuerpo de la mandíbula?"
+    enunciado: "¿Cuál es una función de las células madre y progenitoras esqueléticas?"
     opciones:
       - id: a
-        texto: "Por osificación endocondral del cartílago de Meckel"
+        texto: "Resorber exclusivamente la matriz mineralizada"
       - id: b
-        texto: "Por osificación endocondral de un cartílago secundario"
+        texto: "Mantener y regenerar componentes del esqueleto"
       - id: c
-        texto: "Por osificación intramembranosa, junto al cartílago de Meckel"
+        texto: "Formar únicamente adipocitos"
       - id: d
-        texto: "Por calcificación del ligamento periodontal que rodea a los dientes"
-    correcta: c
-    explicacion: "El cuerpo mandibular se forma por osificación intramembranosa junto al cartílago de Meckel, que solo lo guía. La osificación endocondral de un cartílago secundario corresponde al cóndilo."
-    dificultad: 1
-    concepto: "osificacion_mandibular"
-  - id: m2_qf_2
+        texto: "Producir exclusivamente células sanguíneas"
+    correcta: b
+    explicacion: "Estas poblaciones participan en el crecimiento, mantenimiento y reparación del tejido esquelético."
+  - id: m2_1_e2
     formato: opcion_multiple
-    enunciado: "¿Qué característica describe a una célula madre mesenquimal?"
+    enunciado: "¿Qué señales favorecen la supervivencia, proliferación y diferenciación de los precursores osteoclásticos?"
     opciones:
       - id: a
-        texto: "Se autorrenueva y es multipotente: origina osteoblastos, condrocitos o adipocitos"
+        texto: "M-CSF y RANKL"
       - id: b
-        texto: "Es multinucleada y reabsorbe hueso con un borde festoneado y una zona clara"
+        texto: "Prx1 y Prrx1"
       - id: c
-        texto: "Expresa TRAP y catepsina K y digiere el colágeno de la matriz ósea"
+        texto: "Lepr y PDGFRα"
       - id: d
-        texto: "Está diferenciada de forma terminal y ya no puede dividirse ni autorrenovarse"
+        texto: "Colágeno y osteoide"
     correcta: a
-    explicacion: "La célula madre mesenquimal se autorrenueva y es multipotente. Ser multinucleada y expresar TRAP y catepsina K son rasgos del osteoclasto, que es hematopoyético."
-    dificultad: 2
-    concepto: "celulas_madre_mesenquimales"
-  - id: m2_qf_3
+    explicacion: "Ambas señales son reguladoras de la diferenciación de los precursores osteoclásticos."
+  - id: m2_1_e3
+    formato: verdadero_falso
+    enunciado: "Todo el esqueleto craneofacial se desarrolla mediante osificación intramembranosa, por lo que el cóndilo mandibular sigue el mismo mecanismo de formación que la mayor parte del maxilar y del cuerpo mandibular."
+    opciones:
+      - id: verdadero
+        texto: "Verdadero"
+      - id: falso
+        texto: "Falso"
+    correcta: falso
+    explicacion: "La mayor parte del maxilar y del cuerpo mandibular se desarrolla mediante osificación intramembranosa, mientras que el cóndilo mandibular se desarrolla principalmente mediante osificación endocondral a través del cartílago condilar."
+```
+
+### Seccion 2.2: Osteoblastos: las células formadoras (id "m2_2_osteoblastos")
+
+<!-- Entrada de la sección (texto de la Imagen #1, «¿Qué es un osteoblasto?»): 1009 caracteres, más que el máximo del
+«resumen» de sección (600); va como primer bloque del contenido. -->
+
+#### Contenido
+
+**¿Qué es un osteoblasto?**
+
+El osteoblasto es una célula especializada del linaje osteogénico, derivada de células madre y progenitoras esqueléticas que adquieren progresivamente un compromiso hacia la diferenciación osteoblástica; se localiza principalmente sobre las superficies donde ocurre formación de tejido óseo y participa en la formación, mantenimiento y regulación de la matriz ósea. Su actividad permite generar nuevo tejido óseo y coordinar este proceso con las señales provenientes de otras células del microambiente.
+
+A diferencia de los osteoclastos, que pertenecen al linaje hematopoyético y se especializan en la resorción ósea, los osteoblastos pertenecen al linaje mesenquimal/esquelético y están asociados principalmente con la formación y regulación del tejido óseo; a su vez, los osteoblastos pueden posteriormente dar origen a osteocitos o células de revestimiento óseo, por lo que forman parte de un continuo celular fundamental para la renovación y mantenimiento del esqueleto.
+
+**Del progenitor esquelético al osteoblasto**
+
+Los progenitores esqueléticos poseen la capacidad de generar diferentes tipos celulares; para convertirse en osteoblastos, deben comprometerse progresivamente con el linaje osteogénico, es decir, activar un programa celular que restringe otros posibles destinos y favorece la adquisición de características propias de las células formadoras de hueso. Este proceso está determinado por la interacción entre las características del progenitor y las señales que recibe de su microambiente.
+
+> Atencion: No se trata de una transformación instantánea, sino de una secuencia progresiva de cambios en la expresión de genes, la morfología y la función celular.
+
+**Identidad osteoblástica**
+
+Durante la diferenciación, la célula comienza a activar genes que permiten adquirir y mantener el programa osteoblástico; para ello intervienen factores de transcripción, proteínas capaces de regular la expresión de otros genes al controlar qué información genética se activa dentro del núcleo. Entre los factores más importantes se encuentran RUNX2 y SP7/Osterix, ambos son fundamentales para establecer el programa de diferenciación osteoblástica, aunque participan en momentos y funciones diferentes dentro del proceso.
+
+**Marcadores de diferenciación**
+
+Los marcadores de diferenciación permiten reconocer los cambios que experimentan los progenitores durante la adquisición del fenotipo osteoblástico; su expresión varía a lo largo del proceso y refleja la activación progresiva de programas celulares asociados con el compromiso osteogénico, la maduración y la especialización funcional. Sin embargo, ningún marcador aislado permite determinar por sí solo el estado de diferenciación, por lo que su interpretación debe considerar el conjunto de moléculas expresadas y la etapa del proceso en la que se encuentra la célula.
+
+**Morfología y características del osteoblasto**
+
+La morfología de los osteoblastos varía según su estado funcional, pues, aunque la madurez corresponde a su grado de diferenciación, la actividad determina su desempeño secretor; por ello, los osteoblastos con baja actividad pueden presentar una forma aplanada, mientras que los activos adquieren una morfología cúbica o ligeramente cilíndrica y se organizan generalmente en una capa continua sobre las superficies donde se forma tejido óseo, con un citoplasma abundante, un núcleo generalmente excéntrico y una marcada polaridad celular, orientada hacia la superficie donde se deposita la nueva matriz.
+
+Esta polaridad se refleja en la distribución de sus organelos, con el núcleo situado más lejos de la superficie de formación y una región secretora orientada hacia ella, donde el retículo endoplasmático rugoso (RER) y el aparato de Golgi, ambos muy desarrollados, participan en la síntesis, el procesamiento y el empaquetamiento de las proteínas de la matriz, mientras que las mitocondrias suministran la energía necesaria y las vesículas secretoras transportan los productos celulares para su liberación.
+
+**Organelos principales**
+
+En conjunto, el desarrollo de estos organelos refleja la capacidad del osteoblasto para producir y secretar los componentes de la matriz, su abundancia y organización pueden variar según el estado funcional de la célula.
+
+**¿Dónde se encuentran?**
+
+> Dato: En el hueso alveolar, los osteoblastos se localizan sobre las superficies donde ocurre formación y remodelado, incluida la superficie del hueso alveolar propiamente dicho que está en relación con el ligamento periodontal; en esta región participan en la adaptación del hueso a las demandas mecánicas y en el mantenimiento del soporte dentario
+
+**Regulación de la diferenciación y actividad osteoblástica**
+
+La diferenciación y actividad de los osteoblastos dependen de la integración de señales moleculares, hormonales, celulares y mecánicas procedentes de la propia célula y de su microambiente, las cuales pueden favorecer el compromiso de los progenitores hacia el linaje osteoblástico y estimular la actividad formadora de las células maduras, o bien limitar su diferenciación y función. Entre los principales reguladores se encuentran las vías de señalización Wnt/β-catenina y BMP, las hormonas sistémicas, como la PTH y la vitamina D, y las señales del microambiente óseo y las cargas mecánicas, que actúan de manera coordinada para modular el comportamiento de estas células.
+
+**Señales osteoinductoras: Wnt/β-catenina y BMP**
+
+Las señales osteoinductoras regulan el compromiso de los progenitores hacia el linaje osteoblástico y modulan la actividad de los osteoblastos durante la formación ósea; entre las principales se encuentran las vías Wnt/β-catenina y BMP, que integran señales del microambiente y activan programas de expresión génica asociados con la diferenciación osteoblástica. Además, otras vías como TGF-β, FGF, Hedgehog, Notch e IGF-1 participan en la regulación del linaje osteoblástico, aunque sus efectos dependen del tipo celular, el estado de diferenciación y el contexto del microambiente, por lo que pueden actuar principalmente sobre la proliferación, supervivencia, maduración o actividad de estas células; se destacan Wnt y BMP como vías centrales para comprender la inducción del programa osteogénico, mientras que las demás se consideran señales reguladoras complementarias.
+
+**Regulación hormonal y sistémica**
+
+**PTH (hormona paratiroidea):** Hormona producida por las cuatro glándulas paratiroides
+
+↓ Ca²⁺ en sangre → paratiroides lo detecta → ↑ PTH → recupera Ca²⁺ extrayendolo del hueso.
+
+- PTH intermitente → ↑ actividad osteoblástica → ↑ formación ósea
+- PTH sostenida → ↑ remodelado y puede favorecer la resorción mediante RANKL.
+
+**Vitamina D:** Nutriente liposoluble esencial que actúa en el cuerpo como una hormona
+
+- Vitamina D activa → ↑ absorción intestinal de Ca²⁺ y P → ↑ disponibilidad de minerales para el hueso.
+
+Además, regula genes osteoblásticos y ↑ RANKL, favoreciendo la comunicación con los osteoclastos.
+
+**IGF-1 (factor de crecimiento similar a la insulina tipo 1):** Hormona producida principalmente en el hígado en respuesta al estímulo de la hormona del crecimiento
+
+- IGF-1 → ↑ proliferación y supervivencia de osteoblastos → ↑ síntesis de matriz, especialmente colágeno tipo I.
+
+Hormonas sexuales:
+
+- **Estrógenos:** Estrógenos → favorecen supervivencia osteoblástica + ↓ apoptosis → mantenimiento de la masa ósea.
+- **Andrógenos:** Andrógenos → favorecen actividad osteoblástica y masa ósea; además, parte de sus efectos es mediada por su conversión a estrógenos.
+
+**Hormona del crecimiento (GH):** Proteína producida por la glándula pituitaria (hipófisis)
+
+GH → ↑ IGF-1 → proliferación de progenitores + crecimiento y formación ósea.
+
+**Hormonas tiroideas T3/T4:** Producidas por la glándula tiroides
+
+↑ hormonas tiroideas → ↑ la velocidad de recambio óseo → ↑ formación y resorción; cuando están elevadas de forma sostenida, el recambio puede favorecer la pérdida de masa ósea.
+
+**Glucocorticoides:** Hormonas esteroideas producidas de manera natural por la corteza suprarrenal
+
+↑ glucocorticoides crónicos → ↓ proliferación y diferenciación osteoblástica + ↑ apoptosis → ↓ formación ósea.
+
+La actividad de los osteoblastos está influenciada por el microambiente óseo, donde interactúan con osteocitos, osteoclastos, células progenitoras, células inmunitarias, vasos sanguíneos y matriz extracelular. Estas interacciones proporcionan señales moleculares y factores de crecimiento que modulan su diferenciación, supervivencia y función, coordinando la formación ósea con otros procesos celulares del tejido.
+
+**Funciones del osteoblasto más allá de formar matriz**
+
+Aunque los osteoblastos son las principales células responsables de la formación de matriz ósea, su función no se limita a producir osteoide y participar en su mineralización; las células del linaje osteoblástico también actúan como reguladoras del microambiente óseo, estableciendo comunicación con osteoclastos, osteocitos y otras células y contribuyendo a coordinar los procesos de formación, resorción y remodelado del tejido.
+
+**El osteoblasto regula la formación de osteoclastos**
+
+Los osteoblastos y otras células del linaje osteoblástico participan en la regulación de la diferenciación osteoclástica mediante la expresión de RANKL (ligando del receptor activador del factor nuclear κB) y la producción de OPG (osteoprotegerina). RANKL se une al receptor RANK presente en los precursores osteoclásticos y favorece su diferenciación y activación, mientras que OPG actúa como un receptor señuelo, uniéndose a RANKL e impidiendo su interacción con RANK; de esta manera, el equilibrio entre RANKL y OPG contribuye a determinar la intensidad de la osteoclastogénesis.
+
+La diferenciación de los precursores osteoclásticos también requiere M-CSF (factor estimulante de colonias de macrófagos), producido por células del microambiente óseo, incluidas células del linaje osteoblástico. M-CSF se une a CSF1R en los precursores de la línea monocito-macrófago y favorece su supervivencia, proliferación y adquisición de características necesarias para responder a RANKL.
+
+**El osteoblasto se comunica con los osteocitos**
+
+Los osteoblastos y los osteocitos forman una red celular interconectada que coordina la formación y adaptación del tejido óseo. Durante la formación ósea, algunos osteoblastos quedan atrapados en la matriz que producen y se diferencian en osteocitos, que se comunican mediante sus prolongaciones celulares, el sistema lacunocanalicular y las uniones comunicantes (gap junctions), como las formadas por conexina 43 (Cx43). Esta comunicación es bidireccional: los osteoblastos influyen en la actividad de los osteocitos, mientras que estos actúan como sensores mecánicos y regulan la formación ósea mediante señales como esclerostina y DKK1, que inhiben la vía Wnt/β-catenina, y mediadores como PGE₂, ATP y óxido nítrico, liberados en respuesta a estímulos mecánicos. Además, ambos tipos celulares participan en la regulación de la resorción mediante señales como RANKL y OPG, que modulan la diferenciación osteoclástica, integrando así la formación y la resorción para mantener la homeostasis ósea.
+
+**Comunicación con otras células del microambiente**
+
+Los osteoblastos también interactúan con células progenitoras, células inmunitarias, células endoteliales y células del estroma medular, mediante factores de crecimiento, citocinas, moléculas de adhesión y componentes de la matriz extracelular. Estas interacciones pueden modificar la diferenciación, supervivencia y actividad de las células óseas, integrando señales procedentes del microambiente con las necesidades de formación y remodelado.
+
+**El destino de los osteoblastos**
+
+Una vez finalizada su participación activa en la formación de matriz ósea, los osteoblastos pueden seguir tres destinos principales: diferenciarse en osteocitos, transformarse en células de revestimiento óseo o experimentar apoptosis; estas alternativas dependen de su estado de diferenciación, su localización y las señales que reciben del microambiente, y contribuyen a regular la cantidad y función de las células presentes en las superficies óseas.
+
+**Diferenciación en osteocitos**
+
+Durante la formación ósea, algunos osteoblastos quedan progresivamente rodeados por el osteoide que ellos mismos producen y, a medida que esta matriz se mineraliza, permanecen alojados en pequeñas cavidades denominadas lagunas óseas. Sin embargo, esta inclusión no es un proceso pasivo, sino que se acompaña de una transformación celular en la que los osteoblastos disminuyen su actividad secretora, modifican la expresión de sus genes y desarrollan prolongaciones citoplasmáticas que se extienden por los canalículos, estableciendo conexiones con otras células del tejido óseo.
+
+Este proceso da origen a los osteocitos, células especializadas cuya diferenciación está asociada con moléculas como E11/podoplanina, que participa en el desarrollo de las prolongaciones, y DMP1, relacionada con su maduración y con la regulación de la mineralización. Una vez incorporados a la matriz, los osteocitos actúan como sensores de las cargas mecánicas y contribuyen a regular el metabolismo óseo mediante señales que coordinan la actividad de las células formadoras y resortivas, aunque los mecanismos que determinan el destino osteocítico todavía no se conocen por completo.
+
+**Conversión en células de revestimiento óseo**
+
+Cuando finaliza la formación de matriz ósea, algunos osteoblastos que permanecen sobre la superficie del hueso disminuyen progresivamente su actividad secretora y se transforman en células de revestimiento óseo (bone lining cells). Durante esta transición adquieren una morfología aplanada, reducen el desarrollo del retículo endoplasmático rugoso y del aparato de Golgi, y cubren las superficies óseas que se encuentran en reposo, donde no hay formación ni resorción activa. Aunque los mecanismos que determinan este destino celular no se conocen por completo, se reconoce que forma parte de las posibles evoluciones de los osteoblastos maduros, junto con la diferenciación en osteocitos y la apoptosis.
+
+Una vez establecidas, estas células contribuyen a mantener la superficie ósea y a regular la interacción entre el tejido mineralizado y su microambiente, además de participar en la coordinación del remodelado óseo. Su estado no es necesariamente irreversible, ya que pueden recuperar características osteoblásticas y reanudar la actividad formadora ante estímulos apropiados; entre los reguladores estudiados se encuentra la hormona paratiroidea (PTH), que puede estimular su reactivación, aunque no se ha identificado una señal única responsable de iniciar esta transición o controlar su reversibilidad.
+
+**Apoptosis: muerte celular programada**
+
+Una proporción de los osteoblastos experimenta apoptosis, un mecanismo regulado de muerte celular que permite eliminar células que han completado su función y contribuye a controlar la población osteoblástica, limitando la duración y magnitud de la formación ósea. Este proceso depende del equilibrio entre señales que promueven la muerte celular y mecanismos que favorecen la supervivencia; entre estos últimos destaca la vía Wnt/β-catenina, junto con señales intracelulares como PI3K/AKT y ERK, que ayudan a mantener la viabilidad de los osteoblastos.
+
+La apoptosis puede aumentar cuando este equilibrio se altera por factores hormonales o condiciones adversas del microambiente. Un ejemplo es la exposición prolongada a glucocorticoides, que favorece la activación de proteínas proapoptóticas como BIM y BAK, la producción excesiva de especies reactivas de oxígeno y la activación de caspasas, como la caspasa 3, que ejecuta la muerte celular; en contraste, la PTH intermitente puede favorecer la supervivencia osteoblástica mediante la activación de señales antiapoptóticas. De esta manera, la regulación de la supervivencia celular influye directamente en la cantidad de osteoblastos disponibles para mantener la formación ósea.
+
+#### Actividades
+
+##### Actividad m2_2_relaciona_moleculas
+
+```yaml
+# PDF, 2.2 Actividad 1. Respuestas correctas del PDF: 1-C, 2-E, 3-G, 4-D, 5-F, 6-B, 7-A.
+tipo: relacion-columnas
+titulo: "Relaciona cada molécula con su función"
+instrucciones: "Objetivo: identificar las principales moléculas que intervienen en la diferenciación y regulación del osteoblasto. Instrucción: relaciona cada elemento de la columna A con la descripción correspondiente de la columna B."
+obligatoria: true
+puntaje_max: 30
+concepto: "regulacion_osteoblastica"
+retroalimentacion:
+  acierto: "RUNX2 y SP7/Osterix participan en el programa de diferenciación osteoblástica; ALP y osteocalcina reflejan etapas diferentes de maduración, mientras que RANKL, OPG y M-CSF participan en la regulación de la diferenciación osteoclástica"
+  parcial: "Algunas relaciones no son correctas. Vuelve a leer la descripción de cada molécula."
+  error: "Las relaciones no son correctas. Vuelve a leer la sección e inténtalo de nuevo."
+izquierda:
+  - id: a_runx2
+    texto: "RUNX2"
+  - id: a_sp7
+    texto: "SP7/Osterix"
+  - id: a_alp
+    texto: "Fosfatasa alcalina (ALP)"
+  - id: a_osteocalcina
+    texto: "Osteocalcina (BGLAP)"
+  - id: a_rankl
+    texto: "RANKL"
+  - id: a_opg
+    texto: "OPG"
+  - id: a_mcsf
+    texto: "M-CSF"
+derecha:
+  - id: b_mcsf
+    texto: "Favorece la supervivencia, proliferación y preparación de los precursores osteoclásticos para responder a RANKL."
+  - id: b_opg
+    texto: "Actúa como receptor señuelo, se une a RANKL e impide su interacción con RANK."
+  - id: b_runx2
+    texto: "Participa tempranamente en el compromiso del progenitor hacia el linaje osteoblástico."
+  - id: b_osteocalcina
+    texto: "Se expresa principalmente en etapas avanzadas de la diferenciación osteoblástica."
+  - id: b_sp7
+    texto: "Favorece la diferenciación y maduración de las células comprometidas con el linaje osteoblástico."
+  - id: b_rankl
+    texto: "Favorece la diferenciación y activación de los precursores osteoclásticos al unirse a RANK."
+  - id: b_alp
+    texto: "Aumenta durante etapas tempranas de la diferenciación y se relaciona con la maduración osteoblástica y la preparación de la matriz para su mineralización."
+pares:
+  - izquierda: a_runx2
+    derecha: b_runx2
+  - izquierda: a_sp7
+    derecha: b_sp7
+  - izquierda: a_alp
+    derecha: b_alp
+  - izquierda: a_osteocalcina
+    derecha: b_osteocalcina
+  - izquierda: a_rankl
+    derecha: b_rankl
+  - izquierda: a_opg
+    derecha: b_opg
+  - izquierda: a_mcsf
+    derecha: b_mcsf
+```
+
+##### Actividad m2_2_destino_osteoblasto
+
+```yaml
+# PDF, 2.2 Actividad 2. «Escribe el destino» pasa a elegirlo entre los tres (no hay respuesta escrita).
+tipo: quiz
+titulo: "Identifica el destino del osteoblasto"
+instrucciones: "Objetivo: diferenciar los tres destinos principales que puede seguir un osteoblasto después de su participación activa en la formación de matriz. Instrucción: lee cada descripción y elige el destino celular correspondiente: osteocito, célula de revestimiento óseo o apoptosis."
+obligatoria: true
+puntaje_max: 15
+concepto: "destino_osteoblasto"
+retroalimentacion:
+  acierto: "Identificaste los tres destinos del osteoblasto."
+  parcial: "Algún destino no es correcto. Lee la justificación de cada descripción."
+  error: "Revisa la justificación de cada descripción y vuelve a leer «El destino de los osteoblastos»."
+preguntas:
+  - id: m2_2_destino_1
     formato: opcion_multiple
-    enunciado: "En ratones sin osterix se observan precursores que expresan RUNX2 pero no hay osteoblastos maduros. ¿Qué indica esto?"
+    enunciado: "El osteoblasto queda rodeado por el osteoide que produce, desarrolla prolongaciones citoplasmáticas y establece conexiones a través de los canalículos."
+    opciones:
+      - id: osteocito
+        texto: "Osteocito"
+      - id: revestimiento
+        texto: "Célula de revestimiento óseo"
+      - id: apoptosis
+        texto: "Apoptosis"
+    correcta: osteocito
+    explicacion: "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+  - id: m2_2_destino_2
+    formato: opcion_multiple
+    enunciado: "El osteoblasto disminuye su actividad secretora, adquiere una morfología aplanada y cubre superficies óseas en reposo."
+    opciones:
+      - id: osteocito
+        texto: "Osteocito"
+      - id: revestimiento
+        texto: "Célula de revestimiento óseo"
+      - id: apoptosis
+        texto: "Apoptosis"
+    correcta: revestimiento
+    explicacion: "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+  - id: m2_2_destino_3
+    formato: opcion_multiple
+    enunciado: "El osteoblasto activa mecanismos regulados de muerte celular que permiten eliminar células que han completado su función."
+    opciones:
+      - id: osteocito
+        texto: "Osteocito"
+      - id: revestimiento
+        texto: "Célula de revestimiento óseo"
+      - id: apoptosis
+        texto: "Apoptosis"
+    correcta: apoptosis
+    explicacion: "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+```
+
+##### Actividad m2_2_evaluacion
+
+```yaml
+tipo: quiz
+titulo: "Evaluación: osteoblastos"
+instrucciones: "Responde cada pregunta. Después de responder verás la justificación."
+obligatoria: true
+puntaje_max: 40
+concepto: "osteoblasto"
+retroalimentacion:
+  acierto: "Respondiste correctamente las preguntas de esta evaluación."
+  parcial: "Algunas respuestas no son correctas. Lee la justificación de cada pregunta."
+  error: "Revisa la justificación de cada pregunta y vuelve a leer la sección."
+preguntas:
+  - id: m2_2_e1
+    formato: opcion_multiple
+    enunciado: "¿Qué función cumple principalmente RUNX2 durante la diferenciación osteoblástica?"
     opciones:
       - id: a
-        texto: "Osterix actúa antes de RUNX2 y es el factor que lo activa en el precursor"
+        texto: "Inhibir la interacción entre RANKL y RANK."
       - id: b
-        texto: "RUNX2 no interviene en la diferenciación, que depende únicamente de osterix"
+        texto: "Iniciar y favorecer el compromiso del progenitor hacia el linaje osteoblástico."
       - id: c
-        texto: "Osterix y RUNX2 actúan en paralelo y cada uno puede sustituir al otro"
+        texto: "Ejecutar la apoptosis mediante caspasas."
       - id: d
-        texto: "Osterix actúa después de RUNX2 y es necesario para completar la diferenciación"
-    correcta: d
-    explicacion: "RUNX2 está presente, pero sin osterix la célula no completa su diferenciación. Por eso osterix actúa aguas abajo de RUNX2, y ambos son factores de transcripción, no receptores de membrana."
-    dificultad: 3
-    concepto: "factores_transcripcion"
-  - id: m2_qf_4
+        texto: "Transportar proteínas de la matriz fuera de la célula."
+    correcta: b
+    explicacion: "RUNX2 es un factor de transcripción fundamental para establecer el programa osteogénico; SP7/Osterix participa posteriormente en la progresión y maduración osteoblástica."
+  - id: m2_2_e2
+    formato: opcion_multiple
+    enunciado: "¿Cuál es el efecto de la osteoprotegerina (OPG) sobre la señalización osteoclástica?"
+    opciones:
+      - id: a
+        texto: "Se une a RANK y activa la diferenciación osteoclástica."
+      - id: b
+        texto: "Se une a RANKL e impide su interacción con RANK."
+      - id: c
+        texto: "Aumenta directamente la producción de osteoide."
+      - id: d
+        texto: "Activa la vía de las caspasas para eliminar osteoclastos."
+    correcta: b
+    explicacion: "OPG funciona como un receptor señuelo y contribuye a limitar la osteoclastogénesis al bloquear la interacción entre RANKL y RANK."
+  - id: m2_2_e3
     formato: verdadero_falso
-    enunciado: "Las células de revestimiento óseo son osteoblastos en reposo, aplanados, que pueden reactivarse y volver a formar hueso."
+    enunciado: "Los osteoblastos activos suelen presentar una morfología cúbica o ligeramente cilíndrica, con organelos secretores desarrollados y una región secretora orientada hacia la superficie donde se deposita la nueva matriz."
     opciones:
       - id: verdadero
         texto: "Verdadero"
       - id: falso
         texto: "Falso"
     correcta: verdadero
-    explicacion: "Las células de revestimiento derivan del osteoblasto, cubren superficies sin actividad y pueden reactivarse ante estímulos apropiados."
-    dificultad: 2
-    concepto: "celulas_revestimiento"
-  - id: m2_qf_5
+    explicacion: "La actividad formadora se relaciona con una morfología más voluminosa, polaridad celular y desarrollo del retículo endoplasmático rugoso y del aparato de Golgi."
+  - id: m2_2_e4
+    formato: verdadero_falso
+    enunciado: "Un aumento sostenido de la PTH y la administración intermitente de esta hormona producen necesariamente el mismo efecto sobre los osteoblastos y el tejido óseo."
+    opciones:
+      - id: verdadero
+        texto: "Verdadero"
+      - id: falso
+        texto: "Falso"
+    correcta: falso
+    explicacion: "La PTH intermitente favorece la actividad osteoblástica y la formación ósea, mientras que la PTH sostenida aumenta el remodelado y puede favorecer la resorción mediante RANKL."
+```
+
+### Seccion 2.3: El osteocito: el sensor del hueso (id "m2_3_osteocito")
+
+<!-- Entrada de la sección (texto de la Imagen #1, «¿Qué es un osteocito?»): 853 caracteres, más que el máximo del
+«resumen» de sección (600); va como primer bloque del contenido. -->
+
+#### Contenido
+
+**¿Qué es un osteocito?**
+
+El osteocito es la célula predominante del tejido óseo maduro, representa más del 90 % de las células óseas según algunas estimaciones y se encuentra alojado en pequeñas cavidades de la matriz mineralizada denominadas lagunas óseas. Su cuerpo celular presenta numerosas prolongaciones citoplasmáticas que se extienden por los canalículos y establecen una red de comunicación con otras células del tejido. Gracias a esta organización, los osteocitos actúan como sensores y reguladores del tejido óseo, capaces de detectar estímulos mecánicos y cambios en su microambiente, transmitir señales celulares y modular la actividad de osteoblastos y osteoclastos. De esta manera, contribuyen a mantener la homeostasis ósea y a adaptar la estructura del hueso a las demandas funcionales.
+
+**Morfología y organización celular del osteocito**
+
+El osteocito posee una organización intracelular especializada que le permite mantener su actividad metabólica y responder a los estímulos mecánicos del tejido óseo; el núcleo regula la expresión génica, las mitocondrias proporcionan energía y el retículo endoplasmático y el aparato de Golgi participan en la síntesis y procesamiento de proteínas. Además, su citoesqueleto y las proteínas de adhesión conectan la estructura celular con la matriz extracelular, permitiendo detectar y transmitir estímulos mecánicos. Entre estos componentes, los microtúbulos, los filamentos intermedios, los filamentos de actina y las integrinas cumplen funciones complementarias en la organización, estabilidad y mecanotransducción celular (mecanismo se desarrollará en profundidad en el Módulo 3.1), mientras que el centrosoma y el cilio primario participan en la organización de los microtúbulos y en la percepción de señales del microambiente.
+
+- **Centroid o centrosoma:** Organiza los microtúbulos y se relaciona con el cilio primario, implicado en la mecanosensación.
+- **IFs Filamentos intermedios:** Proporcionan soporte mecánico y estabilidad estructural.
+- **F-actin:** Mantiene la forma celular y participa en la mecanotransducción.
+- **MTs - Microtúbulos:** Contribuyen a la mecanotransducción y organización celular.
+- **Integrin-β1:** Media la adhesión célula–matriz y la transmisión de señales mecánicas.
+- **Integrin-β3:** Media la adhesión célula–matriz en los procesos dendríticos y la mecanosensación.
+
+**Formación de las lagunas y los canalículos**
+
+Durante la incorporación del osteoblasto a la matriz ósea, la formación de la laguna implica una remodelación localizada de la matriz extracelular que permite alojar el cuerpo celular. De manera simultánea, las prolongaciones citoplasmáticas se extienden a través de la matriz y contribuyen a establecer los canalículos que las contienen. En este proceso participan metaloproteinasas de matriz (MMP), enzimas capaces de degradar componentes de la matriz extracelular y facilitar el desarrollo de las prolongaciones; sin embargo, los mecanismos exactos que generan las lagunas y los canalículos todavía no se comprenden por completo.
+
+**Organización del sistema lacunocanalicular**
+
+El sistema lacunocanalicular (SLC) es una red tridimensional formada por las lagunas óseas, que alojan los cuerpos celulares de los osteocitos, y los canalículos, pequeños conductos por los que se extienden sus prolongaciones citoplasmáticas; entre la membrana celular y las paredes de estos espacios existe un espacio pericelular que contiene líquido intersticial y una matriz pericelular especializada, rica en proteoglucanos y otros componentes que conforman el microambiente inmediato del osteocito. Esta organización permite el intercambio de nutrientes, metabolitos y señales, además de mantener la comunicación entre los osteocitos y otras células del tejido óseo.
+
+El SLC también constituye una interfaz fundamental para la mecanotransducción; cuando el hueso se deforma por una carga mecánica, el movimiento del líquido a través de los espacios pericelulares genera fuerzas sobre la superficie de los osteocitos. Componentes de la matriz pericelular, como el perlecano (HSPG2), y estructuras de la matriz asociadas a los canalículos, como los collagen hillocks, pueden interactuar con las prolongaciones osteocíticas mediante adhesiones focales mediadas por integrinas, conectando las fuerzas del entorno con el citoesqueleto celular y contribuyendo a su conversión en señales bioquímicas.
+
+**Osteocito en el sistema lacuno-canalicular**
+
+Los principales componentes que permiten al osteocito percibir las fuerzas mecánicas, transmitirlas a través de su estructura celular y comunicarse con otras células óseas actúan de manera coordinada; las adhesiones focales y los componentes de la matriz pericelular conectan la célula con su entorno, mientras que el citoesqueleto distribuye las fuerzas hacia el interior celular, los canales iónicos contribuyen a convertir los estímulos mecánicos en señales bioquímicas y las uniones comunicantes permiten compartir señales con otros osteocitos. El cilio primario también puede participar en la mecanosensación, aunque su contribución relativa depende del contexto y continúa siendo objeto de investigación.
+
+- **Adhesiones focales:** Conectan la célula con la matriz y transmiten señales mecánicas al citoesqueleto.
+- **Uniones comunicantes:** Permiten la comunicación intercelular entre osteocitos.
+- **Cilio primario:** Participa en la mecanosensación del osteocito.
+- **Citoesqueleto:** Transmite y distribuye las fuerzas mecánicas dentro de la célula.
+- **Montículos de colágeno:** Conectan la matriz con los procesos dendríticos y transmiten estímulos mecánicos.
+- **Canales iónicos:** Transforman estímulos mecánicos en señales iónicas, especialmente de Ca²⁺.
+- **Matriz pericelular:** Capa de proteoglicanos y glicocálix de 0,5–1,0 μm que rodea al osteocito. Contiene filamentos elásticos de perlecano (HSPG2) que conectan la membrana celular con la matriz circundante y amplifican las fuerzas de arrastre implicadas en la mecanotransducción.
+
+**El osteocito como regulador del remodelado**
+
+Los osteocitos regulan el remodelado óseo mediante la liberación de señales que modulan tanto la formación de hueso como su resorción, integrando las demandas mecánicas y las condiciones del microambiente. Entre los principales mediadores se encuentran esclerostina, codificada por el gen SOST, y DKK1, que inhiben la vía Wnt/β-catenina y limitan la actividad osteoblástica, así como RANKL y osteoprotegerina (OPG), que regulan la diferenciación de los osteoclastos. A través de estas señales, los osteocitos coordinan la actividad de las células formadoras y resortivas, contribuyendo a mantener la homeostasis y adaptar la estructura ósea a las necesidades funcionales.
+
+**Comunicación y regulación del metabolismo mineral**
+
+El factor de crecimiento fibroblástico 23 (FGF23) es una hormona producida principalmente por los osteocitos que conecta el tejido óseo con los riñones para regular la homeostasis del fósforo y la vitamina D. Su liberación aumenta ante señales como el exceso de fósforo o de vitamina D activa, contribuyendo a evitar su acumulación y mantener el equilibrio mineral.
+
+En los riñones, el FGF23 disminuye la reabsorción de fosfato, favoreciendo su eliminación por la orina, e inhibe la enzima 1α-hidroxilasa (CYP27B1), que produce calcitriol, mientras estimula su degradación mediante la 24-hidroxilasa (CYP24A1). Así, reduce la concentración de vitamina D activa y la absorción intestinal de fósforo. Estos efectos ocurren mediante receptores FGFR asociados al correceptor α-Klotho.
+
+Su producción también aumenta en respuesta al calcitriol, estableciendo una retroalimentación negativa que limita su propia síntesis. De esta manera, el FGF23 contribuye a mantener concentraciones adecuadas de fósforo y vitamina D, esenciales para la mineralización ósea y la homeostasis mineral del organismo.
+
+**Mantenimiento de la matriz y respuesta al microdaño**
+
+Los osteocitos no solo mantienen la comunicación y regulan la actividad de otras células óseas, también contribuyen al mantenimiento de la matriz que los rodea y a la respuesta frente al daño mecánico. Aunque se encuentran alojados dentro de lagunas y canalículos mineralizados, conservan la capacidad de modificar localmente su microambiente mediante procesos de síntesis y degradación de componentes de la matriz, lo que permite regular las condiciones del espacio pericelular y preservar la integridad del sistema lacunocanalicular.
+
+**Remodelado perilacunar y canalicular**
+
+El remodelado perilacunar/canalicular (PLR, perilacunar/canalicular remodeling) es un proceso mediante el cual los osteocitos modifican la matriz mineralizada que rodea sus cuerpos celulares y prolongaciones. Para ello, pueden regular la actividad de enzimas degradadoras de matriz, como las metaloproteinasas (MMP) y las catepsinas, entre ellas la catepsina K (CTSK), así como participar en la regulación de la mineralización local. Este proceso puede modificar la composición y las dimensiones de las lagunas y los canalículos, favoreciendo el mantenimiento del microambiente osteocítico y el intercambio de sustancias entre la célula y la matriz.
+
+El PLR adquiere especial relevancia en situaciones de mayor demanda metabólica, como la lactancia, cuando los osteocitos pueden movilizar minerales de manera local para contribuir a la regulación de la homeostasis cálcica; también se ha relacionado con la adaptación y reparación de la matriz. Sin embargo, su magnitud y regulación varían según el contexto fisiológico, y parte de los mecanismos descritos proceden de modelos experimentales.
+
+**Respuesta al microdaño óseo**
+
+Las cargas repetitivas pueden producir microfisuras y alteraciones acumulativas de la matriz mineralizada, afectando la integridad del tejido y, en algunos casos, la viabilidad de los osteocitos cercanos. El daño puede alterar la red lacunocanalicular y la comunicación celular, mientras que los osteocitos lesionados o apoptóticos generan cambios en las señales locales que permiten reconocer las regiones que requieren reparación. En este proceso, la apoptosis osteocítica puede favorecer la activación del remodelado dirigido al sitio dañado, mientras que los osteocitos viables de la región circundante participan en la coordinación de la respuesta mediante señales como RANKL, que favorece la diferenciación osteoclástica, y otros mediadores que modulan la actividad de las células óseas.
+
+#### Actividades
+
+##### Actividad m2_3_relaciona_estructuras
+
+```yaml
+# PDF, 2.3 Actividad 1. Respuestas correctas del PDF: 1-C, 2-G, 3-B, 4-E, 5-F, 6-H, 7-D, 8-A.
+tipo: relacion-columnas
+titulo: "Relaciona cada estructura con su función"
+instrucciones: "Objetivo: identificar los componentes que permiten al osteocito mantener su organización, detectar estímulos mecánicos y comunicarse con otras células. Instrucción: relaciona cada elemento de la columna A con la función correspondiente de la columna B."
+obligatoria: true
+puntaje_max: 30
+concepto: "osteocito_estructura"
+retroalimentacion:
+  acierto: "Estos componentes actúan de manera coordinada; algunos conectan al osteocito con la matriz, otros distribuyen las fuerzas dentro de la célula y otros participan en la conversión de estímulos mecánicos en señales o en la comunicación intercelular."
+  parcial: "Algunas relaciones no son correctas. Vuelve a leer la función de cada estructura."
+  error: "Las relaciones no son correctas. Vuelve a leer la sección e inténtalo de nuevo."
+izquierda:
+  - id: a_slc
+    texto: "Sistema lacunocanalicular"
+  - id: a_matriz_pericelular
+    texto: "Matriz pericelular"
+  - id: a_adhesiones_focales
+    texto: "Adhesiones focales"
+  - id: a_citoesqueleto
+    texto: "Citoesqueleto"
+  - id: a_canales_ionicos
+    texto: "Canales iónicos"
+  - id: a_uniones_comunicantes
+    texto: "Uniones comunicantes"
+  - id: a_cilio_primario
+    texto: "Cilio primario"
+  - id: a_centrosoma
+    texto: "Centrosoma"
+derecha:
+  - id: b_centrosoma
+    texto: "Organiza los microtúbulos y se relaciona con el cilio primario."
+  - id: b_adhesiones_focales
+    texto: "Conecta la célula con la matriz y transmite señales mecánicas al citoesqueleto."
+  - id: b_slc
+    texto: "Red tridimensional de lagunas y canalículos que facilita el intercambio de sustancias y la comunicación celular."
+  - id: b_cilio_primario
+    texto: "Participa en la mecanosensación del osteocito."
+  - id: b_citoesqueleto
+    texto: "Transmite y distribuye las fuerzas mecánicas dentro de la célula."
+  - id: b_canales_ionicos
+    texto: "Permiten convertir los estímulos mecánicos en señales iónicas, especialmente de Ca²⁺."
+  - id: b_matriz_pericelular
+    texto: "Capa especializada rica en proteoglucanos y glicocálix que rodea al osteocito y contribuye a transmitir las fuerzas mecánicas."
+  - id: b_uniones_comunicantes
+    texto: "Permiten la comunicación intercelular entre osteocitos."
+pares:
+  - izquierda: a_slc
+    derecha: b_slc
+  - izquierda: a_matriz_pericelular
+    derecha: b_matriz_pericelular
+  - izquierda: a_adhesiones_focales
+    derecha: b_adhesiones_focales
+  - izquierda: a_citoesqueleto
+    derecha: b_citoesqueleto
+  - izquierda: a_canales_ionicos
+    derecha: b_canales_ionicos
+  - izquierda: a_uniones_comunicantes
+    derecha: b_uniones_comunicantes
+  - izquierda: a_cilio_primario
+    derecha: b_cilio_primario
+  - izquierda: a_centrosoma
+    derecha: b_centrosoma
+```
+
+##### Actividad m2_3_evaluacion
+
+```yaml
+tipo: quiz
+titulo: "Evaluación: el osteocito"
+instrucciones: "Responde cada pregunta. Después de responder verás la justificación."
+obligatoria: true
+puntaje_max: 30
+concepto: "osteocito"
+retroalimentacion:
+  acierto: "Respondiste correctamente las preguntas de esta evaluación."
+  parcial: "Algunas respuestas no son correctas. Lee la justificación de cada pregunta."
+  error: "Revisa la justificación de cada pregunta y vuelve a leer la sección."
+preguntas:
+  - id: m2_3_e1
     formato: opcion_multiple
-    enunciado: "¿Qué estructuras permiten que un osteocito atrapado en la matriz se comunique con las células de la superficie ósea?"
+    enunciado: "¿Cuál es una de las principales funciones del osteocito?"
     opciones:
       - id: a
-        texto: "Fibras de Sharpey que cruzan la matriz mineralizada hasta la superficie"
+        texto: "Formar exclusivamente la matriz orgánica durante la osteogénesis inicial."
       - id: b
-        texto: "Dendritas que recorren canalículos y se unen por uniones comunicantes"
+        texto: "Detectar estímulos mecánicos y modular la actividad de otras células óseas."
       - id: c
-        texto: "Osteoclastos que perforan la matriz y conectan las lagunas entre sí"
+        texto: "Destruir de manera permanente la matriz mineralizada."
       - id: d
-        texto: "Vesículas de la matriz que salen de la laguna hacia la superficie"
+        texto: "Producir células sanguíneas dentro de la matriz ósea."
     correcta: b
-    explicacion: "Las dendritas viajan por los canalículos y contactan con otros osteocitos y con las células de la superficie mediante uniones comunicantes. Las fibras de Sharpey anclan el diente y los osteoclastos reabsorben hueso, pero no forman esa red."
-    dificultad: 2
-    concepto: "osteocito_red"
-  - id: m2_qf_6
+    explicacion: "El osteocito actúa como sensor y regulador del tejido óseo; detecta estímulos mecánicos, transmite señales y modula la actividad de osteoblastos y osteoclastos."
+  - id: m2_3_e2
     formato: opcion_multiple
-    enunciado: "Una paciente recibe denosumab, un anticuerpo que neutraliza RANKL. ¿Qué cambio celular se espera?"
+    enunciado: "¿Dónde se encuentra alojado el cuerpo celular del osteocito?"
     opciones:
       - id: a
-        texto: "Menos osteoclastos y menos resorción ósea"
+        texto: "En los conductos de Havers exclusivamente."
       - id: b
-        texto: "Más osteoclastos, porque desaparece un freno"
+        texto: "En la cavidad medular."
       - id: c
-        texto: "Menos osteoblastos, porque no pueden diferenciarse"
+        texto: "En las lagunas óseas de la matriz mineralizada."
       - id: d
-        texto: "Más esclerostina en los osteocitos"
-    correcta: a
-    explicacion: "RANKL es la señal que forma y activa a los osteoclastos. Al neutralizarlo, hay menos osteoclastos y menos resorción. Por eso este fármaco se usa en osteoporosis y se asocia a osteonecrosis de los maxilares."
-    dificultad: 2
-    concepto: "senales_osteoclastogenicas"
-  - id: m2_qf_7
-    formato: ordenar_pasos
-    enunciado: "Ordena la respuesta del hueso alveolar en el lado de presión durante un movimiento ortodóncico."
-    pasos:
-      - id: o_resorcion
-        texto: "El hueso alveolar se reabsorbe y el diente se desplaza"
-      - id: o_senal
-        texto: "Las células del ligamento y los osteocitos detectan la deformación y aumentan RANKL"
-      - id: o_fuerza
-        texto: "Una fuerza ortodóncica comprime el ligamento periodontal"
-      - id: o_osteoclastos
-        texto: "Se diferencian y se activan osteoclastos en la superficie del hueso alveolar"
-    correcta: [o_fuerza, o_senal, o_osteoclastos, o_resorcion]
-    explicacion: "La fuerza comprime el ligamento; las células detectan la deformación y aumentan RANKL; RANKL forma y activa osteoclastos; y la resorción del hueso permite el desplazamiento del diente."
-    dificultad: 3
-    concepto: "remodelado_ortodoncico"
-  - id: m2_qf_8
-    formato: opcion_multiple
-    enunciado: "¿Qué paso de la resorción falla en un osteoclasto sin catepsina K funcional?"
-    opciones:
-      - id: a
-        texto: "La acidificación del espacio y la disolución del mineral"
-      - id: b
-        texto: "La formación de la zona clara que sella el espacio"
-      - id: c
-        texto: "La digestión del colágeno tipo I de la matriz ósea"
-      - id: d
-        texto: "La fusión de los preosteoclastos en una célula grande"
+        texto: "En el interior de los vasos sanguíneos."
     correcta: c
-    explicacion: "La catepsina K digiere el colágeno tipo I. Sin ella el mineral se disuelve, pero la matriz orgánica queda sin degradar. Esto ocurre en la picnodisostosis."
-    dificultad: 3
-    concepto: "resorcion_osteoclastica"
-  - id: m2_qf_9
+    explicacion: "El cuerpo celular del osteocito permanece en una laguna ósea, mientras que sus prolongaciones citoplasmáticas se extienden a través de los canalículos."
+  - id: m2_3_e3
+    formato: verdadero_falso
+    enunciado: "La respuesta osteocítica al microdaño puede integrar cambios en la matriz mineralizada, alteraciones de la red lacunocanalicular, apoptosis celular y señales que modulan la actividad osteoclástica y osteoblástica."
+    opciones:
+      - id: verdadero
+        texto: "Verdadero"
+      - id: falso
+        texto: "Falso"
+    correcta: verdadero
+    explicacion: "La respuesta al microdaño es un proceso integrado en el que se altera la matriz y la comunicación celular, los osteocitos lesionados pueden experimentar apoptosis y las señales locales contribuyen a coordinar la activación del remodelado y la reparación."
+```
+
+### Seccion 2.4: Osteoclastos: las células resortivas (id "m2_4_osteoclastos")
+
+<!-- Entrada de la sección (texto de la Imagen #1, «¿Qué es un osteoclasto?»): 937 caracteres, más que el máximo del
+«resumen» de sección (600); va como primer bloque del contenido. -->
+
+#### Contenido
+
+**¿Qué es un osteoclasto?**
+
+El osteoclasto es una célula especializada del linaje hematopoyético, derivada de precursores de la línea monocito-macrófago, cuya función principal es realizar la resorción ósea, es decir, degradar de manera controlada la matriz mineralizada del hueso. A diferencia de los osteoblastos, que producen matriz ósea nueva, los osteoclastos participan en su eliminación durante el remodelado óseo, permitiendo retirar tejido envejecido o microdañado y generar las condiciones necesarias para su posterior reemplazo. Los osteoclastos maduros son células grandes y multinucleadas, resultado de la fusión de varios precursores mononucleares; esta organización les proporciona una elevada capacidad funcional para adherirse a la superficie ósea y crear un microambiente especializado en el que se produce la disolución de la fase mineral y la degradación de la matriz orgánica.
+
+**Del progenitor hematopoyético al osteoclasto**
+
+Como se estableció en el apartado 2.1, los osteoclastos pertenecen al linaje hematopoyético y se relacionan con precursores de la línea monocito-macrófago; sin embargo, adquirir el fenotipo osteoclástico requiere una secuencia progresiva de señales provenientes del microambiente óseo. En este proceso, M-CSF y RANKL cumplen funciones complementarias: primero favorecen la supervivencia y preparación de los precursores y, posteriormente, activan el programa de diferenciación que conduce a la formación del osteoclasto. La siguiente secuencia permite seguir este proceso desde el precursor hematopoyético hasta la célula multinucleada madura; observa cómo la señalización a través de CSF1R y RANK conduce a la activación de NFATc1, factor que coordina el programa de diferenciación, y cómo finalmente los precursores se fusionan para adquirir la organización necesaria para la resorción ósea.
+
+**Morfología y características**
+
+El osteoclasto maduro es una célula grande, multinucleada y altamente especializada; su morfología está determinada por la necesidad de adherirse a la superficie ósea, crear un compartimento aislado y secretar allí los componentes necesarios para la resorción. Su activación implica una marcada reorganización de la célula, que adquiere una polaridad funcional y dirige su actividad hacia la superficie ósea, permitiendo una resorción localizada y controlada de la matriz mineralizada.
+
+**¿Dónde se encuentran los osteoclastos?**
+
+Los osteoclastos se localizan sobre las superficies del tejido óseo donde ocurre la resorción, tanto en el hueso trabecular como en el cortical. Se encuentran principalmente en las superficies trabeculares y endocorticales, aunque también pueden actuar sobre superficies periostales y en sitios de remodelado intracortical, según las necesidades de renovación y reparación del tejido.
+
+Durante la resorción, los osteoclastos excavan pequeñas depresiones en la matriz mineralizada denominadas lagunas de Howship, que constituyen una evidencia morfológica de su actividad. Por tanto, estas lagunas no son cavidades preexistentes donde habitan los osteoclastos, sino estructuras que se forman como consecuencia de la degradación localizada del tejido óseo.
+
+**El osteoclasto en la homeostasis ósea**
+
+La función del osteoclasto no se limita a eliminar tejido óseo; su actividad permite renovar la matriz, retirar tejido envejecido o alterado y contribuir al equilibrio mineral, ya que la resorción libera calcio y fosfato de la matriz mineralizada. Este proceso debe mantenerse coordinado con la formación ósea, pues un desequilibrio entre resorción y formación puede conducir a pérdida o acumulación anormal de tejido.
+
+Los osteoclastos se comunican con osteoblastos y osteocitos, que pueden modular su actividad, mientras que la propia resorción modifica el microambiente y genera señales que influyen posteriormente sobre la formación ósea; así se establece la base del acoplamiento entre resorción y formación, cuyo mecanismo se desarrollará en profundidad en el Módulo 5: Remodelado óseo.
+
+#### Actividades
+
+##### Actividad m2_4_ordena_osteoclasto
+
+```yaml
+# PDF, 2.4 Actividad 1. «Escribe la secuencia correcta» pasa a ordenar los pasos tocándolos. Respuesta del PDF:
+# D → E → F → B → A → C.
+tipo: quiz
+titulo: "Ordena la secuencia de formación del osteoclasto"
+instrucciones: "Objetivo: reconocer las etapas de diferenciación desde el progenitor hematopoyético hasta el osteoclasto maduro."
+obligatoria: true
+puntaje_max: 20
+concepto: "osteoclastogenesis"
+retroalimentacion:
+  acierto: "Secuencia correcta: progenitor hematopoyético, precursores monocito-macrófago, acción de M-CSF y RANKL, activación de NFATc1, fusión de precursores y osteoclasto maduro."
+  error: "La secuencia no es correcta. Vuelve a leer «Del progenitor hematopoyético al osteoclasto» e inténtalo de nuevo."
+preguntas:
+  - id: m2_4_ord_1
+    formato: ordenar_pasos
+    enunciado: "Organiza los siguientes acontecimientos en el orden correcto."
+    pasos:
+      - id: p_progenitor
+        texto: "Progenitor hematopoyético que da origen a células de la línea mieloide."
+      - id: p_precursores
+        texto: "Formación de precursores de la línea monocito-macrófago."
+      - id: p_mcsf_rankl
+        texto: "Acción de M-CSF y RANKL, que favorecen la preparación y diferenciación de los precursores."
+      - id: p_nfatc1
+        texto: "Activación de NFATc1, factor que coordina el programa de diferenciación osteoclástica."
+      - id: p_fusion
+        texto: "Fusión de precursores osteoclásticos para formar una célula multinucleada."
+      - id: p_maduro
+        texto: "Formación de un osteoclasto maduro, especializado en la resorción ósea."
+    correcta: [p_progenitor, p_precursores, p_mcsf_rankl, p_nfatc1, p_fusion, p_maduro]
+    explicacion: "Los osteoclastos proceden de precursores hematopoyéticos relacionados con la línea monocito-macrófago; M-CSF y RANKL cumplen funciones complementarias en su desarrollo, RANKL activa la señalización que conduce a NFATc1 y, finalmente, los precursores se fusionan para formar la célula multinucleada madura."
+```
+
+##### Actividad m2_4_evaluacion
+
+```yaml
+tipo: quiz
+titulo: "Evaluación: osteoclastos"
+instrucciones: "Responde cada pregunta. Después de responder verás la justificación."
+obligatoria: true
+puntaje_max: 30
+concepto: "osteoclasto"
+retroalimentacion:
+  acierto: "Respondiste correctamente las preguntas de esta evaluación."
+  parcial: "Algunas respuestas no son correctas. Lee la justificación de cada pregunta."
+  error: "Revisa la justificación de cada pregunta y vuelve a leer la sección."
+preguntas:
+  - id: m2_4_e1
     formato: opcion_multiple
-    enunciado: "¿Por qué el hueso alveolar se reabsorbe después de perder un diente?"
+    enunciado: "¿Por qué los osteoclastos maduros son multinucleados?"
     opciones:
       - id: a
-        texto: "Porque sus osteoblastos derivan del mesodermo y dejan de renovarse con la edad"
+        texto: "Porque se forman por la fusión de varios precursores mononucleares."
       - id: b
-        texto: "Porque depende del diente y del estímulo funcional que llega por el ligamento"
+        texto: "Porque cada núcleo corresponde a un osteocito incorporado a la matriz."
       - id: c
-        texto: "Porque el cemento radicular de los dientes vecinos lo digiere poco a poco"
+        texto: "Porque los osteoblastos se transforman directamente en osteoclastos."
       - id: d
-        texto: "Porque pierde toda su irrigación sanguínea y sus células mueren de inmediato"
+        texto: "Porque la matriz mineralizada contiene múltiples núcleos celulares."
+    correcta: a
+    explicacion: "La fusión de los precursores permite adquirir la organización celular característica del osteoclasto maduro."
+  - id: m2_4_e2
+    formato: opcion_multiple
+    enunciado: "¿Qué función cumple NFATc1 durante la diferenciación osteoclástica?"
+    opciones:
+      - id: a
+        texto: "Inhibir la unión entre RANKL y RANK."
+      - id: b
+        texto: "Coordinar el programa de diferenciación osteoclástica."
+      - id: c
+        texto: "Sintetizar directamente el colágeno de la matriz ósea."
+      - id: d
+        texto: "Formar las lagunas óseas que alojan a los osteocitos."
     correcta: b
-    explicacion: "El hueso alveolar se forma con el diente y se mantiene por el estímulo funcional que transmite el ligamento. Si el diente falta, el estímulo desaparece y el hueso se reabsorbe de forma progresiva, más rápido en los primeros meses."
-    dificultad: 2
-    concepto: "hueso_alveolar"
-  - id: m2_qf_10
+    explicacion: "La señalización inducida por RANKL conduce a la activación de NFATc1, un factor que coordina la diferenciación de los precursores hacia el fenotipo osteoclástico."
+  - id: m2_4_e3
     formato: opcion_multiple
-    enunciado: "¿Qué es el osteoide?"
+    enunciado: "¿Cuál es una consecuencia de la actividad resortiva del osteoclasto sobre el microambiente óseo?"
     opciones:
       - id: a
-        texto: "Hueso maduro completamente mineralizado, rico en hidroxiapatita"
+        texto: "La eliminación de tejido sin liberación de componentes minerales."
       - id: b
-        texto: "Matriz cartilaginosa del cartílago condilar, rica en colágeno tipo II"
+        texto: "La liberación de calcio y fosfato desde la matriz mineralizada."
       - id: c
-        texto: "Tejido mineralizado que cubre la dentina de la raíz del diente"
+        texto: "La conversión directa de todos los osteocitos en osteoblastos."
       - id: d
-        texto: "La matriz orgánica que secreta el osteoblasto, todavía sin mineralizar"
-    correcta: d
-    explicacion: "El osteoide es la matriz recién secretada por el osteoblasto: colágeno tipo I y otras proteínas, todavía sin mineral. Después se mineraliza."
-    dificultad: 1
-    concepto: "osteoblasto_funciones"
+        texto: "La interrupción permanente de la formación ósea."
+    correcta: b
+    explicacion: "La resorción contribuye al equilibrio mineral al liberar calcio y fosfato, además de retirar tejido envejecido o alterado"
+```
+
+### Seccion 2.5: Las células colaboradoras del microambiente óseo (id "m2_5_celulas_colaboradoras")
+
+<!-- La sección empieza directamente con «Células progenitoras y estromales» (Imagen #1): no tiene texto de entrada
+aparte. -->
+
+#### Contenido
+
+**Células progenitoras y estromales**
+
+Las células progenitoras esqueléticas y las células estromales mesenquimales forman parte de los nichos celulares del periostio, endostio y médula ósea, donde contribuyen al mantenimiento y regeneración del tejido y proporcionan precursores para el linaje osteoblástico. Su comportamiento está condicionado por el microambiente, que integra matriz extracelular, vasos sanguíneos y señales celulares y moleculares capaces de modular su supervivencia, proliferación y diferenciación.
+
+> Recuerda: Más que actuar de forma aislada, estas poblaciones forman parte de un nicho regulador que determina cuándo y dónde estarán disponibles los precursores necesarios para la formación y reparación ósea.
+
+**Células endoteliales y microvasculatura**
+
+La microvasculatura ósea no solo proporciona oxígeno, nutrientes y vías de intercambio; sus células endoteliales participan activamente en el microambiente mediante señales paracrinas que influyen sobre progenitores esqueléticos y osteoblastos, favoreciendo su supervivencia, proliferación y diferenciación. Esta comunicación forma parte del acoplamiento angiogénesis–osteogénesis, en el que mediadores como VEGF y PDGF-BB contribuyen a coordinar la actividad vascular con la formación y reparación ósea.
+
+Dentro de este contexto, los vasos tipo H, caracterizados por una elevada expresión de CD31 y endomucina, constituyen un ejemplo de especialización vascular estrechamente asociada con la actividad osteogénica; sus células endoteliales mantienen una interacción cercana con progenitores esqueléticos y células osteoblásticas, contribuyendo a generar un microambiente favorable para la formación ósea.
+
+**Células inmunitarias**
+
+Las células inmunitarias forman parte del microambiente óseo y contribuyen a regular la actividad de las células residentes y la respuesta frente al daño tisular. Los monocitos y macrófagos participan en la eliminación de restos celulares y en la coordinación de la reparación, mientras que los linfocitos T y B pueden modular la actividad osteoclástica y osteoblástica mediante mediadores moleculares, según su estado de activación y las condiciones del entorno.
+
+Esta interacción está mediada por señales como RANKL, OPG, TNF e interleucinas, capaces de modificar el equilibrio entre formación y resorción ósea. Durante la reparación, determinadas poblaciones inmunitarias favorecen la resolución de la inflamación y la actividad osteogénica; sin embargo, una respuesta inflamatoria persistente puede alterar esta coordinación y favorecer la pérdida ósea, un fenómeno relevante en procesos infecciosos e inflamatorios del territorio maxilofacial.
+
+**Osteomacs y macrófagos asociados al hueso**
+
+Los osteomacs (macrófagos asociados al tejido óseo) son macrófagos residentes que se localizan cerca de las superficies óseas y participan en el mantenimiento del microambiente y la regulación de la formación ósea; a diferencia de los osteoclastos, especializados en la resorción de la matriz mineralizada, los osteomacs cumplen funciones de soporte, interactúan con los osteoblastos y contribuyen a mantener un entorno favorable para su actividad formadora. Además, participan en la fagocitosis de restos celulares y en la organización de la respuesta local frente al daño, contribuyendo a retirar los restos de osteoblastos apoptóticos y a conservar la integridad del microambiente.
+
+Durante la reparación ósea, los osteomacs también pueden favorecer la actividad osteoblástica y contribuir a coordinar la respuesta inflamatoria con la regeneración de la matriz; su función depende del estado de activación y del contexto tisular, por lo que los macrófagos asociados al hueso no deben considerarse únicamente células de defensa, sino participantes activos en la comunicación celular que integra el mantenimiento, la formación y la reparación del tejido óseo.
+
+**Adipocitos y células del estroma medular**
+
+La médula ósea constituye un microambiente dinámico donde coexisten células hematopoyéticas, células estromales mesenquimales, progenitores esqueléticos y adipocitos medulares; estas poblaciones interactúan mediante señales celulares, factores metabólicos y componentes de la matriz extracelular, contribuyendo al mantenimiento y regulación del tejido óseo. Los adipocitos no son células pasivas de almacenamiento, sino que participan en el metabolismo local mediante el almacenamiento y movilización de lípidos y la liberación de adipocinas y otros mediadores, como leptina y adiponectina, capaces de modificar el comportamiento de las células del microambiente.
+
+Además, los adipocitos medulares pueden influir sobre los progenitores esqueléticos y osteoblastos, modulando su metabolismo, supervivencia y diferenciación; esta interacción depende del contexto y de las señales presentes en la médula, por lo que el equilibrio entre los linajes adipogénico y osteogénico puede cambiar con la edad y el estado metabólico. Así, el tejido adiposo medular forma parte activa de la comunicación entre metabolismo, médula ósea y tejido óseo, y contribuye a regular la capacidad del esqueleto para mantenerse y adaptarse.
+
+**Células nerviosas y regulación neurovascular**
+
+Las células nerviosas del microambiente óseo participan en la regulación local mediante la liberación de neurotransmisores y neuropéptidos que actúan sobre células vasculares y óseas. Además de intervenir en la percepción del dolor, estas señales pueden modular la actividad de las células osteoblásticas y osteoclásticas, así como la respuesta tisular frente a las cargas y el daño; de esta manera, la inervación contribuye a integrar la actividad celular con las necesidades funcionales del tejido.
+
+La regulación neurovascular depende de la interacción entre las fibras nerviosas, los vasos sanguíneos y las células óseas, cuyas señales coordinan la perfusión local con las demandas metabólicas del tejido. Durante la reparación, esta comunicación puede contribuir a la coordinación entre la respuesta vascular y la actividad osteogénica; sin embargo, aunque la modulación neural del flujo sanguíneo y del remodelado cuenta con respaldo experimental, la participación específica de determinados circuitos nerviosos en la regeneración ósea, especialmente en el territorio craneofacial, continúa en investigación.
+
+**Una red, no células aisladas**
+
+El tejido óseo funciona como una red celular integrada, en la que osteoblastos, osteocitos y osteoclastos coordinan sus actividades con células progenitoras mesenquimales, endoteliales, inmunitarias, estromales, adipocíticas y nerviosas; mientras las células progenitoras aportan nuevas células osteogénicas, las células endoteliales proporcionan soporte vascular y señales que favorecen la actividad osteogénica, las inmunitarias regulan la inflamación y la reparación, los adipocitos modulan el microambiente mediante señales metabólicas y las fibras nerviosas aportan neurotransmisores y neuropéptidos capaces de influir sobre la actividad celular y la perfusión. Todas estas poblaciones intercambian señales entre sí y con la matriz extracelular, integrando de manera coordinada las demandas mecánicas, metabólicas y funcionales del tejido.
+
+Esta interacción permite coordinar procesos como el acoplamiento entre resorción y formación, la adaptación a las cargas mecánicas, el mantenimiento de la homeostasis mineral y la reparación del daño; en este sistema, los osteocitos integran estímulos mecánicos y señales locales, los osteoclastos participan en la eliminación controlada del tejido que debe renovarse y los osteoblastos producen nueva matriz, mientras las demás poblaciones regulan las condiciones en las que estos procesos ocurren. Por tanto, la homeostasis ósea no depende de la actividad aislada de una célula, sino del equilibrio dinámico de toda esta red celular y molecular, cuya coordinación permite mantener la integridad del tejido y responder a las necesidades de adaptación y reparación de los maxilares.
+
+#### Actividades
+
+##### Actividad m2_5_detective_microambiente
+
+```yaml
+# PDF, 2.5 Actividad 1 (Dificultad: intermedia · Tipo: análisis de caso y pistas). Cada caso es una pregunta con las
+# cuatro poblaciones como opciones (los textos de los casos no caben en una relación de columnas, máximo 140
+# caracteres). Se pierde la regla «cada población se utiliza una sola vez».
+tipo: quiz
+titulo: "Detective del microambiente óseo"
+instrucciones: "Objetivo: identificar qué población celular puede estar involucrada en una alteración del tejido óseo a partir de sus funciones. Instrucción: lee cada caso clínico y determina qué población celular está más directamente relacionada con la función descrita. Cada población se utiliza una sola vez."
+obligatoria: true
+puntaje_max: 20
+concepto: "microambiente_oseo"
+retroalimentacion:
+  acierto: "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
+  parcial: "Algún caso no está bien resuelto. Lee la justificación de cada caso."
+  error: "Revisa la justificación de cada caso y vuelve a leer la sección."
+preguntas:
+  - id: m2_5_caso_a
+    formato: opcion_multiple
+    enunciado: "Caso A. Después de una extracción dental, se requiere retirar restos celulares y mantener un entorno favorable para la actividad de los osteoblastos durante la reparación del alvéolo."
+    opciones:
+      - id: endoteliales
+        texto: "Células endoteliales"
+      - id: inmunitarias
+        texto: "Células inmunitarias"
+      - id: osteomacs
+        texto: "Osteomacs"
+      - id: adipocitos
+        texto: "Adipocitos medulares"
+    correcta: osteomacs
+    explicacion: "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
+  - id: m2_5_caso_b
+    formato: opcion_multiple
+    enunciado: "Caso B. En una zona de reparación ósea, se necesita mejorar el soporte vascular y generar señales que favorezcan la supervivencia y diferenciación de progenitores osteogénicos."
+    opciones:
+      - id: endoteliales
+        texto: "Células endoteliales"
+      - id: inmunitarias
+        texto: "Células inmunitarias"
+      - id: osteomacs
+        texto: "Osteomacs"
+      - id: adipocitos
+        texto: "Adipocitos medulares"
+    correcta: endoteliales
+    explicacion: "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
+  - id: m2_5_caso_c
+    formato: opcion_multiple
+    enunciado: "Caso C. Un paciente presenta inflamación persistente asociada a pérdida ósea; se busca comprender qué población puede modular la actividad osteoclástica y osteoblástica mediante mediadores inflamatorios."
+    opciones:
+      - id: endoteliales
+        texto: "Células endoteliales"
+      - id: inmunitarias
+        texto: "Células inmunitarias"
+      - id: osteomacs
+        texto: "Osteomacs"
+      - id: adipocitos
+        texto: "Adipocitos medulares"
+    correcta: inmunitarias
+    explicacion: "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
+  - id: m2_5_caso_d
+    formato: opcion_multiple
+    enunciado: "Caso D. En la médula ósea, determinadas células liberan leptina y adiponectina, modificando el comportamiento de las poblaciones celulares vecinas."
+    opciones:
+      - id: endoteliales
+        texto: "Células endoteliales"
+      - id: inmunitarias
+        texto: "Células inmunitarias"
+      - id: osteomacs
+        texto: "Osteomacs"
+      - id: adipocitos
+        texto: "Adipocitos medulares"
+    correcta: adipocitos
+    explicacion: "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
+```
+
+##### Actividad m2_5_evaluacion
+
+```yaml
+# El PDF numera la última pregunta como «Pregunta 8. Caso clínico» (después de las preguntas 1 a 3).
+tipo: quiz
+titulo: "Evaluación: las células colaboradoras del microambiente óseo"
+instrucciones: "Responde cada pregunta. Después de responder verás la justificación."
+obligatoria: true
+puntaje_max: 40
+concepto: "microambiente_oseo"
+retroalimentacion:
+  acierto: "Respondiste correctamente las preguntas de esta evaluación."
+  parcial: "Algunas respuestas no son correctas. Lee la justificación de cada pregunta."
+  error: "Revisa la justificación de cada pregunta y vuelve a leer la sección."
+preguntas:
+  - id: m2_5_e1
+    formato: opcion_multiple
+    enunciado: "¿Cuál es una función de las células progenitoras esqueléticas y estromales mesenquimales?"
+    opciones:
+      - id: a
+        texto: "Resorber exclusivamente la matriz mineralizada."
+      - id: b
+        texto: "Proporcionar precursores para el linaje osteoblástico."
+      - id: c
+        texto: "Liberar exclusivamente neurotransmisores."
+      - id: d
+        texto: "Destruir todos los restos celulares del tejido."
+    correcta: b
+    explicacion: "Estas poblaciones se localizan en nichos del periostio, endostio y médula ósea, donde contribuyen al mantenimiento y la regeneración del tejido y proporcionan precursores osteoblásticos."
+  - id: m2_5_e2
+    formato: opcion_multiple
+    enunciado: "¿Cuál es una función de los osteomacs?"
+    opciones:
+      - id: a
+        texto: "Formar exclusivamente cartílago."
+      - id: b
+        texto: "Destruir toda la matriz mineralizada."
+      - id: c
+        texto: "Fagocitar restos celulares y favorecer el mantenimiento del microambiente óseo."
+      - id: d
+        texto: "Producir exclusivamente FGF23."
+    correcta: c
+    explicacion: "Los osteomacs son macrófagos residentes que participan en la eliminación de restos celulares, el soporte a los osteoblastos y la coordinación de la reparación ósea."
+  - id: m2_5_e3
+    formato: verdadero_falso
+    enunciado: "La comunicación entre células progenitoras, endoteliales, inmunitarias, adipocíticas y nerviosas permite integrar señales mecánicas, metabólicas y funcionales, contribuyendo a la adaptación y reparación de los maxilares."
+    opciones:
+      - id: verdadero
+        texto: "Verdadero"
+      - id: falso
+        texto: "Falso"
+    correcta: verdadero
+    explicacion: "El documento presenta el tejido óseo como una red celular integrada, en la que las distintas poblaciones intercambian señales entre sí y con la matriz extracelular, coordinando el mantenimiento, la adaptación y la reparación."
+  - id: m2_5_e8
+    formato: opcion_multiple
+    enunciado: "Caso clínico. Un paciente de 56 años presenta una infección persistente en la región periapical de un primer molar mandibular, con pérdida ósea alrededor del ápice. A pesar del tratamiento inicial, persiste la inflamación local. Desde la perspectiva del microambiente óseo, ¿cuál de las siguientes consecuencias podría producirse?"
+    opciones:
+      - id: a
+        texto: "La coordinación entre formación y resorción ósea siempre mejora como respuesta a la inflamación."
+      - id: b
+        texto: "La actividad de los osteoblastos y osteoclastos deja de depender de las señales del microambiente."
+      - id: c
+        texto: "La persistencia de la inflamación puede alterar la coordinación celular y favorecer la pérdida ósea."
+      - id: d
+        texto: "Los osteoblastos se transforman obligatoriamente en células inmunitarias para combatir la infección."
+    correcta: c
+    explicacion: "Las células inmunitarias modulan la actividad osteoblástica y osteoclástica mediante mediadores como RANKL, OPG, TNF e interleucinas; cuando la respuesta inflamatoria persiste, puede alterarse el equilibrio entre formación y resorción, favoreciendo la pérdida ósea, como puede ocurrir en procesos infecciosos e inflamatorios del territorio maxilofacial."
 ```
 
 ## Glosario
 
-- **Anhidrasa carbónica II:** enzima del citoplasma del osteoclasto que convierte CO2 y agua en ácido carbónico, fuente de los protones que se bombean para acidificar el espacio de resorción.
 - **Apoptosis:** muerte celular programada; es el destino de una gran parte de los osteoblastos al terminar de formar hueso.
-- **Borde festoneado:** repliegues profundos de la membrana del osteoclasto activo, orientados hacia el hueso; por ellos salen protones y enzimas y se recogen los productos de degradación. También se llama borde rugoso.
-- **Canalículo:** conducto fino que atraviesa la matriz mineralizada y conecta las lagunas; aloja una dendrita y líquido.
-- **Cartílago de Meckel:** barra de cartílago primario del arco mandibular; guía la formación de la mandíbula, pero no se convierte en ella. Su extremo posterior forma el martillo y el yunque.
-- **Cartílago secundario:** cartílago que aparece después de que existe hueso membranoso, sin derivar del cartílago primario; el cartílago condilar es el principal ejemplo mandibular.
+- **Canalículo:** conducto fino que atraviesa la matriz mineralizada y conecta las lagunas; aloja una prolongación del osteocito y líquido.
 - **Catepsina K:** proteasa de cisteína que el osteoclasto secreta al espacio ácido para digerir el colágeno tipo I.
 - **Célula de revestimiento óseo:** osteoblasto en reposo, aplanado, que cubre superficies óseas sin formación ni resorción y puede reactivarse.
 - **Célula madre mesenquimal:** célula multipotente que se autorrenueva y puede originar osteoblastos, condrocitos y adipocitos.
-- **Célula osteoprogenitora:** célula fusiforme comprometida con el linaje óseo, que todavía se divide; se localiza en el periostio y el endostio.
-- **Cemento:** tejido mineralizado que cubre la dentina de la raíz y recibe las fibras del ligamento periodontal.
-- **Cresta neural craneal:** población de células embrionarias multipotentes que migra desde el borde del tubo neural hacia la cara y el cuello y forma el ectomesénquima.
-- **Dendrita:** prolongación larga y delgada del osteocito que viaja por un canalículo y contacta con otras células.
-- **Ectomesénquima:** tejido embrionario de origen neural, propio de la cabeza, que se comporta como mesénquima y origina hueso, cartílago, dentina, pulpa, cemento y ligamento periodontal.
 - **Esclerostina:** proteína secretada por los osteocitos que se une a LRP5 y LRP6 y frena la vía Wnt/β-catenina en los osteoblastos, con lo que reduce la formación de hueso.
-- **Fibras de Sharpey:** extremos de las fibras principales de colágeno del ligamento periodontal incluidos en el cemento y el hueso alveolar.
 - **Fosfatasa alcalina:** enzima del osteoblasto, anclada a su membrana y a las vesículas de la matriz, que favorece la mineralización; su forma ósea en sangre es un marcador de formación.
-- **Hueso alveolar propio:** lámina delgada de hueso compacto que reviste el alvéolo y recibe las fibras de Sharpey; se ve como lámina dura en la radiografía.
 - **Laguna:** cavidad de la matriz mineralizada donde vive el cuerpo del osteocito.
 - **Laguna de Howship:** depresión excavada en la superficie ósea por un osteoclasto activo.
-- **Ligamento periodontal:** tejido conectivo fibroso entre el cemento y el hueso alveolar, que ancla el diente y contiene células formadoras y reabsorbentes.
-- **M-CSF:** factor estimulante de colonias de macrófagos; se une a c-Fms y mantiene la supervivencia y la proliferación del precursor del osteoclasto, además de inducirle RANK.
+- **M-CSF:** factor estimulante de colonias de macrófagos; se une a su receptor en el precursor del osteoclasto y mantiene su supervivencia y su proliferación, además de inducirle RANK.
 - **Osificación endocondral:** formación de hueso que reemplaza a un molde de cartílago; en la mandíbula ocurre en el cóndilo.
-- **Osificación intramembranosa:** formación de hueso directamente a partir de mesénquima condensado, sin cartílago; forma el cuerpo, la rama y el proceso alveolar de la mandíbula.
+- **Osificación intramembranosa:** formación de hueso directamente a partir de mesénquima condensado, sin cartílago; forma la mayor parte del maxilar y el cuerpo y la rama de la mandíbula.
 - **Osteoblasto:** célula formadora de hueso; sintetiza el osteoide, regula la mineralización y produce M-CSF, RANKL y OPG.
 - **Osteocalcina:** proteína no colágena de la matriz que secreta el osteoblasto maduro; se une a la hidroxiapatita y sirve como marcador de actividad osteoblástica.
 - **Osteoclasto:** célula gigante multinucleada del linaje monocito-macrófago que reabsorbe hueso.
@@ -1484,24 +1045,16 @@ preguntas:
 - **Osteoide:** matriz orgánica recién secretada por el osteoblasto, aún sin mineralizar, formada sobre todo por colágeno tipo I.
 - **OPG (osteoprotegerina):** receptor señuelo soluble que se une a RANKL y le impide activar RANK.
 - **Osterix (Sp7):** factor de transcripción que actúa después de RUNX2 y depende de él; necesario para que el preosteoblasto se convierta en osteoblasto.
-- **RANK y RANKL:** RANK es el receptor de membrana del preosteoclasto; RANKL es su ligando, producido por osteoblastos, células del estroma y osteocitos. Su unión promueve la formación y la activación del osteoclasto.
-- **Restos epiteliales de Malassez:** cúmulos de células epiteliales del ligamento periodontal, cerca del cemento; remanentes de la vaina epitelial radicular de Hertwig.
+- **RANK y RANKL:** RANK es el receptor de membrana del precursor del osteoclasto; RANKL es su ligando, producido por osteoblastos, células del estroma y osteocitos. Su unión promueve la formación y la activación del osteoclasto.
 - **RUNX2:** factor de transcripción (también llamado Cbfa1) que compromete a la célula mesenquimal con el linaje osteoblástico.
-- **TRAP:** fosfatasa ácida resistente al tartrato; marcador histoquímico del osteoclasto.
 - **Unión comunicante:** canal entre células vecinas, formado sobre todo por conexina 43 en los osteocitos, que deja pasar iones y moléculas pequeñas.
-- **V-ATPasa (bomba de protones):** complejo de membrana del borde festoneado que gasta ATP para bombear protones al espacio de resorción.
-- **Zona clara:** anillo de citoplasma del osteoclasto, rico en actina, que se adhiere a la matriz y sella el espacio de resorción. También se llama zona de sellado.
 
 ## Referencias
 
 - Ross MH, Pawlina W. *Histología: Texto y Atlas* (*Histology: A Text and Atlas*). Capítulos de tejido óseo, tejido cartilaginoso y de tejido conectivo.
 - Mescher AL. *Junqueira. Histología básica: Texto y Atlas* (*Junqueira's Basic Histology: Text and Atlas*). Capítulo de tejido óseo.
 - Nanci A. *Ten Cate's Oral Histology: Development, Structure, and Function*, 9.ª edición. Capítulos de desarrollo de la cara, ligamento periodontal, hueso alveolar y cemento.
-- Sperber GH, Sperber SM, Guttmann GD. *Craniofacial Embryogenetics and Development*, 2.ª edición.
-- Moore KL, Persaud TVN, Torchia MG. *The Developing Human: Clinically Oriented Embryology*. Capítulos del aparato faríngeo y de la cabeza y el cuello.
-- Standring S (ed.). *Gray's Anatomy: The Anatomical Basis of Clinical Practice*. Capítulos de la mandíbula y de la articulación temporomandibular.
 - Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). *Principles of Bone Biology*. Capítulos de osteoblastos, osteocitos y osteoclastos.
-- Hall BK. *Bones and Cartilage: Developmental and Evolutionary Skeletal Biology*, 2.ª edición.
 - Hall JE, Hall ME. *Guyton y Hall: Tratado de fisiología médica*. Capítulo de fisiología del hueso, el calcio y el fosfato.
 - Florencio-Silva R, Sasso GRS, Sasso-Cerri E, Simões MJ, Cerri PS. Biology of Bone Tissue: Structure, Function, and Factors That Influence Bone Cells. *BioMed Research International*, 2015.
 - Komori T, et al. Targeted disruption of Cbfa1 results in a complete lack of bone formation owing to maturation arrest of osteoblasts. *Cell*, 1997.
@@ -1509,31 +1062,22 @@ preguntas:
 - Jilka RL, et al. Osteoblast programmed cell death (apoptosis): modulation by growth factors and cytokines. *Journal of Bone and Mineral Research*, 1998.
 - Teitelbaum SL. Bone resorption by osteoclasts. *Science*, 2000.
 - Bonewald LF. The amazing osteocyte. *Journal of Bone and Mineral Research*, 2011.
-- Dominici M, et al. Minimal criteria for defining multipotent mesenchymal stromal cells. The International Society for Cellular Therapy position statement. *Cytotherapy*, 2006.
-- Chai Y, et al. Fate of the mammalian cranial neural crest during tooth and mandibular morphogenesis. *Development*, 2000.
+- Qin et al. (2020). Fuente de las figuras «Morfología y organización celular del osteocito» y «Osteocito en el sistema lacuno-canalicular» (adaptadas, licencia CC BY 4.0). https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/
 
 ## Banco de preguntas para el mentor
 
 | # | Pregunta | Respuesta | Dificultad | Concepto |
 |---|---|---|---|---|
-| 1 | ¿Qué es el ectomesénquima y de dónde viene? | Es el mesénquima de origen neural de la cabeza. Viene de la cresta neural craneal y forma hueso, cartílago, dentina, pulpa, cemento y ligamento periodontal. | 1 | origen_craneofacial |
-| 2 | ¿Por qué se llama secundario al cartílago condilar? | Porque no deriva del cartílago de Meckel y aparece después de que ya existe hueso intramembranoso. | 2 | condilo_endocondral |
-| 3 | ¿Qué destino tiene el cartílago de Meckel? | Su extremo posterior forma el martillo y el yunque; su porción media desaparece o se vuelve tejido fibroso, y una parte contribuye a ligamentos como el esfenomandibular. El hueso mandibular se formó a su lado. | 2 | cartilago_meckel |
-| 4 | ¿Qué hace M-CSF que no haga RANKL? | M-CSF, al unirse a c-Fms, mantiene vivo y en división al precursor y le induce el receptor RANK. RANKL, al unirse a RANK, promueve la diferenciación, la fusión y la activación. | 2 | senales_osteoclastogenicas |
-| 5 | ¿Qué pasa con la resorción ósea si aumenta la proporción RANKL/OPG? | Aumenta: hay más RANKL libre para activar RANK, se forman y activan más osteoclastos. | 2 | senales_osteoclastogenicas |
-| 6 | ¿Por qué se usa la fosfatasa alcalina ósea en sangre como marcador de formación ósea? | Porque la producen los osteoblastos activos; su aumento refleja más actividad formadora. | 2 | osteoblasto_funciones |
-| 7 | ¿En qué se diferencian un osteoblasto activo y un osteocito? | El osteoblasto es cúbico, con mucho retículo rugoso y forma osteoide sobre la superficie. El osteocito es estrellado, tiene menos orgánulos, vive en una laguna dentro de la matriz y se comunica por dendritas. | 1 | osteocito_red |
-| 8 | ¿Cuál es la diana molecular de la esclerostina y qué provoca? | Se une a los correceptores LRP5 y LRP6 y bloquea la vía Wnt/β-catenina en el osteoblasto, con lo que se reduce la formación de hueso. | 3 | esclerostina |
-| 9 | ¿Qué esperas en la dentición de una persona con haploinsuficiencia de RUNX2? | Displasia cleidocraneal: dientes supernumerarios, retención de dientes temporales y erupción retrasada de los permanentes. | 3 | factores_transcripcion |
-| 10 | ¿De qué tejido embrionario derivan los fibroblastos del ligamento periodontal? | Los fibroblastos y los progenitores derivan del folículo dental (ectomesénquima de la cresta neural); los restos de Malassez son epiteliales y los osteoclastos vienen de la médula ósea. | 2 | ligamento_periodontal |
-| 11 | ¿Por qué se dice que la TRAP es resistente al tartrato? | Porque en la tinción se añade tartrato, que inhibe casi todas las fosfatasas ácidas, y la isoforma del osteoclasto sigue activa; por eso tiñe a los osteoclastos. | 2 | resorcion_osteoclastica |
-| 12 | ¿Cuál se considera el regulador maestro de la osteoclastogénesis y qué lo activa? | NFATc1. Lo activa la señal de RANKL al unirse a RANK. | 3 | senales_osteoclastogenicas |
-| 13 | ¿Por qué el osteoclasto tiene varios núcleos? | Porque se forma por la fusión de preosteoclastos mononucleares. | 1 | linaje_osteoclastico |
-| 14 | ¿En qué se diferencia una célula osteoprogenitora de una célula de revestimiento óseo? | La osteoprogenitora es una célula fusiforme comprometida con el linaje (con RUNX2) que todavía se divide y puede originar osteoblastos. La de revestimiento es un osteoblasto aplanado y en reposo sobre una superficie sin actividad, que puede reactivarse. | 2 | celulas_revestimiento |
-| 15 | ¿Qué fármaco antiosteoporótico bloquea la esclerostina? | El romosozumab, un anticuerpo contra la esclerostina. | 3 | esclerostina |
-| 16 | ¿Qué ocurre con el hueso alveolar cuando se pierde un diente y por qué? | Se reabsorbe de forma progresiva, más rápido en los primeros meses, porque es un hueso dependiente del diente y del estímulo funcional que transmite el ligamento periodontal. | 2 | hueso_alveolar |
-| 17 | En ortodoncia, ¿en qué lado predomina la formación ósea, el de presión o el de tensión? | En el de tensión, donde el ligamento se estira y se estimula a los osteoblastos. | 1 | remodelado_ortodoncico |
-| 18 | ¿Qué diferencia hay entre laguna, canalículo y dendrita? | La laguna es la cavidad del cuerpo del osteocito, el canalículo es el conducto que atraviesa la matriz y la dendrita es la prolongación celular que viaja por el canalículo. | 1 | osteocito_red |
+| 1 | ¿Qué hace M-CSF que no haga RANKL? | M-CSF se une a CSF1R en los precursores de la línea monocito-macrófago y favorece su supervivencia, proliferación y adquisición de características necesarias para responder a RANKL. RANKL se une a RANK y favorece su diferenciación y activación. | 2 | osteoclastogenesis |
+| 2 | ¿Qué pasa con la osteoclastogénesis si cambia el equilibrio entre RANKL y OPG? | El equilibrio entre RANKL y OPG contribuye a determinar la intensidad de la osteoclastogénesis: OPG actúa como receptor señuelo, se une a RANKL e impide su interacción con RANK. | 2 | regulacion_osteoblastica |
+| 3 | ¿En qué se diferencian RUNX2 y SP7/Osterix? | Ambos son fundamentales para establecer el programa de diferenciación osteoblástica, aunque participan en momentos y funciones diferentes: RUNX2 participa tempranamente en el compromiso del progenitor y SP7/Osterix favorece después la diferenciación y maduración. | 2 | regulacion_osteoblastica |
+| 4 | ¿Qué efecto tienen la PTH intermitente y la PTH sostenida? | PTH intermitente → ↑ actividad osteoblástica → ↑ formación ósea; PTH sostenida → ↑ remodelado y puede favorecer la resorción mediante RANKL. | 2 | regulacion_osteoblastica |
+| 5 | ¿Cuáles son los tres destinos del osteoblasto? | Diferenciarse en osteocitos, transformarse en células de revestimiento óseo o experimentar apoptosis. | 1 | destino_osteoblasto |
+| 6 | ¿Qué es el sistema lacunocanalicular? | Una red tridimensional formada por las lagunas óseas, que alojan los cuerpos celulares de los osteocitos, y los canalículos, por los que se extienden sus prolongaciones citoplasmáticas. | 1 | osteocito_estructura |
+| 7 | ¿Qué hace el FGF23 en el riñón? | Disminuye la reabsorción de fosfato, inhibe la 1α-hidroxilasa (CYP27B1) y estimula la 24-hidroxilasa (CYP24A1), con lo que reduce la vitamina D activa. | 3 | osteocito |
+| 8 | ¿Las lagunas de Howship son cavidades donde viven los osteoclastos? | No: son depresiones que los osteoclastos excavan durante la resorción, una evidencia morfológica de su actividad. | 1 | osteoclasto |
+| 9 | ¿Qué es NFATc1? | El factor que coordina el programa de diferenciación osteoclástica; se activa por la señalización de RANKL a través de RANK. | 2 | osteoclastogenesis |
+| 10 | ¿Qué diferencia a un osteomac de un osteoclasto? | El osteoclasto reabsorbe la matriz mineralizada; el osteomac es un macrófago residente que cumple funciones de soporte, interactúa con los osteoblastos y fagocita restos celulares. | 2 | microambiente_oseo |
 
 ## Ganchos para el mentor
 
@@ -1541,77 +1085,41 @@ preguntas:
 
 | Concepto | Qué debe entender el estudiante |
 |---|---|
-| `osificacion_mandibular`, `origen_craneofacial`, `cartilago_meckel`, `condilo_endocondral` | La mandíbula deriva de la cresta neural; el cuerpo y la rama se forman por osificación intramembranosa junto al cartílago de Meckel; el cóndilo, por osificación endocondral de un cartílago secundario |
-| `celulas_madre_mesenquimales`, `linaje_osteoblastico`, `factores_transcripcion` | Célula madre mesenquimal, osteoprogenitora, preosteoblasto, osteoblasto y osteocito; RUNX2 primero y osterix después |
-| `osteoblasto_funciones`, `celulas_revestimiento` | El osteoblasto forma osteoide (colágeno I), regula la mineralización (fosfatasa alcalina, osteocalcina) y controla al osteoclasto (RANKL, OPG); la célula de revestimiento es un osteoblasto en reposo |
-| `osteocito_red`, `esclerostina` | El osteocito vive en una laguna, se comunica por dendritas en canalículos, percibe la carga y secreta esclerostina |
-| `linaje_osteoclastico`, `senales_osteoclastogenicas`, `resorcion_osteoclastica` | El osteoclasto es hematopoyético; M-CSF mantiene al precursor y RANKL lo diferencia; OPG frena; la resorción disuelve primero el mineral y digiere después el colágeno |
-| `ligamento_periodontal`, `hueso_alveolar`, `remodelado_ortodoncico` | El ligamento ancla el diente al hueso alveolar; sus células regulan el hueso; en ortodoncia hay resorción en el lado de presión y formación en el de tensión |
-| `funciones_celulas_oseas`, `evaluacion_modulo_2` | Integración de la función de cada célula y de todo el módulo |
+| `origen_celulas_oseas`, `osificacion_intramembranosa` | Linaje mesenquimal (progenitores esqueléticos) y linaje hematopoyético (precursores osteoclásticos); osificación intramembranosa y endocondral |
+| `regulacion_osteoblastica`, `osteoblasto`, `destino_osteoblasto` | Del progenitor esquelético al osteoblasto (RUNX2, SP7/Osterix), sus reguladores (Wnt/β-catenina, BMP, hormonas), su control de los osteoclastos (RANKL, OPG, M-CSF) y sus tres destinos |
+| `osteocito_estructura`, `osteocito` | Sistema lacunocanalicular, mecanosensación, regulación del remodelado (esclerostina, DKK1, RANKL, OPG), FGF23, remodelado perilacunar y microdaño |
+| `osteoclastogenesis`, `osteoclasto` | Del progenitor hematopoyético al osteoclasto (M-CSF, RANKL, NFATc1, fusión), morfología, lagunas de Howship y homeostasis |
+| `microambiente_oseo` | Progenitoras y estromales, endoteliales (vasos tipo H), inmunitarias, osteomacs, adipocitos medulares y fibras nerviosas como red |
 
 **Errores frecuentes y cómo aclararlos**
 
 | Error frecuente | Cómo aclararlo |
 |---|---|
-| «Los osteoclastos vienen de los osteoblastos» | Pregunta de qué célula madre parte cada linaje. El osteoclasto viene de la célula madre hematopoyética de la médula (monocito-macrófago); el osteoblasto, de la mesenquimal. Lo que une a ambos es la señalización, no el origen |
-| «RANKL lo produce el osteoclasto» | RANKL está en la membrana de osteoblastos, células del estroma y osteocitos. El osteoclasto (su precursor) tiene RANK, el receptor. Pídele que diga quién es «ligando» y quién «receptor» |
-| «La OPG activa a los osteoclastos» | Ayúdalo con la idea de señuelo: la OPG se une a RANKL y le impide llegar a RANK; por eso frena |
-| Confundir M-CSF con RANKL | M-CSF mantiene vivo al precursor y le induce RANK; RANKL lo diferencia. Sin M-CSF no hay RANK; sin RANKL no hay osteoclasto |
-| «RUNX2 y osterix son receptores» | Son factores de transcripción que actúan en el núcleo. Los receptores están en la membrana; lo que se activa desde un receptor (BMP, Wnt) llega a estos factores |
-| Invertir el orden RUNX2 y osterix | Osterix está aguas abajo de RUNX2. Apóyate en el experimento: sin osterix quedan precursores con RUNX2 pero sin hueso |
-| «El cartílago de Meckel se convierte en la mandíbula» | Meckel es una guía. El hueso se forma al lado por osificación intramembranosa y la porción media desaparece |
-| «El cóndilo se forma por osificación intramembranosa» | El cóndilo tiene un cartílago secundario que se osifica por vía endocondral |
-| «Los osteocitos están muertos o inactivos» | Son células vivas, la mayoría del hueso adulto; secretan esclerostina, RANKL y FGF23 y detectan la carga |
-| Confundir laguna, canalículo y dendrita | Laguna: cavidad del cuerpo. Canalículo: conducto. Dendrita: prolongación de la célula |
-| Confundir osteoide con hueso mineralizado | El osteoide es la matriz orgánica recién formada, sin mineral; después se mineraliza (módulo 4) |
-| «La célula de revestimiento es una célula sin importancia» | Es un osteoblasto en reposo que puede reactivarse; cubre la superficie y participa en el remodelado |
-| «El osteoclasto solo destruye» | La resorción es la mitad del remodelado y libera señales que estimulan la formación (módulo 5) |
-| Creer que los marcadores dirigen la diferenciación | La catepsina K y la osteocalcina son productos de células ya diferenciadas; los factores que dirigen son RUNX2, osterix, M-CSF y RANKL |
-| Pensar que el ligamento periodontal es solo un «pegamento» | Es un tejido celular con fibroblastos, progenitores, osteoblastos y osteoclastos que regulan el hueso alveolar |
+| «Los osteoclastos vienen de los osteoblastos» | Los osteoclastos tienen un origen hematopoyético (línea monocito-macrófago); los osteoblastos, mesenquimal. Lo que los une es la señalización (RANKL, OPG, M-CSF) |
+| «RANKL lo produce el osteoclasto» | RANKL lo expresan los osteoblastos, otras células del linaje osteoblástico y los osteocitos; el precursor osteoclástico tiene RANK, el receptor |
+| «La OPG activa a los osteoclastos» | OPG es un receptor señuelo: se une a RANKL e impide su interacción con RANK; por eso limita la osteoclastogénesis |
+| Confundir M-CSF con RANKL | M-CSF prepara a los precursores (supervivencia, proliferación) para responder a RANKL; RANKL activa la diferenciación |
+| «La PTH siempre destruye hueso» | Depende del patrón: la PTH intermitente favorece la formación; la sostenida aumenta el remodelado y puede favorecer la resorción |
+| «Los osteocitos están inactivos» | Son sensores y reguladores: detectan estímulos mecánicos, producen esclerostina, DKK1, RANKL, OPG y FGF23 y remodelan su entorno (PLR) |
+| «Las lagunas de Howship son el hogar del osteoclasto» | Se forman como consecuencia de la resorción; no son cavidades preexistentes |
+| «Los osteomacs son osteoclastos» | Los osteomacs son macrófagos residentes de soporte; los osteoclastos reabsorben la matriz mineralizada |
 
 **Cómo usar el contexto del estudiante**
 
-- En `m2_arrastre_senales_linajes` soltar RANKL sobre RANK antes que M-CSF sobre c-Fms es un acople válido: la actividad no impone orden y no cuenta como error. Si el estudiante lo hace así, solo recuérdale el orden biológico (M-CSF induce el receptor RANK, por eso RANKL actúa después); ese orden sí se evalúa en `m2_ql_4`.
-- Si falla `m2_quiz_origen`, pídele que cuente con sus palabras cómo se forma el cuerpo y cómo el cóndilo, y compara ambos procesos.
-- Si pregunta por temas de otros módulos (mecanotransducción, mineralización, remodelado), responde brevemente y remite al módulo correspondiente.
+- Si pregunta por temas de otros módulos (mecanotransducción en el módulo 3, remodelado en el módulo 5), responde brevemente y remite al módulo correspondiente.
 
 ## Notas de verificacion para el docente
 
-Los datos siguientes varían entre fuentes, son aproximados o son de interpretación. En el cuerpo del texto están marcados con la etiqueta [verificar].
-
-1. **Cronología del desarrollo mandibular** (sección 2.1, tabla y texto; hotspots). Las fuentes dan cifras algo distintas: el cartílago de Meckel aparece hacia la sexta semana; la osificación intramembranosa comienza hacia la sexta o séptima semana; el cartílago condilar aparece entre las semanas 10 y 14 (algunas fuentes citan la semana 10 y otras la 12). Se usó «aproximadamente». Conviene confirmar con el texto de embriología que use el curso.
-2. **Ubicación del primer centro de osificación** (secciones 2.1 y hotspot `foramen_mentoniano`). Se describe como la bifurcación del nervio alveolar inferior en sus ramas mentoniana e incisiva, cerca del futuro foramen mentoniano. Confirmar con el texto de referencia.
-3. **Destino del cartílago de Meckel** (sección 2.1 y banco de preguntas). Se afirma que el extremo posterior forma el martillo y el yunque, que la porción media desaparece o se transforma en tejido fibroso y que una parte contribuye a ligamentos como el esfenomandibular. La contribución de la porción anterior a la región de la sínfisis es objeto de debate y no se afirma.
-4. **Cartílagos secundarios adicionales** (sección 2.1 y hotspots `sinfisis` y `apofisis_coronoides`). Se mencionan cartílagos secundarios menores en la apófisis coronoides y en la sínfisis. Algunos textos añaden un cartílago angular, sobre todo en roedores. Confirmar cuáles enseña el curso para el ser humano.
-5. **Osificación de la sínfisis en el primer año** (hotspot `sinfisis`). La fusión de las hemimandíbulas durante el primer año de vida es la cifra habitual; algunos textos dan un rango de meses. Confirmar.
-6. **Proporción de osteocitos** (sección 2.3 y pregunta `m2_qs_1`). Aproximadamente 90 a 95 % de las células del hueso adulto; algunas fuentes dicen «más de 90 %» o «cerca de 90 %». Conviene confirmar la cifra que usará el curso.
-7. **Apoptosis de osteoblastos** (secciones 2.2, video de la línea osteoblástica). Se estima que entre 50 y 70 % de los osteoblastos mueren por apoptosis; es una estimación indirecta (los osteoblastos que no se cuentan como osteocitos ni como células de revestimiento) de un trabajo clásico. Confirmar.
-8. **Colágeno tipo I en el osteoide** (sección 2.2 y capa `osteoide`). Aproximadamente 90 % de la matriz orgánica; hay variación entre textos.
-9. **RANKL en osteocitos** (sección 2.3). Se dice que el osteocito es una fuente importante de RANKL en el remodelado de ratones adultos. La evidencia proviene sobre todo de modelos murinos; su extrapolación al ser humano se sigue estudiando.
-10. **Número de núcleos del osteoclasto** (sección 2.4). No se da una cifra. Las fuentes varían: promedios cercanos a ocho núcleos en algunas descripciones, hasta unas decenas en textos clásicos, y más en algunas enfermedades. Confirmar la afirmación «varios núcleos».
-11. **pH de la laguna de resorción** (sección 2.4 y capa `bomba_protones`). Aproximadamente 4,5 en varias fuentes; se usa como valor aproximado.
-12. **Ancho del ligamento periodontal** (sección 2.5 y capa `ligamento_periodontal`). Aproximadamente 0,15 a 0,4 mm; algunos textos dan 0,15 a 0,38 mm o un promedio de 0,2 mm, y el ancho varía con el diente, la edad y la función. Confirmar el rango.
-13. **Duración estimada** (ficha). Se estimó en 40 a 50 minutos con las actividades obligatorias (unas 2 700 palabras de contenido, 11 actividades obligatorias y 23 preguntas de quiz). Es un cálculo, no una medición: conviene validarlo con un piloto de 3 o 4 estudiantes.
-
-Otras afirmaciones que el docente puede querer ajustar, aunque no llevan la etiqueta:
-
-- **Origen de las CMM en la mandíbula.** Se afirma que descienden del ectomesénquima. Es lo habitual para el hueso mandibular; las poblaciones de la médula ósea mandibular y su equivalencia con las de otros huesos se siguen investigando.
-- **Origen del osteoclasto.** Se presenta la vía clásica (célula madre hematopoyética, monocito-macrófago). Estudios recientes indican que, además, precursores eritromieloides embrionarios contribuyen a los osteoclastos; se omite por ser de profundización.
-- **Orden de los marcadores.** En la pregunta `m2_ql_3` solo se ordenan RUNX2, osterix, la secreción de osteoide y la osteocalcina. Se evitó poner el colágeno tipo I como paso propio: se expresa desde etapas tempranas (RUNX2 activa su promotor y osterix coopera), y en los ratones sin osterix se sigue expresando, aunque reducido, de modo que no admite un orden inequívoco. Otros textos añaden la fosfatasa alcalina, la osteopontina y la sialoproteína ósea en pasos intermedios.
-- **Etapas intermedias de los linajes.** Algunos textos no separan el preosteoblasto de la osteoprogenitora, y otros llaman CFU-GM al progenitor mieloide. Se incluyen ambas etapas para ubicar osterix y para que el orden del linaje del osteoclasto sea completo (preguntas `m2_ql_1` y `m2_ql_2`). Confirmar la nomenclatura que usa el curso.
-- **BMP y Wnt como señales que activan RUNX2.** Se mencionan como ejemplos; el módulo 3 tratará Wnt.
-- **Osteocalcina.** Se dice que es «una de las proteínas no colágenas más abundantes»; algunos textos la llaman la más abundante.
-- **Osteonecrosis de los maxilares.** Se afirma que es más frecuente en la mandíbula que en el maxilar; las series publicadas sitúan alrededor de dos tercios a 70 % en la mandíbula, sin cifras usadas en el texto.
-- **TRAP 5b y FGF23.** Se citan como marcador de resorción y hormona osteocitaria respectivamente.
-- **Síndrome de Treacher Collins, displasia cleidocraneal, esclerosteosis, picnodisostosis y osteopetrosis.** Los ejemplos clínicos son de libros de texto y pueden ampliarse o sustituirse por casos que el docente prefiera.
-- **Reabsorción tras la pérdida de un diente.** Se dice que es progresiva y más rápida en los primeros meses. Los estudios clínicos clásicos (por ejemplo, el de Schropp y colaboradores, 2003) describen una pérdida de hasta la mitad del ancho del reborde en el primer año, la mayor parte en los tres primeros meses; los valores varían entre estudios y no se citan cifras en el texto.
-- **Origen de las células del ligamento periodontal.** Se afirma que fibroblastos, cementoblastos y progenitores derivan del folículo dental. Algunos autores discuten el origen de los cementoblastos radiculares (vaina de Hertwig frente a folículo); es la versión habitual de los textos de histología oral.
-- **Esclerosteosis y enfermedad de van Buchem.** La primera es una pérdida de función de SOST; la segunda, una deleción no codificante cercana a SOST que reduce su expresión en el hueso. Ambas causan sobrecrecimiento óseo, con afectación de cráneo y mandíbula.
-- **Puntajes y umbral del logro.** Los puntajes de cada actividad y el 70 % sugerido para el logro son una propuesta, no un requisito del docente.
+1. **Duración estimada** (ficha). Se mantiene la estimación anterior de 40 a 50 minutos; con el contenido nuevo del PDF conviene medirla con un piloto.
+2. **Objetivos de aprendizaje.** El PDF no trae objetivos para el módulo 2; se conservaron los anteriores, que nombran temas que el contenido nuevo ya no desarrolla (cartílago de Meckel, ligamento periodontal, ortodoncia). Conviene reemplazarlos con el docente.
+3. **Selección de preguntas.** El PDF no pide en este módulo un banco con selección: se incluyen todas sus preguntas de evaluación.
 
 ## Registro de revision
 
-Revision cientifica independiente del modulo 2. Se contrastaron por cuenta propia los hallazgos factuales con fuentes (Nakashima 2002 y revisiones posteriores sobre osterix; Dominici 2006; Schropp 2003 y revisiones sobre la reabsorcion del reborde alveolar) antes de aceptarlos.
+**2026-10-25.** El módulo se reestructuró con el PDF del docente («Modulos del 1 al 3, completados, listos para
+desarrollar»): cinco secciones nuevas (2.1 a 2.5), textos al pie de la letra, actividades y evaluaciones del PDF. Se
+retiraron las secciones, actividades, ilustraciones y modelos 3D de la versión anterior. La tabla siguiente es la
+revisión científica de esa versión anterior y se conserva como historial.
 
 | # | Hallazgo | Decision | Razon breve |
 |---|---|---|---|

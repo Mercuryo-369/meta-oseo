@@ -25,7 +25,7 @@ class RefuerzoSugerencia(BaseModel):
     modulo: int
     seccion: str
     seccion_titulo: str
-    # Enlace interno del frontend (`/modulo/3?s=m3_4_osteocito_sensor`).
+    # Enlace interno del frontend (`/modulo/3?s=m3_1_mecanotransduccion`).
     url: str
     motivo_tipo: MotivoTipo
     # Frase en lenguaje claro para el estudiante ("Necesitaste 4 intentos para completarla").

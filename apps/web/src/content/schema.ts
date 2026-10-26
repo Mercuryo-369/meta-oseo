@@ -593,7 +593,7 @@ export const ActividadArrastreMolecularSchema = z
 
 export const ElementoColumnaSchema = z.strictObject({
   id: IdSchema,
-  texto: markdownLinea(2, 140),
+  texto: markdownLinea(2, 200),
 });
 
 export const ParColumnasSchema = z.strictObject({
@@ -684,12 +684,12 @@ export const OpcionQuizSchema = z.strictObject({
 
 export const PasoOrdenSchema = z.strictObject({
   id: IdSchema,
-  texto: markdownLinea(2, 140),
+  texto: markdownLinea(2, 200),
 });
 
 const camposPregunta = {
   id: IdSchema,
-  enunciado: markdownLinea(10, 400),
+  enunciado: markdownLinea(10, 500),
   /** Retroalimentación inmediata tras responder (briefing: "explicación breve"). */
   explicacion: markdownLinea(10, 600),
   /** Concepto que evalúa la pregunta (si difiere del de la actividad). */
@@ -1208,7 +1208,7 @@ export const SeccionSchema = z
      * Entrada de la sección: se lee en el panel de la portada del módulo cuando la sección está activa, con sus
      * **palabras clave** en azul (también la usan el menú y el mentor).
      */
-    resumen: markdownLinea(10, 600).optional(),
+    resumen: markdownLinea(10, 2200).optional(),
     bloques: z.array(BloqueSchema).min(1).max(16),
   })
   .superRefine((seccion, ctx) => {

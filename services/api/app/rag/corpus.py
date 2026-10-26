@@ -4,10 +4,10 @@
 `content.json` de los módulos y de las secciones del mentor de `docs/guion-por-modulo/`. Se
 versiona (la imagen de la API no trae `apps/` ni `docs/`). Una línea por fragmento:
 
-    {"id": "m3:m3_4_osteocito_sensor:t_flujo", "modulo": 3, "seccion_id": "m3_4_osteocito_sensor",
+    {"id": "m3:m3_1_mecanotransduccion:t_flujo", "modulo": 3, "seccion_id": "m3_1_mecanotransduccion",
      "seccion_titulo": "El osteocito, un sensor", "tipo": "contenido", "nivel": "todos",
      "subtitulo": "Flujo de líquido", "texto": "...",
-     "url": "/modulo/3?s=m3_4_osteocito_sensor", "refs": ["m3:t_flujo"]}
+     "url": "/modulo/3?s=m3_1_mecanotransduccion", "refs": ["m3:t_flujo"]}
 
 Tipos:
 

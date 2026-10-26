@@ -50,7 +50,7 @@ export interface SugerenciaRefuerzo {
   modulo: number;
   seccion: string;
   seccion_titulo: string;
-  /** Ruta interna del frontend: `/modulo/3?s=m3_4_osteocito_sensor`. */
+  /** Ruta interna del frontend: `/modulo/3?s=m3_1_mecanotransduccion`. */
   url: string;
   motivo_tipo: MotivoRefuerzo;
   /** Frase lista para mostrar: «Necesitaste 4 intentos para completarla». */

@@ -317,7 +317,7 @@ def _quiz(a: _Actividad) -> dict:
         formato = "ordenar" if formato == "ordenar_pasos" else formato
         pregunta: dict[str, Any] = {"id": qid, "formato": formato}
         dnd = f"pregunta {qid}"
-        pregunta["enunciado"] = a.texto(p.get("enunciado"), f"{dnd}.enunciado", minimo=10, maximo=400, marca_en=qid)
+        pregunta["enunciado"] = a.texto(p.get("enunciado"), f"{dnd}.enunciado", minimo=10, maximo=500, marca_en=qid)
         if formato == "opcion_multiple":
             mapa: dict[str, str] = {}
             opciones = []
@@ -376,7 +376,7 @@ def _quiz(a: _Actividad) -> dict:
                         x.get("texto"),
                         f"{dnd}.pasos[{normalizar_id(x.get('id'))}].texto",
                         minimo=2,
-                        maximo=140,
+                        maximo=200,
                         marca_en=qid,
                         quitar_num=True,
                     ),
@@ -430,7 +430,7 @@ def _columnas(a: _Actividad) -> dict:
         for i, e in enumerate(a.lista(campo)):
             ident = a.id_de_lista(e.get("id"), a.donde(f"{campo}[{i}].id"))
             salida.append(
-                {"id": ident, "texto": a.texto(e.get("texto"), f"{campo}[{ident}].texto", minimo=2, maximo=140)}
+                {"id": ident, "texto": a.texto(e.get("texto"), f"{campo}[{ident}].texto", minimo=2, maximo=200)}
             )
         return salida
 
