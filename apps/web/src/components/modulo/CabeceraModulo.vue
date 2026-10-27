@@ -84,7 +84,11 @@ const heroe = computed(() => props.fondoSeccion ?? identidad.value?.heroe);
 /** Fondo de la portada: la ilustración a sangre o, mientras no exista, la portada del módulo. */
 const fondo = computed(() => heroe.value ?? identidad.value?.portada.src);
 /** Lo que lee el panel: la entrada de la sección activa o, si no la hay, la apertura del módulo. */
-const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
+const textoPanel = computed(() =>
+  props.encabezadoSeccion
+    ? props.textoSeccion?.trim()
+    : props.textoSeccion?.trim() || apertura.value,
+);
 </script>
 
 <template>

@@ -7,9 +7,11 @@
  * Con `puntos` (pedido de la docente: «al tocar cada letrero deberá salir el texto»), cada letrero de la imagen
  * lleva encima un botón numerado y, debajo, una fila con sus nombres; al tocarlo, su texto sale en un recuadro.
  * Con `en_orden`, cada punto se habilita al abrir el anterior.
+ *
+ * Con `secuencia`, las imágenes se recorren una a una, en grande, con anterior/siguiente y una fila de pasos.
  */
 import { computed, ref } from 'vue';
-import { Check, ImageOff, Lock } from '@lucide/vue';
+import { Check, ChevronLeft, ChevronRight, ImageOff, Lock } from '@lucide/vue';
 import type { BloqueImagen } from '@/content/schema';
 import TextoRico from './TextoRico.vue';
 
@@ -30,6 +32,10 @@ function bloqueado(i: number): boolean {
   return props.bloque.en_orden === true && i > siguiente.value;
 }
 
+const secuencia = computed(() => props.bloque.secuencia ?? []);
+const paso = ref(0);
+const pasoActual = computed(() => secuencia.value[paso.value]);
+
 function abrir(i: number): void {
   if (bloqueado(i)) return;
   activo.value = i;
@@ -40,8 +46,67 @@ function abrir(i: number): void {
 <template>
   <figure :id="`bloque-${bloque.id}`" class="space-y-2" data-testid="bloque-imagen">
     <template v-if="!fallo">
+      <div
+        v-if="secuencia.length > 0 && pasoActual"
+        class="mx-auto w-full max-w-4xl space-y-3"
+        data-testid="imagen-secuencia"
+      >
+        <img
+          :key="pasoActual.src"
+          :src="pasoActual.src"
+          :alt="pasoActual.alt"
+          :width="pasoActual.ancho"
+          :height="pasoActual.alto"
+          decoding="async"
+          class="bg-card block h-auto max-h-[75dvh] w-full rounded-lg border object-contain"
+          @error="fallo = true"
+        />
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="hover:bg-accent focus-visible:ring-ring flex size-10 shrink-0 items-center justify-center rounded-full border outline-none focus-visible:ring-2 disabled:opacity-40"
+            :disabled="paso === 0"
+            aria-label="Imagen anterior"
+            @click="paso--"
+          >
+            <ChevronLeft class="size-5" aria-hidden="true" />
+          </button>
+          <ol
+            class="flex min-w-0 flex-1 flex-wrap justify-center gap-2"
+            aria-label="Pasos de la secuencia"
+          >
+            <li v-for="(s, i) in secuencia" :key="s.src">
+              <button
+                type="button"
+                class="focus-visible:ring-ring rounded-full border px-3 py-1.5 text-sm outline-none focus-visible:ring-2"
+                :class="
+                  i === paso
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card hover:bg-accent'
+                "
+                :aria-current="i === paso ? 'step' : undefined"
+                @click="paso = i"
+              >
+                {{ i + 1 }}. {{ s.etiqueta }}
+              </button>
+            </li>
+          </ol>
+          <button
+            type="button"
+            class="hover:bg-accent focus-visible:ring-ring flex size-10 shrink-0 items-center justify-center rounded-full border outline-none focus-visible:ring-2 disabled:opacity-40"
+            :disabled="paso === secuencia.length - 1"
+            aria-label="Imagen siguiente"
+            @click="paso++"
+          >
+            <ChevronRight class="size-5" aria-hidden="true" />
+          </button>
+        </div>
+        <p class="sr-only" aria-live="polite">
+          Imagen {{ paso + 1 }} de {{ secuencia.length }}: {{ pasoActual.etiqueta }}
+        </p>
+      </div>
       <img
-        v-if="puntos.length === 0"
+        v-else-if="puntos.length === 0"
         :src="bloque.figura ?? bloque.src"
         :alt="bloque.alt"
         :width="bloque.ancho"

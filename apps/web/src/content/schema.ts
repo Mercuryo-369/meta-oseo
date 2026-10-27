@@ -1138,6 +1138,15 @@ export const PuntoImagenSchema = z.strictObject({
   markdown: markdownBloque(10, 2500, false),
 });
 
+/** Paso de una secuencia de imágenes que se recorre una a una, en grande, bajo un mismo texto. */
+export const PasoSecuenciaImagenSchema = z.strictObject({
+  src: rutaImagen,
+  alt: textoPlano(10, 250),
+  etiqueta: textoPlano(2, 80),
+  ancho: z.number().int().min(1).max(4000).optional(),
+  alto: z.number().int().min(1).max(4000).optional(),
+});
+
 export const BloqueImagenSchema = z
   .strictObject({
     id: IdSchema,
@@ -1160,6 +1169,11 @@ export const BloqueImagenSchema = z
     puntos: z.array(PuntoImagenSchema).min(2).max(16).optional(),
     /** Con `puntos`: se abren en orden (cada uno se habilita al abrir el anterior). */
     en_orden: z.boolean().optional(),
+    /**
+     * Secuencia (pedido de la docente: «que se vean grandes mientras el texto de arriba se comparte»): las imágenes
+     * se recorren una a una con anterior/siguiente; `src` es la primera.
+     */
+    secuencia: z.array(PasoSecuenciaImagenSchema).min(2).max(12).optional(),
     nivel: nivelBloque,
   })
   .superRefine((imagen, ctx) => {

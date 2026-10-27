@@ -1,5 +1,13 @@
 # Modulo 2: Descubriendo sus células
 
+> **Imágenes integradas (2026-10-26).** Las imágenes de la docente se sacaron del PDF «Modulos del 1 al 3…» y van en el
+> content.json pulido como `/images/m2/m2_{sección}_imagen_{NN}.webp`; `m2_fondo.webp` es el fondo de todas las
+> diapositivas del módulo («en todo este módulo 2 usaremos esta de fondo»). Letreros tocables en 2.1 #4, 2.2 #9 y
+> 2.3 #2 y #5; secuencias recorribles en la osificación intramembranosa (#9–#12) y endocondral (#12–#13). La entrada
+> de la 2.1 pasó a `resumen` (panel de la diapositiva). Se omitieron tres capturas de la página actual que el PDF
+> trae como referencia (Meckel 3D, actividad de linajes, multicapa del osteocito). Regenerar el guion con el
+> convertidor borra estas imágenes.
+
 > Contenido tomado al pie de la letra del documento del docente «Modulos del 1 al 3, completados, listos para
 > desarrollar» (PDF entregado el 2026-10-25), que es la fuente de verdad. Reestructurado el 2026-10-25: secciones,
 > títulos, textos, actividades y preguntas de evaluación son los del PDF. Las imágenes del PDF quedan pendientes
