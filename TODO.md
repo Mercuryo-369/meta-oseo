@@ -160,6 +160,7 @@ Detalle de fases en [PLAN.md](PLAN.md). Pedagogía en [docs/briefing-pedagogico.
 ---
 
 ## Decisiones tomadas (log)
+- 2026-10-26: auditoría PDF → contenido de m1–m3 (oración por oración e indicaciones en rojo/azul). Textos completos; faltan solo las actividades que exigen componente nuevo, los mini videos y las dudas para la docente. Se aplican dos indicaciones de maquetación pendientes: `fondo` en el bloque `texto` (texto en panel de cristal sobre la ilustración: 1.2, 2.2 ×3, 2.3, 3.2) y `pareja` en el bloque `imagen` (dos imágenes lado a lado: 1.4 #2 y #3).
 - 2026-10-26: imágenes de la docente del módulo 3 integradas (carpeta «modulo3» y PDF; 18 WebP más fondo). Pendientes: seis mini videos y la actividad de escenarios de la 3.2.
 - 2026-10-26: imágenes de la docente del módulo 2 integradas desde el PDF (49 WebP y el fondo del módulo). El bloque `imagen` gana `secuencia` (imágenes que se recorren una a una, para las osificaciones). En una diapositiva de sección sin `resumen` el panel muestra solo su encabezado (antes repetía la apertura del módulo).
 - 2026-10-26: imágenes de la docente del módulo 1 integradas (36 WebP en `public/images/m1/m1_{s}_imagen_{NN}.webp`). El esquema gana `fondo` y `panel` (derecha/abajo) por sección, para la diapositiva de cada sección, y `puntos`/`en_orden` en el bloque `imagen` (letreros tocables que abren su texto; el corpus del mentor los indexa). Máximo de bloques por sección 16→40.

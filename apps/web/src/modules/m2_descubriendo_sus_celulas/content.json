@@ -644,7 +644,8 @@
           "id": "t_regulacion_de_la_diferenciacion_y",
           "tipo": "texto",
           "titulo": "Regulación de la diferenciación y actividad osteoblástica",
-          "markdown": "La diferenciación y actividad de los osteoblastos dependen de la integración de señales moleculares, hormonales, celulares y mecánicas procedentes de la propia célula y de su microambiente, las cuales pueden favorecer el compromiso de los progenitores hacia el linaje osteoblástico y estimular la actividad formadora de las células maduras, o bien limitar su diferenciación y función. Entre los principales reguladores se encuentran las vías de señalización Wnt/β-catenina y BMP, las hormonas sistémicas, como la PTH y la vitamina D, y las señales del microambiente óseo y las cargas mecánicas, que actúan de manera coordinada para modular el comportamiento de estas células."
+          "markdown": "La diferenciación y actividad de los osteoblastos dependen de la integración de señales moleculares, hormonales, celulares y mecánicas procedentes de la propia célula y de su microambiente, las cuales pueden favorecer el compromiso de los progenitores hacia el linaje osteoblástico y estimular la actividad formadora de las células maduras, o bien limitar su diferenciación y función. Entre los principales reguladores se encuentran las vías de señalización Wnt/β-catenina y BMP, las hormonas sistémicas, como la PTH y la vitamina D, y las señales del microambiente óseo y las cargas mecánicas, que actúan de manera coordinada para modular el comportamiento de estas células.",
+          "fondo": "/images/m2/m2_fondo.webp"
         },
         {
           "id": "t_senales_osteoinductoras",
@@ -731,7 +732,8 @@
           "id": "t_funciones_del_osteoblasto_mas_alla_de",
           "tipo": "texto",
           "titulo": "Funciones del osteoblasto más allá de formar matriz",
-          "markdown": "Aunque los osteoblastos son las principales células responsables de la formación de matriz ósea, su función no se limita a producir osteoide y participar en su mineralización; las células del linaje osteoblástico también actúan como reguladoras del microambiente óseo, estableciendo comunicación con osteoclastos, osteocitos y otras células y contribuyendo a coordinar los procesos de formación, resorción y remodelado del tejido."
+          "markdown": "Aunque los osteoblastos son las principales células responsables de la formación de matriz ósea, su función no se limita a producir osteoide y participar en su mineralización; las células del linaje osteoblástico también actúan como reguladoras del microambiente óseo, estableciendo comunicación con osteoclastos, osteocitos y otras células y contribuyendo a coordinar los procesos de formación, resorción y remodelado del tejido.",
+          "fondo": "/images/m2/m2_fondo.webp"
         },
         {
           "id": "t_regula_osteoclastos",
@@ -782,7 +784,8 @@
           "id": "t_destino_de_los_osteoblastos",
           "tipo": "texto",
           "titulo": "El destino de los osteoblastos",
-          "markdown": "Una vez finalizada su participación activa en la formación de matriz ósea, los osteoblastos pueden seguir tres destinos principales: diferenciarse en osteocitos, transformarse en células de revestimiento óseo o experimentar apoptosis; estas alternativas dependen de su estado de diferenciación, su localización y las señales que reciben del microambiente, y contribuyen a regular la cantidad y función de las células presentes en las superficies óseas."
+          "markdown": "Una vez finalizada su participación activa en la formación de matriz ósea, los osteoblastos pueden seguir tres destinos principales: diferenciarse en osteocitos, transformarse en células de revestimiento óseo o experimentar apoptosis; estas alternativas dependen de su estado de diferenciación, su localización y las señales que reciben del microambiente, y contribuyen a regular la cantidad y función de las células presentes en las superficies óseas.",
+          "fondo": "/images/m2/m2_fondo.webp"
         },
         {
           "id": "t_diferenciacion_en_osteocitos",
@@ -1349,7 +1352,8 @@
           "id": "t_mantenimiento_de_la_matriz_y_respuesta",
           "tipo": "texto",
           "titulo": "Mantenimiento de la matriz y respuesta al microdaño",
-          "markdown": "Los osteocitos no solo mantienen la comunicación y regulan la actividad de otras células óseas, también contribuyen al mantenimiento de la matriz que los rodea y a la respuesta frente al daño mecánico. Aunque se encuentran alojados dentro de lagunas y canalículos mineralizados, conservan la capacidad de modificar localmente su microambiente mediante procesos de síntesis y degradación de componentes de la matriz, lo que permite regular las condiciones del espacio pericelular y preservar la integridad del sistema lacunocanalicular."
+          "markdown": "Los osteocitos no solo mantienen la comunicación y regulan la actividad de otras células óseas, también contribuyen al mantenimiento de la matriz que los rodea y a la respuesta frente al daño mecánico. Aunque se encuentran alojados dentro de lagunas y canalículos mineralizados, conservan la capacidad de modificar localmente su microambiente mediante procesos de síntesis y degradación de componentes de la matriz, lo que permite regular las condiciones del espacio pericelular y preservar la integridad del sistema lacunocanalicular.",
+          "fondo": "/images/m2/m2_fondo.webp"
         },
         {
           "id": "t_remodelado_perilacunar_y_canalicular",

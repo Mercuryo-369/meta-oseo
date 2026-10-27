@@ -1122,6 +1122,11 @@ export const BloqueTextoSchema = z.strictObject({
   /** Subtítulo opcional (se muestra como encabezado de nivel 3). */
   titulo: textoPlano(3, 80).optional(),
   markdown: markdownBloque(20, 2500, true),
+  /**
+   * Ilustración de fondo (pedido de la docente: «usemos este fondo para poner la información de abajo»): el texto
+   * se lee en un panel de cristal sobre ella.
+   */
+  fondo: rutaImagen.optional(),
   /** `posgrado`: profundización que solo ve quien es de posgrado. Sin él, es para todos. */
   nivel: nivelBloque,
 });
@@ -1174,6 +1179,16 @@ export const BloqueImagenSchema = z
      * se recorren una a una con anterior/siguiente; `src` es la primera.
      */
     secuencia: z.array(PasoSecuenciaImagenSchema).min(2).max(12).optional(),
+    /** Segunda imagen junto a esta, lado a lado en pantallas anchas («poner ambas imágenes una al lado de la otra»). */
+    pareja: z
+      .strictObject({
+        src: rutaImagen,
+        alt: textoPlano(10, 250),
+        pie: markdownLinea(5, 250),
+        ancho: z.number().int().min(1).max(4000).optional(),
+        alto: z.number().int().min(1).max(4000).optional(),
+      })
+      .optional(),
     nivel: nivelBloque,
   })
   .superRefine((imagen, ctx) => {

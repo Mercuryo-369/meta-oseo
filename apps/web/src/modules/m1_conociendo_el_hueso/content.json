@@ -1083,7 +1083,8 @@
           "id": "t_hueso_cortical",
           "tipo": "texto",
           "titulo": "Arquitectura del hueso cortical o compacto",
-          "markdown": "El hueso cortical o compacto es un tejido óseo denso que constituye la capa externa de los huesos y representa aproximadamente el 80 % de la masa ósea del esqueleto adulto; su baja porosidad relativa le confiere rigidez y resistencia frente a cargas de compresión, flexión y torsión. Su distribución varía según la región anatómica, con un claro predominio en la diáfisis de los huesos largos, donde proporciona soporte y estabilidad frente a las fuerzas generadas durante el movimiento."
+          "markdown": "El hueso cortical o compacto es un tejido óseo denso que constituye la capa externa de los huesos y representa aproximadamente el 80 % de la masa ósea del esqueleto adulto; su baja porosidad relativa le confiere rigidez y resistencia frente a cargas de compresión, flexión y torsión. Su distribución varía según la región anatómica, con un claro predominio en la diáfisis de los huesos largos, donde proporciona soporte y estabilidad frente a las fuerzas generadas durante el movimiento.",
+          "fondo": "/images/m1/m1_2_imagen_01.webp"
         },
         {
           "id": "img_m1_2_i05",
@@ -2004,16 +2005,14 @@
           "alt": "Mandíbula con una línea de fractura: la tensión actúa en el borde alveolar superior y la compresión en el borde inferior.",
           "pie": "Distribución de las fuerzas de tensión y compresión en una fractura mandibular",
           "ancho": 1455,
-          "alto": 1081
-        },
-        {
-          "id": "img_m1_4_i03",
-          "tipo": "imagen",
-          "src": "/images/m1/m1_4_imagen_03.webp",
-          "alt": "Dos fémures: uno sometido a tensión, con fuerzas que lo estiran, y otro a compresión, con fuerzas que lo acortan.",
-          "pie": "Cargas solitarias: tensión y compresión",
-          "ancho": 1145,
-          "alto": 1374
+          "alto": 1081,
+          "pareja": {
+            "src": "/images/m1/m1_4_imagen_03.webp",
+            "alt": "Dos fémures: uno sometido a tensión, con fuerzas que lo estiran, y otro a compresión, con fuerzas que lo acortan.",
+            "pie": "Cargas solitarias: tensión y compresión",
+            "ancho": 1145,
+            "alto": 1374
+          }
         },
         {
           "id": "t_cargas_combinadas",
