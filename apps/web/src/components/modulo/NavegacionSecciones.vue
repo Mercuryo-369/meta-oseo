@@ -114,7 +114,7 @@ watch(
         :key="item.id"
         class="flex-1 snap-start"
         :style="{ minWidth: encadenada ? '13rem' : '10rem' }"
-        :class="item.i === 0 && !encadenada ? '' : '-ml-2'"
+        :class="item.i === 0 ? '' : '-ml-2'"
       >
         <button
           :ref="(el) => (botones[item.i] = el as HTMLElement)"

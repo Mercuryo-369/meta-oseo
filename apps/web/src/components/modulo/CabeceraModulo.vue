@@ -138,7 +138,9 @@ const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
             <p class="text-foreground/80 mt-0.5 text-sm md:text-base">{{ modulo.subtitulo }}</p>
           </div>
         </div>
-        <div v-if="slots.pasos" class="min-w-0 flex-1 md:flex">
+        <!-- La fila de pasos se solapa con la punta del título (igual que los pasos entre sí): el solape va en la
+             fila y no en el primer paso, porque la fila recorta lo que sobresale y le cortaría la muesca. -->
+        <div v-if="slots.pasos" class="min-w-0 flex-1 md:-ml-2 md:flex">
           <slot name="pasos" />
         </div>
       </div>
