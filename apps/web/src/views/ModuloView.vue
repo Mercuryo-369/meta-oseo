@@ -569,6 +569,8 @@ onBeforeUnmount(() => {
             :revision="esDocente"
             :texto-continuar="textoContinuar"
             :texto-seccion="enPortada ? undefined : secciones[indice]?.resumen"
+            :fondo-seccion="enPortada ? undefined : secciones[indice]?.fondo"
+            :panel-abajo="!enPortada && secciones[indice]?.panel === 'abajo'"
             :encabezado-seccion="
               enPortada || !seccion
                 ? undefined

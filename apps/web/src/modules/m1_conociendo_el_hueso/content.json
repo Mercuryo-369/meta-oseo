@@ -242,28 +242,53 @@
       "titulo": "El hueso: mucho más que un soporte",
       "bloques": [
         {
-          "id": "t_1_mecanica_y_estructural",
-          "tipo": "texto",
-          "titulo": "1. Mecánica y estructural",
-          "markdown": "- **Sostén, estabilidad y organización corporal:** El esqueleto constituye el armazón estructural del organismo; soporta las cargas gravitacionales, mantiene la forma corporal y proporciona puntos de anclaje al sistema musculotendinoso. En conjunto con las articulaciones, contribuye a la estabilidad y alineación corporal.\n- **Protección de órganos y estructuras vitales:** El esqueleto protege estructuras vulnerables mediante configuraciones anatómicas que delimitan cavidades y ofrecen resistencia frente a impactos. El cráneo, la columna vertebral y la caja torácica resguardan, respectivamente, el encéfalo, la médula espinal y los órganos torácicos; su eficacia protectora depende de la geometría de estas estructuras y de la magnitud, dirección y velocidad de las fuerzas aplicadas.\n- **Biomecánica y transmisión de fuerzas:** El tejido óseo transmite y distribuye fuerzas gracias a la interacción de sus componentes mineral y orgánico, soportando cargas de compresión, tensión, flexión y torsión. En conjunto con las articulaciones y los músculos, permite transferir estas fuerzas, facilitando el movimiento y la estabilidad corporal.\n- **Resistencia, adaptación y reparación mecánica:** El tejido óseo combina resistencia y capacidad de deformación para soportar cargas fisiológicas. Su remodelación continua lo adapta a las demandas mecánicas; ante una lesión, puede restituir la continuidad ósea y recuperar su función cuando las condiciones biológicas y mecánicas son favorables."
+          "id": "img_m1_1_i02",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_1_imagen_02.webp",
+          "alt": "Infografía con un cráneo al centro y cinco propiedades del hueso: altamente vascularizado, remodelación continua, capacidad regenerativa, dinamismo y adaptación, y actividad metabólica.",
+          "pie": "Propiedades del hueso",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
-          "id": "t_2_metabolica_y_homeostatica",
-          "tipo": "texto",
-          "titulo": "2. Metabólica y homeostática",
-          "markdown": "- **Homeostasis mineral:** El tejido óseo constituye el principal reservorio corporal de calcio y fosfato, además de almacenar cantidades importantes de magnesio, sodio y carbonato. Mediante el intercambio con el líquido extracelular y la movilización mineral durante el remodelado, contribuye a la disponibilidad de estos elementos; su regulación sistémica depende de la interacción con el riñón y el intestino, y de señales como PTH, calcitriol y FGF23, cuyos efectos varían según el mineral y el contexto fisiológico.\n- **Regulación endocrina y mineral:** El hueso actúa como órgano endocrino y señalizador mediante factores que participan en la comunicación con otros órganos. El FGF23, producido principalmente por osteocitos y osteoblastos, es un regulador endocrino bien establecido que aumenta la excreción renal de fosfato y reduce la síntesis de calcitriol, contribuyendo a la homeostasis mineral. Otros mediadores, como la osteocalcina y la lipocalina-2, se han relacionado con funciones sistémicas, aunque su relevancia endocrina en humanos continúa en debate. Por su parte, la esclerostina, PTHrP y RANKL/OPG ejercen principalmente funciones reguladoras locales, aunque algunas también se investigan por sus posibles efectos sistémicos.\n- **Equilibrio ácido-base:** La matriz mineral del hueso actúa como reserva de sustancias alcalinas, principalmente carbonato y fosfato; ante una carga ácida sostenida, estos componentes ayudan a neutralizar el exceso de protones (H⁺), favoreciendo la liberación de bicarbonato y fosfato. Este mecanismo contribuye al equilibrio ácido-base, pero una acidosis crónica puede aumentar la resorción y pérdida de mineral óseo. La regulación principal del pH depende de los sistemas tampón, la ventilación pulmonar y la función renal.\n- **Metabolismo energético y tejido adiposo medular:** El tejido óseo es metabólicamente activo y requiere energía para sostener la formación y el remodelado. El tejido adiposo de la médula ósea (BMAT) funciona como reserva energética y fuente de señales que modulan la actividad de osteoblastos y osteoclastos. Esta relación es bidireccional: factores óseos como osteocalcina, esclerostina y PTHrP pueden influir en el metabolismo energético, mientras que señales metabólicas y adipocinas regulan la actividad ósea y la diferenciación de células mesenquimáticas."
-        },
-        {
-          "id": "t_3_funcion_hematopoyetica_e_inmunologica",
-          "tipo": "texto",
-          "titulo": "3. Función hematopoyética e inmunológica",
-          "markdown": "- **Hematopoyesis y nichos medulares:** La médula ósea alberga células madre hematopoyéticas cuya autorrenovación y diferenciación dependen de nichos especializados, constituidos por células estromales, endoteliales y perivasculares, entre otras. Estos microambientes regulan la quiescencia, proliferación y movilización de los progenitores mediante señales como CXCL12 y SCF, esenciales para mantener la producción sostenida de células sanguíneas.\n- **Desarrollo y mantenimiento de células inmunitarias:** La médula ósea sostiene la producción de células mieloides y linfocitos; además, constituye un sitio de maduración de los linfocitos B y alberga células plasmáticas de larga vida y poblaciones inmunitarias de memoria. La disponibilidad de factores tróficos y señales del microambiente medular condiciona su supervivencia, diferenciación y mantenimiento.\n- **Comunicación entre hueso e inmunidad:** Las células óseas e inmunitarias interactúan bidireccionalmente mediante citocinas, factores de crecimiento y vías de señalización compartidas. El eje RANK–RANKL–OPG constituye un regulador central de esta interacción, al integrar señales del microambiente inmunitario con la diferenciación y actividad osteoclásticas. De este modo, la respuesta inmunitaria puede modular la resorción ósea y contribuir a la regulación de la masa y la homeostasis esqueléticas.\n- **Regulación inflamatoria de la actividad ósea:** Las citocinas proinflamatorias, como TNF, IL-1, IL-6 e IL-17, pueden favorecer la osteoclastogénesis y la resorción ósea, además de modificar la función osteoblástica según el contexto. En enfermedades inflamatorias crónicas, la persistencia de estas señales puede alterar el acoplamiento del remodelado y favorecer la pérdida ósea."
-        },
-        {
-          "id": "t_4_neurobiologica_e_integracion_sistemica",
-          "tipo": "texto",
-          "titulo": "4. Neurobiológica e integración sistémica",
-          "markdown": "- **Inervación sensitiva y autonómica:** El tejido óseo presenta fibras sensitivas, incluidas las que expresan CGRP (péptido relacionado con el gen de la calcitonina) y sustancia P, y fibras autonómicas predominantemente simpáticas noradrenérgicas. Estas participan en la nocicepción, la regulación vascular y la modulación de la actividad celular ósea, vinculando la función esquelética con el sistema nervioso.\n- **Interocepción esquelética y eje cerebro-hueso:** Comprende la transmisión de señales óseas al sistema nervioso central, donde circuitos hipotalámicos y vías autonómicas modulan el remodelado y la homeostasis ósea. Incluye la señalización PGE₂–EP4 en aferencias sensitivas, la regulación simpática y neuroendocrina, la reparación ósea, el nicho de células madre esqueléticas y los ritmos circadianos. Estos mecanismos se estudian principalmente en modelos experimentales y su relevancia en humanos sigue en investigación.\n- **Regulación neural de la actividad ósea:** La inervación simpática modula el metabolismo óseo mediante noradrenalina, que actúa sobre receptores β₂-adrenérgicos en células osteoblásticas. Esta señalización modifica la actividad osteoblástica y la expresión de RANKL, influyendo en la osteoclastogénesis y el remodelado óseo según el contexto fisiológico."
+          "id": "img_m1_1_i03",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_1_imagen_03.webp",
+          "alt": "Esqueleto humano con cuatro recuadros de funciones del hueso: mecánica y estructural, metabólica y homeostática, hematopoyética e inmunológica, y neurobiológica e integración sistémica.",
+          "pie": "Funciones del hueso: toca cada función, en orden, para desplegar su información",
+          "ancho": 1600,
+          "alto": 903,
+          "puntos": [
+            {
+              "id": "mecanica_y_estructural",
+              "etiqueta": "Mecánica y estructural",
+              "x": 5,
+              "y": 11,
+              "markdown": "- **Sostén, estabilidad y organización corporal:** El esqueleto constituye el armazón estructural del organismo; soporta las cargas gravitacionales, mantiene la forma corporal y proporciona puntos de anclaje al sistema musculotendinoso. En conjunto con las articulaciones, contribuye a la estabilidad y alineación corporal.\n- **Protección de órganos y estructuras vitales:** El esqueleto protege estructuras vulnerables mediante configuraciones anatómicas que delimitan cavidades y ofrecen resistencia frente a impactos. El cráneo, la columna vertebral y la caja torácica resguardan, respectivamente, el encéfalo, la médula espinal y los órganos torácicos; su eficacia protectora depende de la geometría de estas estructuras y de la magnitud, dirección y velocidad de las fuerzas aplicadas.\n- **Biomecánica y transmisión de fuerzas:** El tejido óseo transmite y distribuye fuerzas gracias a la interacción de sus componentes mineral y orgánico, soportando cargas de compresión, tensión, flexión y torsión. En conjunto con las articulaciones y los músculos, permite transferir estas fuerzas, facilitando el movimiento y la estabilidad corporal.\n- **Resistencia, adaptación y reparación mecánica:** El tejido óseo combina resistencia y capacidad de deformación para soportar cargas fisiológicas. Su remodelación continua lo adapta a las demandas mecánicas; ante una lesión, puede restituir la continuidad ósea y recuperar su función cuando las condiciones biológicas y mecánicas son favorables."
+            },
+            {
+              "id": "metabolica_y_homeostatica",
+              "etiqueta": "Metabólica y homeostática",
+              "x": 4.5,
+              "y": 57,
+              "markdown": "- **Homeostasis mineral:** El tejido óseo constituye el principal reservorio corporal de calcio y fosfato, además de almacenar cantidades importantes de magnesio, sodio y carbonato. Mediante el intercambio con el líquido extracelular y la movilización mineral durante el remodelado, contribuye a la disponibilidad de estos elementos; su regulación sistémica depende de la interacción con el riñón y el intestino, y de señales como PTH, calcitriol y FGF23, cuyos efectos varían según el mineral y el contexto fisiológico.\n- **Regulación endocrina y mineral:** El hueso actúa como órgano endocrino y señalizador mediante factores que participan en la comunicación con otros órganos. El FGF23, producido principalmente por osteocitos y osteoblastos, es un regulador endocrino bien establecido que aumenta la excreción renal de fosfato y reduce la síntesis de calcitriol, contribuyendo a la homeostasis mineral. Otros mediadores, como la osteocalcina y la lipocalina-2, se han relacionado con funciones sistémicas, aunque su relevancia endocrina en humanos continúa en debate. Por su parte, la esclerostina, PTHrP y RANKL/OPG ejercen principalmente funciones reguladoras locales, aunque algunas también se investigan por sus posibles efectos sistémicos.\n- **Equilibrio ácido-base:** La matriz mineral del hueso actúa como reserva de sustancias alcalinas, principalmente carbonato y fosfato; ante una carga ácida sostenida, estos componentes ayudan a neutralizar el exceso de protones (H⁺), favoreciendo la liberación de bicarbonato y fosfato. Este mecanismo contribuye al equilibrio ácido-base, pero una acidosis crónica puede aumentar la resorción y pérdida de mineral óseo. La regulación principal del pH depende de los sistemas tampón, la ventilación pulmonar y la función renal.\n- **Metabolismo energético y tejido adiposo medular:** El tejido óseo es metabólicamente activo y requiere energía para sostener la formación y el remodelado. El tejido adiposo de la médula ósea (BMAT) funciona como reserva energética y fuente de señales que modulan la actividad de osteoblastos y osteoclastos. Esta relación es bidireccional: factores óseos como osteocalcina, esclerostina y PTHrP pueden influir en el metabolismo energético, mientras que señales metabólicas y adipocinas regulan la actividad ósea y la diferenciación de células mesenquimáticas."
+            },
+            {
+              "id": "hematopoyetica_e_inmunologica",
+              "etiqueta": "Hematopoyética e inmunológica",
+              "x": 66,
+              "y": 12,
+              "markdown": "- **Hematopoyesis y nichos medulares:** La médula ósea alberga células madre hematopoyéticas cuya autorrenovación y diferenciación dependen de nichos especializados, constituidos por células estromales, endoteliales y perivasculares, entre otras. Estos microambientes regulan la quiescencia, proliferación y movilización de los progenitores mediante señales como CXCL12 y SCF, esenciales para mantener la producción sostenida de células sanguíneas.\n- **Desarrollo y mantenimiento de células inmunitarias:** La médula ósea sostiene la producción de células mieloides y linfocitos; además, constituye un sitio de maduración de los linfocitos B y alberga células plasmáticas de larga vida y poblaciones inmunitarias de memoria. La disponibilidad de factores tróficos y señales del microambiente medular condiciona su supervivencia, diferenciación y mantenimiento.\n- **Comunicación entre hueso e inmunidad:** Las células óseas e inmunitarias interactúan bidireccionalmente mediante citocinas, factores de crecimiento y vías de señalización compartidas. El eje RANK–RANKL–OPG constituye un regulador central de esta interacción, al integrar señales del microambiente inmunitario con la diferenciación y actividad osteoclásticas. De este modo, la respuesta inmunitaria puede modular la resorción ósea y contribuir a la regulación de la masa y la homeostasis esqueléticas.\n- **Regulación inflamatoria de la actividad ósea:** Las citocinas proinflamatorias, como TNF, IL-1, IL-6 e IL-17, pueden favorecer la osteoclastogénesis y la resorción ósea, además de modificar la función osteoblástica según el contexto. En enfermedades inflamatorias crónicas, la persistencia de estas señales puede alterar el acoplamiento del remodelado y favorecer la pérdida ósea."
+            },
+            {
+              "id": "neurobiologica_e_integracion_sistemica",
+              "etiqueta": "Neurobiológica e integración sistémica",
+              "x": 66,
+              "y": 58,
+              "markdown": "- **Inervación sensitiva y autonómica:** El tejido óseo presenta fibras sensitivas, incluidas las que expresan CGRP (péptido relacionado con el gen de la calcitonina) y sustancia P, y fibras autonómicas predominantemente simpáticas noradrenérgicas. Estas participan en la nocicepción, la regulación vascular y la modulación de la actividad celular ósea, vinculando la función esquelética con el sistema nervioso.\n- **Interocepción esquelética y eje cerebro-hueso:** Comprende la transmisión de señales óseas al sistema nervioso central, donde circuitos hipotalámicos y vías autonómicas modulan el remodelado y la homeostasis ósea. Incluye la señalización PGE₂–EP4 en aferencias sensitivas, la regulación simpática y neuroendocrina, la reparación ósea, el nicho de células madre esqueléticas y los ritmos circadianos. Estos mecanismos se estudian principalmente en modelos experimentales y su relevancia en humanos sigue en investigación.\n- **Regulación neural de la actividad ósea:** La inervación simpática modula el metabolismo óseo mediante noradrenalina, que actúa sobre receptores β₂-adrenérgicos en células osteoblásticas. Esta señalización modifica la actividad osteoblástica y la expresión de RANKL, influyendo en la osteoclastogénesis y el remodelado óseo según el contexto fisiológico."
+            }
+          ],
+          "en_orden": true
         },
         {
           "tipo": "actividad",
@@ -893,7 +918,9 @@
           }
         }
       ],
-      "resumen": "El tejido óseo es un tejido conjuntivo especializado de origen mesenquimático, caracterizado por una matriz extracelular organizada que combina una fase orgánica y una fase mineralizada. Esta composición le proporciona resistencia mecánica y, al mismo tiempo, le permite mantener un estado dinámico de adaptación, reparación y renovación mediante el continuo proceso de remodelado óseo."
+      "resumen": "El tejido óseo es un tejido conjuntivo especializado de origen mesenquimático, caracterizado por una matriz extracelular organizada que combina una fase orgánica y una fase mineralizada. Esta composición le proporciona resistencia mecánica y, al mismo tiempo, le permite mantener un estado dinámico de adaptación, reparación y renovación mediante el continuo proceso de remodelado óseo.",
+      "fondo": "/images/m1/m1_1_imagen_01.webp",
+      "panel": "abajo"
     },
     {
       "id": "m1_2_arquitectura",
@@ -903,13 +930,76 @@
           "id": "t_clasificacion_de_los_huesos",
           "tipo": "texto",
           "titulo": "Clasificación de los huesos",
-          "markdown": "El esqueleto humano adulto está constituido por 206 huesos como referencia anatómica; este número puede variar entre individuos por la presencia de huesos accesorios o procesos de fusión. Cada hueso presenta una morfología y arquitectura adaptadas a sus funciones mecánicas y anatómicas, por lo que, según sus características macroscópicas, pueden clasificarse en largos, cortos, planos, irregulares, sesamoideos y neumáticos; estas categorías no son mutuamente excluyentes, ya que un mismo hueso puede presentar más de una característica.\n\n- **Huesos largos:** Huesos cuya organización longitudinal predomina sobre sus dimensiones transversales, con una diáfisis tubular de predominio cortical y extremos ensanchados con mayor proporción de tejido trabecular. Esta arquitectura permite distribuir y transmitir cargas mecánicas a lo largo del eje del hueso.\n- **Huesos cortos:** Huesos de configuración aproximadamente cuboidal, caracterizados por una estructura interna predominantemente trabecular rodeada por una delgada envoltura cortical. Su organización favorece la distribución multidireccional de cargas y la estabilidad frente a fuerzas compresivas.\n- **Huesos planos:** Huesos relativamente delgados y extensos, constituidos generalmente por dos láminas de hueso cortical que delimitan un núcleo trabecular. Esta disposición proporciona protección mecánica y amplias superficies para inserción muscular; en el cráneo, el componente trabecular recibe el nombre de diploe.\n- **Huesos irregulares:** Huesos con una morfología tridimensional compleja que no se ajusta a las categorías anteriores y cuya arquitectura responde a funciones mecánicas y relaciones anatómicas específicas. Presentan proporciones variables de tejido cortical y trabecular.\n- **Huesos sesamoideos:** Huesos que se desarrollan intratendinosamente, generalmente en regiones sometidas a carga mecánica, donde modifican el brazo de palanca y la dirección de las fuerzas musculotendinosas, además de proteger el tendón frente a la compresión.\n- **Huesos neumáticos:** Huesos que contienen cavidades aéreas revestidas por mucosa y comunicadas con las vías respiratorias. Esta característica, que puede coexistir con otras clasificaciones anatómicas, contribuye a reducir la masa ósea y participa en la configuración de determinadas regiones craneofaciales, como el frontal, el etmoides, el esfenoides y el maxilar."
+          "markdown": "El esqueleto humano adulto está constituido por 206 huesos como referencia anatómica; este número puede variar entre individuos por la presencia de huesos accesorios o procesos de fusión. Cada hueso presenta una morfología y arquitectura adaptadas a sus funciones mecánicas y anatómicas, por lo que, según sus características macroscópicas, pueden clasificarse en largos, cortos, planos, irregulares, sesamoideos y neumáticos; estas categorías no son mutuamente excluyentes, ya que un mismo hueso puede presentar más de una característica."
+        },
+        {
+          "id": "img_m1_2_i02",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_02.webp",
+          "alt": "Clasificación morfológica de los huesos en seis grupos ilustrados: largos, cortos, planos, irregulares, sesamoideos y neumáticos.",
+          "pie": "Clasificación morfológica de los huesos: toca cada letrero",
+          "ancho": 1536,
+          "alto": 1024,
+          "puntos": [
+            {
+              "id": "huesos_largos",
+              "etiqueta": "Huesos largos",
+              "x": 9,
+              "y": 11,
+              "markdown": "Huesos cuya organización longitudinal predomina sobre sus dimensiones transversales, con una diáfisis tubular de predominio cortical y extremos ensanchados con mayor proporción de tejido trabecular. Esta arquitectura permite distribuir y transmitir cargas mecánicas a lo largo del eje del hueso."
+            },
+            {
+              "id": "huesos_cortos",
+              "etiqueta": "Huesos cortos",
+              "x": 41,
+              "y": 11,
+              "markdown": "Huesos de configuración aproximadamente cuboidal, caracterizados por una estructura interna predominantemente trabecular rodeada por una delgada envoltura cortical. Su organización favorece la distribución multidireccional de cargas y la estabilidad frente a fuerzas compresivas."
+            },
+            {
+              "id": "huesos_planos",
+              "etiqueta": "Huesos planos",
+              "x": 71,
+              "y": 11,
+              "markdown": "Huesos relativamente delgados y extensos, constituidos generalmente por dos láminas de hueso cortical que delimitan un núcleo trabecular. Esta disposición proporciona protección mecánica y amplias superficies para inserción muscular; en el cráneo, el componente trabecular recibe el nombre de diploe."
+            },
+            {
+              "id": "huesos_irregulares",
+              "etiqueta": "Huesos irregulares",
+              "x": 4,
+              "y": 54,
+              "markdown": "Huesos con una morfología tridimensional compleja que no se ajusta a las categorías anteriores y cuya arquitectura responde a funciones mecánicas y relaciones anatómicas específicas. Presentan proporciones variables de tejido cortical y trabecular."
+            },
+            {
+              "id": "huesos_sesamoideos",
+              "etiqueta": "Huesos sesamoideos",
+              "x": 40,
+              "y": 54,
+              "markdown": "Huesos que se desarrollan intratendinosamente, generalmente en regiones sometidas a carga mecánica, donde modifican el brazo de palanca y la dirección de las fuerzas musculotendinosas, además de proteger el tendón frente a la compresión."
+            },
+            {
+              "id": "huesos_neumaticos",
+              "etiqueta": "Huesos neumáticos",
+              "x": 70,
+              "y": 54,
+              "markdown": "Huesos que contienen cavidades aéreas revestidas por mucosa y comunicadas con las vías respiratorias. Esta característica, que puede coexistir con otras clasificaciones anatómicas, contribuye a reducir la masa ósea y participa en la configuración de determinadas regiones craneofaciales, como el frontal, el etmoides, el esfenoides y el maxilar."
+            }
+          ]
         },
         {
           "id": "t_anatomia_macroscopica_de_los_huesos",
           "tipo": "texto",
           "titulo": "Anatomía macroscópica de los huesos",
           "markdown": "***Anatomía de un hueso largo.*** Los huesos largos se caracterizan por presentar una diáfisis alargada y dos extremos, denominados epífisis, unidos durante el crecimiento por las metáfisis. La diáfisis contiene una cortical gruesa que delimita la cavidad medular, mientras que las epífisis presentan abundante hueso trabecular recubierto por una fina capa cortical; las superficies articulares están revestidas por cartílago hialino."
+        },
+        {
+          "id": "img_m1_2_i03",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_03.webp",
+          "alt": "Hueso largo con sus regiones rotuladas: epífisis, metáfisis y diáfisis, cartílago articular, hueso esponjoso, línea epifisaria, cavidad medular, endostio, periostio y arteria nutricia.",
+          "pie": "Anatomía de un hueso largo",
+          "credito": "OpenStax College (2018), 603 Anatomy of Long Bone esp.jpg, Wikimedia Commons, licencia CC BY-SA 4.0",
+          "ancho": 800,
+          "alto": 1200
         },
         {
           "tipo": "actividad",
@@ -976,26 +1066,161 @@
           }
         },
         {
-          "id": "t_anatomia_hueso_corto_y_plano",
-          "tipo": "texto",
-          "markdown": "***Anatomía de un hueso corto y un hueso plano.*** Los huesos cortos presentan una envoltura de tejido cortical que rodea un núcleo trabecular con espacios intertrabeculares ocupados por médula ósea; los huesos planos poseen dos tablas de hueso cortical separadas por una capa de tejido trabecular denominada diploe. En ambos, la distribución de estos compartimentos contribuye a la resistencia mecánica y a la organización interna del tejido óseo.\n\n#### Arquitectura del hueso cortical o compacto\n\nEl hueso cortical o compacto es un tejido óseo denso que constituye la capa externa de los huesos y representa aproximadamente el 80 % de la masa ósea del esqueleto adulto; su baja porosidad relativa le confiere rigidez y resistencia frente a cargas de compresión, flexión y torsión. Su distribución varía según la región anatómica, con un claro predominio en la diáfisis de los huesos largos, donde proporciona soporte y estabilidad frente a las fuerzas generadas durante el movimiento.\n\n#### Osteona\n\nLa osteona o sistema de Havers es una unidad estructural característica del hueso cortical laminar, constituida por capas cilíndricas de matriz ósea dispuestas concéntricamente alrededor de un conducto central que contiene vasos sanguíneos y fibras nerviosas."
+          "id": "img_m1_2_i04",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_04.webp",
+          "alt": "Hueso corto (hueso grande del carpo) con su envoltura cortical y núcleo trabecular, y hueso plano (parietal) con sus tablas externa e interna y el diploe.",
+          "pie": "Anatomía de un hueso corto y un hueso plano",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
-          "id": "t_arquitectura_2",
+          "id": "t_anatomia_hueso_corto_y_plano",
           "tipo": "texto",
-          "markdown": "- **Canal Central de Havers:** Es un canal situado en el centro de la osteona, cuya orientación es predominantemente longitudinal en muchas regiones del hueso cortical. Contiene vasos sanguíneos, generalmente capilares y pequeños vasos, además de fibras nerviosas amielínicas sensitivas y autonómicas, que contribuyen a la irrigación y la inervación del tejido óseo.\n- **Endostio:** Es una delgada capa celular que recubre las superficies internas del hueso, incluidas la cavidad medular, las trabéculas y los conductos vasculares.\n- **Línea de Cemento:** Es una fina interfaz altamente mineralizada y pobre en colágeno, de aproximadamente 1–2 µm de grosor, que delimita externamente cada osteona y la separa de la matriz ósea circundante. Enriquecida en proteínas no colágenas, como osteopontina y sialoproteína ósea, marca el límite de la resorción durante la formación de osteonas secundarias y puede influir en la propagación de microfracturas a través del tejido cortical.\n- **Conductos Transversales de Volkmann:** Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular.\n- **Periostio:** Membrana de tejido conjuntivo vascularizado que recubre la superficie externa del hueso, excepto en las superficies articulares; participa en su nutrición, crecimiento y reparación.\n- **Laminillas concéntricas:** Son capas de matriz extracelular mineralizada de 3–7 µm de grosor, dispuestas alrededor del conducto de Havers. Sus fibrillas de colágeno tipo I se orientan paralelamente dentro de cada capa y cambian de dirección entre capas adyacentes; esta orientación alternante de las fibras aumenta la resistencia mecánica y limita la propagación de microfracturas.\n- **Osteocito:** Célula ósea madura derivada del osteoblasto, alojada en una laguna de la matriz mineralizada; mantiene la matriz y detecta estímulos mecánicos."
+          "markdown": "***Anatomía de un hueso corto y un hueso plano.*** Los huesos cortos presentan una envoltura de tejido cortical que rodea un núcleo trabecular con espacios intertrabeculares ocupados por médula ósea; los huesos planos poseen dos tablas de hueso cortical separadas por una capa de tejido trabecular denominada diploe. En ambos, la distribución de estos compartimentos contribuye a la resistencia mecánica y a la organización interna del tejido óseo."
+        },
+        {
+          "id": "t_hueso_cortical",
+          "tipo": "texto",
+          "titulo": "Arquitectura del hueso cortical o compacto",
+          "markdown": "El hueso cortical o compacto es un tejido óseo denso que constituye la capa externa de los huesos y representa aproximadamente el 80 % de la masa ósea del esqueleto adulto; su baja porosidad relativa le confiere rigidez y resistencia frente a cargas de compresión, flexión y torsión. Su distribución varía según la región anatómica, con un claro predominio en la diáfisis de los huesos largos, donde proporciona soporte y estabilidad frente a las fuerzas generadas durante el movimiento."
+        },
+        {
+          "id": "img_m1_2_i05",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_05.webp",
+          "alt": "Tabla de parámetros del hueso cortical: porcentaje del esqueleto, porosidad, módulo de elasticidad, fuerza de tensión máxima, grosor de laminilla y diámetro de canalículo.",
+          "pie": "Arquitectura del hueso cortical o compacto",
+          "ancho": 994,
+          "alto": 677
+        },
+        {
+          "id": "t_osteona",
+          "tipo": "texto",
+          "titulo": "Osteona",
+          "markdown": "La osteona o sistema de Havers es una unidad estructural característica del hueso cortical laminar, constituida por capas cilíndricas de matriz ósea dispuestas concéntricamente alrededor de un conducto central que contiene vasos sanguíneos y fibras nerviosas."
+        },
+        {
+          "id": "img_m1_2_i06",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_06.webp",
+          "alt": "Bloque de hueso cortical con una osteona destacada y sus estructuras rotuladas: osteocito, laminillas concéntricas, conducto de Havers, endostio, periostio, canal de Volkmann y línea de cemento.",
+          "pie": "Osteona: toca cada letrero para leer su descripción",
+          "ancho": 1394,
+          "alto": 1128,
+          "puntos": [
+            {
+              "id": "canal_central_de_havers",
+              "etiqueta": "Canal Central de Havers",
+              "x": 78,
+              "y": 10,
+              "markdown": "Es un canal situado en el centro de la osteona, cuya orientación es predominantemente longitudinal en muchas regiones del hueso cortical. Contiene vasos sanguíneos, generalmente capilares y pequeños vasos, además de fibras nerviosas amielínicas sensitivas y autonómicas, que contribuyen a la irrigación y la inervación del tejido óseo."
+            },
+            {
+              "id": "endostio",
+              "etiqueta": "Endostio",
+              "x": 79,
+              "y": 41,
+              "markdown": "Es una delgada capa celular que recubre las superficies internas del hueso, incluidas la cavidad medular, las trabéculas y los conductos vasculares."
+            },
+            {
+              "id": "linea_de_cemento",
+              "etiqueta": "Línea de Cemento",
+              "x": 80,
+              "y": 84,
+              "markdown": "Es una fina interfaz altamente mineralizada y pobre en colágeno, de aproximadamente 1–2 µm de grosor, que delimita externamente cada osteona y la separa de la matriz ósea circundante. Enriquecida en proteínas no colágenas, como osteopontina y sialoproteína ósea, marca el límite de la resorción durante la formación de osteonas secundarias y puede influir en la propagación de microfracturas a través del tejido cortical."
+            },
+            {
+              "id": "conductos_transversales_de_volkmann",
+              "etiqueta": "Conductos Transversales de Volkmann",
+              "x": 52,
+              "y": 93,
+              "markdown": "Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular."
+            },
+            {
+              "id": "periostio",
+              "etiqueta": "Periostio",
+              "x": 6,
+              "y": 82,
+              "markdown": "Membrana de tejido conjuntivo vascularizado que recubre la superficie externa del hueso, excepto en las superficies articulares; participa en su nutrición, crecimiento y reparación."
+            },
+            {
+              "id": "laminillas_concentricas",
+              "etiqueta": "Laminillas concéntricas",
+              "x": 5,
+              "y": 32,
+              "markdown": "Son capas de matriz extracelular mineralizada de 3–7 µm de grosor, dispuestas alrededor del conducto de Havers. Sus fibrillas de colágeno tipo I se orientan paralelamente dentro de cada capa y cambian de dirección entre capas adyacentes; esta orientación alternante de las fibras aumenta la resistencia mecánica y limita la propagación de microfracturas."
+            },
+            {
+              "id": "osteocito",
+              "etiqueta": "Osteocito",
+              "x": 7,
+              "y": 14,
+              "markdown": "Célula ósea madura derivada del osteoblasto, alojada en una laguna de la matriz mineralizada; mantiene la matriz y detecta estímulos mecánicos."
+            }
+          ]
         },
         {
           "id": "t_organizacion_laminar_no_osteonal",
           "tipo": "texto",
           "titulo": "Organización laminar no osteonal (sistemas periféricos e intersticiales)",
-          "markdown": "La organización laminar no osteonal comprende las laminillas óseas que no forman parte de una osteona completa y que se distribuyen en relación con las superficies externas e internas del hueso o entre las osteonas.\n\n- **Laminillas circunferenciales externas:** Son capas continuas de matriz ósea dispuestas paralelamente a la superficie externa del hueso, inmediatamente por debajo del periostio; las depositan los osteoblastos de la capa interna del periostio durante el crecimiento en grosor mediante modelado aposicional.\n- **Laminillas intersticiales:** Son fragmentos irregulares de matriz ósea localizados entre las osteonas; corresponden a remanentes de osteonas antiguas, parcialmente reabsorbidas durante ciclos previos de remodelado óseo por la unidad multicelular básica (BMU).\n- **Laminillas circunferenciales internas:** Son capas continuas de matriz ósea dispuestas paralelamente a la superficie interna del hueso, que revisten el perímetro de la cavidad medular, inmediatamente por debajo del endostio."
+          "markdown": "La organización laminar no osteonal comprende las laminillas óseas que no forman parte de una osteona completa y que se distribuyen en relación con las superficies externas e internas del hueso o entre las osteonas."
+        },
+        {
+          "id": "img_m1_2_i07",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_07.webp",
+          "alt": "Corte de hueso cortical con osteonas, laminillas circunferenciales externas e internas, laminillas intersticiales, periostio y endostio rotulados.",
+          "pie": "Organización laminar no osteonal: toca cada letrero amarillo",
+          "ancho": 1253,
+          "alto": 1125,
+          "puntos": [
+            {
+              "id": "laminillas_circunferenciales_externas",
+              "etiqueta": "Laminillas circunferenciales externas",
+              "x": 68,
+              "y": 14,
+              "markdown": "Son capas continuas de matriz ósea dispuestas paralelamente a la superficie externa del hueso, inmediatamente por debajo del periostio; las depositan los osteoblastos de la capa interna del periostio durante el crecimiento en grosor mediante modelado aposicional."
+            },
+            {
+              "id": "laminillas_intersticiales",
+              "etiqueta": "Laminillas intersticiales",
+              "x": 67,
+              "y": 33,
+              "markdown": "Son fragmentos irregulares de matriz ósea localizados entre las osteonas; corresponden a remanentes de osteonas antiguas, parcialmente reabsorbidas durante ciclos previos de remodelado óseo por la unidad multicelular básica (BMU)."
+            },
+            {
+              "id": "laminillas_circunferenciales_internas",
+              "etiqueta": "Laminillas circunferenciales internas",
+              "x": 3,
+              "y": 89,
+              "markdown": "Son capas continuas de matriz ósea dispuestas paralelamente a la superficie interna del hueso, que revisten el perímetro de la cavidad medular, inmediatamente por debajo del endostio."
+            }
+          ]
         },
         {
           "id": "t_arquitectura_del_hueso_esponjoso_o",
           "tipo": "texto",
           "titulo": "Arquitectura del hueso esponjoso o trabecular",
           "markdown": "El hueso esponjoso o trabecular es un tejido óseo organizado en una red tridimensional de trabéculas interconectadas que delimitan espacios ocupados principalmente por médula ósea y vasos sanguíneos; representa aproximadamente el 20 % de la masa ósea del esqueleto adulto. Su elevada superficie favorece el intercambio metabólico y el remodelado, mientras que su arquitectura refleja la historia de carga mecánica, las condiciones locales y los procesos de adaptación del tejido, que modifican progresivamente su organización para contribuir a la distribución y transmisión de fuerzas con bajo peso estructural. Predomina en las epífisis de los huesos largos y en el interior de huesos planos e irregulares, donde se encuentra rodeado por tejido cortical."
+        },
+        {
+          "id": "img_m1_2_i08",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_08.webp",
+          "alt": "Tabla comparativa del hueso cortical y el hueso esponjoso: porcentaje de la masa ósea, porosidad, módulo de elasticidad, resistencia mecánica, grosor de laminillas y diámetro de canalículos.",
+          "pie": "Hueso cortical vs. hueso esponjoso",
+          "ancho": 1254,
+          "alto": 1118
+        },
+        {
+          "id": "img_m1_2_i09",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_09.webp",
+          "alt": "Red de trabéculas con una osteona trabecular ampliada: laminillas, osteocitos en sus lagunas, canalículos, endostio, osteoclastos y células de revestimiento óseo.",
+          "pie": "Osteona trabecular",
+          "ancho": 1600,
+          "alto": 931
         },
         {
           "id": "t_osteona_trabecular",
@@ -1056,13 +1281,74 @@
           "id": "t_membranas_delimitantes",
           "tipo": "texto",
           "titulo": "Membranas delimitantes",
-          "markdown": "El hueso compacto está confinado y delimitado metabólicamente por dos membranas altamente especializadas.\n\n***Periostio.*** El periostio es una membrana de tejido conjuntivo especializado que recubre la superficie externa del hueso, excepto en las regiones cubiertas por cartílago articular y determinadas zonas de inserción; está ricamente vascularizado e inervado, contribuye a la nutrición del tejido óseo, el crecimiento por aposición y la reparación de lesiones, además de proporcionar anclaje para tendones y ligamentos mediante sus inserciones fibrosas.\n\n***Endostio.*** El endostio es un revestimiento celular fino y discontinuo que recubre las superficies internas del hueso, incluidas la cavidad medular, las trabéculas y las superficies de los conductos de Havers y Volkmann. Su composición celular varía según la localización y la actividad del tejido, e incluye principalmente células de revestimiento óseo y células osteoprogenitoras, además de células asociadas al remodelado cuando este se encuentra activo. Asimismo, participa en la organización de los sitios de remodelado óseo, donde pueden formarse compartimentos especializados como el compartimento de remodelado óseo (BRC), delimitado por un dosel celular o Bone Remodeling Canopy."
+          "markdown": "El hueso compacto está confinado y delimitado metabólicamente por dos membranas altamente especializadas.\n\n***Periostio.*** El periostio es una membrana de tejido conjuntivo especializado que recubre la superficie externa del hueso, excepto en las regiones cubiertas por cartílago articular y determinadas zonas de inserción; está ricamente vascularizado e inervado, contribuye a la nutrición del tejido óseo, el crecimiento por aposición y la reparación de lesiones, además de proporcionar anclaje para tendones y ligamentos mediante sus inserciones fibrosas."
+        },
+        {
+          "id": "img_m1_2_i10",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_10.webp",
+          "alt": "Periostio en corte con sus capas: zona III fibrosa externa, zona II de matriz y fibras de Sharpey, y zona I osteogénica o cambium sobre el hueso.",
+          "pie": "Periostio",
+          "ancho": 1536,
+          "alto": 876
+        },
+        {
+          "id": "t_endostio",
+          "tipo": "texto",
+          "markdown": "***Endostio.*** El endostio es un revestimiento celular fino y discontinuo que recubre las superficies internas del hueso, incluidas la cavidad medular, las trabéculas y las superficies de los conductos de Havers y Volkmann. Su composición celular varía según la localización y la actividad del tejido, e incluye principalmente células de revestimiento óseo y células osteoprogenitoras, además de células asociadas al remodelado cuando este se encuentra activo. Asimismo, participa en la organización de los sitios de remodelado óseo, donde pueden formarse compartimentos especializados como el compartimento de remodelado óseo (BRC), delimitado por un dosel celular o Bone Remodeling Canopy."
+        },
+        {
+          "id": "img_m1_2_i11",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_11.webp",
+          "alt": "Superficie interna del hueso revestida por el endostio, en contacto con un conducto vascular y los espacios del hueso trabecular.",
+          "pie": "Endostio",
+          "ancho": 1010,
+          "alto": 1082
         },
         {
           "id": "t_vascularizacion_e_inervacion_osea",
           "tipo": "texto",
           "titulo": "Vascularización e inervación ósea",
-          "markdown": "***Organización general.*** La irrigación ósea constituye una red vascular altamente especializada e interconectada que atraviesa el periostio, el hueso cortical y el compartimento medular, adaptándose a la arquitectura y a las demandas metabólicas de cada región; proporciona oxígeno y nutrientes, facilita la eliminación de productos metabólicos y establece una vía de comunicación entre el tejido óseo, la médula y los tejidos circundantes, siendo fundamental para mantener la actividad de osteoblastos y osteoclastos y sostener procesos como el remodelado, la adaptación y la reparación ósea.\n\n***Microcirculación del hueso cortical.*** La microcirculación cortical se organiza alrededor de una extensa red de conductos de Havers y Volkmann, que distribuyen vasos y permiten el intercambio con el sistema lacunocanalicular; a esta red se incorporan los canales transcorticales, estructuras vasculares que atraviesan directamente la cortical y establecen conexiones entre la circulación medular y la perióstica, favoreciendo una comunicación vascular bidireccional a través del espesor cortical. En conjunto, esta organización asegura el aporte de oxígeno y nutrientes a los osteocitos y sostiene la actividad metabólica, el remodelado y la reparación del tejido óseo.\n\n***Microcirculación del hueso trabecular y del compartimento medular.*** En el hueso trabecular, la red vascular se distribuye principalmente por el compartimento medular y sus espacios intertrabeculares, desde donde los nutrientes difunden hacia las células óseas a través de las superficies trabeculares y la matriz mineralizada. Debido a que las trabéculas son relativamente delgadas, los osteocitos pueden mantener el intercambio con el entorno vascular mediante el líquido intersticial y la red lacunocanalicular."
+          "markdown": "***Organización general.*** La irrigación ósea constituye una red vascular altamente especializada e interconectada que atraviesa el periostio, el hueso cortical y el compartimento medular, adaptándose a la arquitectura y a las demandas metabólicas de cada región; proporciona oxígeno y nutrientes, facilita la eliminación de productos metabólicos y establece una vía de comunicación entre el tejido óseo, la médula y los tejidos circundantes, siendo fundamental para mantener la actividad de osteoblastos y osteoclastos y sostener procesos como el remodelado, la adaptación y la reparación ósea."
+        },
+        {
+          "id": "img_m1_2_i12",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_12.webp",
+          "alt": "Hueso largo con su irrigación rotulada: arterias y venas epifisarias, metafisarias, periósticas y nutricias, foramen nutricio, periostio, cavidad medular y hueso cortical.",
+          "pie": "Organización general de la irrigación ósea",
+          "credito": "Adaptado de Tortora, G. J., y Derrickson, B. H. (2006). Principles of Anatomy and Physiology (11.ª ed., figura 6.4). John Wiley & Sons",
+          "ancho": 1422,
+          "alto": 1106
+        },
+        {
+          "id": "t_microcirculacion_cortical",
+          "tipo": "texto",
+          "markdown": "***Microcirculación del hueso cortical.*** La microcirculación cortical se organiza alrededor de una extensa red de conductos de Havers y Volkmann, que distribuyen vasos y permiten el intercambio con el sistema lacunocanalicular; a esta red se incorporan los canales transcorticales, estructuras vasculares que atraviesan directamente la cortical y establecen conexiones entre la circulación medular y la perióstica, favoreciendo una comunicación vascular bidireccional a través del espesor cortical. En conjunto, esta organización asegura el aporte de oxígeno y nutrientes a los osteocitos y sostiene la actividad metabólica, el remodelado y la reparación del tejido óseo."
+        },
+        {
+          "id": "img_m1_2_i13",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_13.webp",
+          "alt": "Bloque de hueso cortical con conductos de Havers, canales de Volkmann y un canal transcortical que comunican la circulación medular y la perióstica.",
+          "pie": "Microcirculación del hueso cortical",
+          "ancho": 1444,
+          "alto": 1089
+        },
+        {
+          "id": "t_microcirculacion_trabecular",
+          "tipo": "texto",
+          "markdown": "***Microcirculación del hueso trabecular y del compartimento medular.*** En el hueso trabecular, la red vascular se distribuye principalmente por el compartimento medular y sus espacios intertrabeculares, desde donde los nutrientes difunden hacia las células óseas a través de las superficies trabeculares y la matriz mineralizada. Debido a que las trabéculas son relativamente delgadas, los osteocitos pueden mantener el intercambio con el entorno vascular mediante el líquido intersticial y la red lacunocanalicular."
+        },
+        {
+          "id": "img_m1_2_i14",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_14.webp",
+          "alt": "Corte de un extremo óseo con la red vascular que se ramifica por el compartimento medular entre las trabéculas.",
+          "pie": "Microcirculación del hueso trabecular y del compartimento medular",
+          "ancho": 1440,
+          "alto": 1092
         },
         {
           "id": "t_microvasculatura_especializada_y",
@@ -1071,9 +1357,29 @@
           "markdown": "***Vasos tipo H.*** Los vasos tipo H constituyen una subpoblación especializada de la microvasculatura ósea, caracterizada por una elevada expresión endotelial de CD31 y endomucina; se asocian con regiones de actividad osteogénica e interactúan mediante señales paracrinas con células osteoprogenitoras y osteoblastos, modulando su proliferación y diferenciación. Este acoplamiento entre angiogénesis y osteogénesis involucra señales como VEGF, PDGF-BB y SLIT3, relacionadas con la formación vascular y ósea, así como con la reparación esquelética. Aunque se caracterizaron inicialmente en huesos largos, también se han descrito en regiones craneofaciales, como la calvaria, el cóndilo mandibular y el hueso alveolar, principalmente en modelos animales; en este último, tras la extracción dental, el aumento de estos vasos se ha asociado con una mayor acumulación perivascular de células osteoprogenitoras RUNX2⁺ y de masa ósea.\n\n***Vasos tipo L.*** Los vasos tipo L se caracterizan por una menor expresión endotelial de CD31 y endomucina en comparación con los vasos tipo H. En los modelos experimentales en los que se han caracterizado, forman redes sinusoidales ramificadas, predominantes en determinadas regiones de la médula ósea, y participan en el intercambio entre la sangre y el microambiente medular. Se relacionan con el mantenimiento del nicho hematopoyético y de las células estromales perivasculares mediante señales como CXCL12, SCF y angiopoyetina-1, que contribuyen a regular la supervivencia y función de las células madre hematopoyéticas."
         },
         {
+          "id": "img_m1_2_i15",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_15.webp",
+          "alt": "Distribución de los vasos tipo H, cerca de la placa de crecimiento en la metáfisis, y tipo L, en la diáfisis, con las células asociadas a cada uno.",
+          "pie": "Vasos sanguíneos tipo H y tipo L en el hueso en desarrollo",
+          "credito": "Watanabe et al. (2023), figura 3, International Journal of Molecular Sciences, 24(13), 10912. Licencia CC BY 4.0",
+          "ancho": 1568,
+          "alto": 1003
+        },
+        {
           "id": "t_arquitectura_3",
           "tipo": "texto",
           "markdown": "***Nota:*** La clasificación en vasos tipo H y tipo L deriva principalmente de estudios experimentales, especialmente en modelos animales, y constituye un modelo útil para comprender el acoplamiento entre angiogénesis y osteogénesis, pero no debe interpretarse como una clasificación universal y exhaustiva de toda la microvasculatura ósea."
+        },
+        {
+          "id": "img_m1_2_i16",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_2_imagen_16.webp",
+          "alt": "Regulación de las células madre esqueléticas: la fibra simpática inhibe su autorrenovación mediante SLIT2–FSTL1 y la sensitiva la promueve mediante p75NTR–SPP1.",
+          "pie": "Regulación simpático-sensorial del nicho de células madre esqueléticas",
+          "credito": "Adaptada de Chen et al. (2026), figura 3, bajo licencia CC BY 4.0",
+          "ancho": 1547,
+          "alto": 1017
         },
         {
           "id": "t_inervacion_y_regulacion_neurovascular",
@@ -1382,7 +1688,8 @@
           }
         }
       ],
-      "resumen": "La arquitectura ósea describe cómo se organiza el tejido a distintas escalas, desde la distribución del hueso compacto y trabecular hasta la disposición microscópica de sus laminillas, osteonas y espacios medulares. Esta organización determina propiedades como la resistencia mecánica, la distribución de cargas y la relación entre el tejido óseo, su vascularización y la médula ósea. Realizaremos un recorrido desde la estructura macroscópica a la microscópica."
+      "resumen": "La arquitectura ósea describe cómo se organiza el tejido a distintas escalas, desde la distribución del hueso compacto y trabecular hasta la disposición microscópica de sus laminillas, osteonas y espacios medulares. Esta organización determina propiedades como la resistencia mecánica, la distribución de cargas y la relación entre el tejido óseo, su vascularización y la médula ósea. Realizaremos un recorrido desde la estructura macroscópica a la microscópica.",
+      "fondo": "/images/m1/m1_2_imagen_01.webp"
     },
     {
       "id": "m1_3_materia",
@@ -1395,10 +1702,28 @@
           "markdown": "La matriz extracelular ósea es una estructura tridimensional que rodea a las células y constituye la mayor parte del tejido óseo; determina sus propiedades biomecánicas, participa en la homeostasis mineral y regula el microambiente celular. Está compuesta por una fase orgánica, una fase inorgánica mineral y una fracción acuosa con iones disueltos, cuya interacción configura un material compuesto multifásico; el colágeno tipo I aporta flexibilidad y tenacidad, mientras que la apatita biológica confiere rigidez y resistencia a la compresión. Además, la matriz actúa como reservorio de factores bioactivos y presenta propiedades viscoelásticas, por lo que su composición y organización influyen tanto en la respuesta mecánica como en la actividad celular."
         },
         {
+          "id": "img_m1_3_i01",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_3_imagen_01.webp",
+          "alt": "Tabla de la composición básica de la matriz ósea: fase orgánica, fase inorgánica mineral y agua, con su proporción por peso y por volumen.",
+          "pie": "Composición básica de la matriz ósea",
+          "ancho": 1774,
+          "alto": 764
+        },
+        {
           "id": "t_fase_organica",
           "tipo": "texto",
           "titulo": "Fase orgánica",
           "markdown": "La fracción orgánica representa aproximadamente el 30 % del peso seco de la matriz ósea; está constituida principalmente por colágeno tipo I y, en menor proporción, por proteínas no colágenas y proteoglucanos. Estos componentes conforman una red estructural que organiza la matriz, regula las interacciones celulares y participa en el control de la mineralización."
+        },
+        {
+          "id": "img_m1_3_i02",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_3_imagen_02.webp",
+          "alt": "Fibrillas de colágeno tipo I con proteínas no colágenas (osteopontina, sialoproteína ósea, osteocalcina, DMP1) y proteoglucanos (decorina, biglicano).",
+          "pie": "Fase orgánica de la matriz ósea",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
           "id": "t_1_colageno_tipo_i",
@@ -1417,6 +1742,15 @@
           "tipo": "texto",
           "titulo": "Fase inorgánica",
           "markdown": "La fase inorgánica constituye el componente mineral de la matriz extracelular ósea; está formada principalmente por nanocristales de apatita biológica, responsables de gran parte de la dureza, rigidez y resistencia a la compresión del hueso. Además, actúa como reservorio de calcio y fosfato, contribuyendo a la homeostasis mineral.\n\n***Organización cristalina:*** el mineral se organiza en plaquetas nanométricas distribuidas tanto en el interior de las fibrillas de colágeno (mineral intrafibrilar) como en los espacios entre ellas (mineral extrafibrilar); esta asociación con la matriz orgánica contribuye a la resistencia mecánica del tejido. A diferencia de la hidroxiapatita pura, la apatita biológica presenta una estructura menos ordenada y una composición variable, características que favorecen el intercambio de iones con el medio extracelular.\n\nLa composición detallada, las sustituciones iónicas y la formación de los cristales se desarrollarán en el módulo de mineralización ósea."
+        },
+        {
+          "id": "img_m1_3_i03",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_3_imagen_03.webp",
+          "alt": "Fibrillas de colágeno con cristales minerales de apatita entre ellas y en su interior; un cristal ampliado mide unos 50 × 25 × 3 nm.",
+          "pie": "Fase inorgánica: cristales de mineral óseo asociados al colágeno",
+          "ancho": 1094,
+          "alto": 1438
         },
         {
           "id": "c_recuerda_osteoide_matriz_organica",
@@ -1650,7 +1984,8 @@
             }
           }
         }
-      ]
+      ],
+      "fondo": "/images/m1/m1_2_imagen_01.webp"
     },
     {
       "id": "m1_4_biomecanica",
@@ -1660,24 +1995,219 @@
           "id": "t_cargas_solitarias_compresion_y_traccion",
           "tipo": "texto",
           "titulo": "Cargas solitarias: Compresión y tracción o tensión",
-          "markdown": "- **Compresión:** fuerzas de igual magnitud aplicadas hacia el interior del hueso y sobre un mismo eje, que tienden a acortar y ensanchar la estructura; es predominante en los cuerpos vertebrales y la diáfisis de los huesos largos durante la bipedestación. El tejido óseo presenta su mayor resistencia mecánica frente a la compresión, favorecida por la rigidez de su fase mineral.\n- **Tracción o tensión:** fuerzas paralelas aplicadas en sentidos opuestos hacia el exterior, que tienden a elongar y estrechar el tejido; se presenta principalmente en las inserciones tendinosas y ligamentosas, como el tubérculo del cuádriceps. Su resistencia depende en gran medida de la orientación longitudinal de las fibrillas de colágeno tipo I y de sus enlaces cruzados covalentes.\n\n#### Cargas combinadas: Flexión, torsión y cizallamiento\n\n- **Flexión:** Combinación de fuerzas que curva el hueso, generando compresión en el lado cóncavo y tracción en el convexo; como el hueso presenta menor resistencia a la tracción que a la compresión, las fracturas por flexión pura suelen iniciarse en el lado convexo, sometido a tensión.\n- **Torsión:** Se produce cuando un momento de giro actúa sobre el eje longitudinal del hueso, generando esfuerzos cortantes distribuidos helicoidalmente y favoreciendo la aparición de la clásica fractura espiroidea.\n- **Cizallamiento o esfuerzo cortante:** Ocurre cuando fuerzas paralelas y opuestas tienden a desplazar un plano del tejido respecto a otro; el hueso presenta su menor resistencia mecánica frente al cizallamiento, por lo que este tipo de carga resulta especialmente relevante en determinados mecanismos de fractura.\n\n#### Cargas estáticas vs. cargas dinámicas\n\n- **Cargas estáticas:** Aplicación de una fuerza constante y sostenida en el tiempo; las cargas prolongadas reducen la respuesta celular y, al disminuir el flujo del fluido pericelular, no constituyen un estímulo eficaz para la formación ósea ni el remodelado adaptativo.\n- **Cargas dinámicas y cíclicas:** Fuerzas variables caracterizadas por su frecuencia, magnitud y, especialmente, por la tasa de deformación (strain rate); generan desplazamiento del fluido pericelular en el sistema lacunocanalicular, constituyendo un estímulo fundamental para la mecanotransducción y el mantenimiento de la masa ósea."
+          "markdown": "- **Compresión:** fuerzas de igual magnitud aplicadas hacia el interior del hueso y sobre un mismo eje, que tienden a acortar y ensanchar la estructura; es predominante en los cuerpos vertebrales y la diáfisis de los huesos largos durante la bipedestación. El tejido óseo presenta su mayor resistencia mecánica frente a la compresión, favorecida por la rigidez de su fase mineral.\n- **Tracción o tensión:** fuerzas paralelas aplicadas en sentidos opuestos hacia el exterior, que tienden a elongar y estrechar el tejido; se presenta principalmente en las inserciones tendinosas y ligamentosas, como el tubérculo del cuádriceps. Su resistencia depende en gran medida de la orientación longitudinal de las fibrillas de colágeno tipo I y de sus enlaces cruzados covalentes."
+        },
+        {
+          "id": "img_m1_4_i02",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_02.webp",
+          "alt": "Mandíbula con una línea de fractura: la tensión actúa en el borde alveolar superior y la compresión en el borde inferior.",
+          "pie": "Distribución de las fuerzas de tensión y compresión en una fractura mandibular",
+          "ancho": 1455,
+          "alto": 1081
+        },
+        {
+          "id": "img_m1_4_i03",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_03.webp",
+          "alt": "Dos fémures: uno sometido a tensión, con fuerzas que lo estiran, y otro a compresión, con fuerzas que lo acortan.",
+          "pie": "Cargas solitarias: tensión y compresión",
+          "ancho": 1145,
+          "alto": 1374
+        },
+        {
+          "id": "t_cargas_combinadas",
+          "tipo": "texto",
+          "titulo": "Cargas combinadas: Flexión, torsión y cizallamiento",
+          "markdown": "- **Flexión:** Combinación de fuerzas que curva el hueso, generando compresión en el lado cóncavo y tracción en el convexo; como el hueso presenta menor resistencia a la tracción que a la compresión, las fracturas por flexión pura suelen iniciarse en el lado convexo, sometido a tensión.\n- **Torsión:** Se produce cuando un momento de giro actúa sobre el eje longitudinal del hueso, generando esfuerzos cortantes distribuidos helicoidalmente y favoreciendo la aparición de la clásica fractura espiroidea.\n- **Cizallamiento o esfuerzo cortante:** Ocurre cuando fuerzas paralelas y opuestas tienden a desplazar un plano del tejido respecto a otro; el hueso presenta su menor resistencia mecánica frente al cizallamiento, por lo que este tipo de carga resulta especialmente relevante en determinados mecanismos de fractura."
+        },
+        {
+          "id": "img_m1_4_i04",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_04.webp",
+          "alt": "Tres huesos largos sometidos a cizallamiento, torsión y flexión, con flechas que indican la dirección de las fuerzas.",
+          "pie": "Cargas combinadas: cizallamiento, torsión y flexión",
+          "ancho": 1444,
+          "alto": 1089
+        },
+        {
+          "id": "t_cargas_estaticas_dinamicas",
+          "tipo": "texto",
+          "titulo": "Cargas estáticas vs. cargas dinámicas",
+          "markdown": "- **Cargas estáticas:** Aplicación de una fuerza constante y sostenida en el tiempo; las cargas prolongadas reducen la respuesta celular y, al disminuir el flujo del fluido pericelular, no constituyen un estímulo eficaz para la formación ósea ni el remodelado adaptativo.\n- **Cargas dinámicas y cíclicas:** Fuerzas variables caracterizadas por su frecuencia, magnitud y, especialmente, por la tasa de deformación (strain rate); generan desplazamiento del fluido pericelular en el sistema lacunocanalicular, constituyendo un estímulo fundamental para la mecanotransducción y el mantenimiento de la masa ósea."
+        },
+        {
+          "id": "img_m1_4_i05",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_05.webp",
+          "alt": "Comparación entre cargas estáticas, con bajo flujo del fluido pericelular y respuesta celular reducida, y cargas dinámicas y cíclicas, que desplazan el fluido y estimulan la mecanotransducción.",
+          "pie": "Cargas estáticas vs. cargas dinámicas",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
           "id": "t_propiedades_mecanicas_del_tejido_oseo",
           "tipo": "texto",
           "titulo": "Propiedades mecánicas del tejido óseo",
-          "markdown": "*Curva típica de esfuerzo-deformación del hueso cortical*\n\n- **Región elástica:** El hueso se deforma de manera reversible ante la carga y recupera aproximadamente su forma original cuando ésta se retira.\n- **Región plástica:** La deformación aumenta de forma irreversible, con acumulación de microdaño y alteraciones de la matriz hasta alcanzar el fallo.\n\n#### Comportamiento mecánico del hueso cortical y trabecular\n\nLa imagen compara el comportamiento mecánico del hueso cortical y trabecular mediante sus curvas esfuerzo-deformación, evidenciando diferencias determinadas por su densidad y arquitectura. El hueso cortical, más denso y menos poroso, soporta esfuerzos elevados, de hasta aproximadamente 150 MPa, con una deformación menor, cercana al 3 %, antes de la falla; en contraste, el hueso trabecular, debido a su estructura porosa y trabeculada, soporta esfuerzos menores, de hasta aproximadamente 50 MPa, pero admite deformaciones mucho mayores, que pueden alcanzar aproximadamente el 50 % antes de la falla."
+          "markdown": "*Curva típica de esfuerzo-deformación del hueso cortical*\n\n- **Región elástica:** El hueso se deforma de manera reversible ante la carga y recupera aproximadamente su forma original cuando ésta se retira.\n- **Región plástica:** La deformación aumenta de forma irreversible, con acumulación de microdaño y alteraciones de la matriz hasta alcanzar el fallo."
         },
         {
-          "id": "t_biomecanica",
+          "id": "img_m1_4_i06",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_06.webp",
+          "alt": "Curva esfuerzo-deformación con el origen, el límite de proporcionalidad, el límite elástico, el punto de fractura y las regiones elástica y plástica.",
+          "pie": "Curva típica de esfuerzo-deformación del hueso cortical",
+          "ancho": 1536,
+          "alto": 1024
+        },
+        {
+          "id": "t_comportamiento_cortical_trabecular",
           "tipo": "texto",
-          "markdown": "- **Resistencia mecánica:** Capacidad para soportar esfuerzos antes de alcanzar la fluencia o la falla.\n- **Rigidez:** Capacidad para resistir la deformación ante una carga; depende de las propiedades del material y, a escala estructural, de la geometría del hueso.\n- **Elasticidad:** Capacidad para recuperar la forma original después de retirar la carga, siempre que no se haya superado el rango elástico.\n- **Plasticidad:** Capacidad para experimentar deformación permanente cuando la carga supera el límite elástico, sin que ocurra inmediatamente la fractura.\n- **Ductilidad:** Capacidad para experimentar deformación plástica antes de la fractura; un material más dúctil puede deformarse más antes de fallar.\n- **Tenacidad:** Capacidad para absorber energía mecánica antes de la fractura, determinada por el área total bajo la curva esfuerzo-deformación hasta la falla.\n- **Resiliencia:** Capacidad para absorber y almacenar energía dentro del rango elástico, sin generar deformación permanente.\n- **Fragilidad:** Tendencia a fracturarse con poca deformación plástica, por lo que presenta una capacidad limitada para disipar energía antes de la falla.\n- **Resistencia a la fractura:** Capacidad para resistir la iniciación y, especialmente, la propagación de grietas; es fundamental para comprender por qué el hueso puede tolerar defectos y microfisuras sin fracturarse inmediatamente.\n- **Resistencia a la fatiga:** Capacidad para soportar cargas cíclicas repetidas sin acumular daño suficiente para producir una fractura por fatiga.\n- **Viscoelasticidad:** Comportamiento mecánico dependiente del tiempo, en el que la respuesta del hueso combina componentes elásticos y viscosos; por ello, la deformación depende de la magnitud, velocidad y duración de la carga.\n- **Anisotropía:** Propiedad por la cual las características mecánicas del hueso varían según la dirección de aplicación de la carga, como consecuencia de su organización jerárquica y de la orientación del colágeno y las estructuras mineralizadas.\n- **Dureza:** Resistencia del tejido frente a la deformación localizada o penetración; refleja principalmente la contribución de la fase mineral y puede evaluarse mediante técnicas de indentación."
+          "titulo": "Comportamiento mecánico del hueso cortical y trabecular",
+          "markdown": "La imagen compara el comportamiento mecánico del hueso cortical y trabecular mediante sus curvas esfuerzo-deformación, evidenciando diferencias determinadas por su densidad y arquitectura. El hueso cortical, más denso y menos poroso, soporta esfuerzos elevados, de hasta aproximadamente 150 MPa, con una deformación menor, cercana al 3 %, antes de la falla; en contraste, el hueso trabecular, debido a su estructura porosa y trabeculada, soporta esfuerzos menores, de hasta aproximadamente 50 MPa, pero admite deformaciones mucho mayores, que pueden alcanzar aproximadamente el 50 % antes de la falla."
+        },
+        {
+          "id": "img_m1_4_i07",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_07.webp",
+          "alt": "Corte de fémur proximal con hueso cortical y trabecular, junto a sus curvas esfuerzo-deformación: la cortical soporta más esfuerzo con poca deformación y la trabecular menos esfuerzo con más deformación.",
+          "pie": "Comportamiento mecánico del hueso cortical y trabecular",
+          "credito": "Lin y Kang (2021), figura 1, adaptada de Çehreli (2012)",
+          "ancho": 1600,
+          "alto": 689
+        },
+        {
+          "id": "img_m1_4_i08",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_08.webp",
+          "alt": "Fémur rodeado por trece propiedades mecánicas numeradas, de la resistencia mecánica a la dureza.",
+          "pie": "Propiedades mecánicas del hueso: toca cada punto, en orden",
+          "ancho": 1312,
+          "alto": 1199,
+          "puntos": [
+            {
+              "id": "resistencia_mecanica",
+              "etiqueta": "Resistencia mecánica",
+              "x": 43,
+              "y": 4,
+              "markdown": "Capacidad para soportar esfuerzos antes de alcanzar la fluencia o la falla."
+            },
+            {
+              "id": "rigidez",
+              "etiqueta": "Rigidez",
+              "x": 64,
+              "y": 8,
+              "markdown": "Capacidad para resistir la deformación ante una carga; depende de las propiedades del material y, a escala estructural, de la geometría del hueso."
+            },
+            {
+              "id": "elasticidad",
+              "etiqueta": "Elasticidad",
+              "x": 81,
+              "y": 20,
+              "markdown": "Capacidad para recuperar la forma original después de retirar la carga, siempre que no se haya superado el rango elástico."
+            },
+            {
+              "id": "plasticidad",
+              "etiqueta": "Plasticidad",
+              "x": 82,
+              "y": 38,
+              "markdown": "Capacidad para experimentar deformación permanente cuando la carga supera el límite elástico, sin que ocurra inmediatamente la fractura."
+            },
+            {
+              "id": "ductilidad",
+              "etiqueta": "Ductilidad",
+              "x": 80,
+              "y": 56,
+              "markdown": "Capacidad para experimentar deformación plástica antes de la fractura; un material más dúctil puede deformarse más antes de fallar."
+            },
+            {
+              "id": "tenacidad",
+              "etiqueta": "Tenacidad",
+              "x": 74,
+              "y": 70,
+              "markdown": "Capacidad para absorber energía mecánica antes de la fractura, determinada por el área total bajo la curva esfuerzo-deformación hasta la falla."
+            },
+            {
+              "id": "resiliencia",
+              "etiqueta": "Resiliencia",
+              "x": 59,
+              "y": 79,
+              "markdown": "Capacidad para absorber y almacenar energía dentro del rango elástico, sin generar deformación permanente."
+            },
+            {
+              "id": "fragilidad",
+              "etiqueta": "Fragilidad",
+              "x": 39,
+              "y": 80,
+              "markdown": "Tendencia a fracturarse con poca deformación plástica, por lo que presenta una capacidad limitada para disipar energía antes de la falla."
+            },
+            {
+              "id": "resistencia_a_la_fractura",
+              "etiqueta": "Resistencia a la fractura",
+              "x": 19,
+              "y": 72,
+              "markdown": "Capacidad para resistir la iniciación y, especialmente, la propagación de grietas; es fundamental para comprender por qué el hueso puede tolerar defectos y microfisuras sin fracturarse inmediatamente."
+            },
+            {
+              "id": "resistencia_a_la_fatiga",
+              "etiqueta": "Resistencia a la fatiga",
+              "x": 5,
+              "y": 57,
+              "markdown": "Capacidad para soportar cargas cíclicas repetidas sin acumular daño suficiente para producir una fractura por fatiga."
+            },
+            {
+              "id": "viscoelasticidad",
+              "etiqueta": "Viscoelasticidad",
+              "x": 3,
+              "y": 38,
+              "markdown": "Comportamiento mecánico dependiente del tiempo, en el que la respuesta del hueso combina componentes elásticos y viscosos; por ello, la deformación depende de la magnitud, velocidad y duración de la carga."
+            },
+            {
+              "id": "anisotropia",
+              "etiqueta": "Anisotropía",
+              "x": 7,
+              "y": 20,
+              "markdown": "Propiedad por la cual las características mecánicas del hueso varían según la dirección de aplicación de la carga, como consecuencia de su organización jerárquica y de la orientación del colágeno y las estructuras mineralizadas."
+            },
+            {
+              "id": "dureza",
+              "etiqueta": "Dureza",
+              "x": 22,
+              "y": 8,
+              "markdown": "Resistencia del tejido frente a la deformación localizada o penetración; refleja principalmente la contribución de la fase mineral y puede evaluarse mediante técnicas de indentación."
+            }
+          ],
+          "en_orden": true
         },
         {
           "id": "t_adaptacion_osea_a_las_cargas_mecanicas",
           "tipo": "texto",
           "titulo": "Adaptación ósea a las cargas mecánicas",
-          "markdown": "***Ley de Wolff.*** La ley de Wolff establece que la arquitectura del tejido óseo se adapta a las demandas mecánicas habituales, modificando la distribución y orientación del tejido en respuesta a las cargas que recibe. La formación y resorción ósea ajustan progresivamente la arquitectura cortical y trabecular, favoreciendo una organización capaz de resistir y distribuir las cargas con un uso eficiente de la masa ósea.\n\n***Ejemplo:*** las trabéculas de la cabeza femoral se orientan siguiendo, en parte, las principales trayectorias de carga generadas durante la bipedestación y la marcha, contribuyendo a distribuir las fuerzas hacia el cuello y la diáfisis femoral.\n\n#### Teoría mecanostática de Frost\n\nLa ley mecanostática de Frost establece que el hueso adapta su masa y arquitectura a las deformaciones mecánicas (strain) que experimenta, de modo que estímulos por debajo o dentro de determinados umbrales favorecen la resorción o el mantenimiento, mientras que deformaciones superiores pueden estimular la formación y adaptación ósea; una sobrecarga excesiva puede generar microdaño y activar mecanismos reparativos."
+          "markdown": "***Ley de Wolff.*** La ley de Wolff establece que la arquitectura del tejido óseo se adapta a las demandas mecánicas habituales, modificando la distribución y orientación del tejido en respuesta a las cargas que recibe. La formación y resorción ósea ajustan progresivamente la arquitectura cortical y trabecular, favoreciendo una organización capaz de resistir y distribuir las cargas con un uso eficiente de la masa ósea.\n\n***Ejemplo:*** las trabéculas de la cabeza femoral se orientan siguiendo, en parte, las principales trayectorias de carga generadas durante la bipedestación y la marcha, contribuyendo a distribuir las fuerzas hacia el cuello y la diáfisis femoral."
+        },
+        {
+          "id": "img_m1_4_i09",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_09.webp",
+          "alt": "Fémur proximal con los grupos trabeculares rotulados: tracción principal y secundaria, compresión principal y secundaria, grupo trocantérico mayor y triángulo de Ward.",
+          "pie": "Ley de Wolff: orientación trabecular de la cabeza femoral",
+          "ancho": 1312,
+          "alto": 1199
+        },
+        {
+          "id": "t_frost",
+          "tipo": "texto",
+          "titulo": "Teoría mecanostática de Frost",
+          "markdown": "La ley mecanostática de Frost establece que el hueso adapta su masa y arquitectura a las deformaciones mecánicas (strain) que experimenta, de modo que estímulos por debajo o dentro de determinados umbrales favorecen la resorción o el mantenimiento, mientras que deformaciones superiores pueden estimular la formación y adaptación ósea; una sobrecarga excesiva puede generar microdaño y activar mecanismos reparativos."
+        },
+        {
+          "id": "img_m1_4_i10",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_10.webp",
+          "alt": "Tabla de la teoría mecanostática de Frost: rangos de deformación de desuso, mantenimiento, sobrecarga adaptativa, sobrecarga elevada y fractura, con su respuesta ósea y ejemplos maxilofaciales.",
+          "pie": "Teoría mecanostática de Frost",
+          "ancho": 1280,
+          "alto": 720
         },
         {
           "id": "t_bases_estructurales_de_la_resistencia",
@@ -1686,10 +2216,28 @@
           "markdown": "La respuesta biomecánica del hueso es el resultado de la integración entre la composición de la matriz extracelular y la organización estructural del tejido, descritas en los submódulos anteriores. Esta interacción determina su capacidad para soportar cargas, distribuir esfuerzos y resistir la fractura, constituyendo la base para comprender cómo el hueso adapta su estructura a las demandas mecánicas."
         },
         {
+          "id": "img_m1_4_i11",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_11.webp",
+          "alt": "Tabla de los elementos que aportan a la resistencia ósea: colágeno tipo I, fase mineral, integración de la matriz compuesta, microarquitectura y arquitectura tisular.",
+          "pie": "Bases estructurales de la resistencia ósea",
+          "ancho": 1536,
+          "alto": 1024
+        },
+        {
           "id": "t_modelado_y_remodelado_como_cambia_el",
           "tipo": "texto",
           "titulo": "Modelado y remodelado: Cómo cambia el tejido",
           "markdown": "- **Modelado óseo:** Proceso mediante el cual la formación y la resorción ocurren de manera independiente y pueden desarrollarse en superficies óseas diferentes; permite modificar progresivamente la forma, geometría y dimensiones del hueso en respuesta a las demandas mecánicas y durante el crecimiento.\n- **Remodelado óseo:** Proceso cíclico de renovación del tejido preexistente, en el que la resorción osteoclástica es seguida por formación osteoblástica en un sitio estrechamente acoplado; permite sustituir tejido envejecido o microdañado, mantener la integridad estructural y contribuir a la homeostasis mineral.\n\nAmbos procesos participan en la respuesta del hueso a las demandas mecánicas, pero mediante mecanismos diferentes; el modelado modifica la arquitectura y la geometría del hueso, mientras que el remodelado renueva el tejido existente, por lo que su contribución relativa depende de la edad, el sitio anatómico y las condiciones mecánicas."
+        },
+        {
+          "id": "img_m1_4_i12",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_12.webp",
+          "alt": "Cuatro esquemas de superficie ósea: superficie quiescente, formación por modelado, resorción ósea y formación por remodelado.",
+          "pie": "Modelado y remodelado: cómo cambia el tejido",
+          "ancho": 1448,
+          "alto": 1086
         },
         {
           "id": "t_microdano_y_fallo_mecanico",
@@ -1698,16 +2246,43 @@
           "markdown": "La fatiga ósea es el deterioro progresivo de la integridad mecánica producido por cargas cíclicas repetidas, incluso cuando cada ciclo permanece por debajo de la resistencia última del tejido; la acumulación de ciclos favorece la iniciación y propagación del microdaño, en función de la magnitud y frecuencia de las cargas, las características estructurales del hueso y su capacidad de reparación. El microdaño óseo comprende microfisuras lineales, habitualmente de 10–100 µm de longitud, y alteraciones difusas de la matriz mineralizada. Su acumulación y progresión pueden comprometer la integridad mecánica del tejido y activar mecanismos de reparación mediante el remodelado óseo."
         },
         {
+          "id": "img_m1_4_i13",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_13.webp",
+          "alt": "Microdaño óseo: microfisuras lineales y alteraciones difusas de la matriz cerca de las lagunas osteocíticas, y sus etapas de iniciación, propagación y consecuencias.",
+          "pie": "Microdaño óseo",
+          "ancho": 1536,
+          "alto": 1024
+        },
+        {
           "id": "t_fractura_por_sobrecarga_aguda_vs_cargas",
           "tipo": "texto",
           "titulo": "Fractura por sobrecarga aguda vs. cargas repetitivas",
           "markdown": "- **Fractura por sobrecarga aguda:** Ocurre cuando una carga única supera la resistencia estructural del hueso, como durante un traumatismo de alta energía.\n- **Fractura por fatiga:** Aparece cuando las cargas repetitivas inducen microdaño cuya acumulación y propagación superan la capacidad de reparación, hasta producir una discontinuidad macroscópica."
         },
         {
+          "id": "img_m1_4_i14",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_14.webp",
+          "alt": "Secuencia de fémures sometidos a cargas cíclicas: inicio del microdaño, acumulación del daño y fractura por fatiga a medida que aumentan los ciclos de carga.",
+          "pie": "Fractura por fatiga: acumulación de daño con los ciclos de carga",
+          "ancho": 1536,
+          "alto": 898
+        },
+        {
           "id": "t_deteccion_molecular_y_senalizacion_del",
           "tipo": "texto",
           "titulo": "Detección molecular y señalización del microdaño",
           "markdown": "Los osteocitos próximos a las microfisuras pueden experimentar alteraciones del sistema lacunocanalicular y apoptosis; las células vecinas supervivientes modifican su señalización, con aumento de RANKL y VEGF y reducción de OPG en modelos experimentales de fatiga ósea. Este cambio favorece el reclutamiento osteoclástico y la activación del remodelado localizado.\n\nLa respuesta osteocítica también se relaciona con vías mecanosensoras y reguladoras como integrinas–FAK, PI3K–AKT y Wnt/β-catenina; su participación depende del contexto, por lo que no deben interpretarse como una cascada única y obligatoria del microdaño."
+        },
+        {
+          "id": "img_m1_4_i15",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_4_imagen_15.webp",
+          "alt": "Osteocito junto a una microfisura que aumenta RANKL y VEGF y reduce OPG, con reclutamiento osteoclástico, remodelado localizado y vías de mecanosensación.",
+          "pie": "Detección molecular y señalización del microdaño",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
           "id": "c_clinico_este_principio_es",
@@ -1985,7 +2560,8 @@
           }
         }
       ],
-      "resumen": "El hueso está sometido continuamente a cargas derivadas del peso corporal, la gravedad, la contracción muscular y las fuerzas externas; su magnitud, dirección, punto de aplicación y duración determinan cómo se distribuyen las cargas en el tejido y la respuesta mecánica que generan, por lo que durante actividades como caminar, correr o masticar estas fuerzas suelen actuar de manera simultánea y combinada, más que de forma aislada."
+      "resumen": "El hueso está sometido continuamente a cargas derivadas del peso corporal, la gravedad, la contracción muscular y las fuerzas externas; su magnitud, dirección, punto de aplicación y duración determinan cómo se distribuyen las cargas en el tejido y la respuesta mecánica que generan, por lo que durante actividades como caminar, correr o masticar estas fuerzas suelen actuar de manera simultánea y combinada, más que de forma aislada.",
+      "fondo": "/images/m1/m1_2_imagen_01.webp"
     }
   ]
 }

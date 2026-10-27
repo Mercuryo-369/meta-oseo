@@ -1126,6 +1126,18 @@ export const BloqueTextoSchema = z.strictObject({
   nivel: nivelBloque,
 });
 
+/**
+ * Letrero tocable sobre una imagen (pedido de la docente: «al tocar cada letrero deberá salir el texto»): `x` e `y`
+ * en porcentaje del ancho y del alto de la imagen, sobre el letrero que la propia imagen ya trae dibujado.
+ */
+export const PuntoImagenSchema = z.strictObject({
+  id: IdSchema,
+  etiqueta: textoPlano(2, 80),
+  x: z.number().min(0).max(100),
+  y: z.number().min(0).max(100),
+  markdown: markdownBloque(10, 2500, false),
+});
+
 export const BloqueImagenSchema = z
   .strictObject({
     id: IdSchema,
@@ -1144,9 +1156,17 @@ export const BloqueImagenSchema = z
     /** Tamaño intrínseco (evita saltos de diseño al cargar). Ambos o ninguno. */
     ancho: z.number().int().min(1).max(4000).optional(),
     alto: z.number().int().min(1).max(4000).optional(),
+    /** Letreros tocables: cada uno abre su texto en un recuadro. */
+    puntos: z.array(PuntoImagenSchema).min(2).max(16).optional(),
+    /** Con `puntos`: se abren en orden (cada uno se habilita al abrir el anterior). */
+    en_orden: z.boolean().optional(),
     nivel: nivelBloque,
   })
   .superRefine((imagen, ctx) => {
+    if (imagen.puntos) {
+      const ids = imagen.puntos.map((p) => p.id);
+      if (new Set(ids).size !== ids.length) agregar(ctx, ['puntos'], 'Hay ids de punto repetidos.');
+    }
     if ((imagen.ancho === undefined) !== (imagen.alto === undefined)) {
       agregar(
         ctx,
@@ -1225,7 +1245,11 @@ export const SeccionSchema = z
      * **palabras clave** en azul (también la usan el menú y el mentor).
      */
     resumen: markdownLinea(10, 2200).optional(),
-    bloques: z.array(BloqueSchema).min(1).max(16),
+    /** Ilustración de fondo de la diapositiva de la sección (si falta, la del módulo). */
+    fondo: rutaImagen.optional(),
+    /** Dónde va el panel con la entrada sobre el fondo: a la derecha (por defecto) o abajo, a todo el ancho. */
+    panel: z.enum(['derecha', 'abajo']).optional(),
+    bloques: z.array(BloqueSchema).min(1).max(40),
   })
   .superRefine((seccion, ctx) => {
     if (seccion.id === ID_SECCION_RESERVADO) {

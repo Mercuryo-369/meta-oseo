@@ -150,6 +150,15 @@ def _texto_bloque(bloque: dict) -> str | None:
             for p in pasos
         ]
         return "\n".join(p for p in partes if p.strip(": "))
+    if tipo == "imagen" and bloque.get("puntos"):
+        # Letreros tocables de una imagen: su texto es contenido de lectura, como un texto.
+        partes = [
+            f"{limpiar_markdown(str(p.get('etiqueta', '')))}: "
+            f"{limpiar_markdown(str(p.get('markdown', '')))}"
+            for p in bloque["puntos"]
+        ]
+        pie = limpiar_markdown(str(bloque.get("pie", "")))
+        return pie + "\n" + "\n".join(partes)
     return None  # imágenes y demás: sin texto que indexar
 
 
@@ -182,6 +191,8 @@ def _subtitulo_de_bloque(bloque: dict) -> str:
         return limpiar_markdown(str(bloque.get("actividad", {}).get("titulo", "")))
     if bloque.get("tipo") in ("texto", "callout"):
         return limpiar_markdown(str(bloque.get("titulo", "")))
+    if bloque.get("tipo") == "imagen":
+        return limpiar_markdown(str(bloque.get("pie", "")))
     return ""
 
 

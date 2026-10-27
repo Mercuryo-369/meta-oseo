@@ -51,6 +51,10 @@ const props = withDefaults(
     textoSeccion?: string;
     /** Diapositiva de una sección: su número y título, como encabezado del panel («1.2 · Para qué sirve…»). */
     encabezadoSeccion?: string;
+    /** Ilustración de fondo de la sección activa: sustituye a la del módulo en su diapositiva. */
+    fondoSeccion?: string;
+    /** Panel abajo, a todo el ancho, para fondos que ocupan la diapositiva entera. */
+    panelAbajo?: boolean;
   }>(),
   {
     avance: null,
@@ -60,6 +64,8 @@ const props = withDefaults(
     textoContinuar: 'Ir a la sección',
     textoSeccion: undefined,
     encabezadoSeccion: undefined,
+    fondoSeccion: undefined,
+    panelAbajo: false,
   },
 );
 
@@ -73,7 +79,8 @@ const porcentaje = computed(() => Math.round((props.avance?.fraccion ?? 0) * 100
 const mostrarAvance = computed(() => props.avance !== null && !props.bloqueado && !props.revision);
 const apertura = computed(() => aperturaDelResumen(props.modulo.resumen, props.modulo.subtitulo));
 const identidad = computed(() => moduloPorNumero(props.modulo.numero)?.identidad);
-const heroe = computed(() => identidad.value?.heroe);
+/** Ilustración a sangre: la de la sección activa o la del módulo. */
+const heroe = computed(() => props.fondoSeccion ?? identidad.value?.heroe);
 /** Fondo de la portada: la ilustración a sangre o, mientras no exista, la portada del módulo. */
 const fondo = computed(() => heroe.value ?? identidad.value?.portada.src);
 /** Lo que lee el panel: la entrada de la sección activa o, si no la hay, la apertura del módulo. */
@@ -138,7 +145,13 @@ const textoPanel = computed(() => props.textoSeccion?.trim() || apertura.value);
 
       <!-- Escena a la izquierda y panel de cristal a la derecha -->
       <div
-        class="grid gap-4 px-3 pb-3 md:min-h-[26rem] md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:px-5 md:pb-5 lg:min-h-[30rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]"
+        class="grid gap-4 px-3 pb-3 md:px-5 md:pb-5"
+        :class="
+          panelAbajo
+            ? 'md:min-h-[34rem] md:grid-rows-[minmax(14rem,1fr)_auto] lg:min-h-[40rem]'
+            : 'md:min-h-[26rem] md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:min-h-[30rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]'
+        "
+        :data-panel="panelAbajo ? 'abajo' : 'derecha'"
       >
         <!-- Hueco de la escena: en pantallas anchas la ilustración es el fondo; en móvil va aquí. -->
         <div class="min-h-0 md:invisible" aria-hidden="true">

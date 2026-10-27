@@ -1391,7 +1391,7 @@ Los textos de las secciones 1.1 a 1.4, las preguntas de evaluación y sus justif
 
 ### B. Pendientes de desarrollo
 
-1. Integrar las imágenes del documento (Imagen #N de cada sección, ver «#### Pendientes PDF»), con sus letreros interactivos.
+1. HECHO (2026-10-26): imágenes de la docente («modulo 1.zip»; 1.2 #10, #11, #12 y #15 sacadas del PDF) integradas en el content.json pulido como `/images/m1/m1_{sección}_imagen_{NN}.webp`. Fondo de diapositiva por sección (`fondo`; 1.1 con el panel abajo, 1.3 y 1.4 reutilizan el fondo de la 1.2) y letreros tocables (`puntos`) en 1.1 #3 (en orden), 1.2 #2, #6 y #7, y 1.4 #8 (en orden). El script que lo hizo no lo regenera el convertidor: regenerar el guion borra estas imágenes. Falta: 1.4 Imagen #1 (no venía; se usa el fondo de la 1.2) y la actividad con la imagen #9 de Wolff.
 2. HECHO (2026-10-26): selección al azar por intento con `config.mostrar` y `siempre` por pregunta (1.1: 6 de 16; 1.2: 3 de las preguntas 1–5 más la 6, 7 y 8 siempre). Se aplica en el content.json pulido; el convertidor aún no lee estas claves.
 3. Actividad «Compara el hueso cortical y el trabecular» (tabla para completar) y actividad «¿El hueso se recupera o se fractura?» (marcador sobre la curva).
 
