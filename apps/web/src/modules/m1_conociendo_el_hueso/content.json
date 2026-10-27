@@ -817,7 +817,8 @@
                   "explicacion": "Función predominante: neurobiológica y sistémica."
                 }
               ],
-              "barajar_preguntas": true
+              "barajar_preguntas": true,
+              "mostrar": 6
             }
           }
         },
@@ -1320,7 +1321,8 @@
                     }
                   ],
                   "correctas": ["m1_2_e6_d"],
-                  "explicacion": "Conductos Transversales de Volkmann: Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular."
+                  "explicacion": "Conductos Transversales de Volkmann: Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular.",
+                  "siempre": true
                 },
                 {
                   "id": "m1_2_e7",
@@ -1345,7 +1347,8 @@
                     }
                   ],
                   "correctas": ["m1_2_e7_c"],
-                  "explicacion": "La señalización simpática se ha relacionado con la inhibición de la autorrenovación y del potencial osteogénico de las células madre esqueléticas, mientras que la señalización sensitiva se asocia con la promoción de estas capacidades."
+                  "explicacion": "La señalización simpática se ha relacionado con la inhibición de la autorrenovación y del potencial osteogénico de las células madre esqueléticas, mientras que la señalización sensitiva se asocia con la promoción de estas capacidades.",
+                  "siempre": true
                 },
                 {
                   "id": "m1_2_e8",
@@ -1370,9 +1373,11 @@
                     }
                   ],
                   "correctas": ["m1_2_e8_b"],
-                  "explicacion": "La matriz mineralizada proporciona soporte estructural, pero el tejido óseo también depende de su vascularización para recibir oxígeno y nutrientes y mantener la actividad celular. Por ello, conservar la estructura del segmento no garantiza que sus células continúen funcionando normalmente cuando se compromete el aporte sanguíneo."
+                  "explicacion": "La matriz mineralizada proporciona soporte estructural, pero el tejido óseo también depende de su vascularización para recibir oxígeno y nutrientes y mantener la actividad celular. Por ello, conservar la estructura del segmento no garantiza que sus células continúen funcionando normalmente cuando se compromete el aporte sanguíneo.",
+                  "siempre": true
                 }
-              ]
+              ],
+              "mostrar": 3
             }
           }
         }

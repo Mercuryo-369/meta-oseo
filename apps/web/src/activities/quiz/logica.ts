@@ -190,6 +190,35 @@ export function presentarPregunta(
   return { indice, pregunta, ordenOpciones, ordenPasos };
 }
 
+/**
+ * Las preguntas de este intento, en el orden del contenido: todas o, con `mostrar`, las `siempre`
+ * más una muestra de `mostrar` del resto, distinta en cada intento y determinista según la semilla.
+ */
+export function preguntasDelIntento(
+  todas: readonly Pregunta[],
+  semilla: number,
+  mostrar: number | undefined,
+): Pregunta[] {
+  const sorteables = rango(todas.length).filter((i) => todas[i]?.siempre !== true);
+  if (mostrar === undefined || mostrar >= sorteables.length) return [...todas];
+  const elegidas = new Set(
+    barajar(sorteables, crearAzar(derivarSemilla(semilla, 1))).slice(0, mostrar),
+  );
+  return todas.filter((p, i) => p.siempre === true || elegidas.has(i));
+}
+
+/** La semilla de una instantánea guardada (para rehacer su muestra antes de leer sus respuestas). */
+export function semillaDeInstantanea(instantanea: unknown): number | null {
+  if (!esObjeto(instantanea)) return null;
+  const { semilla } = instantanea;
+  return typeof semilla === 'number' &&
+    Number.isInteger(semilla) &&
+    semilla >= 0 &&
+    semilla < SEMILLA_MAX
+    ? semilla
+    : null;
+}
+
 /** Las preguntas en el orden en que se muestran en este intento. Determinista según la semilla. */
 export function presentarQuiz(
   preguntas: readonly Pregunta[],

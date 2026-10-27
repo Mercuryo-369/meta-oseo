@@ -699,6 +699,8 @@ const camposPregunta = {
    * posgrado). Sirve al mentor para graduar la ayuda y al docente para leer las estadísticas.
    */
   dificultad: z.number().int().min(1).max(3).optional(),
+  /** Con `mostrar` en el quiz: la pregunta sale en todos los intentos, fuera del sorteo. */
+  siempre: z.boolean().optional(),
 };
 
 /**
@@ -761,6 +763,11 @@ export const ConfigQuizSchema = z.strictObject({
   barajar_preguntas: z.boolean().default(false),
   barajar_opciones: z.boolean().default(true),
   /**
+   * Banco de preguntas (pedido de la docente: «que el algoritmo las varíe»): cada intento sortea
+   * `mostrar` preguntas entre las que no son `siempre`, y suma las `siempre`. Sin él, salen todas.
+   */
+  mostrar: z.number().int().min(1).max(20).optional(),
+  /**
    * Preguntas de refuerzo generadas por la IA (F4-03) al terminar el quiz. NO puntúan: son
    * práctica, porque el servidor no puede validar contenido que no escribió el docente.
    */
@@ -774,6 +781,15 @@ export const ActividadQuizSchema = z
     config: ConfigQuizSchema,
   })
   .superRefine((actividad, ctx) => {
+    const { mostrar, preguntas } = actividad.config;
+    const sorteables = preguntas.filter((p) => p.siempre !== true).length;
+    if (mostrar !== undefined && mostrar >= sorteables) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['config', 'mostrar'],
+        message: `mostrar (${mostrar}) debe ser menor que las preguntas sorteables (${sorteables})`,
+      });
+    }
     exigirRetroIncorrecta(actividad, ctx);
     exigirAprobacionCoherente(actividad, ctx, true);
   });

@@ -59,7 +59,7 @@ El tejido óseo es un tejido conjuntivo especializado de origen mesenquimático,
 - PENDIENTE PDF: Imagen #2, título «Propiedades del hueso». Indicación: «Ya la imagen trae el texto que quiero que esté ahí». No hay texto aparte en el PDF: se muestra solo con la imagen.
 - PENDIENTE PDF: Imagen #3, título «Funciones» (cuatro tarjetas: Mecánica y estructural, Metabólica y homeostática, Hematopoyética e inmunológica, Neurobiológica y sistémica). Indicación: «Cada función debe poderse seleccionar en orden y que salga el cuadrito con esta información». Mientras tanto, la información de cada función va como texto (un bloque por función).
 - Actividad 1 (conservada): «Aquí se podría conservar esta actividad, pero como arriba no explique tan específico que hace cada una, entonces retira los distractores, y haz que el lugar donde acoplan tenga la misma forma para que el estudiante solo una los receptores y vea el texto pero no tenga que adivinar realmente». Es `m1_2_hormonas_oseas`: se quitaron los distractores (esclerostina y PTH); cada receptor ya tiene la forma de su molécula (FGF23 círculo, osteocalcina hexágono, lipocalina 2 triángulo).
-- Actividad 2 «Explora las funciones del hueso»: el docente pide que el estudiante seleccione primero cada una de las cuatro categorías de la imagen para desplegar sus funciones (depende de la Imagen #3) y que se muestren 6 situaciones de las 16, mezcladas y distintas en cada intento («La idea es que el algoritmo las varie, pero para esta actividad mostrar 6 funciones en total, mezcladas»). PENDIENTE: el quiz aún no puede elegir un subconjunto al azar; por ahora trae las 16 situaciones, barajadas.
+- Actividad 2 «Explora las funciones del hueso»: el docente pide que el estudiante seleccione primero cada una de las cuatro categorías de la imagen para desplegar sus funciones (depende de la Imagen #3) y que se muestren 6 situaciones de las 16, mezcladas y distintas en cada intento («La idea es que el algoritmo las varie, pero para esta actividad mostrar 6 funciones en total, mezcladas»). HECHO (2026-10-26): el quiz sortea 6 de las 16 en cada intento (`config.mostrar: 6`).
 - Las explicaciones de las 16 situaciones son la categoría correcta («Función predominante: …»): el docente no escribió justificación para cada una.
 - «Este submódulo es corto, no pondría más actividades ni preguntas».
 
@@ -1392,7 +1392,7 @@ Los textos de las secciones 1.1 a 1.4, las preguntas de evaluación y sus justif
 ### B. Pendientes de desarrollo
 
 1. Integrar las imágenes del documento (Imagen #N de cada sección, ver «#### Pendientes PDF»), con sus letreros interactivos.
-2. Selección al azar de preguntas por intento (6 de 16 en 1.1; 3 de 5 en 1.2).
+2. HECHO (2026-10-26): selección al azar por intento con `config.mostrar` y `siempre` por pregunta (1.1: 6 de 16; 1.2: 3 de las preguntas 1–5 más la 6, 7 y 8 siempre). Se aplica en el content.json pulido; el convertidor aún no lee estas claves.
 3. Actividad «Compara el hueso cortical y el trabecular» (tabla para completar) y actividad «¿El hueso se recupera o se fractura?» (marcador sobre la curva).
 
 ## Registro de revision

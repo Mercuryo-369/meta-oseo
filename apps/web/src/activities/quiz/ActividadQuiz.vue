@@ -73,6 +73,8 @@ import { CLAVE_PREGUNTAS_IA, EVENTO_GLOSARIO } from './ia';
 import type { DetalleEventoGlosario } from './ia';
 import {
   armarInstantanea,
+  preguntasDelIntento,
+  semillaDeInstantanea,
   depurarPreguntas,
   instantaneaVigente,
   leerInstantanea,
@@ -100,7 +102,8 @@ const reducido = computed(() => movimiento.value === 'reduce');
 
 /* ---- contenido ---- */
 
-const preguntas = computed(() => depurarPreguntas(props.actividad?.config?.preguntas));
+const todasLasPreguntas = computed(() => depurarPreguntas(props.actividad?.config?.preguntas));
+const mostrar = computed(() => props.actividad?.config?.mostrar);
 const opcionesPresentacion = computed(() => ({
   barajarPreguntas: props.actividad?.config?.barajar_preguntas === true,
   barajarOpciones: props.actividad?.config?.barajar_opciones !== false,
@@ -110,6 +113,10 @@ const opcionesPresentacion = computed(() => ({
 
 const intentos = ref(intentoInicial(props.estadoPrevio));
 const semilla = ref(semillaNueva());
+/** Las de este intento: con banco (`mostrar`), la muestra que tocó con la semilla. */
+const preguntas = computed(() =>
+  preguntasDelIntento(todasLasPreguntas.value, semilla.value, mostrar.value),
+);
 const respuestas = ref<(RespuestaPregunta | null)[]>(preguntas.value.map(() => null));
 const posicion = ref(0);
 const fase = ref<'preguntas' | 'resumen'>('preguntas');
@@ -136,9 +143,17 @@ function sinRespuestas(): (RespuestaPregunta | null)[] {
 /** Aplica lo que se sabe del pasado: número de intento e intento a medias (si sigue vigente). */
 function aplicarEstadoPrevio(): void {
   intentos.value = intentoInicial(props.estadoPrevio);
-  const restaurado = instantaneaVigente(props.estadoPrevio)
-    ? leerInstantanea(preguntas.value, props.estadoPrevio?.progreso?.instantanea)
+  const instantanea = props.estadoPrevio?.progreso?.instantanea;
+  const semillaGuardada = instantaneaVigente(props.estadoPrevio)
+    ? semillaDeInstantanea(instantanea)
     : null;
+  const restaurado =
+    semillaGuardada === null
+      ? null
+      : leerInstantanea(
+          preguntasDelIntento(todasLasPreguntas.value, semillaGuardada, mostrar.value),
+          instantanea,
+        );
   semilla.value = restaurado ? restaurado.semilla : semillaNueva();
   respuestas.value = restaurado ? restaurado.respuestas : sinRespuestas();
   posicion.value = posicionDeReanudacion(presentadas.value, respuestas.value);
