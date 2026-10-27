@@ -1,5 +1,11 @@
 # Modulo 3: Construyendo hueso
 
+> **Imágenes integradas (2026-10-26).** Imágenes de la docente (carpeta «modulo3»: 3.1 #2, 3.2 #1–#8, 3.3 #1; del PDF:
+> 3.3 #2–#9; 3.1 #1 reutiliza la 2.3 #5) en el content.json pulido como `/images/m3/m3_{sección}_imagen_{NN}.webp`, con
+> `m3_fondo.webp` (el fondo del módulo 2, que la docente usa en la 3.2) como fondo de las diapositivas. La 3.1 #2 lleva
+> los seis botones en orden. Siguen pendientes los seis mini videos de la docente y la actividad interactiva de
+> escenarios de la 3.2 (hoy cada escenario lleva su imagen bajo su texto). Regenerar el guion borra estas imágenes.
+
 > Estado: BORRADOR. Desde el 2026-10-25 las secciones, títulos, textos y preguntas de evaluación son los del documento del docente «Modulos del 1 al 3, completados, listos para desarrollar.pdf» (fuente de verdad), transcritos al pie de la letra. El contenido anterior de este guion (dos rutas de osificación, mandíbula fetal, osteocito sensor, sensores y mensajeros, Wnt/esclerostina/PTH, mecanostato y evaluación final) queda en el historial de git.
 
 > Convenciones de este guion. Los encabezados estructurales, las claves YAML y las etiquetas de aviso (Clinico, Dato, Atencion, Recuerda) van sin tilde para que se transcriban sin ambiguedad. Las indicaciones del docente al equipo de desarrollo («Imagen #N», «Texto lateral que debe ir allí», «Allí pondré el mini video…», «Voy a señalar en esta imagen…») no son contenido para el estudiante: están en «Pendientes del documento del docente», al final de este guion, con la sección y el lugar donde va cada imagen o video.
