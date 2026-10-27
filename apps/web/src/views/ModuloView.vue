@@ -26,7 +26,7 @@
  *    delante, la nueva entra por la derecha; hacia atrás, por la izquierda (sin animación con
  *    `prefers-reduced-motion`).
  */
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { CircleAlert, LoaderCircle, Lock, Info } from '@lucide/vue';
 import { ESPERA_ESTADO_PREVIO_MAX_MS } from '@/activities/types';
@@ -51,7 +51,7 @@ import {
   titulosDeActividades,
 } from '@/components/modulo/acceso';
 import { EVENTO_GLOSARIO } from '@/components/modulo/glosario';
-import { estiloAcento } from '@/components/modulo/identidad';
+import { aperturaDelResumen, estiloAcento } from '@/components/modulo/identidad';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
 import { TOTAL_MODULOS } from '@/config';
 import { useTiempoModulo } from '@/components/modulo/useTiempoModulo';
@@ -275,6 +275,17 @@ function alIntentarSeccionBloqueada(i: number): void {
       : '');
 }
 
+/**
+ * Texto del panel en la portada del módulo cuando su `resumen` no trae una apertura propia (solo repite el
+ * subtítulo, como en los módulos 2 y 3 del documento de la docente): el primer párrafo de su primera sección.
+ */
+const aperturaDePortada = computed(() => {
+  const m = modulo.value;
+  if (!m || aperturaDelResumen(m.resumen, m.subtitulo)) return undefined;
+  const primero = m.secciones[0]?.bloques.find((b) => b.tipo === 'texto');
+  return primero?.tipo === 'texto' ? primero.markdown.split(/\n\s*\n/)[0]?.trim() : undefined;
+});
+
 const esUltimaSeccion = computed(() => indice.value === secciones.value.length - 1);
 const siguienteModulo = computed(() => (props.n < TOTAL_MODULOS ? props.n + 1 : null));
 
@@ -327,8 +338,27 @@ function alContinuar(): void {
 const posicion = computed(() => (enPortada.value ? -1 : indice.value));
 const claveDiapositiva = computed(() => `${props.n}:${posicion.value}`);
 const sentido = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
+/**
+ * Al pasar a otro módulo la vista recarga su contenido y el escenario se monta de nuevo: su portada entra
+ * deslizándose (`appear`) hacia delante o hacia atrás. Mientras carga, la posición pasa por valores
+ * intermedios que no deben cambiar el sentido.
+ */
+const deslizarAlCargar = ref(false);
+let cambioDeModulo = false;
+watch(
+  () => props.n,
+  (nuevo, previo) => {
+    cambioDeModulo = true;
+    deslizarAlCargar.value = true;
+    sentido.value = nuevo > previo ? 'diapo-adelante' : 'diapo-atras';
+  },
+);
 watch(posicion, (nueva, previa) => {
+  if (cambioDeModulo) return;
   sentido.value = nueva >= previa ? 'diapo-adelante' : 'diapo-atras';
+});
+watch(fase, (f) => {
+  if (f === 'listo' && cambioDeModulo) void nextTick(() => (cambioDeModulo = false));
 });
 
 function irAlPrimeroPendiente(): void {
@@ -555,7 +585,11 @@ onBeforeUnmount(() => {
     <!-- Módulo -->
     <!-- Escenario de las diapositivas: la que entra y la que sale se deslizan a la vez, como en una presentación. -->
     <div v-else-if="modulo && avance" class="escenario relative overflow-x-clip">
-      <Transition :name="sentido">
+      <Transition
+        :name="sentido"
+        :appear="deslizarAlCargar"
+        @after-appear="deslizarAlCargar = false"
+      >
         <div
           :key="claveDiapositiva"
           class="diapositiva"
@@ -568,7 +602,7 @@ onBeforeUnmount(() => {
             :puntaje-obtenido="puntajeObtenido"
             :revision="esDocente"
             :texto-continuar="textoContinuar"
-            :texto-seccion="enPortada ? undefined : secciones[indice]?.resumen"
+            :texto-seccion="enPortada ? aperturaDePortada : secciones[indice]?.resumen"
             :fondo-seccion="enPortada ? undefined : secciones[indice]?.fondo"
             :panel-abajo="!enPortada && secciones[indice]?.panel === 'abajo'"
             :encabezado-seccion="
@@ -723,6 +757,9 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* No se apaga con `prefers-reduced-motion`: el deslizamiento lo pidió la usuaria y es la pista de hacia dónde se
+   avanza (Windows con «Efectos de animación» desactivado lo activa en Chrome y la navegación se veía como un salto).
+   Es un único movimiento corto, sin rebotes ni parpadeos, iniciado por quien pulsa la flecha. */
 /* Diapositivas: la nueva entra deslizándose desde un lado mientras la anterior sale por el otro, a la vez (la que
    sale queda superpuesta en su sitio, en absoluto, para que no empuje a la que entra). */
 .diapo-adelante-enter-active,
@@ -744,13 +781,5 @@ onBeforeUnmount(() => {
 .diapo-adelante-leave-to,
 .diapo-atras-enter-from {
   transform: translateX(-100%);
-}
-@media (prefers-reduced-motion: reduce) {
-  .diapo-adelante-enter-active,
-  .diapo-adelante-leave-active,
-  .diapo-atras-enter-active,
-  .diapo-atras-leave-active {
-    transition: none;
-  }
 }
 </style>

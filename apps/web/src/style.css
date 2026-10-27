@@ -338,3 +338,9 @@
     scroll-behavior: auto !important;
   }
 }
+/* Excepción: el deslizamiento entre diapositivas de un módulo (ver ModuloView.vue), pedido expreso de la usuaria. */
+@media (prefers-reduced-motion: reduce) {
+  .diapositiva {
+    transition-duration: 0.5s !important;
+  }
+}
