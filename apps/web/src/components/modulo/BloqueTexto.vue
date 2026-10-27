@@ -6,7 +6,14 @@
 import type { BloqueTexto } from '@/content/schema';
 import TextoRico from './TextoRico.vue';
 
-defineProps<{ bloque: BloqueTexto }>();
+withDefaults(
+  defineProps<{
+    bloque: BloqueTexto;
+    /** Texto largo a todo el ancho: en pantallas muy anchas se lee en dos columnas (líneas de largo cómodo). */
+    columnas?: boolean;
+  }>(),
+  { columnas: false },
+);
 </script>
 
 <template>
@@ -25,13 +32,21 @@ defineProps<{ bloque: BloqueTexto }>();
       decoding="async"
       class="absolute inset-0 -z-10 size-full object-cover"
     />
-    <div class="cristal-portada max-w-prose space-y-2 rounded-2xl p-5 sm:p-6">
+    <div class="cristal-portada max-w-3xl space-y-2 rounded-2xl p-5 sm:p-7">
       <h3 v-if="bloque.titulo" class="font-serif text-xl font-semibold">{{ bloque.titulo }}</h3>
       <TextoRico :texto="bloque.markdown" class="text-base leading-relaxed" />
     </div>
   </div>
   <div v-else :id="`bloque-${bloque.id}`" class="space-y-2" data-testid="bloque-texto">
     <h3 v-if="bloque.titulo" class="font-serif text-xl font-semibold">{{ bloque.titulo }}</h3>
-    <TextoRico :texto="bloque.markdown" class="max-w-prose text-base leading-relaxed" />
+    <TextoRico
+      :texto="bloque.markdown"
+      class="text-base leading-relaxed"
+      :class="
+        columnas
+          ? 'xl:columns-2 xl:gap-12 [&_li]:break-inside-avoid [&_p]:break-inside-avoid'
+          : 'max-w-prose'
+      "
+    />
   </div>
 </template>

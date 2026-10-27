@@ -67,7 +67,13 @@ import {
   progresoDeModulo,
   puntajeObtenidoModulo,
 } from '@/content/scoring';
-import type { ModuloContenido, TerminoGlosario } from '@/content/schema';
+import type {
+  Bloque,
+  BloqueImagen as TipoBloqueImagen,
+  BloqueTexto as TipoBloqueTexto,
+  ModuloContenido,
+  TerminoGlosario,
+} from '@/content/schema';
 import { moduloPorNumero } from '@/data/modulos';
 import type { NumeroModulo } from '@/data/modulos';
 import { useActividadesStore } from '@/stores/actividades';
@@ -236,6 +242,46 @@ const idSeccionMostrada = computed(() => (mostrando.value ? (seccion.value?.id ?
 const bloquesVisibles = computed(() =>
   (seccion.value?.bloques ?? []).filter((b) => visibleParaNivel(b, contexto.nivel)),
 );
+
+/**
+ * Filas de la sección para aprovechar el ancho (pedido de la usuaria: «no aprovechan el 100 % de la pantalla»): un
+ * texto seguido de una imagen sencilla van lado a lado en pantallas anchas, alternando el lado de la imagen; el
+ * resto ocupa la fila entera. Las imágenes interactivas, las secuencias y las parejas necesitan todo el ancho.
+ */
+type FilaSeccion =
+  | {
+      tipo: 'par';
+      clave: string;
+      texto: TipoBloqueTexto;
+      imagen: TipoBloqueImagen;
+      invertida: boolean;
+    }
+  | { tipo: 'solo'; clave: string; bloque: Bloque };
+function imagenSencilla(b: Bloque | undefined): b is TipoBloqueImagen {
+  return b?.tipo === 'imagen' && !b.puntos && !b.secuencia && !b.pareja;
+}
+const filasSeccion = computed<FilaSeccion[]>(() => {
+  const bloques = bloquesVisibles.value;
+  const filas: FilaSeccion[] = [];
+  let pares = 0;
+  for (let i = 0; i < bloques.length; i++) {
+    const b = bloques[i] as Bloque;
+    const sig = bloques[i + 1];
+    if (b.tipo === 'texto' && !b.fondo && imagenSencilla(sig)) {
+      filas.push({
+        tipo: 'par',
+        clave: idDeBloque(b),
+        texto: b,
+        imagen: sig,
+        invertida: pares++ % 2 === 1,
+      });
+      i++;
+    } else {
+      filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b });
+    }
+  }
+  return filas;
+});
 
 /** Actividades obligatorias que faltan en la sección abierta, en orden. */
 const pendientes = computed(() =>
@@ -645,7 +691,7 @@ onBeforeUnmount(() => {
             <span>{{ avisoBloqueo }}</span>
           </p>
 
-          <div v-if="!enPortada" class="mx-auto mt-8 max-w-4xl">
+          <div v-if="!enPortada" class="mt-8">
             <div class="min-w-0">
               <!-- Sección bloqueada: se explica qué falta -->
               <section
@@ -701,14 +747,29 @@ onBeforeUnmount(() => {
                   </p>
                 </header>
 
-                <template v-for="bloque in bloquesVisibles" :key="idDeBloque(bloque)">
-                  <BloqueTexto v-if="bloque.tipo === 'texto'" :bloque="bloque" />
-                  <BloqueCallout v-else-if="bloque.tipo === 'callout'" :bloque="bloque" />
-                  <BloqueImagen v-else-if="bloque.tipo === 'imagen'" :bloque="bloque" />
-                  <BloqueTabla v-else-if="bloque.tipo === 'tabla'" :bloque="bloque" />
+                <template v-for="fila in filasSeccion" :key="fila.clave">
+                  <div
+                    v-if="fila.tipo === 'par'"
+                    class="grid items-center gap-6 lg:grid-cols-2 lg:gap-10"
+                    data-testid="fila-texto-imagen"
+                  >
+                    <BloqueTexto :bloque="fila.texto" :class="fila.invertida ? 'lg:order-2' : ''" />
+                    <BloqueImagen
+                      :bloque="fila.imagen"
+                      :class="fila.invertida ? 'lg:order-1' : ''"
+                    />
+                  </div>
+                  <BloqueTexto
+                    v-else-if="fila.bloque.tipo === 'texto'"
+                    :bloque="fila.bloque"
+                    :columnas="fila.bloque.markdown.length > 900"
+                  />
+                  <BloqueCallout v-else-if="fila.bloque.tipo === 'callout'" :bloque="fila.bloque" />
+                  <BloqueImagen v-else-if="fila.bloque.tipo === 'imagen'" :bloque="fila.bloque" />
+                  <BloqueTabla v-else-if="fila.bloque.tipo === 'tabla'" :bloque="fila.bloque" />
                   <BloqueActividad
-                    v-else-if="bloque.tipo === 'actividad'"
-                    :actividad="bloque.actividad"
+                    v-else-if="fila.bloque.tipo === 'actividad'"
+                    :actividad="fila.bloque.actividad"
                     :modulo="n as NumeroModulo"
                     :solo-lectura="esDocente"
                   />

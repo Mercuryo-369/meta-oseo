@@ -48,7 +48,7 @@ function abrir(i: number): void {
     <template v-if="!fallo">
       <div
         v-if="secuencia.length > 0 && pasoActual"
-        class="mx-auto w-full max-w-4xl space-y-3"
+        class="mx-auto w-full max-w-6xl space-y-3"
         data-testid="imagen-secuencia"
       >
         <img
@@ -107,7 +107,7 @@ function abrir(i: number): void {
       </div>
       <div
         v-else-if="bloque.pareja"
-        class="mx-auto grid w-full max-w-5xl items-start gap-4 md:grid-cols-2"
+        class="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-2"
         data-testid="imagen-pareja"
       >
         <div class="space-y-2">
@@ -149,10 +149,10 @@ function abrir(i: number): void {
         :height="bloque.alto"
         loading="lazy"
         decoding="async"
-        class="bg-card mx-auto h-auto max-h-[70dvh] w-full max-w-2xl rounded-lg border object-contain"
+        class="bg-card mx-auto h-auto max-h-[75dvh] w-full max-w-5xl rounded-lg border object-contain"
         @error="fallo = true"
       />
-      <div v-else class="mx-auto w-full max-w-4xl space-y-3" data-testid="imagen-puntos">
+      <div v-else class="mx-auto w-full max-w-6xl space-y-3" data-testid="imagen-puntos">
         <div class="relative">
           <img
             :src="bloque.figura ?? bloque.src"
@@ -240,7 +240,7 @@ function abrir(i: number): void {
       <ImageOff class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <p class="text-sm">No pudimos cargar la imagen. Lo que muestra: {{ bloque.alt }}</p>
     </div>
-    <figcaption class="text-muted-foreground mx-auto max-w-2xl text-sm">
+    <figcaption class="text-muted-foreground mx-auto max-w-5xl text-center text-sm">
       <TextoRico v-if="!bloque.pareja" :texto="bloque.pie" modo="linea" />
       <span v-if="bloque.credito" class="block text-xs"> Crédito: {{ bloque.credito }}</span>
     </figcaption>
