@@ -41,6 +41,6 @@ const titulo = computed(() => props.bloque.titulo ?? etiqueta.value);
         <span v-if="bloque.titulo" class="font-normal">{{ etiqueta }}: </span>{{ titulo }}
       </p>
     </div>
-    <TextoRico :texto="bloque.markdown" class="mt-2 max-w-prose leading-relaxed" />
+    <TextoRico :texto="bloque.markdown" class="mt-2 leading-relaxed" />
   </aside>
 </template>

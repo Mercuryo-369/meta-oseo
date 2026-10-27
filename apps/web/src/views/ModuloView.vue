@@ -742,7 +742,7 @@ onBeforeUnmount(() => {
                   >
                     {{ seccion.titulo }}
                   </h2>
-                  <p v-if="seccion.resumen" class="text-muted-foreground max-w-prose">
+                  <p v-if="seccion.resumen" class="text-muted-foreground text-lg leading-relaxed">
                     <TextoRico :texto="seccion.resumen" modo="linea" />
                   </p>
                 </header>
@@ -762,7 +762,7 @@ onBeforeUnmount(() => {
                   <BloqueTexto
                     v-else-if="fila.bloque.tipo === 'texto'"
                     :bloque="fila.bloque"
-                    :columnas="fila.bloque.markdown.length > 900"
+                    :columnas="fila.bloque.markdown.length > 1200"
                   />
                   <BloqueCallout v-else-if="fila.bloque.tipo === 'callout'" :bloque="fila.bloque" />
                   <BloqueImagen v-else-if="fila.bloque.tipo === 'imagen'" :bloque="fila.bloque" />

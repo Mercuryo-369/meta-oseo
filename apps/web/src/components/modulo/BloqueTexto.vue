@@ -43,9 +43,7 @@ withDefaults(
       :texto="bloque.markdown"
       class="text-base leading-relaxed"
       :class="
-        columnas
-          ? 'xl:columns-2 xl:gap-12 [&_li]:break-inside-avoid [&_p]:break-inside-avoid'
-          : 'max-w-prose'
+        columnas ? 'xl:columns-2 xl:gap-12 [&_li]:break-inside-avoid [&_p]:break-inside-avoid' : ''
       "
     />
   </div>
