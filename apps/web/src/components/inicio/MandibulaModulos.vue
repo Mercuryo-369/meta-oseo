@@ -163,8 +163,8 @@ const verbo = computed(() => {
       </div>
     </div>
 
-    <!-- Pantallas estrechas: la lista (la escena muestra solo números) -->
-    <ol class="grid gap-2 sm:grid-cols-2 lg:hidden" aria-label="Módulos y tu avance">
+    <!-- La lista: visible en pantallas estrechas (la escena muestra solo números); en las anchas, solo para lectores de pantalla -->
+    <ol class="grid gap-2 sm:grid-cols-2 lg:sr-only" aria-label="Módulos y tu avance">
       <li v-for="it in items" :key="it.id">
         <button
           type="button"
