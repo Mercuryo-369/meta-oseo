@@ -247,6 +247,12 @@ interface VistaReceptor {
   /** Par cuyo efecto se ve (el último acoplado), o `null` si está libre. */
   par: number | null;
   forma: string | null;
+  /**
+   * Forma de la molécula que encaja en este receptor, dibujada como guía mientras está libre (observación de la
+   * docente, 2026-10-27: el lugar receptor tiene la forma preestablecida de su molécula, así quien entra por primera
+   * vez sabe qué figura va en cada sitio sin tener que adivinar).
+   */
+  formaGuia: string | null;
   animacion: AnimacionEfecto | null;
   acopladas: string[];
   alineacion: 'inicio' | 'centro' | 'fin';
@@ -270,6 +276,10 @@ const vistaReceptores = computed<VistaReceptor[]>(() => {
       y: r.y,
       par,
       forma: molecula?.forma ?? null,
+      formaGuia:
+        r.pares[0] === undefined
+          ? null
+          : (m.moleculas[m.pares[r.pares[0]]!.molecula]?.forma ?? null),
       animacion: par === null ? null : (m.pares[par]?.efecto.animacion ?? null),
       acopladas: paresAqui.map((p) => etiquetaMolecula(m.pares[p]!.molecula)),
       alineacion: alineacionEtiqueta(r.x),
@@ -746,6 +756,12 @@ defineExpose({ repetir });
           >
             <span class="zona">
               <FormaMolecula v-if="r.forma" :forma="r.forma" class="forma-acoplada" />
+              <FormaMolecula
+                v-else-if="r.formaGuia"
+                :forma="r.formaGuia"
+                class="forma-acoplada forma-guia"
+                data-forma-guia
+              />
             </span>
             <span class="etiqueta-receptor">{{ r.etiqueta }}</span>
           </div>
@@ -920,6 +936,12 @@ defineExpose({ repetir });
           >
             <span :ref="(el) => fijarZona(r.indice, el)" class="zona">
               <FormaMolecula v-if="r.forma" :forma="r.forma" class="forma-acoplada" />
+              <FormaMolecula
+                v-else-if="r.formaGuia"
+                :forma="r.formaGuia"
+                class="forma-acoplada forma-guia"
+                data-forma-guia
+              />
               <span v-if="r.animacion" class="insignia" data-insignia>
                 <component :is="ICONO_EFECTO[r.animacion]" class="size-3.5" aria-hidden="true" />
               </span>
@@ -1241,6 +1263,11 @@ div.receptor {
 .forma-acoplada {
   width: 1.625rem;
   height: 1.625rem;
+}
+/* Hueco con la forma de su molécula: tenue y sin color, para que se lea como «aquí encaja esta figura». */
+.forma-guia {
+  opacity: 0.65;
+  filter: grayscale(0.6);
 }
 .insignia {
   position: absolute;
