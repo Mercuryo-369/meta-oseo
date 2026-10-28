@@ -69,8 +69,22 @@ const props = withDefaults(
     ordenEnfoque?: number;
     /** Desde `lg`, etiquetas a los lados con líneas guía en vez de números sobre el modelo. */
     etiquetasLaterales?: boolean;
+    /** Vista con la que se abre y a la que vuelve «Ver todo» (la portada del inicio usa `oblicua`). */
+    vistaInicial?: VistaCamara;
+    /** Sin el selector de vista ni los botones de zoom (el modelo sigue girando con el dedo). */
+    sinControles?: boolean;
+    /** Ancho de cada columna de etiquetas laterales, en fracción del lienzo. */
+    anchoEtiquetas?: number;
   }>(),
-  { visitados: () => [], seleccionId: null, ordenEnfoque: 0, etiquetasLaterales: false },
+  {
+    visitados: () => [],
+    seleccionId: null,
+    ordenEnfoque: 0,
+    etiquetasLaterales: false,
+    vistaInicial: 'frontal',
+    sinControles: false,
+    anchoEtiquetas: 0.22,
+  },
 );
 
 const emit = defineEmits<{
@@ -155,7 +169,7 @@ const hotspots = computed(() => {
 // -----------------------------------------------------------------------------------------
 
 /** Ancho de cada columna de etiquetas, en fracción del lienzo. */
-const COLUMNA_ETIQUETAS = 0.22;
+const COLUMNA_ETIQUETAS = computed(() => props.anchoEtiquetas);
 const pantallaAncha = useMediaQuery('(min-width: 64rem)');
 const conEtiquetas = computed(() => props.etiquetasLaterales && pantallaAncha.value);
 
@@ -198,7 +212,9 @@ const lineasEtiquetas = computed(() =>
       ? [
           {
             id: e.id,
-            x1: (e.lado === 'izq' ? COLUMNA_ETIQUETAS : 1 - COLUMNA_ETIQUETAS) * ancho.value,
+            x1:
+              (e.lado === 'izq' ? COLUMNA_ETIQUETAS.value : 1 - COLUMNA_ETIQUETAS.value) *
+              ancho.value,
             y1: e.yRel * alto.value,
             x2: e.posicion.x,
             y2: e.posicion.y,
@@ -248,7 +264,7 @@ function encuadreDeSeleccion(vista?: VistaCamara) {
     {
       centro: centroModelo.value,
       radio: RADIO_NORMALIZADO,
-      vista: vista ?? 'frontal',
+      vista: vista ?? props.vistaInicial,
       zoom: 1,
       aspecto: aspecto.value,
       fovVerticalGrados: FOV_VERTICAL_GRADOS,
@@ -271,14 +287,14 @@ function elegirVista(vista: string): void {
 }
 
 function verTodo(): void {
-  vistaActual.value = 'frontal';
+  vistaActual.value = props.vistaInicial;
   pedirEstado(
     estadoDeEncuadre(
       calcularEncuadre(
         {
           centro: centroModelo.value,
           radio: RADIO_NORMALIZADO,
-          vista: 'frontal',
+          vista: props.vistaInicial,
           zoom: 1,
           aspecto: aspecto.value,
         },
@@ -318,6 +334,10 @@ function reintentar(): void {
 onMounted(() => modelo.iniciar());
 
 const listo = computed(() => estado.value === 'listo');
+// Una vista inicial distinta de la frontal se pide en cuanto la cámara existe.
+watch(listo, (ya) => {
+  if (ya && props.vistaInicial !== 'frontal') setTimeout(() => verTodo(), 50);
+});
 const colorModelo = computed(() => (props.modelo === 'mandibula' ? COLOR_HUESO : COLOR_CELULAS));
 /**
  * Material del modelo de una sola malla (la mandíbula STL, sin UV): relieve triplanar de poros y grano, color
@@ -467,7 +487,15 @@ watch(
               <Check v-if="e.visitado" class="size-4" :stroke-width="3" />
               <template v-else>{{ e.numero }}</template>
             </span>
-            <span class="min-w-0 flex-1">{{ e.etiqueta }}</span>
+            <slot
+              :id="e.id"
+              name="etiqueta"
+              :numero="e.numero"
+              :visitado="e.visitado"
+              :seleccionado="e.seleccionado"
+            >
+              <span class="min-w-0 flex-1">{{ e.etiqueta }}</span>
+            </slot>
           </button>
         </div>
       </template>
@@ -547,7 +575,7 @@ watch(
     </p>
 
     <div
-      v-if="listo"
+      v-if="listo && !sinControles"
       class="mt-2 flex flex-wrap items-end gap-2"
       role="group"
       aria-label="Controles de la cámara"

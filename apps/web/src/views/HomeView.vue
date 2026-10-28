@@ -18,6 +18,7 @@ import { ArrowRight, Award, Box, CircleCheck, CircleDot, Eye, Lock, Trophy } fro
 import { useRefuerzoStore } from '@/ai/refuerzo';
 import TarjetaRefuerzo from '@/components/mentor/TarjetaRefuerzo.vue';
 import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
+import MandibulaModulos from '@/components/inicio/MandibulaModulos.vue';
 import IconoModulo from '@/components/modulo/IconoModulo.vue';
 import PasoRecorrido from '@/components/modulo/PasoRecorrido.vue';
 import PortadaModulo from '@/components/modulo/PortadaModulo.vue';
@@ -114,50 +115,36 @@ onMounted(() => {
         </ol>
       </nav>
 
-      <!-- Fila principal: ilustración del módulo que toca y panel de cristal -->
-      <div class="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-6">
-        <div :style="estiloAcento(siguiente?.numero ?? 1)" class="flex">
-          <PortadaModulo
-            :numero="siguiente?.numero ?? 1"
-            prioritaria
-            class="aspect-[16/10] w-full shadow-md md:aspect-auto md:min-h-80"
-          />
-        </div>
-
-        <div class="panel-cristal flex flex-col gap-4 rounded-3xl p-5 md:p-7">
-          <p class="text-lg leading-relaxed">
+      <!-- Fila principal: la mandíbula con los seis módulos y su avance -->
+      <div class="panel-cristal mt-4 rounded-3xl p-3 md:p-5">
+        <div class="mb-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 px-1">
+          <p class="max-w-3xl leading-relaxed">
             Seis módulos te llevan <strong class="text-primary">de la célula al hueso</strong>: cómo
             se forma, se mineraliza, se renueva y envejece, con la
-            <strong class="text-primary">mandíbula</strong> como ejemplo.
+            <strong class="text-primary">mandíbula</strong> como ejemplo. Toca un punto para ver tu
+            avance en ese módulo.
           </p>
-          <p class="text-muted-foreground leading-relaxed">
-            Para avanzar tendrás que actuar: explorar capas y escenas en 3D, relacionar conceptos y
-            responder preguntas. Si algo no queda claro, pregúntale al mentor con el botón de chat.
+          <p class="text-muted-foreground text-sm" data-testid="resumen-avance">
+            <span class="text-foreground font-semibold">
+              {{ completados }} de {{ MODULOS.length }}
+            </span>
+            módulos completados
+            <template v-if="siguiente">
+              · Sigue:
+              <span class="text-foreground font-medium">Módulo {{ siguiente.numero }}</span>
+            </template>
           </p>
-          <div class="mt-auto flex items-end justify-between gap-4">
-            <p class="text-muted-foreground text-sm" data-testid="resumen-avance">
-              <span class="text-foreground font-semibold">
-                {{ completados }} de {{ MODULOS.length }}
-              </span>
-              módulos completados
-              <template v-if="siguiente">
-                <br />
-                Sigue:
-                <span class="text-foreground font-medium">Módulo {{ siguiente.numero }}</span>
-              </template>
-            </p>
-            <RouterLink
-              v-if="continuar"
-              :to="continuar.to"
-              class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              :aria-label="continuar.texto"
-              :title="continuar.texto"
-              data-testid="continuar-inicio"
-            >
-              <ArrowRight class="size-6" aria-hidden="true" />
-            </RouterLink>
-          </div>
         </div>
+        <MandibulaModulos />
+        <RouterLink
+          v-if="continuar"
+          :to="continuar.to"
+          class="sr-only focus:not-sr-only"
+          :aria-label="continuar.texto"
+          data-testid="continuar-inicio"
+        >
+          {{ continuar.texto }}
+        </RouterLink>
       </div>
     </section>
 
