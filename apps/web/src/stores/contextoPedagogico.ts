@@ -23,7 +23,9 @@ export type ContextoPedagogico = {
       | 'relacion-columnas'
       | 'quiz'
       | 'video-texto'
-      | 'exploracion-3d';
+      | 'exploracion-3d'
+      | 'clasificacion'
+      | 'curva-esfuerzo';
     intentos: number;
     completada: boolean;
   };

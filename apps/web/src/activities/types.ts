@@ -188,6 +188,8 @@ import { intentosParaApi } from '@/content/scoring';
 import type {
   Actividad,
   ActividadArrastreMolecular,
+  ActividadClasificacion,
+  ActividadCurvaEsfuerzo,
   ActividadExploracion3d,
   ActividadMulticapa,
   ActividadQuiz,
@@ -294,6 +296,12 @@ export interface PropsActividadVideoTexto extends PropsActividadBase {
 export interface PropsActividadExploracion3d extends PropsActividadBase {
   actividad: ActividadExploracion3d;
 }
+export interface PropsActividadClasificacion extends PropsActividadBase {
+  actividad: ActividadClasificacion;
+}
+export interface PropsActividadCurvaEsfuerzo extends PropsActividadBase {
+  actividad: ActividadCurvaEsfuerzo;
+}
 
 export interface PropsPorTipo {
   multicapa: PropsActividadMulticapa;
@@ -302,6 +310,8 @@ export interface PropsPorTipo {
   quiz: PropsActividadQuiz;
   'video-texto': PropsActividadVideoTexto;
   'exploracion-3d': PropsActividadExploracion3d;
+  clasificacion: PropsActividadClasificacion;
+  'curva-esfuerzo': PropsActividadCurvaEsfuerzo;
 }
 
 export type PropsActividad<T extends TipoActividad> = PropsPorTipo[T];
@@ -350,6 +360,8 @@ export function esProgresoTardio(
  *  - `avanza_paso` (video-texto animación; objeto = id del paso)
  *  - `reproduce_video` (video-texto video)
  *  - `reinicia_actividad` (el estudiante empieza otro intento)
+ *  - `clasifica_elemento` (clasificacion; objeto = id del elemento, con resultado)
+ *  - `ubica_marcador` (curva-esfuerzo; objeto = id de la zona donde quedó el marcador)
  */
 export const ACCIONES_INTERACCION = [
   'selecciona_capa',
@@ -363,6 +375,8 @@ export const ACCIONES_INTERACCION = [
   'avanza_paso',
   'reproduce_video',
   'reinicia_actividad',
+  'clasifica_elemento',
+  'ubica_marcador',
 ] as const;
 export type AccionInteraccion = (typeof ACCIONES_INTERACCION)[number];
 
@@ -473,6 +487,20 @@ export type DetalleExploracion3d = {
   errores_por_nodo?: Record<string, number>;
 };
 
+export type DetalleClasificacion = {
+  aciertos: number;
+  errores: number;
+  /** Errores por id del elemento que se intentaba clasificar. */
+  errores_por_elemento: Record<string, number>;
+};
+export type DetalleCurvaEsfuerzo = {
+  /** Escenarios respondidos bien a la primera (zona y respuesta). */
+  aciertos: number;
+  errores: number;
+  /** Errores por id de escenario. */
+  errores_por_escenario: Record<string, number>;
+};
+
 export interface DetallePorTipo {
   multicapa: DetalleMulticapa;
   'arrastre-molecular': DetalleArrastreMolecular;
@@ -480,6 +508,8 @@ export interface DetallePorTipo {
   quiz: DetalleQuiz;
   'video-texto': DetalleVideoTexto;
   'exploracion-3d': DetalleExploracion3d;
+  clasificacion: DetalleClasificacion;
+  'curva-esfuerzo': DetalleCurvaEsfuerzo;
 }
 
 /** Lo que emite `completada`. El puntaje se calcula con `calcularPuntaje` (scoring.ts). */
@@ -523,6 +553,16 @@ export interface EmitsActividadExploracion3d {
   (e: 'progreso', progreso: ProgresoActividad): void;
   (e: 'interaccion', interaccion: InteraccionActividad): void;
   (e: 'completada', resultado: ResultadoActividad<'exploracion-3d'>): void;
+}
+export interface EmitsActividadClasificacion {
+  (e: 'progreso', progreso: ProgresoActividad): void;
+  (e: 'interaccion', interaccion: InteraccionActividad): void;
+  (e: 'completada', resultado: ResultadoActividad<'clasificacion'>): void;
+}
+export interface EmitsActividadCurvaEsfuerzo {
+  (e: 'progreso', progreso: ProgresoActividad): void;
+  (e: 'interaccion', interaccion: InteraccionActividad): void;
+  (e: 'completada', resultado: ResultadoActividad<'curva-esfuerzo'>): void;
 }
 
 /* -------------------------------------------------------------------------------------------

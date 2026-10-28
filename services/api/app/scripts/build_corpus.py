@@ -159,6 +159,20 @@ def _texto_bloque(bloque: dict) -> str | None:
         ]
         pie = limpiar_markdown(str(bloque.get("pie", "")))
         return pie + "\n" + "\n".join(partes)
+    if tipo == "escenarios":
+        # Escenarios de la 3.2: no puntúan, su texto es contenido de lectura.
+        partes = [
+            f"{limpiar_markdown(str(e.get('etiqueta', '')))}: "
+            f"{limpiar_markdown(str(e.get('markdown', '')))}"
+            for e in bloque.get("escenarios", [])
+        ]
+        return limpiar_markdown(str(bloque.get("titulo", ""))) + "\n" + "\n".join(partes)
+    if tipo == "pregunta":
+        # Pregunta abierta: no se califica, así que la respuesta del docente es material de estudio.
+        return (
+            f"{limpiar_markdown(str(bloque.get('enunciado', '')))}\n"
+            f"Respuesta del docente: {limpiar_markdown(str(bloque.get('respuesta', '')))}"
+        )
     return None  # imágenes y demás: sin texto que indexar
 
 
@@ -193,6 +207,8 @@ def _subtitulo_de_bloque(bloque: dict) -> str:
         return limpiar_markdown(str(bloque.get("titulo", "")))
     if bloque.get("tipo") == "imagen":
         return limpiar_markdown(str(bloque.get("pie", "")))
+    if bloque.get("tipo") in ("escenarios", "pregunta"):
+        return limpiar_markdown(str(bloque.get("titulo", "")))
     return ""
 
 

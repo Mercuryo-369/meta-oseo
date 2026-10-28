@@ -69,10 +69,20 @@ export const TIPOS_ACTIVIDAD = [
   'quiz',
   'video-texto',
   'exploracion-3d',
+  'clasificacion',
+  'curva-esfuerzo',
 ] as const;
 export type TipoActividad = (typeof TIPOS_ACTIVIDAD)[number];
 
-export const TIPOS_BLOQUE = ['texto', 'imagen', 'callout', 'tabla', 'actividad'] as const;
+export const TIPOS_BLOQUE = [
+  'texto',
+  'imagen',
+  'callout',
+  'tabla',
+  'actividad',
+  'escenarios',
+  'pregunta',
+] as const;
 export type TipoBloque = (typeof TIPOS_BLOQUE)[number];
 
 export const VARIANTES_CALLOUT = ['clinico', 'dato', 'atencion', 'recuerda'] as const;
@@ -1103,6 +1113,131 @@ export const ActividadExploracion3dSchema = z
  * Unión de actividades
  * ----------------------------------------------------------------------------------------- */
 
+/* -------------------------------------------------------------------------------------------
+ * Actividad: clasificación (arrastrar cada elemento a su categoría o a su celda de una tabla)
+ * ----------------------------------------------------------------------------------------- */
+
+/**
+ * Categoría (caja) a la que se arrastran elementos. En disposición `tabla`, cada categoría es una celda: `fila` y
+ * `columna` la ubican (la tabla se arma con los valores distintos, en el orden en que aparecen).
+ */
+export const CategoriaClasificacionSchema = z.strictObject({
+  id: IdSchema,
+  etiqueta: textoPlano(2, 80),
+  descripcion: markdownLinea(2, 300).optional(),
+  /** Dibujo de la categoría (compartimentos «idealmente con dibujos»). */
+  imagen: rutaImagen.optional(),
+  fila: textoPlano(1, 80).optional(),
+  columna: textoPlano(1, 80).optional(),
+});
+
+export const ElementoClasificacionSchema = z.strictObject({
+  id: IdSchema,
+  texto: markdownLinea(2, 300),
+  /** Id de la categoría correcta. */
+  categoria: IdSchema,
+  /** Explicación al acertar o al fallar (si falta, se usa la retroalimentación general). */
+  explicacion: markdownLinea(5, 400).optional(),
+});
+
+export const ConfigClasificacionSchema = z
+  .strictObject({
+    disposicion: z.enum(['cajas', 'tabla']).default('cajas'),
+    categorias: z.array(CategoriaClasificacionSchema).min(2).max(16),
+    elementos: z.array(ElementoClasificacionSchema).min(2).max(30),
+    /** Encabezado de la primera columna de la tabla (el de las filas). */
+    titulo_filas: textoPlano(1, 60).optional(),
+    barajar: z.boolean().default(true),
+  })
+  .superRefine((config, ctx) => {
+    const ids = new Set(config.categorias.map((c) => c.id));
+    config.elementos.forEach((e, i) => {
+      if (!ids.has(e.categoria)) {
+        agregar(ctx, ['elementos', i, 'categoria'], `La categoría "${e.categoria}" no existe.`);
+      }
+    });
+    if (config.disposicion === 'tabla') {
+      config.categorias.forEach((c, i) => {
+        if (!c.fila || !c.columna) {
+          agregar(ctx, ['categorias', i], 'En una tabla, cada categoría lleva "fila" y "columna".');
+        }
+      });
+    }
+  });
+
+export const ActividadClasificacionSchema = z
+  .strictObject({
+    ...camposComunes,
+    tipo: z.literal('clasificacion'),
+    config: ConfigClasificacionSchema,
+  })
+  .superRefine((actividad, ctx) => {
+    exigirRetroIncorrecta(actividad, ctx);
+    exigirAprobacionCoherente(actividad, ctx, true);
+  });
+
+/* -------------------------------------------------------------------------------------------
+ * Actividad: curva esfuerzo-deformación (mover un marcador por la curva y responder escenarios)
+ * ----------------------------------------------------------------------------------------- */
+
+/** Tramo de la curva, en porcentaje del eje de deformación (0 a 100). */
+export const ZonaCurvaSchema = z.strictObject({
+  id: IdSchema,
+  etiqueta: textoPlano(2, 60),
+  desde: z.number().min(0).max(100),
+  hasta: z.number().min(0).max(100),
+});
+
+export const OpcionEscenarioCurvaSchema = z.strictObject({
+  id: IdSchema,
+  texto: markdownLinea(2, 300),
+});
+
+export const EscenarioCurvaSchema = z.strictObject({
+  id: IdSchema,
+  titulo: textoPlano(3, 100),
+  situacion: markdownLinea(10, 500),
+  pregunta: markdownLinea(5, 300),
+  /** Tramo de la curva donde hay que dejar el marcador. */
+  zona: IdSchema,
+  opciones: z.array(OpcionEscenarioCurvaSchema).min(2).max(6),
+  correcta: IdSchema,
+  retroalimentacion: markdownLinea(10, 700),
+  /** Aclaración del docente para este escenario (se muestra tras responder). */
+  nota: markdownLinea(10, 500).optional(),
+});
+
+export const ConfigCurvaEsfuerzoSchema = z
+  .strictObject({
+    zonas: z.array(ZonaCurvaSchema).min(2).max(8),
+    escenarios: z.array(EscenarioCurvaSchema).min(1).max(8),
+    barajar_opciones: z.boolean().default(true),
+  })
+  .superRefine((config, ctx) => {
+    const zonas = new Set(config.zonas.map((z) => z.id));
+    config.zonas.forEach((z, i) => {
+      if (z.hasta <= z.desde) agregar(ctx, ['zonas', i], '"hasta" debe ser mayor que "desde".');
+    });
+    config.escenarios.forEach((e, i) => {
+      if (!zonas.has(e.zona))
+        agregar(ctx, ['escenarios', i, 'zona'], `La zona "${e.zona}" no existe.`);
+      if (!e.opciones.some((o) => o.id === e.correcta)) {
+        agregar(ctx, ['escenarios', i, 'correcta'], `La opción "${e.correcta}" no existe.`);
+      }
+    });
+  });
+
+export const ActividadCurvaEsfuerzoSchema = z
+  .strictObject({
+    ...camposComunes,
+    tipo: z.literal('curva-esfuerzo'),
+    config: ConfigCurvaEsfuerzoSchema,
+  })
+  .superRefine((actividad, ctx) => {
+    exigirRetroIncorrecta(actividad, ctx);
+    exigirAprobacionCoherente(actividad, ctx, true);
+  });
+
 export const ActividadSchema = z.discriminatedUnion('tipo', [
   ActividadMulticapaSchema,
   ActividadArrastreMolecularSchema,
@@ -1110,6 +1245,8 @@ export const ActividadSchema = z.discriminatedUnion('tipo', [
   ActividadQuizSchema,
   ActividadVideoTextoSchema,
   ActividadExploracion3dSchema,
+  ActividadClasificacionSchema,
+  ActividadCurvaEsfuerzoSchema,
 ]);
 
 /* -------------------------------------------------------------------------------------------
@@ -1257,12 +1394,53 @@ export const BloqueActividadSchema = z.strictObject({
   actividad: ActividadSchema,
 });
 
+/**
+ * Bloque `escenarios`: el estudiante elige uno de varios escenarios y ve su contenido (texto e imagen). No puntúa:
+ * es la «Actividad: Interactiva» de la 3.2 (analizar cómo cada condición del microambiente activa o inhibe rutas).
+ */
+export const EscenarioBloqueSchema = z.strictObject({
+  id: IdSchema,
+  etiqueta: textoPlano(2, 100),
+  /** Frase corta bajo la etiqueta del botón (por ejemplo, el ejemplo clínico). */
+  detalle: textoPlano(2, 160).optional(),
+  markdown: markdownBloque(20, 6000, true),
+  imagen: rutaImagen.optional(),
+  alt: textoPlano(10, 250).optional(),
+  ancho: z.number().int().min(1).max(4000).optional(),
+  alto: z.number().int().min(1).max(4000).optional(),
+});
+
+export const BloqueEscenariosSchema = z.strictObject({
+  id: IdSchema,
+  tipo: z.literal('escenarios'),
+  titulo: textoPlano(3, 100),
+  /** Objetivo o consigna de la actividad, tal cual el guion. */
+  instrucciones: markdownLinea(10, 600),
+  escenarios: z.array(EscenarioBloqueSchema).min(2).max(8),
+  nivel: nivelBloque,
+});
+
+/**
+ * Bloque `pregunta`: pregunta de aplicación abierta. El estudiante escribe su respuesta (se guarda solo en su
+ * navegador) y luego la compara con la respuesta del docente. No puntúa: una respuesta libre no se corrige sola.
+ */
+export const BloquePreguntaSchema = z.strictObject({
+  id: IdSchema,
+  tipo: z.literal('pregunta'),
+  titulo: textoPlano(3, 100),
+  enunciado: markdownBloque(10, 1200, false),
+  respuesta: markdownBloque(10, 2000, false),
+  nivel: nivelBloque,
+});
+
 export const BloqueSchema = z.discriminatedUnion('tipo', [
   BloqueTextoSchema,
   BloqueImagenSchema,
   BloqueCalloutSchema,
   BloqueTablaSchema,
   BloqueActividadSchema,
+  BloqueEscenariosSchema,
+  BloquePreguntaSchema,
 ]);
 
 export const SeccionSchema = z
@@ -1548,6 +1726,8 @@ export type BloqueImagen = z.infer<typeof BloqueImagenSchema>;
 export type BloqueCallout = z.infer<typeof BloqueCalloutSchema>;
 export type BloqueTabla = z.infer<typeof BloqueTablaSchema>;
 export type BloqueActividad = z.infer<typeof BloqueActividadSchema>;
+export type BloqueEscenarios = z.infer<typeof BloqueEscenariosSchema>;
+export type BloquePregunta = z.infer<typeof BloquePreguntaSchema>;
 export type Actividad = z.infer<typeof ActividadSchema>;
 export type ActividadDe<T extends TipoActividad> = Extract<Actividad, { tipo: T }>;
 export type ActividadMulticapa = z.infer<typeof ActividadMulticapaSchema>;
@@ -1555,6 +1735,12 @@ export type ActividadArrastreMolecular = z.infer<typeof ActividadArrastreMolecul
 export type ActividadRelacionColumnas = z.infer<typeof ActividadRelacionColumnasSchema>;
 export type ActividadQuiz = z.infer<typeof ActividadQuizSchema>;
 export type ActividadVideoTexto = z.infer<typeof ActividadVideoTextoSchema>;
+export type ActividadClasificacion = z.infer<typeof ActividadClasificacionSchema>;
+export type ActividadCurvaEsfuerzo = z.infer<typeof ActividadCurvaEsfuerzoSchema>;
+export type CategoriaClasificacion = z.infer<typeof CategoriaClasificacionSchema>;
+export type ElementoClasificacion = z.infer<typeof ElementoClasificacionSchema>;
+export type EscenarioCurva = z.infer<typeof EscenarioCurvaSchema>;
+export type ZonaCurva = z.infer<typeof ZonaCurvaSchema>;
 export type ActividadExploracion3d = z.infer<typeof ActividadExploracion3dSchema>;
 export type ConfigMulticapa = z.infer<typeof ConfigMulticapaSchema>;
 export type ConfigArrastreMolecular = z.infer<typeof ConfigArrastreMolecularSchema>;

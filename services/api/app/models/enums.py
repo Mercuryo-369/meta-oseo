@@ -57,3 +57,5 @@ class TipoActividad(StrEnum):
     quiz = "quiz"
     video_texto = "video-texto"
     exploracion_3d = "exploracion-3d"
+    clasificacion = "clasificacion"
+    curva_esfuerzo = "curva-esfuerzo"

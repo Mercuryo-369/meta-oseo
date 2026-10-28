@@ -34,6 +34,8 @@ import AvisosLogro from '@/components/modulo/AvisosLogro.vue';
 import BloqueActividad from '@/components/modulo/BloqueActividad.vue';
 import BloqueCallout from '@/components/modulo/BloqueCallout.vue';
 import BloqueImagen from '@/components/modulo/BloqueImagen.vue';
+import BloqueEscenarios from '@/components/modulo/BloqueEscenarios.vue';
+import BloquePregunta from '@/components/modulo/BloquePregunta.vue';
 import BloqueTabla from '@/components/modulo/BloqueTabla.vue';
 import BloqueTexto from '@/components/modulo/BloqueTexto.vue';
 import CabeceraModulo from '@/components/modulo/CabeceraModulo.vue';
@@ -893,6 +895,14 @@ onBeforeUnmount(() => {
                           />
                           <BloqueTabla
                             v-else-if="fila.bloque.tipo === 'tabla'"
+                            :bloque="fila.bloque"
+                          />
+                          <BloqueEscenarios
+                            v-else-if="fila.bloque.tipo === 'escenarios'"
+                            :bloque="fila.bloque"
+                          />
+                          <BloquePregunta
+                            v-else-if="fila.bloque.tipo === 'pregunta'"
                             :bloque="fila.bloque"
                           />
                           <BloqueActividad

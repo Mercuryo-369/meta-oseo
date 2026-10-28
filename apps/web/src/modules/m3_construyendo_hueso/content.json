@@ -451,80 +451,51 @@
           "fondo": "/images/m3/m3_fondo.webp"
         },
         {
-          "id": "t_rutas_de_senalizacion",
-          "tipo": "texto",
-          "titulo": "Rutas de señalización",
-          "markdown": "- **Carga mecánica dinámica In situ** (Masticación)\n- **Señales moleculares posteriores a la resorción ósea**\n- **Señalización angiogénica y vascular** (Señales procedentes de células endoteliales que favorecen el acoplamiento entre angiogénesis y formación ósea)\n- **Ausencia de estímulo mecánico** (Reducción de la carga oclusal, inmovilización prolongada)"
-        },
-        {
-          "id": "t_1_carga_mecanica_dinamica_in_situ",
-          "tipo": "texto",
-          "titulo": "1. Carga mecánica dinámica In situ",
-          "markdown": "**Contexto mecanobiológico:** La mecanotransducción no activa una única vía de señalización, sino que desencadena respuestas paralelas y complementarias dentro del osteocito; ante la deformación mecánica y el flujo de líquido en el sistema lacunocanalicular, se activan simultáneamente señales como Wnt/β-catenina, PGE₂ y las vías asociadas a integrinas/FAK, que convergen sobre el programa osteogénico y permiten ajustar la actividad de las células formadoras de hueso.\n\n**Ruta 1.1:** Eje Canónico Wnt β-catenina\n\n- **Receptor / Co-receptor:** Complejo Frizzled (FZD) y LRP5/6.\n- **Mecanismo Citoplásmico:** Reclutamiento de Dishevelled (Dvl) e inactivación del complejo de destrucción de β-catenina (GSK-3β, Axin, APC).\n- **Acumulación:** Estabilización de β-catenina no fosforilada en el citosol y translocación a través del poro nuclear.\n- **Efecto Transcripcional:** El complejo β-catenina–TCF/LEF puede favorecer la expresión de RUNX2 y de otros genes relacionados con el programa osteogénico.\n\n**Ruta 1.2:** Eje Paracrino PGE₂ / EP4 / PKA (Amplificador Transcripcional)\n\n- **Receptor:** Receptor acoplado a proteína G (GPCR) subfamilia EP4.\n- **Mecanismo Citoplásmico:** La activación de EP4 estimula la subunidad Gαs, que activa la adenilato ciclasa y aumenta la concentración intracelular de AMPc, lo que conduce a la activación de la proteína quinasa A (PKA).\n- **Efecto Transcripcional:** PKA fosforila al factor de transcripción CREB, que suele encontrarse en el núcleo. Su fosforilación modula su actividad y favorece la interacción con elementos de respuesta al AMPc (CRE) en regiones reguladoras de genes osteogénicos, incluido RUNX2, favoreciendo la actividad transcripcional asociada con el programa osteogénico."
-        },
-        {
-          "id": "t_activacion_osteogenica",
-          "tipo": "texto",
-          "markdown": "**Ruta 1.3:** Eje de Mecanotransducción Directa Integrinas / FAK / p38 MAPK (Activador Proteico)\n\n- **Mecanosensor:** Unión de integrinas, como αvβ3 y heterodímeros que contienen la subunidad β1, a ligandos de la matriz extracelular, transmitiendo las fuerzas mecánicas hacia el interior celular.\n- **Mecanismo citoplasmático:** Activación de la quinasa de adhesión focal (FAK) y señalización a través de cascadas de quinasas que incluyen MKK3/6–p38 MAPK y MEK1/2–ERK1/2. Estas rutas se representan de forma simplificada, ya que omiten intermediarios y no implican necesariamente activaciones directas entre todos sus componentes.\n- **Efecto transcripcional:** La activación de p38 MAPK y ERK1/2 puede modular la actividad de RUNX2 mediante fosforilación y otros mecanismos reguladores, favoreciendo la expresión de genes asociados con la diferenciación osteoblástica y la formación de matriz ósea."
-        },
-        {
-          "id": "img_m3_2_i05",
-          "tipo": "imagen",
-          "src": "/images/m3/m3_2_imagen_05.webp",
-          "alt": "Carga mecánica dinámica: vías Wnt/β-catenina, PGE₂/EP4/PKA e integrinas/FAK/p38 MAPK que convergen en RUNX2 y la expresión de genes osteogénicos.",
-          "pie": "Escenario 1. Carga mecánica dinámica in situ",
-          "ancho": 1538,
-          "alto": 1023
-        },
-        {
-          "id": "t_2_senales_moleculares_posteriores_a_la",
-          "tipo": "texto",
-          "titulo": "2. Señales moleculares posteriores a la resorción ósea",
-          "markdown": "**Contexto mecanobiológico:** Durante la resorción osteoclástica, la degradación de la matriz ósea puede liberar factores de crecimiento que contribuyen al reclutamiento de progenitores osteogénicos y a la formación posterior de hueso nuevo. Entre ellos, el TGF-β participa en la quimiotaxis y el reclutamiento de células progenitoras, mientras que las proteínas morfogenéticas óseas (BMP), como BMP-2 y BMP-4, favorecen la diferenciación osteoblástica. Estas señales representan algunos de los mecanismos que contribuyen al acoplamiento entre resorción y formación, pero no explican por sí solas todo el proceso, cuya regulación depende de la interacción entre múltiples factores celulares y moleculares.\n\n**Ruta 2.1:** Eje Canónico BMP / Smad (Diferenciación y Co-activación)\n\n- **Receptores:** Unión de BMP-2/4 a receptores de tipo II (BMPRII) y de tipo I, como ALK3/BMPR1A o ALK6/BMPR1B.\n- **Mecanismo citoplasmático:** La unión del ligando activa el complejo receptor, cuyo receptor de tipo I fosforila las proteínas reguladoras SMAD1/5/8 en su motivo C-terminal SSXS. Estas se asocian con SMAD4, formando un complejo que se transloca al núcleo.\n- **Efecto transcripcional:** La señalización BMP/SMAD favorece la expresión de genes relacionados con la diferenciación osteoblástica, incluidos RUNX2 y SP7 (Osterix). En el núcleo, el complejo SMAD1/5/8–SMAD4 puede cooperar con RUNX2 en la regulación transcripcional de genes osteogénicos, contribuyendo al establecimiento del programa de formación de matriz ósea.\n\n**Ruta 2.2:** Eje No Canónico BMP / TAK1 / p38 MAPK"
-        },
-        {
-          "id": "t_activacion_osteogenica_2",
-          "tipo": "texto",
-          "markdown": "- **Mecanismo Citoplásmico:** Reclutamiento del complejo TRAF6-TAB1-TAK1 en la membrana plasmática → activación de p38 MAPK.\n- **Efecto Transcripcional:** Refuerza la fosforilación directa de RUNX2 en ausencia de estimulación mecánica directa."
-        },
-        {
-          "id": "img_m3_2_i06",
-          "tipo": "imagen",
-          "src": "/images/m3/m3_2_imagen_06.webp",
-          "alt": "Señales posteriores a la resorción: eje canónico BMP/SMAD y eje no canónico BMP/TAK1/p38 MAPK sobre RUNX2 y osterix.",
-          "pie": "Escenario 2. Señales moleculares posteriores a la resorción ósea",
-          "ancho": 1538,
-          "alto": 1022
-        },
-        {
-          "id": "t_3_senalizacion_angiogenica_y_vascular",
-          "tipo": "texto",
-          "titulo": "3. Señalización angiogénica y vascular",
-          "markdown": "**Contexto mecanobiológico:** El acoplamiento angiogénesis–osteogénesis favorece la comunicación entre vasos tipo H y células del linaje osteoblástico. Estos vasos, estudiados principalmente en modelos murinos, se asocian con regiones de elevada actividad osteogénica y producen factores angiocrinos que modulan las células osteoprogenitoras. Entre estas señales, los factores de crecimiento de fibroblastos (FGF) pueden activar la vía FGF–FGFR–Ras–Raf–MEK–ERK1/2, contribuyendo a regular la proliferación y diferenciación osteoblástica. Sus efectos dependen de la etapa celular y de las características de la señal, por lo que esta vía representa un ejemplo de comunicación vascular y no un mecanismo universal de osteogénesis.\n\n- **Receptor:** Receptor de Tirosina Quinasa FGFR1/2.\n- **Mecanismo Citoplásmico:** Activación del eje Ras → Raf → MEK → ERK1/2.\n- **Efecto Transcripcional / Celular:** Modula la proliferación y diferenciación de los preosteoblastos según su estado celular y las características del estímulo.\n- **Resultado Biológico:** Contribuye a regular la dinámica de las poblaciones osteoblásticas y la formación de matriz ósea, sin implicar necesariamente una detención de la maduración terminal."
-        },
-        {
-          "id": "img_m3_2_i07",
-          "tipo": "imagen",
-          "src": "/images/m3/m3_2_imagen_07.webp",
-          "alt": "Señalización angiogénica y vascular: FGF-2 de vasos tipo H sobre FGFR1/2 con el eje Ras–Raf–MEK–ERK1/2 y su efecto en la proliferación de progenitores.",
-          "pie": "Escenario 3. Señalización angiogénica y vascular",
-          "ancho": 1535,
-          "alto": 1024
-        },
-        {
-          "id": "t_4_ausencia_de_estimulo_mecanico",
-          "tipo": "texto",
-          "titulo": "4. Ausencia de estímulo mecánico",
-          "markdown": "**Contexto mecanobiológico:** La reducción de la carga mecánica aumenta la expresión de SOST y DKK1, cuyos productos inhiben la vía Wnt/β-catenina y favorecen la degradación de β-catenina. Esto reduce la señalización osteogénica, la diferenciación osteoblástica y la formación de matriz ósea. La pérdida neta de masa ósea se produce cuando la formación disminuida no compensa la resorción, favoreciendo la osteopenia por desuso.\n\n- **Interacción en Membrana:** La Esclerostina se une con alta afinidad al dominio extracelular de LRP5/6, compitiendo e interfiriendo con la activación de su complejo receptor.\n- **Fallo en Citoplasma:** El complejo de destrucción (GSK-3β/Axin/APC) se mantiene constitutivamente activo → la β-catenina es fosforilada y derivada al proteasoma para su degradación.\n- **Fenotipo Resultante:** Disminución de la señalización osteogénica y de la expresión de RUNX2 → reducción de la diferenciación osteoblástica y de la formación de matriz ósea → desequilibrio entre formación y resorción, con pérdida neta de masa ósea (osteopenia por desuso)."
-        },
-        {
-          "id": "img_m3_2_i08",
-          "tipo": "imagen",
-          "src": "/images/m3/m3_2_imagen_08.webp",
-          "alt": "Ausencia de estímulo mecánico: aumento de esclerostina y DKK1, bloqueo del receptor Wnt, degradación de β-catenina y menor activación de RUNX2.",
-          "pie": "Escenario 4. Ausencia de estímulo mecánico",
-          "ancho": 1536,
-          "alto": 1024
+          "id": "esc_rutas_senalizacion",
+          "tipo": "escenarios",
+          "titulo": "Actividad: Interactiva",
+          "instrucciones": "Analizar cómo diferentes condiciones del microambiente óseo activan o inhiben rutas de señalización que convergen sobre el programa osteogénico y modulan la expresión de genes asociados con la formación de matriz, incluyendo COL1A1 y COL1A2. Selecciona uno de los cuatro escenarios del microambiente óseo.",
+          "escenarios": [
+            {
+              "id": "esc_i05",
+              "etiqueta": "Carga mecánica dinámica In situ",
+              "detalle": "Masticación",
+              "markdown": "**Contexto mecanobiológico:** La mecanotransducción no activa una única vía de señalización, sino que desencadena respuestas paralelas y complementarias dentro del osteocito; ante la deformación mecánica y el flujo de líquido en el sistema lacunocanalicular, se activan simultáneamente señales como Wnt/β-catenina, PGE₂ y las vías asociadas a integrinas/FAK, que convergen sobre el programa osteogénico y permiten ajustar la actividad de las células formadoras de hueso.\n\n**Ruta 1.1:** Eje Canónico Wnt β-catenina\n\n- **Receptor / Co-receptor:** Complejo Frizzled (FZD) y LRP5/6.\n- **Mecanismo Citoplásmico:** Reclutamiento de Dishevelled (Dvl) e inactivación del complejo de destrucción de β-catenina (GSK-3β, Axin, APC).\n- **Acumulación:** Estabilización de β-catenina no fosforilada en el citosol y translocación a través del poro nuclear.\n- **Efecto Transcripcional:** El complejo β-catenina–TCF/LEF puede favorecer la expresión de RUNX2 y de otros genes relacionados con el programa osteogénico.\n\n**Ruta 1.2:** Eje Paracrino PGE₂ / EP4 / PKA (Amplificador Transcripcional)\n\n- **Receptor:** Receptor acoplado a proteína G (GPCR) subfamilia EP4.\n- **Mecanismo Citoplásmico:** La activación de EP4 estimula la subunidad Gαs, que activa la adenilato ciclasa y aumenta la concentración intracelular de AMPc, lo que conduce a la activación de la proteína quinasa A (PKA).\n- **Efecto Transcripcional:** PKA fosforila al factor de transcripción CREB, que suele encontrarse en el núcleo. Su fosforilación modula su actividad y favorece la interacción con elementos de respuesta al AMPc (CRE) en regiones reguladoras de genes osteogénicos, incluido RUNX2, favoreciendo la actividad transcripcional asociada con el programa osteogénico.\n\n**Ruta 1.3:** Eje de Mecanotransducción Directa Integrinas / FAK / p38 MAPK (Activador Proteico)\n\n- **Mecanosensor:** Unión de integrinas, como αvβ3 y heterodímeros que contienen la subunidad β1, a ligandos de la matriz extracelular, transmitiendo las fuerzas mecánicas hacia el interior celular.\n- **Mecanismo citoplasmático:** Activación de la quinasa de adhesión focal (FAK) y señalización a través de cascadas de quinasas que incluyen MKK3/6–p38 MAPK y MEK1/2–ERK1/2. Estas rutas se representan de forma simplificada, ya que omiten intermediarios y no implican necesariamente activaciones directas entre todos sus componentes.\n- **Efecto transcripcional:** La activación de p38 MAPK y ERK1/2 puede modular la actividad de RUNX2 mediante fosforilación y otros mecanismos reguladores, favoreciendo la expresión de genes asociados con la diferenciación osteoblástica y la formación de matriz ósea.",
+              "imagen": "/images/m3/m3_2_imagen_05.webp",
+              "alt": "Carga mecánica dinámica: vías Wnt/β-catenina, PGE₂/EP4/PKA e integrinas/FAK/p38 MAPK que convergen en RUNX2 y la expresión de genes osteogénicos.",
+              "ancho": 1538,
+              "alto": 1023
+            },
+            {
+              "id": "esc_i06",
+              "etiqueta": "Señales moleculares posteriores a la resorción ósea",
+              "markdown": "**Contexto mecanobiológico:** Durante la resorción osteoclástica, la degradación de la matriz ósea puede liberar factores de crecimiento que contribuyen al reclutamiento de progenitores osteogénicos y a la formación posterior de hueso nuevo. Entre ellos, el TGF-β participa en la quimiotaxis y el reclutamiento de células progenitoras, mientras que las proteínas morfogenéticas óseas (BMP), como BMP-2 y BMP-4, favorecen la diferenciación osteoblástica. Estas señales representan algunos de los mecanismos que contribuyen al acoplamiento entre resorción y formación, pero no explican por sí solas todo el proceso, cuya regulación depende de la interacción entre múltiples factores celulares y moleculares.\n\n**Ruta 2.1:** Eje Canónico BMP / Smad (Diferenciación y Co-activación)\n\n- **Receptores:** Unión de BMP-2/4 a receptores de tipo II (BMPRII) y de tipo I, como ALK3/BMPR1A o ALK6/BMPR1B.\n- **Mecanismo citoplasmático:** La unión del ligando activa el complejo receptor, cuyo receptor de tipo I fosforila las proteínas reguladoras SMAD1/5/8 en su motivo C-terminal SSXS. Estas se asocian con SMAD4, formando un complejo que se transloca al núcleo.\n- **Efecto transcripcional:** La señalización BMP/SMAD favorece la expresión de genes relacionados con la diferenciación osteoblástica, incluidos RUNX2 y SP7 (Osterix). En el núcleo, el complejo SMAD1/5/8–SMAD4 puede cooperar con RUNX2 en la regulación transcripcional de genes osteogénicos, contribuyendo al establecimiento del programa de formación de matriz ósea.\n\n**Ruta 2.2:** Eje No Canónico BMP / TAK1 / p38 MAPK\n\n- **Mecanismo Citoplásmico:** Reclutamiento del complejo TRAF6-TAB1-TAK1 en la membrana plasmática → activación de p38 MAPK.\n- **Efecto Transcripcional:** Refuerza la fosforilación directa de RUNX2 en ausencia de estimulación mecánica directa.",
+              "imagen": "/images/m3/m3_2_imagen_06.webp",
+              "alt": "Señales posteriores a la resorción: eje canónico BMP/SMAD y eje no canónico BMP/TAK1/p38 MAPK sobre RUNX2 y osterix.",
+              "ancho": 1538,
+              "alto": 1022
+            },
+            {
+              "id": "esc_i07",
+              "etiqueta": "Señalización angiogénica y vascular",
+              "detalle": "Señales procedentes de células endoteliales que favorecen el acoplamiento entre angiogénesis y formación ósea",
+              "markdown": "**Contexto mecanobiológico:** El acoplamiento angiogénesis–osteogénesis favorece la comunicación entre vasos tipo H y células del linaje osteoblástico. Estos vasos, estudiados principalmente en modelos murinos, se asocian con regiones de elevada actividad osteogénica y producen factores angiocrinos que modulan las células osteoprogenitoras. Entre estas señales, los factores de crecimiento de fibroblastos (FGF) pueden activar la vía FGF–FGFR–Ras–Raf–MEK–ERK1/2, contribuyendo a regular la proliferación y diferenciación osteoblástica. Sus efectos dependen de la etapa celular y de las características de la señal, por lo que esta vía representa un ejemplo de comunicación vascular y no un mecanismo universal de osteogénesis.\n\n- **Receptor:** Receptor de Tirosina Quinasa FGFR1/2.\n- **Mecanismo Citoplásmico:** Activación del eje Ras → Raf → MEK → ERK1/2.\n- **Efecto Transcripcional / Celular:** Modula la proliferación y diferenciación de los preosteoblastos según su estado celular y las características del estímulo.\n- **Resultado Biológico:** Contribuye a regular la dinámica de las poblaciones osteoblásticas y la formación de matriz ósea, sin implicar necesariamente una detención de la maduración terminal.",
+              "imagen": "/images/m3/m3_2_imagen_07.webp",
+              "alt": "Señalización angiogénica y vascular: FGF-2 de vasos tipo H sobre FGFR1/2 con el eje Ras–Raf–MEK–ERK1/2 y su efecto en la proliferación de progenitores.",
+              "ancho": 1535,
+              "alto": 1024
+            },
+            {
+              "id": "esc_i08",
+              "etiqueta": "Ausencia de estímulo mecánico",
+              "detalle": "Reducción de la carga oclusal, inmovilización prolongada",
+              "markdown": "**Contexto mecanobiológico:** La reducción de la carga mecánica aumenta la expresión de SOST y DKK1, cuyos productos inhiben la vía Wnt/β-catenina y favorecen la degradación de β-catenina. Esto reduce la señalización osteogénica, la diferenciación osteoblástica y la formación de matriz ósea. La pérdida neta de masa ósea se produce cuando la formación disminuida no compensa la resorción, favoreciendo la osteopenia por desuso.\n\n- **Interacción en Membrana:** La Esclerostina se une con alta afinidad al dominio extracelular de LRP5/6, compitiendo e interfiriendo con la activación de su complejo receptor.\n- **Fallo en Citoplasma:** El complejo de destrucción (GSK-3β/Axin/APC) se mantiene constitutivamente activo → la β-catenina es fosforilada y derivada al proteasoma para su degradación.\n- **Fenotipo Resultante:** Disminución de la señalización osteogénica y de la expresión de RUNX2 → reducción de la diferenciación osteoblástica y de la formación de matriz ósea → desequilibrio entre formación y resorción, con pérdida neta de masa ósea (osteopenia por desuso).",
+              "imagen": "/images/m3/m3_2_imagen_08.webp",
+              "alt": "Ausencia de estímulo mecánico: aumento de esclerostina y DKK1, bloqueo del receptor Wnt, degradación de β-catenina y menor activación de RUNX2.",
+              "ancho": 1536,
+              "alto": 1024
+            }
+          ]
         },
         {
           "tipo": "actividad",

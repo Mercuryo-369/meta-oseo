@@ -148,7 +148,8 @@ módulo ya completado no se vuelve a comprobar. Un módulo que el manifiesto no 
   "completada": true,
   "detalle": { } }
 ```
-`tipo` ∈ `multicapa`, `arrastre-molecular`, `relacion-columnas`, `quiz`, `video-texto`, `exploracion-3d`.
+`tipo` ∈ `multicapa`, `arrastre-molecular`, `relacion-columnas`, `quiz`, `video-texto`, `exploracion-3d`,
+`clasificacion`, `curva-esfuerzo` (las dos últimas desde el 2026-10-27, actividades del documento de la docente).
 `puntaje` 0..1000, `intentos` 1..100, `detalle` opcional (objeto, hasta 4 KB serializado).
 → `200`:
 ```json
@@ -494,7 +495,8 @@ export type ContextoPedagogico = {
   seccion: string;
   actividadActual?: {
     id: string;
-    tipo: "multicapa" | "arrastre-molecular" | "relacion-columnas" | "quiz" | "video-texto" | "exploracion-3d";
+    tipo: "multicapa" | "arrastre-molecular" | "relacion-columnas" | "quiz" | "video-texto" | "exploracion-3d"
+      | "clasificacion" | "curva-esfuerzo";
     intentos: number;
     completada: boolean;
   };

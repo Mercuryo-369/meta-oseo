@@ -114,7 +114,8 @@ type ContextoPedagogico = {
   seccion: string;                   // id de la sección dentro del módulo
   actividadActual?: {
     id: string;
-    tipo: "multicapa" | "arrastre-molecular" | "relacion-columnas" | "quiz" | "video-texto" | "exploracion-3d";
+    tipo: "multicapa" | "arrastre-molecular" | "relacion-columnas" | "quiz" | "video-texto" | "exploracion-3d"
+      | "clasificacion" | "curva-esfuerzo";  // 2026-10-27: actividades nuevas del documento de la docente
     intentos: number;
     completada: boolean;
   };

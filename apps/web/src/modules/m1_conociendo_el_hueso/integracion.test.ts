@@ -26,7 +26,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import type { Router } from 'vue-router';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Component } from 'vue';
+import type { Component, DefineComponent } from 'vue';
 import ActividadArrastreMolecular from '@/activities/arrastre-molecular/ActividadArrastreMolecular.vue';
 import ActividadExploracion3d from '@/activities/exploracion-3d/ActividadExploracion3d.vue';
 import ActividadMulticapa from '@/activities/multicapa/ActividadMulticapa.vue';
@@ -111,7 +111,7 @@ function servirRecursos(ruta: string): Response | undefined {
  * Estado compartido del recorrido (las pruebas de este archivo son una secuencia)
  * ----------------------------------------------------------------------------------------- */
 
-const TIPOS: Record<Actividad['tipo'], Component> = {
+const TIPOS: Partial<Record<Actividad['tipo'], Component>> = {
   multicapa: ActividadMulticapa,
   quiz: ActividadQuiz,
   'relacion-columnas': ActividadRelacionColumnas,
@@ -221,8 +221,10 @@ async function pausa(ms = 20): Promise<void> {
 
 /** Componente de actividad montado dentro de su bloque, o `undefined` si aún no está. */
 function componenteDe(a: Actividad): VueWrapper | undefined {
+  const tipo = TIPOS[a.tipo];
+  if (!tipo) return undefined;
   return anfitrion
-    .findAllComponents(TIPOS[a.tipo])
+    .findAllComponents(tipo as DefineComponent)
     .find((c) => (c.props() as { actividad?: Actividad }).actividad?.id === a.id) as
     VueWrapper | undefined;
 }

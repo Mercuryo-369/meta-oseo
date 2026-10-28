@@ -135,7 +135,7 @@ describe('tipos', () => {
     expectTypeOf<ActividadDe<'quiz'>['config']['preguntas']>().toBeArray();
     expectTypeOf<Actividad['tipo']>().toEqualTypeOf<TipoActividad>();
     expectTypeOf<Bloque['tipo']>().toEqualTypeOf<
-      'texto' | 'imagen' | 'callout' | 'tabla' | 'actividad'
+      'texto' | 'imagen' | 'callout' | 'tabla' | 'actividad' | 'escenarios' | 'pregunta'
     >();
   });
 });

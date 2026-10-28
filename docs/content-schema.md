@@ -412,7 +412,10 @@ Envuelve una actividad. **No lleva `id` propio: su id es el de la actividad** (`
 
 El motor tiene **seis tipos**, exactamente los del contrato con la API y con el contexto pedagógico
 (`ContextoPedagogico.actividadActual.tipo`): `multicapa`, `arrastre-molecular`, `relacion-columnas`,
-`quiz`, `video-texto` y `exploracion-3d`. No se inventan tipos nuevos.
+`quiz`, `video-texto` y `exploracion-3d`, más `clasificacion` y `curva-esfuerzo` (2026-10-27, pedidas en el documento
+de la docente: tabla o cajas para arrastrar y marcador sobre la curva esfuerzo-deformación). Bloques no puntuables
+nuevos: `escenarios` (elegir un escenario y ver su contenido) y `pregunta` (respuesta abierta comparada con la del
+docente). No se inventan más tipos sin acordarlo.
 
 ### Campos comunes
 

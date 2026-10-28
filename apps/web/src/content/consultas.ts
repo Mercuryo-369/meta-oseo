@@ -71,6 +71,8 @@ export function contarActividadesPorTipo(modulo: ConSecciones): Record<TipoActiv
     quiz: 0,
     'video-texto': 0,
     'exploracion-3d': 0,
+    clasificacion: 0,
+    'curva-esfuerzo': 0,
   };
   for (const { actividad } of listarActividades(modulo)) cuenta[actividad.tipo]++;
   return cuenta;

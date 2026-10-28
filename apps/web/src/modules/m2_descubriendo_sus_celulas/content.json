@@ -443,6 +443,13 @@
           }
         },
         {
+          "id": "preg_aplicacion_intramembranosa",
+          "tipo": "pregunta",
+          "titulo": "Pregunta de aplicación",
+          "enunciado": "¿Por qué la osificación intramembranosa es especialmente relevante en el desarrollo craneofacial? Menciona dos estructuras anatómicas que se formen mediante este proceso.",
+          "respuesta": "Permite la formación directa de hueso a partir de células mesenquimales y participa en el desarrollo de gran parte del esqueleto craneofacial, como la mayor parte del maxilar y del cuerpo mandibular."
+        },
+        {
           "tipo": "actividad",
           "actividad": {
             "id": "m2_1_evaluacion",
