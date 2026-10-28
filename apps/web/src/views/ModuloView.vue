@@ -28,7 +28,7 @@
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
-import { CircleAlert, LoaderCircle, Lock, Info } from '@lucide/vue';
+import { ChevronLeft, ChevronRight, CircleAlert, Info, LoaderCircle, Lock } from '@lucide/vue';
 import { ESPERA_ESTADO_PREVIO_MAX_MS } from '@/activities/types';
 import AvisosLogro from '@/components/modulo/AvisosLogro.vue';
 import BloqueActividad from '@/components/modulo/BloqueActividad.vue';
@@ -275,6 +275,55 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
   }
   return filas;
 });
+/*
+ * Vistas de la sección (observación de la docente, 2026-10-27: «mi idea era que todo el contenido fuera
+ * horizontal… el contenido de los submódulos es vertical y eso dificulta la lectura»): cada fila es una vista que
+ * cabe en la pantalla y se pasa de una a otra hacia los lados, como diapositivas. La última vista lleva el paso a la
+ * sección siguiente, que solo se abre al terminar las actividades obligatorias.
+ */
+const vista = ref(0);
+const sentidoVista = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
+const carrusel = ref<HTMLElement | null>(null);
+const totalVistas = computed(() => filasSeccion.value.length);
+const filaActual = computed(() => filasSeccion.value[vista.value] ?? null);
+const esUltimaVista = computed(() => vista.value >= totalVistas.value - 1);
+watch(
+  () => seccion.value?.id,
+  () => {
+    vista.value = 0;
+  },
+);
+function irAVista(i: number, enfocar = true): void {
+  if (i < 0 || i >= totalVistas.value || i === vista.value) return;
+  sentidoVista.value = i > vista.value ? 'diapo-adelante' : 'diapo-atras';
+  vista.value = i;
+  if (!enfocar) return;
+  void nextTick(() => {
+    const el = carrusel.value;
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView?.({ block: 'start' });
+  });
+}
+/** Nombre de una vista para los puntos de navegación y el lector de pantalla. */
+function etiquetaDeFila(f: FilaSeccion | undefined, i: number): string {
+  if (!f) return `Vista ${i + 1}`;
+  let titulo = '';
+  if (f.tipo === 'par') titulo = f.texto.titulo ?? f.imagen.pie;
+  else if (f.bloque.tipo === 'actividad') titulo = f.bloque.actividad.titulo;
+  else if (f.bloque.tipo === 'imagen') titulo = f.bloque.pie;
+  else if ('titulo' in f.bloque && f.bloque.titulo) titulo = f.bloque.titulo;
+  return titulo ? textoPlanoDeMarkdown(titulo) : `Vista ${i + 1}`;
+}
+/** Flechas del teclado sobre la barra de vistas. */
+function alTeclaVistas(e: KeyboardEvent): void {
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    irAVista(vista.value + 1);
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    irAVista(vista.value - 1);
+  }
+}
+
 function sinFondo(t: TipoBloqueTexto): TipoBloqueTexto {
   const { fondo: _fondo, ...resto } = t;
   return resto;
@@ -389,11 +438,19 @@ watch(fase, (f) => {
 function irAlPrimeroPendiente(): void {
   const primera = pendientes.value[0];
   if (!primera) return;
-  const el = document.getElementById(`actividad-${primera.id}`);
-  if (!el) return;
-  el.setAttribute('tabindex', '-1');
-  el.focus({ preventScroll: true });
-  desplazarA(el);
+  const enVista = filasSeccion.value.findIndex(
+    (f) =>
+      f.tipo === 'solo' && f.bloque.tipo === 'actividad' && f.bloque.actividad.id === primera.id,
+  );
+  if (enVista >= 0) irAVista(enVista, false);
+  // Tras la transición de la vista, el bloque ya está en la página.
+  setTimeout(() => {
+    const el = document.getElementById(`actividad-${primera.id}`);
+    if (!el) return;
+    el.setAttribute('tabindex', '-1');
+    el.focus({ preventScroll: true });
+    desplazarA(el);
+  }, 60);
 }
 
 function preferirMenosMovimiento(): boolean {
@@ -727,70 +784,165 @@ onBeforeUnmount(() => {
                   </p>
                 </header>
 
-                <template v-for="fila in filasSeccion" :key="fila.clave">
-                  <div
-                    v-if="fila.tipo === 'par'"
-                    :class="
-                      fila.texto.fondo
-                        ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
-                        : ''
-                    "
-                    data-testid="fila-texto-imagen"
+                <!-- Vistas de la sección: una por pantalla, hacia los lados -->
+                <div
+                  ref="carrusel"
+                  class="scroll-mt-20 space-y-4"
+                  data-testid="carrusel-seccion"
+                  :data-vista="vista"
+                >
+                  <nav
+                    v-if="totalVistas > 1"
+                    class="flex items-center gap-3"
+                    aria-label="Vistas de la sección"
+                    @keydown="alTeclaVistas"
                   >
-                    <img
-                      v-if="fila.texto.fondo"
-                      :src="fila.texto.fondo"
-                      alt=""
-                      aria-hidden="true"
-                      loading="lazy"
-                      class="absolute inset-0 -z-10 size-full object-cover"
-                    />
-                    <BloqueImagen
-                      :bloque="fila.imagen"
-                      :largo-lateral="fila.texto.markdown.length"
-                      :lateral-cristal="Boolean(fila.texto.fondo)"
+                    <button
+                      type="button"
+                      class="hover:bg-accent focus-visible:ring-ring flex size-11 shrink-0 items-center justify-center rounded-full border outline-none focus-visible:ring-2 disabled:opacity-40"
+                      :disabled="vista === 0"
+                      aria-label="Vista anterior"
+                      data-testid="vista-anterior"
+                      @click="irAVista(vista - 1)"
                     >
-                      <template #lateral>
-                        <BloqueTexto :bloque="sinFondo(fila.texto)" incrustado />
-                      </template>
-                    </BloqueImagen>
+                      <ChevronLeft class="size-5" aria-hidden="true" />
+                    </button>
+                    <ol class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-1.5">
+                      <li v-for="(f, i) in filasSeccion" :key="f.clave">
+                        <button
+                          type="button"
+                          class="focus-visible:ring-ring block h-2.5 rounded-full outline-none focus-visible:ring-2"
+                          :class="
+                            i === vista
+                              ? 'bg-primary w-8'
+                              : 'bg-muted-foreground/40 hover:bg-muted-foreground/70 w-2.5'
+                          "
+                          :aria-label="`${i + 1}. ${etiquetaDeFila(f, i)}`"
+                          :aria-current="i === vista ? 'step' : undefined"
+                          :title="etiquetaDeFila(f, i)"
+                          @click="irAVista(i)"
+                        />
+                      </li>
+                    </ol>
+                    <span class="text-muted-foreground shrink-0 text-sm tabular-nums">
+                      {{ vista + 1 }} / {{ totalVistas }}
+                    </span>
+                    <button
+                      type="button"
+                      class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-2 disabled:opacity-40"
+                      :disabled="esUltimaVista"
+                      aria-label="Vista siguiente"
+                      data-testid="vista-siguiente"
+                      @click="irAVista(vista + 1)"
+                    >
+                      <ChevronRight class="size-5" aria-hidden="true" />
+                    </button>
+                  </nav>
+                  <p class="sr-only" aria-live="polite">
+                    Vista {{ vista + 1 }} de {{ totalVistas }}:
+                    {{ etiquetaDeFila(filaActual ?? undefined, vista) }}
+                  </p>
+
+                  <div class="relative overflow-x-clip">
+                    <Transition :name="sentidoVista">
+                      <div
+                        :key="`${seccion.id}:${vista}`"
+                        class="vista-seccion"
+                        data-testid="vista-seccion"
+                      >
+                        <template v-for="fila in filaActual ? [filaActual] : []" :key="fila.clave">
+                          <div
+                            v-if="fila.tipo === 'par'"
+                            :class="
+                              fila.texto.fondo
+                                ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
+                                : ''
+                            "
+                            data-testid="fila-texto-imagen"
+                          >
+                            <img
+                              v-if="fila.texto.fondo"
+                              :src="fila.texto.fondo"
+                              alt=""
+                              aria-hidden="true"
+                              loading="lazy"
+                              class="absolute inset-0 -z-10 size-full object-cover"
+                            />
+                            <BloqueImagen
+                              :bloque="fila.imagen"
+                              :largo-lateral="fila.texto.markdown.length"
+                              :lateral-cristal="Boolean(fila.texto.fondo)"
+                            >
+                              <template #lateral>
+                                <BloqueTexto :bloque="sinFondo(fila.texto)" incrustado />
+                              </template>
+                            </BloqueImagen>
+                          </div>
+                          <BloqueTexto
+                            v-else-if="fila.bloque.tipo === 'texto'"
+                            :bloque="fila.bloque"
+                            :columnas="fila.bloque.markdown.length > 1200"
+                          />
+                          <BloqueCallout
+                            v-else-if="fila.bloque.tipo === 'callout'"
+                            :bloque="fila.bloque"
+                          />
+                          <BloqueImagen
+                            v-else-if="fila.bloque.tipo === 'imagen'"
+                            :bloque="fila.bloque"
+                          />
+                          <BloqueTabla
+                            v-else-if="fila.bloque.tipo === 'tabla'"
+                            :bloque="fila.bloque"
+                          />
+                          <BloqueActividad
+                            v-else-if="fila.bloque.tipo === 'actividad'"
+                            :actividad="fila.bloque.actividad"
+                            :modulo="n as NumeroModulo"
+                            :solo-lectura="esDocente"
+                          />
+                        </template>
+                      </div>
+                    </Transition>
                   </div>
-                  <BloqueTexto
-                    v-else-if="fila.bloque.tipo === 'texto'"
-                    :bloque="fila.bloque"
-                    :columnas="fila.bloque.markdown.length > 1200"
+
+                  <div v-if="!esUltimaVista" class="flex justify-end">
+                    <button
+                      type="button"
+                      class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex max-w-full items-center gap-2 rounded-full px-5 py-2.5 text-left font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      data-testid="vista-siguiente-abajo"
+                      @click="irAVista(vista + 1)"
+                    >
+                      <span class="truncate">
+                        Siguiente: {{ etiquetaDeFila(filasSeccion[vista + 1], vista + 1) }}
+                      </span>
+                      <ChevronRight class="size-5 shrink-0" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+
+                <template v-if="esUltimaVista">
+                  <PieSeccion
+                    :indice="indice"
+                    :total="secciones.length"
+                    :siguiente-abierta="siguienteAbierta"
+                    :texto-pendiente="textoPendientes(pendientes)"
+                    :hay-pendiente="pendientes.length > 0"
+                    @anterior="irA(indice - 1)"
+                    @siguiente="irA(indice + 1)"
+                    @ir-a-pendiente="irAlPrimeroPendiente"
                   />
-                  <BloqueCallout v-else-if="fila.bloque.tipo === 'callout'" :bloque="fila.bloque" />
-                  <BloqueImagen v-else-if="fila.bloque.tipo === 'imagen'" :bloque="fila.bloque" />
-                  <BloqueTabla v-else-if="fila.bloque.tipo === 'tabla'" :bloque="fila.bloque" />
-                  <BloqueActividad
-                    v-else-if="fila.bloque.tipo === 'actividad'"
-                    :actividad="fila.bloque.actividad"
-                    :modulo="n as NumeroModulo"
-                    :solo-lectura="esDocente"
+
+                  <ModuloCompletado
+                    v-if="mostrarCompletado"
+                    :numero="n"
+                    :puntaje-obtenido="puntajeObtenido"
+                    :puntaje-maximo="avance.puntajeMaximo"
+                    :guardado="moduloYaCompletado"
+                    :faltantes="titulosFaltantes"
+                    :siguiente-abierto="siguienteModuloAbierto"
                   />
                 </template>
-
-                <PieSeccion
-                  :indice="indice"
-                  :total="secciones.length"
-                  :siguiente-abierta="siguienteAbierta"
-                  :texto-pendiente="textoPendientes(pendientes)"
-                  :hay-pendiente="pendientes.length > 0"
-                  @anterior="irA(indice - 1)"
-                  @siguiente="irA(indice + 1)"
-                  @ir-a-pendiente="irAlPrimeroPendiente"
-                />
-
-                <ModuloCompletado
-                  v-if="mostrarCompletado"
-                  :numero="n"
-                  :puntaje-obtenido="puntajeObtenido"
-                  :puntaje-maximo="avance.puntajeMaximo"
-                  :guardado="moduloYaCompletado"
-                  :faltantes="titulosFaltantes"
-                  :siguiente-abierto="siguienteModuloAbierto"
-                />
               </section>
             </div>
           </div>

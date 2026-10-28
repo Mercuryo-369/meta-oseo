@@ -74,11 +74,14 @@ const apilado = computed(
 );
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
-/** Ancho de la columna derecha según cuánto texto lleva: poco texto, columna angosta e imagen grande. */
-const anchoColumna = computed(() => {
-  if (hayPuntos.value) return '24rem';
+/**
+ * Ancho máximo de la columna de la imagen: la columna se ajusta a la propia imagen (una imagen estrecha no deja
+ * un hueco hasta el texto) y el texto ocupa el resto. Con poco texto la imagen puede crecer más.
+ */
+const anchoImagenMax = computed(() => {
+  if (hayPuntos.value) return '72%';
   const n = props.largoLateral;
-  return n < 500 ? '20rem' : n < 1200 ? '26rem' : '32rem';
+  return n < 500 ? '74%' : n < 1200 ? '66%' : '60%';
 });
 const claseRecuadro = computed(() =>
   props.lateralCristal ? 'cristal-portada' : 'bg-card border shadow-sm',
@@ -90,8 +93,8 @@ const claseRecuadro = computed(() =>
     <div
       v-if="!fallo"
       class="grid items-start gap-5"
-      :class="conColumna ? 'lg:grid-cols-[minmax(0,1fr)_var(--columna)]' : ''"
-      :style="{ '--columna': anchoColumna }"
+      :class="conColumna ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,1fr)]' : ''"
+      :style="{ '--imagen-max': anchoImagenMax }"
     >
       <!-- Columna de la imagen -->
       <div class="min-w-0 space-y-2">
