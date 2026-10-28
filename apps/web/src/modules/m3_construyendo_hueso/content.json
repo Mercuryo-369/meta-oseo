@@ -771,9 +771,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m3_compartimentos_colageno",
-            "tipo": "quiz",
+            "tipo": "clasificacion",
             "titulo": "¿En qué compartimento ocurre cada evento?",
-            "instrucciones": "Relaciona cada proceso con el compartimento celular o extracelular donde ocurre principalmente.",
+            "instrucciones": "Relaciona cada proceso con el compartimento celular o extracelular donde ocurre principalmente. Arrastra cada proceso a su compartimento (o tócalo y luego toca el compartimento).",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
@@ -782,186 +782,70 @@
             },
             "concepto": "Compartimentos de la síntesis y el procesamiento del colágeno tipo I",
             "config": {
-              "preguntas": [
+              "disposicion": "cajas",
+              "barajar": true,
+              "categorias": [
                 {
-                  "id": "m3_q_comp_1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Transcripción de COL1A1 y COL1A2",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_1_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_1_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_1_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_1_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_1_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_1_c"],
-                  "explicacion": "La transcripción y el splicing ocurren en el núcleo.",
-                  "concepto": "Transcripción"
+                  "id": "nucleo",
+                  "etiqueta": "Núcleo",
+                  "imagen": "/images/m3/m3_3_imagen_02.webp"
                 },
                 {
-                  "id": "m3_q_comp_2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Splicing del pre-ARNm",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_2_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_2_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_2_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_2_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_2_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_2_c"],
-                  "explicacion": "La transcripción y el splicing ocurren en el núcleo.",
-                  "concepto": "Splicing"
+                  "id": "citoplasma_ribosomas_rer",
+                  "etiqueta": "Citoplasma y ribosomas asociados al RER"
                 },
                 {
-                  "id": "m3_q_comp_3",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Hidroxilación de prolina y lisina",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_3_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_3_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_3_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_3_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_3_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_3_e"],
-                  "explicacion": "La hidroxilación de las cadenas de colágeno ocurre en el RER.",
-                  "concepto": "Hidroxilación"
+                  "id": "luz_rer",
+                  "etiqueta": "Luz del RER",
+                  "imagen": "/images/m3/m3_3_imagen_04.webp"
                 },
                 {
-                  "id": "m3_q_comp_4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Clasificación y preparación para la secreción",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_4_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_4_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_4_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_4_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_4_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_4_a"],
-                  "explicacion": "El Golgi participa en el procesamiento y clasificación de las moléculas destinadas a la secreción.",
-                  "concepto": "Clasificación en el Golgi"
+                  "id": "aparato_golgi",
+                  "etiqueta": "Aparato de Golgi",
+                  "imagen": "/images/m3/m3_3_imagen_05.webp"
                 },
                 {
-                  "id": "m3_q_comp_5",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Escisión de los propéptidos del procolágeno",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_5_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_5_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_5_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_5_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_5_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_5_b"],
-                  "explicacion": "Tras la exocitosis, el procesamiento de los propéptidos y la fibrilogénesis ocurren en el espacio extracelular.",
-                  "concepto": "Escisión de los propéptidos"
+                  "id": "espacio_extracelular",
+                  "etiqueta": "Espacio extracelular",
+                  "imagen": "/images/m3/m3_3_imagen_06.webp"
+                }
+              ],
+              "elementos": [
+                {
+                  "id": "transcripcion_col1a1_col1a2",
+                  "texto": "Transcripción de COL1A1 y COL1A2",
+                  "categoria": "nucleo",
+                  "explicacion": "La transcripción y el splicing ocurren en el núcleo."
                 },
                 {
-                  "id": "m3_q_comp_6",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Alineación escalonada y fibrilogénesis",
-                  "opciones": [
-                    {
-                      "id": "m3_q_comp_6_a",
-                      "texto": "Aparato de Golgi"
-                    },
-                    {
-                      "id": "m3_q_comp_6_b",
-                      "texto": "Espacio extracelular"
-                    },
-                    {
-                      "id": "m3_q_comp_6_c",
-                      "texto": "Núcleo"
-                    },
-                    {
-                      "id": "m3_q_comp_6_d",
-                      "texto": "Citoplasma y ribosomas asociados al RER"
-                    },
-                    {
-                      "id": "m3_q_comp_6_e",
-                      "texto": "Luz del RER"
-                    }
-                  ],
-                  "correctas": ["m3_q_comp_6_b"],
-                  "explicacion": "Tras la exocitosis, el procesamiento de los propéptidos y la fibrilogénesis ocurren en el espacio extracelular.",
-                  "concepto": "Fibrilogénesis"
+                  "id": "splicing_pre_arnm",
+                  "texto": "Splicing del pre-ARNm",
+                  "categoria": "nucleo",
+                  "explicacion": "La transcripción y el splicing ocurren en el núcleo."
+                },
+                {
+                  "id": "hidroxilacion_prolina_lisina",
+                  "texto": "Hidroxilación de prolina y lisina",
+                  "categoria": "luz_rer",
+                  "explicacion": "La hidroxilación de las cadenas de colágeno ocurre en el RER."
+                },
+                {
+                  "id": "clasificacion_secrecion",
+                  "texto": "Clasificación y preparación para la secreción",
+                  "categoria": "aparato_golgi",
+                  "explicacion": "El Golgi participa en el procesamiento y clasificación de las moléculas destinadas a la secreción."
+                },
+                {
+                  "id": "escision_propeptidos",
+                  "texto": "Escisión de los propéptidos del procolágeno",
+                  "categoria": "espacio_extracelular",
+                  "explicacion": "Tras la exocitosis, el procesamiento de los propéptidos y la fibrilogénesis ocurren en el espacio extracelular."
+                },
+                {
+                  "id": "alineacion_fibrilogenesis",
+                  "texto": "Alineación escalonada y fibrilogénesis",
+                  "categoria": "espacio_extracelular",
+                  "explicacion": "Tras la exocitosis, el procesamiento de los propéptidos y la fibrilogénesis ocurren en el espacio extracelular."
                 }
               ]
             }

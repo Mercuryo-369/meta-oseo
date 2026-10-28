@@ -397,6 +397,60 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m2_1_linaje_celulas",
+            "tipo": "clasificacion",
+            "titulo": "¿De qué linaje proviene cada célula?",
+            "instrucciones": "Objetivo: reconocer los dos grandes linajes celulares descritos en el documento y relacionarlos con su función. Arrastra cada célula a su linaje (o tócala y luego toca el linaje).",
+            "obligatoria": true,
+            "puntaje_max": 20,
+            "retroalimentacion": {
+              "correcta": "Correcto: cada célula quedó en el linaje del que proviene.",
+              "incorrecta": "Esa célula proviene del otro linaje. Repasa el origen de las células óseas."
+            },
+            "concepto": "Linajes mesenquimal y hematopoyético de las células óseas",
+            "config": {
+              "disposicion": "cajas",
+              "barajar": true,
+              "categorias": [
+                {
+                  "id": "linaje_mesenquimal",
+                  "etiqueta": "Linaje mesenquimal",
+                  "descripcion": "Formación y mantenimiento de la matriz"
+                },
+                {
+                  "id": "linaje_hematopoyetico",
+                  "etiqueta": "Linaje hematopoyético",
+                  "descripcion": "Resorción ósea"
+                }
+              ],
+              "elementos": [
+                {
+                  "id": "celulas_linaje_osteoblastico",
+                  "texto": "Células del linaje osteoblástico",
+                  "categoria": "linaje_mesenquimal"
+                },
+                {
+                  "id": "osteoclastos",
+                  "texto": "Osteoclastos",
+                  "categoria": "linaje_hematopoyetico"
+                },
+                {
+                  "id": "progenitores_monocito_macrofago",
+                  "texto": "Progenitores de la línea monocito-macrófago",
+                  "categoria": "linaje_hematopoyetico"
+                },
+                {
+                  "id": "celulas_madre_progenitoras_esqueleticas",
+                  "texto": "Células madre y progenitoras esqueléticas",
+                  "categoria": "linaje_mesenquimal"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m2_1_ordena_osificacion",
             "tipo": "quiz",
             "titulo": "Ordena la secuencia de osificación intramembranosa",

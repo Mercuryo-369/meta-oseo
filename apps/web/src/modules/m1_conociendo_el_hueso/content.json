@@ -1391,6 +1391,163 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m1_2_compara_cortical_trabecular",
+            "tipo": "clasificacion",
+            "titulo": "Compara el hueso cortical y el trabecular",
+            "instrucciones": "Completa la tabla comparativa: arrastra cada característica a la celda del tejido que le corresponde (o tócala y luego toca la celda).",
+            "obligatoria": true,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Tabla completa: cada característica quedó en el tejido que le corresponde.",
+              "incorrecta": "Esa característica corresponde al otro tejido. Revisa la arquitectura del hueso cortical y del trabecular."
+            },
+            "concepto": "Diferencias entre hueso cortical y trabecular",
+            "config": {
+              "disposicion": "tabla",
+              "titulo_filas": "Característica",
+              "barajar": true,
+              "categorias": [
+                {
+                  "id": "organizacion_cortical",
+                  "etiqueta": "Organización · Hueso cortical",
+                  "fila": "Organización",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "organizacion_trabecular",
+                  "etiqueta": "Organización · Hueso trabecular",
+                  "fila": "Organización",
+                  "columna": "Hueso trabecular"
+                },
+                {
+                  "id": "unidad_cortical",
+                  "etiqueta": "Unidad estructural · Hueso cortical",
+                  "fila": "Unidad estructural",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "unidad_trabecular",
+                  "etiqueta": "Unidad estructural · Hueso trabecular",
+                  "fila": "Unidad estructural",
+                  "columna": "Hueso trabecular"
+                },
+                {
+                  "id": "distribucion_cortical",
+                  "etiqueta": "Distribución · Hueso cortical",
+                  "fila": "Distribución",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "distribucion_trabecular",
+                  "etiqueta": "Distribución · Hueso trabecular",
+                  "fila": "Distribución",
+                  "columna": "Hueso trabecular"
+                },
+                {
+                  "id": "irrigacion_cortical",
+                  "etiqueta": "Irrigación · Hueso cortical",
+                  "fila": "Irrigación",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "irrigacion_trabecular",
+                  "etiqueta": "Irrigación · Hueso trabecular",
+                  "fila": "Irrigación",
+                  "columna": "Hueso trabecular"
+                },
+                {
+                  "id": "respuesta_cortical",
+                  "etiqueta": "Respuesta a cargas · Hueso cortical",
+                  "fila": "Respuesta a cargas",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "respuesta_trabecular",
+                  "etiqueta": "Respuesta a cargas · Hueso trabecular",
+                  "fila": "Respuesta a cargas",
+                  "columna": "Hueso trabecular"
+                },
+                {
+                  "id": "intercambio_cortical",
+                  "etiqueta": "Intercambio metabólico · Hueso cortical",
+                  "fila": "Intercambio metabólico",
+                  "columna": "Hueso cortical"
+                },
+                {
+                  "id": "intercambio_trabecular",
+                  "etiqueta": "Intercambio metabólico · Hueso trabecular",
+                  "fila": "Intercambio metabólico",
+                  "columna": "Hueso trabecular"
+                }
+              ],
+              "elementos": [
+                {
+                  "id": "tejido_compacto_continuo",
+                  "texto": "Tejido compacto y continuo",
+                  "categoria": "organizacion_cortical"
+                },
+                {
+                  "id": "red_laminas_pilares",
+                  "texto": "Red tridimensional de láminas y pilares",
+                  "categoria": "organizacion_trabecular"
+                },
+                {
+                  "id": "osteona_havers",
+                  "texto": "Osteona con conducto de Havers",
+                  "categoria": "unidad_cortical"
+                },
+                {
+                  "id": "laminas_sin_havers",
+                  "texto": "Láminas sin conducto de Havers central",
+                  "categoria": "unidad_trabecular"
+                },
+                {
+                  "id": "diafisis_superficie_externa",
+                  "texto": "Predomina en diáfisis y superficie externa",
+                  "categoria": "distribucion_cortical"
+                },
+                {
+                  "id": "epifisis_regiones_internas",
+                  "texto": "Predomina en epífisis y regiones internas",
+                  "categoria": "distribucion_trabecular"
+                },
+                {
+                  "id": "conductos_havers_volkmann",
+                  "texto": "Conductos de Havers y Volkmann",
+                  "categoria": "irrigacion_cortical"
+                },
+                {
+                  "id": "vasos_compartimento_medular",
+                  "texto": "Vasos del compartimento medular",
+                  "categoria": "irrigacion_trabecular"
+                },
+                {
+                  "id": "alta_resistencia_rigidez",
+                  "texto": "Alta resistencia y rigidez",
+                  "categoria": "respuesta_cortical"
+                },
+                {
+                  "id": "distribuye_fuerzas_orientacion",
+                  "texto": "Distribuye las fuerzas según su orientación",
+                  "categoria": "respuesta_trabecular"
+                },
+                {
+                  "id": "menor_superficie",
+                  "texto": "Menor superficie relativa",
+                  "categoria": "intercambio_cortical"
+                },
+                {
+                  "id": "mayor_superficie",
+                  "texto": "Mayor superficie de intercambio",
+                  "categoria": "intercambio_trabecular"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m1_4_relacion_estructuras",
             "tipo": "relacion-columnas",
             "titulo": "Estructuras y definiciones",
@@ -2410,6 +2567,216 @@
                 }
               ],
               "barajar": true
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
+            "id": "m1_4_curva_esfuerzo",
+            "tipo": "curva-esfuerzo",
+            "titulo": "¿El hueso se recupera o se fractura?",
+            "instrucciones": "Mueve el marcador hasta el punto indicado en cada escenario y responde: si retiramos la carga en este punto, ¿qué ocurrirá con el hueso?",
+            "obligatoria": true,
+            "puntaje_max": 30,
+            "retroalimentacion": {
+              "correcta": "Ubicaste bien cada punto de la curva y anticipaste la respuesta del hueso en cada escenario.",
+              "parcial": "Vas bien, pero algunos escenarios quedaron en la zona equivocada o con otra respuesta. Repasa las regiones de la curva.",
+              "incorrecta": "Repasa la curva esfuerzo-deformación: la región elástica, el límite elástico, la región plástica y el punto de fallo."
+            },
+            "concepto": "Curva esfuerzo-deformación: región elástica, región plástica y fallo",
+            "config": {
+              "zonas": [
+                {
+                  "id": "elastica",
+                  "etiqueta": "Región elástica",
+                  "desde": 0,
+                  "hasta": 24
+                },
+                {
+                  "id": "cerca_limite_elastico",
+                  "etiqueta": "Cerca del límite elástico",
+                  "desde": 24,
+                  "hasta": 30
+                },
+                {
+                  "id": "plastica",
+                  "etiqueta": "Región plástica",
+                  "desde": 30,
+                  "hasta": 82
+                },
+                {
+                  "id": "cerca_fallo",
+                  "etiqueta": "Cerca del fallo",
+                  "desde": 82,
+                  "hasta": 91
+                },
+                {
+                  "id": "fallo",
+                  "etiqueta": "Fallo / fractura",
+                  "desde": 91,
+                  "hasta": 100
+                }
+              ],
+              "escenarios": [
+                {
+                  "id": "e1_region_elastica",
+                  "titulo": "Escenario 1 — Carga dentro de la región elástica",
+                  "situacion": "Durante una actividad cotidiana, el hueso recibe una carga que produce una deformación pequeña, ubicada antes del límite elástico.",
+                  "pregunta": "Si la carga desaparece, ¿qué esperas que ocurra?",
+                  "zona": "elastica",
+                  "opciones": [
+                    {
+                      "id": "o_e1",
+                      "texto": "El hueso recuperará aproximadamente su forma original."
+                    },
+                    {
+                      "id": "o_e2",
+                      "texto": "Principalmente recuperará su forma original, aunque está próximo al límite a partir del cual podrían aparecer deformaciones permanentes."
+                    },
+                    {
+                      "id": "o_e3",
+                      "texto": "No. Quedará una deformación permanente."
+                    },
+                    {
+                      "id": "o_e4",
+                      "texto": "La progresión del daño hasta el fallo estructural y la fractura."
+                    },
+                    {
+                      "id": "o_e5",
+                      "texto": "El hueso no recuperará su integridad estructural; se ha producido el fallo/fractura."
+                    }
+                  ],
+                  "correcta": "o_e1",
+                  "retroalimentacion": "Estás dentro de la región elástica. La deformación producida es reversible; al retirar la carga, el tejido recupera su configuración inicial, siempre que no exista daño estructural."
+                },
+                {
+                  "id": "e2_cerca_limite_elastico",
+                  "titulo": "Escenario 2 — Cerca del límite elástico",
+                  "situacion": "Una carga aumenta progresivamente y el hueso se encuentra muy cerca del límite elástico, pero todavía no lo ha superado.",
+                  "pregunta": "¿Qué ocurrirá al retirar la carga?",
+                  "zona": "cerca_limite_elastico",
+                  "opciones": [
+                    {
+                      "id": "o_e1",
+                      "texto": "El hueso recuperará aproximadamente su forma original."
+                    },
+                    {
+                      "id": "o_e2",
+                      "texto": "Principalmente recuperará su forma original, aunque está próximo al límite a partir del cual podrían aparecer deformaciones permanentes."
+                    },
+                    {
+                      "id": "o_e3",
+                      "texto": "No. Quedará una deformación permanente."
+                    },
+                    {
+                      "id": "o_e4",
+                      "texto": "La progresión del daño hasta el fallo estructural y la fractura."
+                    },
+                    {
+                      "id": "o_e5",
+                      "texto": "El hueso no recuperará su integridad estructural; se ha producido el fallo/fractura."
+                    }
+                  ],
+                  "correcta": "o_e2",
+                  "retroalimentacion": "El tejido todavía se encuentra en el comportamiento elástico, pero una carga adicional podría llevarlo hacia la deformación plástica.",
+                  "nota": "Esto es importante porque evita enseñar al estudiante que \"límite elástico = fractura\", que sería incorrecto."
+                },
+                {
+                  "id": "e3_supera_limite_elastico",
+                  "titulo": "Escenario 3 — Se supera el límite elástico",
+                  "situacion": "Un traumatismo produce una carga que lleva al hueso más allá de su límite elástico, pero todavía no alcanza el punto de fallo.",
+                  "pregunta": "Al retirar la carga, ¿el hueso volverá completamente a su forma inicial?",
+                  "zona": "plastica",
+                  "opciones": [
+                    {
+                      "id": "o_e1",
+                      "texto": "El hueso recuperará aproximadamente su forma original."
+                    },
+                    {
+                      "id": "o_e2",
+                      "texto": "Principalmente recuperará su forma original, aunque está próximo al límite a partir del cual podrían aparecer deformaciones permanentes."
+                    },
+                    {
+                      "id": "o_e3",
+                      "texto": "No. Quedará una deformación permanente."
+                    },
+                    {
+                      "id": "o_e4",
+                      "texto": "La progresión del daño hasta el fallo estructural y la fractura."
+                    },
+                    {
+                      "id": "o_e5",
+                      "texto": "El hueso no recuperará su integridad estructural; se ha producido el fallo/fractura."
+                    }
+                  ],
+                  "correcta": "o_e3",
+                  "retroalimentacion": "Has entrado en la región plástica. Parte de la deformación ya no es reversible; aunque retires la carga, el tejido no recuperará completamente su configuración original."
+                },
+                {
+                  "id": "e4_cerca_fallo",
+                  "titulo": "Escenario 4 — Cerca del fallo",
+                  "situacion": "La carga continúa aumentando y el hueso se encuentra próximo a su resistencia máxima.",
+                  "pregunta": "¿Cuál es el principal riesgo si la carga continúa aumentando?",
+                  "zona": "cerca_fallo",
+                  "opciones": [
+                    {
+                      "id": "o_e1",
+                      "texto": "El hueso recuperará aproximadamente su forma original."
+                    },
+                    {
+                      "id": "o_e2",
+                      "texto": "Principalmente recuperará su forma original, aunque está próximo al límite a partir del cual podrían aparecer deformaciones permanentes."
+                    },
+                    {
+                      "id": "o_e3",
+                      "texto": "No. Quedará una deformación permanente."
+                    },
+                    {
+                      "id": "o_e4",
+                      "texto": "La progresión del daño hasta el fallo estructural y la fractura."
+                    },
+                    {
+                      "id": "o_e5",
+                      "texto": "El hueso no recuperará su integridad estructural; se ha producido el fallo/fractura."
+                    }
+                  ],
+                  "correcta": "o_e4",
+                  "retroalimentacion": "El tejido está próximo a su límite de resistencia. La deformación y el daño aumentan hasta que la estructura pierde su capacidad de soportar la carga."
+                },
+                {
+                  "id": "e5_fallo",
+                  "titulo": "Escenario 5 — Se alcanza el fallo",
+                  "situacion": "La carga supera la capacidad resistente del hueso y se alcanza el punto de fallo de la curva.",
+                  "pregunta": "¿Qué ocurre si retiramos inmediatamente la carga?",
+                  "zona": "fallo",
+                  "opciones": [
+                    {
+                      "id": "o_e1",
+                      "texto": "El hueso recuperará aproximadamente su forma original."
+                    },
+                    {
+                      "id": "o_e2",
+                      "texto": "Principalmente recuperará su forma original, aunque está próximo al límite a partir del cual podrían aparecer deformaciones permanentes."
+                    },
+                    {
+                      "id": "o_e3",
+                      "texto": "No. Quedará una deformación permanente."
+                    },
+                    {
+                      "id": "o_e4",
+                      "texto": "La progresión del daño hasta el fallo estructural y la fractura."
+                    },
+                    {
+                      "id": "o_e5",
+                      "texto": "El hueso no recuperará su integridad estructural; se ha producido el fallo/fractura."
+                    }
+                  ],
+                  "correcta": "o_e5",
+                  "retroalimentacion": "El retiro de la carga no revierte el daño estructural establecido. El tejido ha superado su capacidad resistente."
+                }
+              ],
+              "barajar_opciones": true
             }
           }
         },
