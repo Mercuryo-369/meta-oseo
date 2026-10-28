@@ -64,10 +64,10 @@ export const MODULOS: readonly Modulo[] = [
       rotulo: 'Un tejido vivo',
       frase: 'El hueso, órgano y tejido a la vez',
       icono: 'hueso',
-      // Render del modelo 3D de la osteona (el mismo de la actividad m1_4_osteona), sin fondo.
+      // Imagen de la docente (1.2 Imagen #1, fondo del módulo): solo imágenes suyas en las portadas (2026-10-27).
       portada: {
-        src: '/images/m1/m1_portada_osteona.webp',
-        ajuste: 'contener',
+        src: '/images/m1/m1_2_imagen_01.webp',
+        ajuste: 'cubrir',
         posicion: 'center',
       },
     },
@@ -83,11 +83,10 @@ export const MODULOS: readonly Modulo[] = [
       rotulo: 'Las células',
       frase: 'De la célula madre al osteoclasto',
       icono: 'celula',
-      // El árbol de linajes (viewBox 1000 x 1540) es una figura vertical: en un marco apaisado queda diminuto y
-      // recortarlo parte sus rótulos. La osteoclasto (sin rótulos) llena el marco y es la meta de la frase.
+      // Fondo del módulo de la docente («en todo este módulo 2 usaremos esta de fondo»). La docente pidió retirar
+      // la ilustración hecha con IA que había antes (2026-10-27).
       portada: {
-        // La ilustración realista; el SVG del mismo nombre es solo la capa de zonas táctiles que va encima.
-        src: '/images/m2/m2_osteoclasto_resorcion.webp',
+        src: '/images/m2/m2_fondo.webp',
         ajuste: 'cubrir',
         posicion: 'center',
       },
@@ -104,12 +103,11 @@ export const MODULOS: readonly Modulo[] = [
       rotulo: 'Formación',
       frase: 'Cuando la fuerza se vuelve señal',
       icono: 'construccion',
-      // Con rótulos (nota del recuadro en la parte baja): se muestra entera, sobre fondo claro.
+      // Fondo que la docente usa en la 3.2 (el del módulo 2): solo imágenes suyas en las portadas (2026-10-27).
       portada: {
-        src: '/images/m3/m3_sensores_mecanicos_figura.webp',
-        ajuste: 'contener',
+        src: '/images/m3/m3_fondo.webp',
+        ajuste: 'cubrir',
         posicion: 'center',
-        fondo: 'papel',
       },
     },
   },

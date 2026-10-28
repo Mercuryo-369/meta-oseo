@@ -53,7 +53,6 @@ import {
 import { EVENTO_GLOSARIO } from '@/components/modulo/glosario';
 import { aperturaDelResumen, estiloAcento } from '@/components/modulo/identidad';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
-import { TOTAL_MODULOS } from '@/config';
 import { useTiempoModulo } from '@/components/modulo/useTiempoModulo';
 import { Button } from '@/components/ui/button';
 import { idDeBloque, visibleParaNivel } from '@/content/consultas';
@@ -244,37 +243,31 @@ const bloquesVisibles = computed(() =>
 );
 
 /**
- * Filas de la sección para aprovechar el ancho (pedido de la usuaria: «no aprovechan el 100 % de la pantalla»): un
- * texto seguido de una imagen sencilla van lado a lado en pantallas anchas, alternando el lado de la imagen; el
- * resto ocupa la fila entera. Las imágenes interactivas, las secuencias y las parejas necesitan todo el ancho.
+ * Filas de la sección: una vista por pantalla (observaciones de la docente, 2026-10-27). Un texto junto a una
+ * imagen (antes o después de ella) forman una fila: la imagen a la izquierda y el texto a la derecha, o debajo si la
+ * imagen es muy apaisada (lo decide `BloqueImagen`). Un texto con `fondo` seguido de su imagen se lee sobre esa
+ * ilustración, en un recuadro de cristal junto a la imagen. El resto ocupa la fila entera.
  */
 type FilaSeccion =
-  | {
-      tipo: 'par';
-      clave: string;
-      texto: TipoBloqueTexto;
-      imagen: TipoBloqueImagen;
-      invertida: boolean;
-    }
+  | { tipo: 'par'; clave: string; texto: TipoBloqueTexto; imagen: TipoBloqueImagen }
   | { tipo: 'solo'; clave: string; bloque: Bloque };
-function imagenSencilla(b: Bloque | undefined): b is TipoBloqueImagen {
-  return b?.tipo === 'imagen' && !b.puntos && !b.secuencia && !b.pareja;
+function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
+  return b?.tipo === 'imagen' && !b.pareja;
+}
+function textoEmparejable(b: Bloque | undefined): b is TipoBloqueTexto {
+  return b?.tipo === 'texto';
 }
 const filasSeccion = computed<FilaSeccion[]>(() => {
   const bloques = bloquesVisibles.value;
   const filas: FilaSeccion[] = [];
-  let pares = 0;
   for (let i = 0; i < bloques.length; i++) {
     const b = bloques[i] as Bloque;
     const sig = bloques[i + 1];
-    if (b.tipo === 'texto' && !b.fondo && imagenSencilla(sig)) {
-      filas.push({
-        tipo: 'par',
-        clave: idDeBloque(b),
-        texto: b,
-        imagen: sig,
-        invertida: pares++ % 2 === 1,
-      });
+    if (textoEmparejable(b) && imagenEmparejable(sig)) {
+      filas.push({ tipo: 'par', clave: idDeBloque(b), texto: b, imagen: sig });
+      i++;
+    } else if (imagenEmparejable(b) && textoEmparejable(sig) && !sig.fondo) {
+      filas.push({ tipo: 'par', clave: idDeBloque(b), texto: sig, imagen: b });
       i++;
     } else {
       filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b });
@@ -282,6 +275,10 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
   }
   return filas;
 });
+function sinFondo(t: TipoBloqueTexto): TipoBloqueTexto {
+  const { fondo: _fondo, ...resto } = t;
+  return resto;
+}
 
 /** Actividades obligatorias que faltan en la sección abierta, en orden. */
 const pendientes = computed(() =>
@@ -332,9 +329,6 @@ const aperturaDePortada = computed(() => {
   return primero?.tipo === 'texto' ? primero.markdown.split(/\n\s*\n/)[0]?.trim() : undefined;
 });
 
-const esUltimaSeccion = computed(() => indice.value === secciones.value.length - 1);
-const siguienteModulo = computed(() => (props.n < TOTAL_MODULOS ? props.n + 1 : null));
-
 /** Texto de la flecha del panel: a qué diapositiva lleva. */
 const textoContinuar = computed(() => {
   if (enPortada.value) {
@@ -343,39 +337,24 @@ const textoContinuar = computed(() => {
     const verbo = indice.value === 0 && estados.value[0] !== 'completada' ? 'Empezar' : 'Continuar';
     return `${verbo}: ${textoPlanoDeMarkdown(s.titulo)}`;
   }
-  if (!esUltimaSeccion.value) {
-    const s = secciones.value[indice.value + 1];
-    return siguienteAbierta.value
-      ? `Siguiente: ${textoPlanoDeMarkdown(s?.titulo ?? '')}`
-      : 'Termina las actividades obligatorias para seguir';
-  }
-  if (siguienteModulo.value === null) return 'Terminaste el último módulo';
-  return completoLocal.value && siguienteModuloAbierto.value
-    ? `Ir al módulo ${siguienteModulo.value}`
-    : 'Termina las actividades obligatorias para seguir';
+  return `Leer la sección: ${textoPlanoDeMarkdown(seccion.value?.titulo ?? '')}`;
 });
 
 /**
- * Flecha del panel: en la portada inicia las diapositivas (la sección en curso); en una sección pasa a la
- * siguiente o, si aún faltan actividades obligatorias, lleva a la primera pendiente; en la última, al módulo
- * siguiente.
+ * Flecha del panel: en la portada inicia las diapositivas (la sección en curso); en una sección baja a su
+ * contenido. No salta a la siguiente sección (observación de la docente, 2026-10-27: quien entra por primera
+ * vez la pulsa creyendo que debe hacerlo y se salta el submódulo); avanzar se hace al final de la sección
+ * («Siguiente» y, en la última, el paso al módulo siguiente).
  */
 function alContinuar(): void {
   if (enPortada.value) {
     irA(indice.value);
     return;
   }
-  if (!esUltimaSeccion.value) {
-    if (siguienteAbierta.value) irA(indice.value + 1);
-    else irAlPrimeroPendiente();
-    return;
-  }
-  if (siguienteModulo.value !== null && completoLocal.value && siguienteModuloAbierto.value) {
-    window.scrollTo?.({ top: 0, behavior: 'auto' });
-    void router.push({ name: 'modulo', params: { n: siguienteModulo.value } });
-  } else {
-    irAlPrimeroPendiente();
-  }
+  const el = tituloSeccion.value;
+  if (!el) return;
+  el.focus({ preventScroll: true });
+  desplazarA(el);
 }
 
 /* ----- Diapositivas: sentido del deslizamiento ----- */
@@ -648,6 +627,7 @@ onBeforeUnmount(() => {
             :puntaje-obtenido="puntajeObtenido"
             :revision="esDocente"
             :texto-continuar="textoContinuar"
+            :continuar-abajo="!enPortada"
             :texto-seccion="enPortada ? aperturaDePortada : secciones[indice]?.resumen"
             :fondo-seccion="enPortada ? undefined : secciones[indice]?.fondo"
             :panel-abajo="!enPortada && secciones[indice]?.panel === 'abajo'"
@@ -750,14 +730,30 @@ onBeforeUnmount(() => {
                 <template v-for="fila in filasSeccion" :key="fila.clave">
                   <div
                     v-if="fila.tipo === 'par'"
-                    class="grid items-center gap-6 lg:grid-cols-2 lg:gap-10"
+                    :class="
+                      fila.texto.fondo
+                        ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
+                        : ''
+                    "
                     data-testid="fila-texto-imagen"
                   >
-                    <BloqueTexto :bloque="fila.texto" :class="fila.invertida ? 'lg:order-2' : ''" />
+                    <img
+                      v-if="fila.texto.fondo"
+                      :src="fila.texto.fondo"
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      class="absolute inset-0 -z-10 size-full object-cover"
+                    />
                     <BloqueImagen
                       :bloque="fila.imagen"
-                      :class="fila.invertida ? 'lg:order-1' : ''"
-                    />
+                      :largo-lateral="fila.texto.markdown.length"
+                      :lateral-cristal="Boolean(fila.texto.fondo)"
+                    >
+                      <template #lateral>
+                        <BloqueTexto :bloque="sinFondo(fila.texto)" incrustado />
+                      </template>
+                    </BloqueImagen>
                   </div>
                   <BloqueTexto
                     v-else-if="fila.bloque.tipo === 'texto'"

@@ -24,7 +24,16 @@
  * el avance ni el puntaje, porque en esa vista no se guarda nada.
  */
 import { computed, useSlots } from 'vue';
-import { ArrowRight, Clock, Eye, ListChecks, Lock, NotebookPen, Trophy } from '@lucide/vue';
+import {
+  ArrowDown,
+  ArrowRight,
+  Clock,
+  Eye,
+  ListChecks,
+  Lock,
+  NotebookPen,
+  Trophy,
+} from '@lucide/vue';
 import { MOSTRAR_NOTA_REVISION, TOTAL_MODULOS } from '@/config';
 import type { ProgresoModulo } from '@/content/scoring';
 import type { ModuloContenido } from '@/content/schema';
@@ -55,6 +64,8 @@ const props = withDefaults(
     fondoSeccion?: string;
     /** Panel abajo, a todo el ancho, para fondos que ocupan la diapositiva entera. */
     panelAbajo?: boolean;
+    /** En una sección la flecha baja a su contenido: apunta hacia abajo y dice «Leer la sección». */
+    continuarAbajo?: boolean;
   }>(),
   {
     avance: null,
@@ -66,6 +77,7 @@ const props = withDefaults(
     encabezadoSeccion: undefined,
     fondoSeccion: undefined,
     panelAbajo: false,
+    continuarAbajo: false,
   },
 );
 
@@ -196,6 +208,19 @@ const textoPanel = computed(() =>
           </p>
           <div v-if="!bloqueado" class="mt-auto flex justify-end">
             <button
+              v-if="continuarAbajo"
+              type="button"
+              class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex h-14 shrink-0 items-center gap-2 rounded-full px-6 font-semibold shadow-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              :aria-label="textoContinuar"
+              :title="textoContinuar"
+              data-testid="continuar-modulo"
+              @click="emit('continuar')"
+            >
+              Leer la sección
+              <ArrowDown class="size-5" aria-hidden="true" />
+            </button>
+            <button
+              v-else
               type="button"
               class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-14 shrink-0 items-center justify-center rounded-full shadow-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               :aria-label="textoContinuar"
