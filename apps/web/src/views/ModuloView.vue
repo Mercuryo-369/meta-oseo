@@ -68,9 +68,12 @@ import {
   progresoDeModulo,
   puntajeObtenidoModulo,
 } from '@/content/scoring';
+import { ETIQUETA_VARIANTE_CALLOUT } from '@/content/schema';
 import type {
   Bloque,
+  BloqueCallout as TipoBloqueCallout,
   BloqueImagen as TipoBloqueImagen,
+  BloqueTabla as TipoBloqueTabla,
   BloqueTexto as TipoBloqueTexto,
   ModuloContenido,
   TerminoGlosario,
@@ -250,8 +253,10 @@ const bloquesVisibles = computed(() =>
  * imagen es muy apaisada (lo decide `BloqueImagen`). Un texto con `fondo` seguido de su imagen se lee sobre esa
  * ilustración, en un recuadro de cristal junto a la imagen. El resto ocupa la fila entera.
  */
+type BloqueLectura = TipoBloqueTexto | TipoBloqueTabla;
 type FilaSeccion =
   | { tipo: 'par'; clave: string; texto: TipoBloqueTexto; imagen: TipoBloqueImagen }
+  | { tipo: 'grupo'; clave: string; lectura: BloqueLectura[]; notas: TipoBloqueCallout[] }
   | { tipo: 'solo'; clave: string; bloque: Bloque };
 function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
   return b?.tipo === 'imagen' && !b.pareja;
@@ -259,20 +264,65 @@ function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
 function textoEmparejable(b: Bloque | undefined): b is TipoBloqueTexto {
   return b?.tipo === 'texto';
 }
+/*
+ * Textos, tablas y recuadros seguidos se reúnen en una misma vista hasta llenar la pantalla (revisión de los
+ * módulos 4 a 6, 2026-10-28): una vista por bloque dejaba pantallas con dos líneas y separaba un texto que termina
+ * en «:» de la tabla o la lista que anuncia. Los recuadros van en una columna a la derecha del texto.
+ */
+const CABIDA_LECTURA = 1500;
+const CABIDA_NOTAS = 900;
+function pesoDeBloque(b: BloqueLectura | TipoBloqueCallout): number {
+  if (b.tipo === 'tabla') {
+    return 150 + b.filas.reduce((t, f) => t + Math.max(80, f.celdas.join('').length), 0);
+  }
+  return b.markdown.length + (b.tipo === 'callout' ? 80 : 0);
+}
+function anunciaElSiguiente(b: BloqueLectura | undefined): boolean {
+  return b?.tipo === 'texto' && b.markdown.trimEnd().endsWith(':');
+}
 const filasSeccion = computed<FilaSeccion[]>(() => {
   const bloques = bloquesVisibles.value;
   const filas: FilaSeccion[] = [];
+  let grupo: Extract<FilaSeccion, { tipo: 'grupo' }> | null = null;
+  let pesoLectura = 0;
+  let pesoNotas = 0;
   for (let i = 0; i < bloques.length; i++) {
     const b = bloques[i] as Bloque;
     const sig = bloques[i + 1];
     if (textoEmparejable(b) && imagenEmparejable(sig)) {
       filas.push({ tipo: 'par', clave: idDeBloque(b), texto: b, imagen: sig });
+      grupo = null;
       i++;
     } else if (imagenEmparejable(b) && textoEmparejable(sig) && !sig.fondo) {
       filas.push({ tipo: 'par', clave: idDeBloque(b), texto: sig, imagen: b });
+      grupo = null;
       i++;
+    } else if (b.tipo === 'texto' || b.tipo === 'tabla' || b.tipo === 'callout') {
+      const peso = pesoDeBloque(b);
+      const forzado = grupo !== null && anunciaElSiguiente(grupo.lectura.at(-1));
+      const cabe =
+        grupo !== null &&
+        (b.tipo === 'callout'
+          ? pesoNotas + peso <= CABIDA_NOTAS
+          : pesoLectura + peso <= CABIDA_LECTURA &&
+            // Un subtítulo nuevo abre vista propia si la actual ya tiene lectura suficiente.
+            !(b.tipo === 'texto' && b.titulo && pesoLectura >= 600));
+      if (!grupo || !(forzado || cabe)) {
+        grupo = { tipo: 'grupo', clave: idDeBloque(b), lectura: [], notas: [] };
+        pesoLectura = 0;
+        pesoNotas = 0;
+        filas.push(grupo);
+      }
+      if (b.tipo === 'callout') {
+        grupo.notas.push(b);
+        pesoNotas += peso;
+      } else {
+        grupo.lectura.push(b);
+        pesoLectura += peso;
+      }
     } else {
       filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b });
+      grupo = null;
     }
   }
   return filas;
@@ -310,10 +360,17 @@ function etiquetaDeFila(f: FilaSeccion | undefined, i: number): string {
   if (!f) return `Vista ${i + 1}`;
   let titulo = '';
   if (f.tipo === 'par') titulo = f.texto.titulo ?? f.imagen.pie;
-  else if (f.bloque.tipo === 'actividad') titulo = f.bloque.actividad.titulo;
+  else if (f.tipo === 'grupo') {
+    const primero = [...f.lectura, ...f.notas].find((b) => b.titulo);
+    titulo = primero?.titulo ?? (f.notas[0] ? ETIQUETA_VARIANTE_CALLOUT[f.notas[0].variante] : '');
+  } else if (f.bloque.tipo === 'actividad') titulo = f.bloque.actividad.titulo;
   else if (f.bloque.tipo === 'imagen') titulo = f.bloque.pie;
   else if ('titulo' in f.bloque && f.bloque.titulo) titulo = f.bloque.titulo;
   return titulo ? textoPlanoDeMarkdown(titulo) : `Vista ${i + 1}`;
+}
+/** Los recuadros van a la derecha del texto, salvo que la vista lleve una tabla: esta necesita todo el ancho. */
+function notasAlLado(f: Extract<FilaSeccion, { tipo: 'grupo' }>): boolean {
+  return f.lectura.length > 0 && f.notas.length > 0 && f.lectura.every((b) => b.tipo !== 'tabla');
 }
 /** Flechas del teclado sobre la barra de vistas. */
 function alTeclaVistas(e: KeyboardEvent): void {
@@ -879,6 +936,36 @@ onBeforeUnmount(() => {
                                 <BloqueTexto :bloque="sinFondo(fila.texto)" incrustado />
                               </template>
                             </BloqueImagen>
+                          </div>
+                          <div
+                            v-else-if="fila.tipo === 'grupo'"
+                            class="grid items-start gap-5"
+                            :class="
+                              notasAlLado(fila)
+                                ? 'lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,1fr)]'
+                                : ''
+                            "
+                            data-testid="grupo-lectura"
+                          >
+                            <div v-if="fila.lectura.length" class="min-w-0 space-y-5">
+                              <template v-for="b in fila.lectura" :key="b.id">
+                                <BloqueTexto
+                                  v-if="b.tipo === 'texto'"
+                                  :bloque="b"
+                                  :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
+                                />
+                                <BloqueTabla v-else :bloque="b" />
+                              </template>
+                            </div>
+                            <aside
+                              v-if="fila.notas.length"
+                              class="grid min-w-0 items-start gap-4"
+                              :class="
+                                !notasAlLado(fila) && fila.notas.length > 1 ? 'md:grid-cols-2' : ''
+                              "
+                            >
+                              <BloqueCallout v-for="c in fila.notas" :key="c.id" :bloque="c" />
+                            </aside>
                           </div>
                           <BloqueTexto
                             v-else-if="fila.bloque.tipo === 'texto'"
