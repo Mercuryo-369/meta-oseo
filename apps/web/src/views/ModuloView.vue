@@ -336,8 +336,16 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
 const vista = ref(0);
 const sentidoVista = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
 const carrusel = ref<HTMLElement | null>(null);
-const totalVistas = computed(() => filasSeccion.value.length);
+/*
+ * En los módulos 4 a 6 cada sección es una sola página con todo su contenido (indicación de la usuaria,
+ * 2026-10-28); las vistas hacia los lados se quedan en los módulos 1 a 3, revisados con la docente.
+ */
+const conVistas = computed(() => props.n <= 3);
+const totalVistas = computed(() => (conVistas.value ? filasSeccion.value.length : 1));
 const filaActual = computed(() => filasSeccion.value[vista.value] ?? null);
+const filasMostradas = computed(() =>
+  conVistas.value ? (filaActual.value ? [filaActual.value] : []) : filasSeccion.value,
+);
 const esUltimaVista = computed(() => vista.value >= totalVistas.value - 1);
 watch(
   () => seccion.value?.id,
@@ -907,9 +915,10 @@ onBeforeUnmount(() => {
                       <div
                         :key="`${seccion.id}:${vista}`"
                         class="vista-seccion"
+                        :class="conVistas ? '' : 'space-y-8'"
                         data-testid="vista-seccion"
                       >
-                        <template v-for="fila in filaActual ? [filaActual] : []" :key="fila.clave">
+                        <template v-for="fila in filasMostradas" :key="fila.clave">
                           <div
                             v-if="fila.tipo === 'par'"
                             :class="
