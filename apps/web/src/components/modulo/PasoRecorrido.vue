@@ -5,7 +5,7 @@
  * separa del paso siguiente; debajo, un rótulo opcional («Módulo 4») y el título. Va DENTRO de un elemento interactivo (botón o enlace) con las clases
  * `relative flex flex-col`; este componente no es interactivo por sí mismo.
  *
- * Mismo lenguaje que el menú lateral (`navegacion/MenuModulos.vue`): el paso actual va con el nodo relleno
+ * Mismo lenguaje visual de recorrido: el paso actual va con el nodo relleno
  * de azul, el completado en verde con una marca y el bloqueado en gris con candado. El estado se dice
  * también en texto para lectores de pantalla (`etiqueta`).
  */

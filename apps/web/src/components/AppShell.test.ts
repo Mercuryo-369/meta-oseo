@@ -7,7 +7,6 @@ import { createMemoryHistory } from 'vue-router';
 import { RouterView } from 'vue-router';
 import { h } from 'vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
-import MenuModulos from '@/components/navegacion/MenuModulos.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
 import { crearRouter } from '@/router';
 import { useAuthStore } from '@/stores/auth';
@@ -49,7 +48,7 @@ async function montarApp(ruta: string) {
       // el layout del shell, no su contenido, y sigue valiendo cuando ellos los reescriban.
       global: {
         plugins: [pinia, router],
-        stubs: { MenuModulos: true, HudPuntaje: true, MentorPanel: true },
+        stubs: { HudPuntaje: true, MentorPanel: true },
       },
       attachTo: document.body,
     },
@@ -74,12 +73,12 @@ beforeEach(() => {
 });
 
 describe('AppShell', () => {
-  it('monta menú, HUD y mentor alrededor de la vista, con los landmarks correctos', async () => {
+  it('monta HUD y mentor alrededor de la vista (sin menú lateral), con los landmarks correctos', async () => {
     const { wrapper } = await montarApp('/');
 
     expect(wrapper.find('header').exists()).toBe(true);
     expect(wrapper.get('header').findComponent(HudPuntaje).exists()).toBe(true);
-    expect(wrapper.findComponent(MenuModulos).exists()).toBe(true);
+    expect(wrapper.find('#menu-modulos').exists()).toBe(false);
     expect(wrapper.findComponent(MentorPanel).exists()).toBe(true);
     const main = wrapper.get('main#contenido');
     expect(main.attributes('tabindex')).toBe('-1');

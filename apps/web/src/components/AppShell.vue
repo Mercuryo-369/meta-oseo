@@ -1,15 +1,14 @@
 <script setup lang="ts">
 /**
- * Layout de las rutas autenticadas. Monta la cabecera (marca, botón «Módulos», HUD, panel docente, salir),
- * el menú de módulos y el panel del mentor alrededor de <RouterView/>:
+ * Layout de las rutas autenticadas. Monta la cabecera (marca, HUD, panel docente, tema, salir) y el panel del
+ * mentor alrededor de <RouterView/>. Sin menú lateral de módulos (la usuaria lo retiró el 2026-10-29: repetía la
+ * mandíbula de la portada y los accesos a logros y certificado): a los módulos se llega desde la portada.
  *
- *   pantallas estrechas  HUD en la cabecera; el menú se despliega desde la izquierda con el botón
- *                        «Módulos»; mentor = botón flotante abajo a la derecha.
- *   pantallas anchas     menú = barra lateral fija a la izquierda (el contenido deja 17rem libres);
- *                        mentor = panel lateral derecho que se superpone al contenido.
+ *   pantallas estrechas  HUD en la cabecera; mentor = botón flotante abajo a la derecha.
+ *   pantallas anchas     mentor = panel lateral derecho que se superpone al contenido.
  *
- * CONTRATO CON LOS COMPONENTES HIJOS (no cambiar sin avisar): MenuModulos y MentorPanel se
- * posicionan a sí mismos con `position: fixed`; HudPuntaje es un bloque que rellena el ancho
+ * CONTRATO CON LOS COMPONENTES HIJOS (no cambiar sin avisar): MentorPanel se posiciona a sí mismo con
+ * `position: fixed`; HudPuntaje es un bloque que rellena el ancho
  * disponible de la cabecera. El shell no necesita cambios cuando esos componentes se
  * reescriban; solo reserva espacio (padding de <main>) para que nada quede tapado de forma
  * permanente.
@@ -18,9 +17,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import { LayoutDashboard, LogOut } from '@lucide/vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
-import BotonModulos from '@/components/navegacion/BotonModulos.vue';
 import SelectorTema from '@/components/SelectorTema.vue';
-import MenuModulos from '@/components/navegacion/MenuModulos.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth';
@@ -75,8 +72,6 @@ async function salir(): Promise<void> {
           padding-right: max(0.75rem, var(--area-segura-derecha));
         "
       >
-        <BotonModulos />
-
         <RouterLink
           :to="{ name: 'inicio' }"
           class="text-foreground flex min-h-11 shrink-0 items-center gap-2.5 rounded-md pr-1 text-base font-semibold tracking-tight"
@@ -119,8 +114,6 @@ async function salir(): Promise<void> {
         </Button>
       </div>
     </header>
-
-    <MenuModulos />
 
     <!-- El padding inferior evita que el botón flotante del mentor tape el final del contenido en móvil. -->
     <main
