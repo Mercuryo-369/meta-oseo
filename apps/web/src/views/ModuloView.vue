@@ -256,9 +256,15 @@ const bloquesVisibles = computed(() =>
  */
 type BloqueLectura = TipoBloqueTexto | TipoBloqueTabla;
 type FilaSeccion =
-  | { tipo: 'par'; clave: string; texto: TipoBloqueTexto; imagen: TipoBloqueImagen }
+  | {
+      tipo: 'par';
+      clave: string;
+      texto: TipoBloqueTexto;
+      imagen: TipoBloqueImagen;
+      previo?: TipoBloqueTexto;
+    }
   | { tipo: 'grupo'; clave: string; lectura: BloqueLectura[]; notas: TipoBloqueCallout[] }
-  | { tipo: 'solo'; clave: string; bloque: Bloque }
+  | { tipo: 'solo'; clave: string; bloque: Bloque; previo?: TipoBloqueTexto }
   | { tipo: 'cierre'; clave: string };
 function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
   return b?.tipo === 'imagen' && !b.pareja;
@@ -271,13 +277,19 @@ function textoEmparejable(b: Bloque | undefined): b is TipoBloqueTexto {
  * módulos 4 a 6, 2026-10-28): una vista por bloque dejaba pantallas con dos líneas y separaba un texto que termina
  * en «:» de la tabla o la lista que anuncia. Los recuadros van en una columna a la derecha del texto.
  */
-const CABIDA_LECTURA = 1500;
-const CABIDA_NOTAS = 900;
+// Caracteres equivalentes que caben en una vista a lo ancho de la pantalla (revisión visual, 2026-10-29): unas 20
+// líneas de ~140 caracteres. Cada salto de línea (listas, subtítulos) cuenta como un trozo de línea vacía.
+const CABIDA_LECTURA = 2600;
+const CABIDA_NOTAS = 700;
+const CABIDA_NOTAS_SOLAS = 2000;
+/** Con más lectura que esta, los recuadros no van al lado (estrecharían el texto hasta desbordar). */
+const LECTURA_CON_NOTAS = 1700;
 function pesoDeBloque(b: BloqueLectura | TipoBloqueCallout): number {
   if (b.tipo === 'tabla') {
-    return 150 + b.filas.reduce((t, f) => t + Math.max(80, f.celdas.join('').length), 0);
+    return 300 + b.filas.reduce((t, f) => t + Math.max(250, f.celdas.join('').length), 0);
   }
-  return b.markdown.length + (b.tipo === 'callout' ? 80 : 0);
+  const saltos = b.markdown.split('\n').length - 1;
+  return b.markdown.length + saltos * 70 + (b.tipo === 'callout' ? 80 : 0);
 }
 function anunciaElSiguiente(b: BloqueLectura | undefined): boolean {
   return b?.tipo === 'texto' && b.markdown.trimEnd().endsWith(':');
@@ -305,10 +317,12 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
       const cabe =
         grupo !== null &&
         (b.tipo === 'callout'
-          ? pesoNotas + peso <= CABIDA_NOTAS
-          : pesoLectura + peso <= CABIDA_LECTURA &&
+          ? // Solo recuadros: van en dos columnas y caben más que en la columna lateral.
+            pesoNotas + peso <= (pesoLectura > 0 ? CABIDA_NOTAS : CABIDA_NOTAS_SOLAS) &&
+            pesoLectura <= LECTURA_CON_NOTAS
+          : pesoLectura + peso <= (pesoNotas > 0 ? LECTURA_CON_NOTAS : CABIDA_LECTURA) &&
             // Un subtítulo nuevo abre vista propia si la actual ya tiene lectura suficiente.
-            !(b.tipo === 'texto' && b.titulo && pesoLectura >= 600));
+            !(b.tipo === 'texto' && b.titulo && pesoLectura >= 1400));
       if (!grupo || !(forzado || cabe)) {
         grupo = { tipo: 'grupo', clave: idDeBloque(b), lectura: [], notas: [] };
         pesoLectura = 0;
@@ -329,8 +343,90 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
   }
   // Al completar el módulo, la última sección gana una parte final con la felicitación y el paso siguiente.
   if (mostrarCompletado.value) filas.push({ tipo: 'cierre', clave: 'cierre-modulo' });
-  return filas;
+  return unirIntroducciones(unirNotasSueltas(filas));
 });
+/*
+ * Un texto corto suelto (una o dos líneas: «Las enfermedades de este apartado muestran…», «Recorre la curva paso a
+ * paso…») no ocupa una pantalla vacía: acompaña a la parte siguiente si es una imagen, una imagen con su texto o una
+ * actividad (revisión visual, 2026-10-29).
+ */
+const LARGO_INTRODUCCION = 450;
+/*
+ * Recuadros sueltos («Atención», «Dato clave»…) que no cupieron junto al texto anterior: van con la parte siguiente si
+ * su lectura es corta (al lado) o, si no, debajo de la anterior cuando esta deja sitio. Así no ocupan solos una
+ * pantalla casi vacía.
+ */
+function pesoLecturaDe(f: Extract<FilaSeccion, { tipo: 'grupo' }>): number {
+  return f.lectura.reduce((t, b) => t + pesoDeBloque(b), 0);
+}
+function pesoNotasDe(f: Extract<FilaSeccion, { tipo: 'grupo' }>): number {
+  return f.notas.reduce((t, b) => t + pesoDeBloque(b), 0);
+}
+function unirNotasSueltas(filas: FilaSeccion[]): FilaSeccion[] {
+  const salida: FilaSeccion[] = [];
+  for (let i = 0; i < filas.length; i++) {
+    const f = filas[i] as FilaSeccion;
+    if (f.tipo !== 'grupo' || f.lectura.length > 0) {
+      salida.push(f);
+      continue;
+    }
+    const sig = filas[i + 1];
+    const prev = salida.at(-1);
+    if (
+      sig?.tipo === 'grupo' &&
+      sig.lectura.length > 0 &&
+      sig.notas.length === 0 &&
+      pesoLecturaDe(sig) <= LECTURA_CON_NOTAS
+    ) {
+      salida.push({ ...sig, clave: f.clave, notas: f.notas });
+      i++;
+    } else if (
+      prev?.tipo === 'grupo' &&
+      prev.lectura.length > 0 &&
+      pesoLecturaDe(prev) + pesoNotasDe(prev) + pesoNotasDe(f) <= CABIDA_LECTURA + 200
+    ) {
+      salida[salida.length - 1] = { ...prev, notas: [...prev.notas, ...f.notas] };
+    } else {
+      salida.push(f);
+    }
+  }
+  return salida;
+}
+function unirIntroducciones(filas: FilaSeccion[]): FilaSeccion[] {
+  const salida: FilaSeccion[] = [];
+  for (let i = 0; i < filas.length; i++) {
+    const f = filas[i] as FilaSeccion;
+    const sig = filas[i + 1];
+    const intro =
+      f.tipo === 'grupo' &&
+      f.notas.length === 0 &&
+      f.lectura.length === 1 &&
+      f.lectura[0]?.tipo === 'texto' &&
+      f.lectura[0].markdown.length < LARGO_INTRODUCCION
+        ? f.lectura[0]
+        : null;
+    if (intro && sig?.tipo === 'par' && !sig.previo && !sig.texto.fondo) {
+      salida.push({ ...sig, clave: f.clave, previo: intro });
+      i++;
+    } else if (intro && sig?.tipo === 'solo' && !sig.previo && imagenEmparejable(sig.bloque)) {
+      salida.push({ tipo: 'par', clave: f.clave, texto: intro, imagen: sig.bloque });
+      i++;
+    } else if (intro && sig?.tipo === 'solo' && !sig.previo && sig.bloque.tipo === 'actividad') {
+      salida.push({ ...sig, clave: f.clave, previo: intro });
+      i++;
+    } else if (
+      intro &&
+      sig?.tipo === 'grupo' &&
+      pesoDeBloque(intro) + pesoLecturaDe(sig) <= CABIDA_LECTURA + 300
+    ) {
+      salida.push({ ...sig, clave: f.clave, lectura: [intro, ...sig.lectura] });
+      i++;
+    } else {
+      salida.push(f);
+    }
+  }
+  return salida;
+}
 /*
  * Vistas de la sección (observación de la docente, 2026-10-27: «mi idea era que todo el contenido fuera
  * horizontal… el contenido de los submódulos es vertical y eso dificulta la lectura»): cada fila es una vista que
@@ -340,6 +436,23 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
 const vista = ref(0);
 const sentidoVista = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
 const carrusel = ref<HTMLElement | null>(null);
+/*
+ * Alto real del recuadro de la parte visible (en escritorio, donde la sección ocupa la pantalla): lo leen las imágenes
+ * y los textos (`--alto-vista`) para caber sin desplazarse. En móvil la página se desplaza y no se fija.
+ */
+let observadorAlto: ResizeObserver | null = null;
+watch(carrusel, (el) => {
+  observadorAlto?.disconnect();
+  observadorAlto = null;
+  if (!el || typeof ResizeObserver === 'undefined') return;
+  const escritorio = window.matchMedia?.('(min-width: 1024px)');
+  observadorAlto = new ResizeObserver(() => {
+    if (escritorio?.matches) el.style.setProperty('--alto-vista', `${el.clientHeight}px`);
+    else el.style.removeProperty('--alto-vista');
+  });
+  observadorAlto.observe(el);
+});
+onBeforeUnmount(() => observadorAlto?.disconnect());
 const totalVistas = computed(() => filasSeccion.value.length);
 const filaActual = computed(() => filasSeccion.value[vista.value] ?? null);
 const esUltimaVista = computed(() => vista.value >= totalVistas.value - 1);
@@ -402,7 +515,7 @@ function etiquetaDeFila(f: FilaSeccion | undefined, i: number): string {
   if (!f) return `Vista ${i + 1}`;
   if (f.tipo === 'cierre') return 'Módulo completado';
   let titulo = '';
-  if (f.tipo === 'par') titulo = f.texto.titulo ?? f.imagen.pie;
+  if (f.tipo === 'par') titulo = f.texto.titulo ?? f.previo?.titulo ?? f.imagen.pie;
   else if (f.tipo === 'grupo') {
     const primero = [...f.lectura, ...f.notas].find((b) => b.titulo);
     titulo = primero?.titulo ?? (f.notas[0] ? ETIQUETA_VARIANTE_CALLOUT[f.notas[0].variante] : '');
@@ -431,9 +544,18 @@ function sinTituloRepetido(t: TipoBloqueTexto): TipoBloqueTexto {
   const { titulo: _titulo, ...resto } = t;
   return resto;
 }
-/** Los recuadros van a la derecha del texto, salvo que la vista lleve una tabla: esta necesita todo el ancho. */
+/**
+ * Los recuadros van a la derecha del texto, salvo que la vista lleve una tabla (necesita todo el ancho) o que el texto o
+ * los recuadros sean largos: entonces van debajo, en dos columnas.
+ */
 function notasAlLado(f: Extract<FilaSeccion, { tipo: 'grupo' }>): boolean {
-  return f.lectura.length > 0 && f.notas.length > 0 && f.lectura.every((b) => b.tipo !== 'tabla');
+  return (
+    f.lectura.length > 0 &&
+    f.notas.length > 0 &&
+    f.lectura.every((b) => b.tipo !== 'tabla') &&
+    pesoLecturaDe(f) <= LECTURA_CON_NOTAS &&
+    pesoNotasDe(f) <= CABIDA_NOTAS
+  );
 }
 /** Flechas del teclado sobre la barra de vistas. */
 function alTeclaVistas(e: KeyboardEvent): void {
@@ -995,6 +1117,12 @@ onBeforeUnmount(() => {
                         >
                           <template #lateral>
                             <BloqueTexto
+                              v-if="fila.previo"
+                              :bloque="sinTituloRepetido(fila.previo)"
+                              incrustado
+                              class="mb-4"
+                            />
+                            <BloqueTexto
                               :bloque="sinTituloRepetido(sinFondo(fila.texto))"
                               incrustado
                             />
@@ -1062,12 +1190,14 @@ onBeforeUnmount(() => {
                         v-else-if="fila.bloque.tipo === 'pregunta'"
                         :bloque="fila.bloque"
                       />
-                      <BloqueActividad
-                        v-else-if="fila.bloque.tipo === 'actividad'"
-                        :actividad="fila.bloque.actividad"
-                        :modulo="n as NumeroModulo"
-                        :solo-lectura="esDocente"
-                      />
+                      <template v-else-if="fila.bloque.tipo === 'actividad'">
+                        <BloqueTexto v-if="fila.previo" :bloque="fila.previo" class="mb-3" />
+                        <BloqueActividad
+                          :actividad="fila.bloque.actividad"
+                          :modulo="n as NumeroModulo"
+                          :solo-lectura="esDocente"
+                        />
+                      </template>
                     </template>
                   </div>
                 </Transition>

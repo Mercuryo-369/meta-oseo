@@ -65,13 +65,11 @@ const aspecto = computed(() => {
   const a = pasoActual.value ?? props.bloque;
   return a.ancho && a.alto ? a.ancho / a.alto : 1.4;
 });
-/** Texto debajo de la imagen: imagen muy apaisada, o apaisada con poco texto (así la imagen se ve más grande). */
-const apilado = computed(
-  () =>
-    hayLateral.value &&
-    !hayPuntos.value &&
-    (aspecto.value >= 1.75 || (aspecto.value >= 1.3 && props.largoLateral < 450)),
-);
+/**
+ * Texto debajo de la imagen solo si es muy panorámica (2,4:1 o más). Con la parte limitada al alto de la pantalla, una
+ * imagen apaisada con el texto al lado se ve más grande que con el texto debajo (revisión visual, 2026-10-29).
+ */
+const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.value >= 2.4);
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
 /**
@@ -255,7 +253,8 @@ const claseRecuadro = computed(() =>
           @error="fallo = true"
         />
 
-        <figcaption class="text-muted-foreground text-center text-sm">
+        <!-- `contain: inline-size`: el pie (y su fuente, a veces larga) no ensancha la columna más que la imagen. -->
+        <figcaption class="text-muted-foreground text-center text-sm [contain:inline-size]">
           <TextoRico v-if="!bloque.pareja" :texto="bloque.pie" modo="linea" />
           <span v-if="bloque.credito" class="block text-xs">Fuente: {{ bloque.credito }}</span>
         </figcaption>
@@ -351,6 +350,6 @@ const claseRecuadro = computed(() =>
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 2.5rem));
+  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 3.25rem));
 }
 </style>
