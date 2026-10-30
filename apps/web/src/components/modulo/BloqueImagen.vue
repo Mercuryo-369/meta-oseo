@@ -72,6 +72,14 @@ const aspecto = computed(() => {
  * imagen apaisada con el texto al lado se ve más grande que con el texto debajo (revisión visual, 2026-10-29).
  */
 const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.value >= 2.4);
+/**
+ * Texto corto al lado de la imagen (revisión de la 1.2.2, 2026-10-29): imagen y texto se centran como un conjunto, el
+ * texto en una columna más estrecha, centrado en vertical y con letra más grande, en vez de unas pocas líneas
+ * perdidas en un recuadro ancho.
+ */
+const lateralCorto = computed(
+  () => hayLateral.value && !hayPuntos.value && !apilado.value && props.largoLateral < 700,
+);
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
 /**
@@ -93,7 +101,13 @@ const claseRecuadro = computed(() =>
     <div
       v-if="!fallo"
       class="grid items-start gap-5"
-      :class="conColumna ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,1fr)]' : ''"
+      :class="
+        lateralCorto
+          ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,36rem)] lg:items-center lg:justify-center lg:gap-8'
+          : conColumna
+            ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,1fr)]'
+            : ''
+      "
       :style="{ '--imagen-max': anchoImagenMax }"
     >
       <!-- Columna de la imagen -->
@@ -286,7 +300,12 @@ const claseRecuadro = computed(() =>
         <!-- `contain: inline-size`: el pie (y su fuente, a veces larga) no ensancha la columna más que la imagen. -->
         <figcaption class="text-muted-foreground text-center text-sm [contain:inline-size]">
           <TextoRico v-if="!bloque.pareja" :texto="bloque.pie" modo="linea" />
-          <span v-if="bloque.credito" class="block text-xs">Fuente: {{ bloque.credito }}</span>
+          <span
+            v-if="bloque.credito"
+            class="block truncate text-xs"
+            :title="`Fuente: ${bloque.credito}`"
+            >Fuente: {{ bloque.credito }}</span
+          >
         </figcaption>
       </div>
 
@@ -303,7 +322,11 @@ const claseRecuadro = computed(() =>
         <div
           v-if="hayLateral"
           class="rounded-2xl p-5"
-          :class="[claseRecuadro, apilado ? 'lg:max-h-[9rem] lg:overflow-y-auto' : '']"
+          :class="[
+            claseRecuadro,
+            apilado ? 'lg:max-h-[9rem] lg:overflow-y-auto' : '',
+            lateralCorto ? 'lg:p-7 lg:[&_.text-base]:text-xl lg:[&_h3]:text-2xl' : '',
+          ]"
           data-testid="texto-lateral"
         >
           <slot name="lateral" />
