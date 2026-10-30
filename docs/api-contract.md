@@ -540,7 +540,7 @@ Mentor (F3-09, migración `b7d2f4a91c36`): `chat_sessions` (`user_id`, `modulo` 
 | `MENTOR_RAG_TOP_K` | `5` | Fragmentos del curso que se recuperan por pregunta (1 a 10) |
 | `RAG_BACKEND` | `bm25` | Motor de recuperación. `pgvector` está reservado para F6-10 y aún no está implementado (la API se niega a arrancar con él) |
 | `RAG_CORPUS_PATH` | `services/api/app/data/corpus.jsonl` | Corpus del mentor (vacía: el mentor responde sin material del curso; ruta explícita inexistente: error de arranque) |
-| `CERT_MIN_PORCENTAJE` | `70` | % mínimo del máximo de las actividades obligatorias (solo con manifiesto), 0 a 100 |
+| `CERT_MIN_PORCENTAJE` | `60` | % mínimo del máximo de las actividades obligatorias (solo con manifiesto), 0 a 100. Es el del diploma más bajo (cumplimiento) |
 | `PUBLIC_BASE_URL` | `http://localhost:5173` | Origen público del sitio, para la URL de verificación impresa en el PDF |
 
 ## Docente (F6-03, solo backend)

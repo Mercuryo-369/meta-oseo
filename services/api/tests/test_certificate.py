@@ -11,7 +11,7 @@ from pypdf import PdfReader
 from sqlalchemy import delete, func
 from sqlmodel import select
 
-from app.core.constants import MODULE_TITLES, OVA_TITLE
+from app.core.constants import OVA_TITLE
 from app.models.certificate import Certificate
 from app.models.progress import ProgressModulo
 from app.models.user import User
@@ -22,7 +22,13 @@ from app.services.certificate import (
     normalize_code,
     percentage,
 )
-from app.services.certificate_pdf import format_spanish_date, render_certificate_pdf
+from app.services.certificate_pdf import (
+    DIPLOMAS_DIR,
+    NIVELES_DIPLOMA,
+    format_spanish_date,
+    nivel_de_diploma,
+    render_certificate_pdf,
+)
 from tests.conftest import ANA
 from tests.manifest_support import (
     MAX_OBLIGATORIAS_TOTAL,
@@ -66,7 +72,11 @@ def new_user(client, **overrides):
 @pytest.fixture
 def mclient(make_app, tmp_path):
     """App con el manifiesto de prueba (6 módulos, 480 puntos obligatorios)."""
-    app = make_app(activities_manifest_path=write_manifest(tmp_path / "manifiesto.json"))
+    # Umbral fijo en 70 %: las pruebas de borde no dependen del valor por defecto (60 %).
+    app = make_app(
+        activities_manifest_path=write_manifest(tmp_path / "manifiesto.json"),
+        cert_min_porcentaje=70,
+    )
     with TestClient(app) as test_client:
         yield test_client
 
@@ -613,16 +623,15 @@ def test_pdf_es_valido_y_trae_los_datos(client):
     assert len(lector.pages) == 1
     pagina = lector.pages[0]
     assert pagina.mediabox.width > pagina.mediabox.height  # A4 apaisada
-    assert lector.metadata.title == "Certificado de finalización - María José Núñez Peña"
+    # Sin manifiesto no hay porcentaje: diploma de cumplimiento.
+    assert lector.metadata.title == "Diploma de Cumplimiento - María José Núñez Peña"
 
     texto = pdf_text(contenido)
-    assert "Certificado de finalización" in texto
+    assert "Diploma de Cumplimiento" in texto  # capa de texto invisible sobre el fondo
     assert "María José Núñez Peña" in texto  # acentos y ñ
     assert OVA_TITLE in texto
-    for titulo in MODULE_TITLES.values():
-        assert titulo in texto
     assert codigo in texto
-    assert f"http://localhost:5173/verify/{codigo}" in texto
+    assert "http://localhost:5173" in texto and f"/verify/{codigo}" in texto
     assert "identificado(a) con Cédula de ciudadanía" in texto
     assert "1023456789" in texto
     assert re.search(r"\d{1,2} de [a-z]+ de \d{4}", texto)
@@ -727,3 +736,25 @@ def test_fecha_en_espanol_en_hora_de_colombia():
     )
     assert format_spanish_date(datetime(2026, 1, 1, 12, 0, tzinfo=UTC)) == "1 de enero de 2026"
     assert format_spanish_date(datetime(2026, 1, 1, 3, 0, tzinfo=UTC)) == "31 de diciembre de 2025"
+
+
+@pytest.mark.parametrize(
+    ("porcentaje", "clave"),
+    [
+        (None, "cumplimiento"),
+        (59.9, "cumplimiento"),
+        (60.0, "cumplimiento"),
+        (70.0, "satisfactorio"),
+        (84.9, "satisfactorio"),
+        (85.0, "sobresaliente"),
+        (95.0, "excelencia"),
+        (100.0, "excelencia"),
+    ],
+)
+def test_nivel_de_diploma_segun_porcentaje(porcentaje, clave):
+    assert nivel_de_diploma(porcentaje).clave == clave
+
+
+def test_cada_nivel_tiene_su_fondo():
+    for nivel in NIVELES_DIPLOMA:
+        assert (DIPLOMAS_DIR / f"diploma_{nivel.clave}.jpg").is_file()

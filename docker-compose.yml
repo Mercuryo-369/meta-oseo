@@ -72,7 +72,7 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-10080}
       # Certificado (F5-05). El manifiesto de actividades viaja en la imagen (app/data) y se
       # carga solo si existe; no hace falta configurar su ruta.
-      CERT_MIN_PORCENTAJE: ${CERT_MIN_PORCENTAJE:-70}
+      CERT_MIN_PORCENTAJE: ${CERT_MIN_PORCENTAJE:-60}
       # URL con la que el navegador llega al sitio (nginx): va impresa en el PDF del certificado
       # como enlace de verificación. Obligatoria: con localhost el certificado saldría con un
       # enlace falso, y la API se niega a arrancar en ENV=prod si apunta a localhost o 127.0.0.1.

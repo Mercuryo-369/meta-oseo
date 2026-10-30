@@ -5,27 +5,29 @@ con todos sus diacríticos, además de griego y cirílico, así que los nombres 
 Un carácter que la fuente no trae (por ejemplo ideogramas) se dibuja como el glifo vacío de la
 fuente en lugar de romper la emisión.
 
-Página A4 apaisada, sobria: fondo marfil, doble borde, título, nombre completo, nombre del OVA, los
-seis módulos, puntaje, fecha, código de verificación y un QR con la URL pública de verificación.
+Página A4 apaisada: el fondo es el diploma del nivel alcanzado (`app/assets/diplomas`, diseñados por
+la usuaria) y encima se escriben el nombre completo, la identificación, el puntaje, la fecha, el
+código de verificación y un QR con la URL pública de verificación.
 """
 
 import contextlib
 import io
 import threading
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from reportlab.graphics import renderPDF
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
-from reportlab.lib.colors import Color, HexColor
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.utils import simpleSplit
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 
-from app.core.constants import CERT_UTC_OFFSET_HOURS, MODULE_TITLES, OVA_TITLE
+from app.core.constants import CERT_UTC_OFFSET_HOURS, OVA_TITLE
 from app.models.certificate import Certificate
 from app.models.enums import TIPO_IDENTIFICACION_ETIQUETAS, TipoIdentificacion
 from app.services.certificate import percentage
@@ -41,15 +43,6 @@ _FONT_FILES = {
     SERIF: "DejaVuSerif.ttf",
     SERIF_BOLD: "DejaVuSerif-Bold.ttf",
 }
-
-# Paleta: marfil, azul petróleo y un dorado apagado para los filetes.
-PAPER = HexColor("#FBF9F4")
-NAVY = HexColor("#1E3A4C")
-TEAL = HexColor("#2F6F73")
-GOLD = HexColor("#A8853D")
-INK = HexColor("#2B333B")
-MUTED = HexColor("#5B6670")
-HAIRLINE = Color(0.66, 0.52, 0.24, alpha=0.45)
 
 _MONTHS = (
     "enero",
@@ -101,73 +94,6 @@ def _centered(c: Canvas, x: float, y: float, text: str, font: str, size: float, 
     c.drawCentredString(x, y, text)
 
 
-def _spaced_caps(c: Canvas, x: float, y: float, text: str, font: str, size: float, color) -> None:
-    """Texto centrado con espaciado entre letras (rótulos en versalitas)."""
-    spacing = 2.2
-    width = pdfmetrics.stringWidth(text, font, size) + spacing * (len(text) - 1)
-    text_object = c.beginText(x - width / 2, y)
-    text_object.setFont(font, size)
-    text_object.setFillColor(color)
-    text_object.setCharSpace(spacing)
-    text_object.textOut(text)
-    text_object.setCharSpace(0)  # el espaciado persiste en la página: restablecerlo
-    c.drawText(text_object)
-
-
-def _draw_frame(c: Canvas, width: float, height: float) -> None:
-    c.setFillColor(PAPER)
-    c.rect(0, 0, width, height, stroke=0, fill=1)
-    # Borde exterior grueso y filete interior dorado, con cuadritos en las esquinas.
-    outer, inner = 22, 32
-    c.setStrokeColor(NAVY)
-    c.setLineWidth(2.2)
-    c.rect(outer, outer, width - 2 * outer, height - 2 * outer, stroke=1, fill=0)
-    c.setStrokeColor(GOLD)
-    c.setLineWidth(0.8)
-    c.rect(inner, inner, width - 2 * inner, height - 2 * inner, stroke=1, fill=0)
-    c.setFillColor(GOLD)
-    corner = 5
-    for cx in (inner, width - inner):
-        for cy in (inner, height - inner):
-            c.rect(cx - corner / 2, cy - corner / 2, corner, corner, stroke=0, fill=1)
-
-
-def _draw_rule(c: Canvas, cx: float, y: float, half_width: float) -> None:
-    """Filete dorado con un rombo al centro."""
-    c.setStrokeColor(GOLD)
-    c.setLineWidth(0.8)
-    gap = 9
-    c.line(cx - half_width, y, cx - gap, y)
-    c.line(cx + gap, y, cx + half_width, y)
-    c.setFillColor(GOLD)
-    path = c.beginPath()
-    path.moveTo(cx, y + 4)
-    path.lineTo(cx + 4, y)
-    path.lineTo(cx, y - 4)
-    path.lineTo(cx - 4, y)
-    path.close()
-    c.drawPath(path, stroke=0, fill=1)
-
-
-def _draw_modules(c: Canvas, cx: float, top: float) -> float:
-    """Los seis módulos en 3 columnas por 2 filas. Devuelve la `y` inferior de la cuadrícula."""
-    column_width = 230
-    row_height = 30
-    size = 10.5
-    start_x = cx - 1.5 * column_width
-    for index, (numero, titulo) in enumerate(sorted(MODULE_TITLES.items())):
-        row, column = divmod(index, 3)
-        x = start_x + column * column_width
-        y = top - row * row_height
-        c.setFillColor(TEAL)
-        c.circle(x + 10, y + 3.5, 8.5, stroke=0, fill=1)
-        _centered(c, x + 10, y, str(numero), SANS_BOLD, 9.5, PAPER)
-        c.setFillColor(INK)
-        c.setFont(SANS, size)
-        c.drawString(x + 26, y, titulo)
-    return top - row_height
-
-
 def _draw_qr(c: Canvas, url: str, x: float, y: float, size: float) -> None:
     widget = QrCodeWidget(url, barLevel="M", barBorder=0)
     x0, y0, x1, y1 = widget.getBounds()
@@ -180,103 +106,126 @@ def verification_url(public_base_url: str, code: str) -> str:
     return f"{public_base_url.rstrip('/')}/verify/{code}"
 
 
+@dataclass(frozen=True)
+class NivelDiploma:
+    clave: str
+    titulo: str
+    minimo: int  # % de las actividades obligatorias desde el que se otorga
+
+
+# Diplomas de la usuaria (2026-10-29), del más alto al más bajo. El fondo trae el título, el texto
+# «Por obtener un puntaje superior al N %…» y los rótulos; aquí se escriben solo los datos.
+NIVELES_DIPLOMA = (
+    NivelDiploma("excelencia", "Diploma de Excelencia", 95),
+    NivelDiploma("sobresaliente", "Diploma Sobresaliente", 85),
+    NivelDiploma("satisfactorio", "Diploma Satisfactorio", 70),
+    NivelDiploma("cumplimiento", "Diploma de Cumplimiento", 60),
+)
+DIPLOMAS_DIR = Path(__file__).resolve().parents[1] / "assets" / "diplomas"
+
+
+def nivel_de_diploma(porcentaje: float | None) -> NivelDiploma:
+    """Nivel según el % de las obligatorias; sin porcentaje (sin manifiesto), el de cumplimiento."""
+    if porcentaje is not None:
+        for nivel in NIVELES_DIPLOMA:
+            if porcentaje >= nivel.minimo:
+                return nivel
+    return NIVELES_DIPLOMA[-1]
+
+
+# Los fondos miden 2000 x 1414 px (proporción A4); las posiciones se toman en píxeles de la imagen.
+_FONDO_ANCHO_PX = 2000
+TEXTO_DIPLOMA = HexColor("#3F3F3F")
+TEXTO_SUAVE = HexColor("#6B6B6B")
+
+
 def render_certificate_pdf(certificate: Certificate, public_base_url: str) -> bytes:
-    """Bytes del PDF del certificado (una página A4 apaisada)."""
+    """Bytes del PDF: el diploma del nivel alcanzado con los datos del estudiante encima."""
     _register_fonts()
     width, height = landscape(A4)
-    cx = width / 2
+    escala = width / _FONDO_ANCHO_PX
+
+    def x_px(px: float) -> float:
+        return px * escala
+
+    def y_px(px: float) -> float:
+        return height - px * escala
+
+    pct = None
+    if certificate.puntaje_obligatorias is not None and certificate.puntaje_maximo:
+        pct = percentage(certificate.puntaje_obligatorias, certificate.puntaje_maximo)
+    nivel = nivel_de_diploma(pct)
+
     buffer = io.BytesIO()
     # invariant=1: mismos bytes cada vez que se descarga el mismo certificado.
     c = Canvas(buffer, pagesize=(width, height), invariant=1, pageCompression=1)
     full_name = f"{certificate.nombre} {certificate.apellido}".strip()
     url = verification_url(public_base_url, certificate.codigo)
-    c.setTitle(f"Certificado de finalización - {full_name}")
+    c.setTitle(f"{nivel.titulo} - {full_name}")
     c.setAuthor("OVA Metabolismo óseo")
     c.setSubject(OVA_TITLE)
     c.setCreator("OVA Metabolismo óseo (API)")
 
-    _draw_frame(c, width, height)
+    c.drawImage(str(DIPLOMAS_DIR / f"diploma_{nivel.clave}.jpg"), 0, 0, width, height)
 
-    y = height - 66
-    _spaced_caps(c, cx, y, "OBJETO VIRTUAL DE APRENDIZAJE", SANS_BOLD, 8.5, TEAL)
-    y -= 50
-    _centered(c, cx, y, "Certificado de finalización", SERIF_BOLD, 34, NAVY)
-    y -= 22
-    _draw_rule(c, cx, y, 150)
+    # Capa de texto invisible con lo que el fondo dice en imagen: se puede buscar y copiar del PDF.
+    oculto = c.beginText(x_px(1000), y_px(700))
+    oculto.setTextRenderMode(3)
+    oculto.setFont(SERIF_BOLD, 10)
+    for linea in (
+        nivel.titulo,
+        f"Por obtener un puntaje superior al {nivel.minimo} % en el OVA",
+        f"«{OVA_TITLE}»",
+        "Se otorga a:",
+    ):
+        oculto.textLine(linea)
+    oculto.setTextRenderMode(0)  # el modo persiste en la página: restablecerlo
+    c.drawText(oculto)
 
-    y -= 38
-    _centered(c, cx, y, "Se certifica que", SANS, 11.5, MUTED)
-
-    name_size, name_lines = _fit_lines(full_name, SERIF_BOLD, 640, 32, 10, 2)
-    y -= 14 + name_size
+    # Nombre sobre la línea larga (y = 995 px, de x = 420 a 1580 px).
+    name_size, name_lines = _fit_lines(full_name, SERIF_BOLD, x_px(1100), 30, 12, 2)
+    y = y_px(972) + (len(name_lines) - 1) * name_size * 1.12
     for line in name_lines:
-        _centered(c, cx, y, line, SERIF_BOLD, name_size, NAVY)
-        y -= name_size * 1.18
-    y += name_size * 1.18  # `y` queda en la línea base de la última línea del nombre
+        _centered(c, x_px(1000), y, line, SERIF_BOLD, name_size, TEXTO_DIPLOMA)
+        y -= name_size * 1.12
 
     tipo_label = certificate.tipo_identificacion
     with contextlib.suppress(ValueError):  # tipo fuera del catálogo: se imprime el código tal cual
         tipo_label = TIPO_IDENTIFICACION_ETIQUETAS[TipoIdentificacion(tipo_label)]
-    y -= 23
     _centered(
         c,
-        cx,
-        y,
+        x_px(1000),
+        y_px(1040),
         f"identificado(a) con {tipo_label}, n.º {certificate.numero_identificacion}",
         SANS,
         9.5,
-        MUTED,
+        TEXTO_SUAVE,
     )
+    if pct is not None:
+        detalle = f"Puntaje en las actividades obligatorias: {pct:.1f} %".replace(".", ",")
+        _centered(c, x_px(1000), y_px(1080), detalle, SANS, 9, TEXTO_SUAVE)
 
-    y -= 34
-    _centered(c, cx, y, "ha completado el recorrido interactivo", SANS, 11.5, MUTED)
-    ova_size, ova_lines = _fit_lines(OVA_TITLE, SERIF_BOLD, 640, 16, 12, 2)
-    y -= 6
-    for line in ova_lines:
-        y -= ova_size * 1.35
-        _centered(c, cx, y, line, SERIF_BOLD, ova_size, INK)
-
-    y -= 34
-    _centered(c, cx, y, "y sus seis módulos:", SANS, 9.5, MUTED)
-    y -= 28
-    _draw_modules(c, cx, y)
-
-    # Pie: puntaje | fecha | código y QR. Fijo respecto al borde inferior.
-    base = 62
-    _draw_rule(c, cx, base + 78, 300)
-    left_x, mid_x = cx - 260, cx - 20
-
-    _centered(c, left_x, base + 52, "PUNTAJE", SANS_BOLD, 8, TEAL)
-    _centered(c, left_x, base + 22, str(certificate.puntaje_total), SERIF_BOLD, 26, NAVY)
-    if certificate.puntaje_obligatorias is not None and certificate.puntaje_maximo:
-        pct = percentage(certificate.puntaje_obligatorias, certificate.puntaje_maximo)
-        detail = f"{pct:.1f} % de las actividades obligatorias".replace(".", ",")
-    else:
-        detail = "puntos acumulados"
-    _centered(c, left_x, base + 6, detail, SANS, 8.5, MUTED)
-
-    _centered(c, mid_x, base + 52, "FECHA DE EMISIÓN", SANS_BOLD, 8, TEAL)
+    # Fecha sobre la línea corta bajo el rótulo «Fecha» (y = 1305 px).
     date_text = format_spanish_date(certificate.created_at)
-    _centered(c, mid_x, base + 24, date_text, SERIF_BOLD, 14, NAVY)
+    _centered(c, x_px(995), y_px(1288), date_text, SERIF_BOLD, 12.5, TEXTO_DIPLOMA)
 
-    qr_size = 66
-    qr_x = width - 32 - 30 - qr_size
-    _draw_qr(c, url, qr_x, base - 2, qr_size)
-    code_x = qr_x - 18
-    c.setFillColor(TEAL)
-    c.setFont(SANS_BOLD, 8)
-    c.drawRightString(code_x, base + 52, "CÓDIGO DE VERIFICACIÓN")
-    c.setFillColor(NAVY)
-    c.setFont(SERIF_BOLD, 17)
-    c.drawRightString(code_x, base + 28, certificate.codigo)
-    c.setFillColor(MUTED)
-    c.setFont(SANS, 7.5)
-    c.drawRightString(code_x, base + 14, "Comprueba su autenticidad en:")
-    c.setFillColor(TEAL)
-    c.setFont(SANS, 7.5)
-    c.drawRightString(code_x, base + 3, url)
-    url_width = pdfmetrics.stringWidth(url, SANS, 7.5)
-    c.linkURL(url, (code_x - url_width, base, code_x, base + 11), relative=0)
+    # Código de verificación a la izquierda de la fecha y QR a la derecha, entre los cráneos.
+    code_x = x_px(600)
+    _centered(c, code_x, y_px(1200), "CÓDIGO DE VERIFICACIÓN", SANS_BOLD, 7, TEXTO_SUAVE)
+    _centered(c, code_x, y_px(1240), certificate.codigo, SERIF_BOLD, 13, TEXTO_DIPLOMA)
+    _centered(c, code_x, y_px(1272), "Comprueba su autenticidad en:", SANS, 6.5, TEXTO_SUAVE)
+    # La URL en dos líneas (sitio y ruta) para no invadir la fecha; todo el bloque es un enlace.
+    corte = url.index("/verify/")
+    for fila, parte in enumerate((url[:corte], url[corte:])):
+        _centered(c, code_x, y_px(1296 + fila * 22), parte, SANS, 6.5, TEXTO_DIPLOMA)
+    url_width = max(pdfmetrics.stringWidth(p, SANS, 6.5) for p in (url[:corte], url[corte:]))
+    c.linkURL(
+        url,
+        (code_x - url_width / 2, y_px(1318) - 2, code_x + url_width / 2, y_px(1296) + 8),
+        relative=0,
+    )
+    qr_size = 54
+    _draw_qr(c, url, x_px(1330), y_px(1312), qr_size)
 
     c.showPage()
     c.save()

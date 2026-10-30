@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     # Certificado (F5-05): porcentaje mínimo del puntaje máximo de las actividades obligatorias
     # (solo se exige si hay manifiesto) y URL pública del sitio para el enlace de verificación
     # impreso en el PDF (`{PUBLIC_BASE_URL}/verify/{codigo}`).
-    cert_min_porcentaje: int = Field(default=70, ge=0, le=100)
+    cert_min_porcentaje: int = Field(default=60, ge=0, le=100)
     public_base_url: str = "http://localhost:5173"
 
     @field_validator("activities_manifest_path", mode="before")
