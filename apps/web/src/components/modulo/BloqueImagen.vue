@@ -73,12 +73,12 @@ const aspecto = computed(() => {
  */
 const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.value >= 2.4);
 /**
- * Texto corto al lado de la imagen (revisión de la 1.2.2, 2026-10-29): imagen y texto se centran como un conjunto, el
+ * Texto corto al lado de la imagen (menos de 1000 caracteres; revisión de la 1.2.2 y la 1.2.8, 2026-10-29): imagen y texto se centran como un conjunto, el
  * texto en una columna más estrecha, centrado en vertical y con letra más grande, en vez de unas pocas líneas
  * perdidas en un recuadro ancho.
  */
 const lateralCorto = computed(
-  () => hayLateral.value && !hayPuntos.value && !apilado.value && props.largoLateral < 700,
+  () => hayLateral.value && !hayPuntos.value && !apilado.value && props.largoLateral < 1000,
 );
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
@@ -103,7 +103,9 @@ const claseRecuadro = computed(() =>
       class="grid items-start gap-5"
       :class="
         lateralCorto
-          ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,36rem)] lg:items-center lg:justify-center lg:gap-8'
+          ? props.largoLateral < 700
+            ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,36rem)] lg:items-center lg:justify-center lg:gap-8'
+            : 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,42rem)] lg:items-center lg:justify-center lg:gap-8'
           : conColumna
             ? 'lg:grid-cols-[fit-content(var(--imagen-max))_minmax(18rem,1fr)]'
             : ''
@@ -127,7 +129,7 @@ const claseRecuadro = computed(() =>
               :height="pasoActual.alto"
               decoding="async"
               class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-              style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5rem)"
+              style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 7rem)"
               @error="fallo = true"
             />
             <BotonAmpliar :src="pasoActual.src" :alt="pasoActual.alt" :pie="pasoActual.etiqueta" />
@@ -325,7 +327,11 @@ const claseRecuadro = computed(() =>
           :class="[
             claseRecuadro,
             apilado ? 'lg:max-h-[9rem] lg:overflow-y-auto' : '',
-            lateralCorto ? 'lg:p-7 lg:[&_.text-base]:text-xl lg:[&_h3]:text-2xl' : '',
+            lateralCorto
+              ? props.largoLateral < 700
+                ? 'lg:p-7 lg:[&_.text-base]:text-xl lg:[&_h3]:text-2xl'
+                : 'lg:p-7 lg:[&_.text-base]:text-lg'
+              : '',
           ]"
           data-testid="texto-lateral"
         >
@@ -403,6 +409,6 @@ const claseRecuadro = computed(() =>
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 3.25rem));
+  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 3.75rem));
 }
 </style>

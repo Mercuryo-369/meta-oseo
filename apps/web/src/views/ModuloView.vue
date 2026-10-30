@@ -1100,6 +1100,11 @@ onBeforeUnmount(() => {
                             ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
                             : ''
                         "
+                        :style="
+                          fila.texto.fondo
+                            ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 7rem)' }
+                            : undefined
+                        "
                         data-testid="fila-texto-imagen"
                       >
                         <img
