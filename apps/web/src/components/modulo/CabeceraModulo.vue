@@ -291,10 +291,11 @@ const textoPanel = computed(() =>
 
     <slot />
 
-    <section aria-labelledby="titulo-objetivos" class="panel-cristal rounded-2xl p-4 md:p-5">
-      <h2 id="titulo-objetivos" class="font-serif text-lg font-semibold">
-        Objetivos de aprendizaje
-      </h2>
+    <!-- Plegados: la portada cabe en una pantalla (indicación de la usuaria, 2026-10-29). -->
+    <details class="panel-cristal rounded-2xl p-4 md:p-5" data-testid="objetivos-portada">
+      <summary class="cursor-pointer font-serif text-lg font-semibold">
+        <h2 id="titulo-objetivos" class="inline">Objetivos de aprendizaje</h2>
+      </summary>
       <ul
         class="marker:text-primary mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed"
         data-testid="objetivos"
@@ -303,7 +304,7 @@ const textoPanel = computed(() =>
           <TextoRico :texto="objetivo" modo="linea" />
         </li>
       </ul>
-    </section>
+    </details>
   </header>
 </template>
 

@@ -112,7 +112,7 @@ const claseRecuadro = computed(() =>
             :height="pasoActual.alto"
             decoding="async"
             class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-            style="--alto-max: calc(100dvh - 14rem)"
+            style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5rem)"
             @error="fallo = true"
           />
           <div class="flex items-center gap-2">
@@ -247,7 +247,11 @@ const claseRecuadro = computed(() =>
           loading="lazy"
           decoding="async"
           class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-          :style="apilado ? { '--alto-max': 'calc(100dvh - 17rem)' } : undefined"
+          :style="
+            apilado
+              ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 12.5rem)' }
+              : undefined
+          "
           @error="fallo = true"
         />
 
@@ -262,13 +266,15 @@ const claseRecuadro = computed(() =>
         v-if="hayLateral || hayPuntos"
         class="min-w-0 space-y-3 lg:sticky lg:top-20"
         :class="
-          apilado ? '' : 'lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto lg:overscroll-contain'
+          apilado
+            ? ''
+            : 'lg:max-h-[var(--alto-vista,calc(100dvh-7rem))] lg:overflow-y-auto lg:overscroll-contain'
         "
       >
         <div
           v-if="hayLateral"
           class="rounded-2xl p-5"
-          :class="[claseRecuadro, apilado ? 'lg:max-h-[16rem] lg:overflow-y-auto' : '']"
+          :class="[claseRecuadro, apilado ? 'lg:max-h-[9rem] lg:overflow-y-auto' : '']"
           data-testid="texto-lateral"
         >
           <slot name="lateral" />
@@ -345,6 +351,6 @@ const claseRecuadro = computed(() =>
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: var(--alto-max, calc(100dvh - 9rem));
+  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 2.5rem));
 }
 </style>

@@ -72,10 +72,10 @@ const escenario = computed(() =>
           :width="escenario.ancho"
           :height="escenario.alto"
           decoding="async"
-          class="bg-background mx-auto block h-auto max-h-[calc(100dvh-12rem)] w-auto max-w-full rounded-lg border"
+          class="bg-background mx-auto block h-auto max-h-[calc(var(--alto-vista,100dvh-3rem)-9rem)] w-auto max-w-full rounded-lg border"
         />
         <div
-          class="min-w-0 rounded-xl border p-4 lg:max-h-[calc(100dvh-12rem)] lg:overflow-y-auto lg:overscroll-contain"
+          class="min-w-0 rounded-xl border p-4 lg:max-h-[calc(var(--alto-vista,100dvh-3rem)-9rem)] lg:overflow-y-auto lg:overscroll-contain"
         >
           <TextoRico
             :texto="escenario.markdown"

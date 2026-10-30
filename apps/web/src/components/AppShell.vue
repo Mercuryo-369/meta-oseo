@@ -14,7 +14,7 @@
  * reescriban; solo reserva espacio (padding de <main>) para que nada quede tapado de forma
  * permanente.
  */
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import { LayoutDashboard, LogOut } from '@lucide/vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
@@ -29,6 +29,8 @@ import { useProgresoStore } from '@/stores/progreso';
 const auth = useAuthStore();
 const progreso = useProgresoStore();
 const route = useRoute();
+/** Una sección de módulo ocupa la pantalla entera en escritorio: sin el relleno inferior que deja sitio al mentor. */
+const pantallaCompleta = computed(() => route.name === 'modulo' && Boolean(route.query.s));
 const router = useRouter();
 
 // Ruta pública (carpeta public/). Se pasa como valor y no como atributo estático para que el
@@ -125,8 +127,8 @@ async function salir(): Promise<void> {
       id="contenido"
       ref="contenido"
       tabindex="-1"
-      class="flex-1 outline-none"
-      style="padding-bottom: max(6rem, calc(var(--area-segura-abajo) + 5rem))"
+      class="flex-1 pb-[max(6rem,calc(var(--area-segura-abajo)+5rem))] outline-none"
+      :class="{ 'lg:pb-0': pantallaCompleta }"
     >
       <RouterView />
     </main>

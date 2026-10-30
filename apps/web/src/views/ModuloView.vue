@@ -40,11 +40,12 @@ import BloqueTabla from '@/components/modulo/BloqueTabla.vue';
 import BloqueTexto from '@/components/modulo/BloqueTexto.vue';
 import CabeceraModulo from '@/components/modulo/CabeceraModulo.vue';
 import GlosarioHoja from '@/components/modulo/GlosarioHoja.vue';
-import GlosarioYReferencias from '@/components/modulo/GlosarioYReferencias.vue';
+// Glosario y referencias ocultos por ahora (2026-10-29); se recuperan quitando el comentario de la plantilla.
+// import GlosarioYReferencias from '@/components/modulo/GlosarioYReferencias.vue';
 import ModuloBloqueado from '@/components/modulo/ModuloBloqueado.vue';
 import ModuloCompletado from '@/components/modulo/ModuloCompletado.vue';
+import NavegacionPartes from '@/components/modulo/NavegacionPartes.vue';
 import NavegacionSecciones from '@/components/modulo/NavegacionSecciones.vue';
-import PieSeccion from '@/components/modulo/PieSeccion.vue';
 import TextoRico from '@/components/modulo/TextoRico.vue';
 import {
   decidirAccesoModulo,
@@ -257,7 +258,8 @@ type BloqueLectura = TipoBloqueTexto | TipoBloqueTabla;
 type FilaSeccion =
   | { tipo: 'par'; clave: string; texto: TipoBloqueTexto; imagen: TipoBloqueImagen }
   | { tipo: 'grupo'; clave: string; lectura: BloqueLectura[]; notas: TipoBloqueCallout[] }
-  | { tipo: 'solo'; clave: string; bloque: Bloque };
+  | { tipo: 'solo'; clave: string; bloque: Bloque }
+  | { tipo: 'cierre'; clave: string };
 function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
   return b?.tipo === 'imagen' && !b.pareja;
 }
@@ -325,6 +327,8 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
       grupo = null;
     }
   }
+  // Al completar el módulo, la última sección gana una parte final con la felicitación y el paso siguiente.
+  if (mostrarCompletado.value) filas.push({ tipo: 'cierre', clave: 'cierre-modulo' });
   return filas;
 });
 /*
@@ -336,36 +340,67 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
 const vista = ref(0);
 const sentidoVista = ref<'diapo-adelante' | 'diapo-atras'>('diapo-adelante');
 const carrusel = ref<HTMLElement | null>(null);
-/*
- * En los módulos 4 a 6 cada sección es una sola página con todo su contenido (indicación de la usuaria,
- * 2026-10-28); las vistas hacia los lados se quedan en los módulos 1 a 3, revisados con la docente.
- */
-const conVistas = computed(() => props.n <= 3);
-const totalVistas = computed(() => (conVistas.value ? filasSeccion.value.length : 1));
+const totalVistas = computed(() => filasSeccion.value.length);
 const filaActual = computed(() => filasSeccion.value[vista.value] ?? null);
-const filasMostradas = computed(() =>
-  conVistas.value ? (filaActual.value ? [filaActual.value] : []) : filasSeccion.value,
-);
 const esUltimaVista = computed(() => vista.value >= totalVistas.value - 1);
+/** Al volver desde la primera parte de una sección, la anterior se abre por su última parte. */
+let entrarPorElFinal = false;
 watch(
   () => seccion.value?.id,
   () => {
-    vista.value = 0;
+    vista.value = entrarPorElFinal ? Math.max(0, totalVistas.value - 1) : 0;
+    entrarPorElFinal = false;
   },
 );
-function irAVista(i: number, enfocar = true): void {
+function irAVista(i: number): void {
   if (i < 0 || i >= totalVistas.value || i === vista.value) return;
   sentidoVista.value = i > vista.value ? 'diapo-adelante' : 'diapo-atras';
   vista.value = i;
-  if (!enfocar) return;
   void nextTick(() => {
-    const el = carrusel.value;
-    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView?.({ block: 'start' });
+    if (carrusel.value) carrusel.value.scrollTop = 0;
   });
 }
+/** Nombres de las partes (1.1.1, 1.1.2…) de la sección abierta, para la navegación. */
+const nombresPartes = computed(() => filasSeccion.value.map((f, i) => etiquetaDeFila(f, i)));
+function numeroParte(i: number): string {
+  return `${props.n}.${indice.value + 1}.${i + 1}`;
+}
+
+/* ----- Pie: anterior / siguiente, cruzando de una sección a otra ----- */
+
+const anterior = computed<{ texto: string; ir: () => void }>(() => {
+  if (vista.value > 0) {
+    const i = vista.value - 1;
+    return { texto: `${numeroParte(i)} · ${nombresPartes.value[i]}`, ir: () => irAVista(i) };
+  }
+  const previa = secciones.value[indice.value - 1];
+  if (previa) {
+    return {
+      texto: `${props.n}.${indice.value} · ${textoPlanoDeMarkdown(previa.titulo)}`,
+      ir: () => {
+        entrarPorElFinal = true;
+        irA(indice.value - 1);
+      },
+    };
+  }
+  return { texto: 'Portada del módulo', ir: irAPortada };
+});
+const siguiente = computed<{ texto: string; ir: () => void; cerrada?: boolean } | null>(() => {
+  if (!esUltimaVista.value) {
+    const i = vista.value + 1;
+    return { texto: `${numeroParte(i)} · ${nombresPartes.value[i]}`, ir: () => irAVista(i) };
+  }
+  const proxima = secciones.value[indice.value + 1];
+  if (!proxima) return null;
+  const texto = `${props.n}.${indice.value + 2} · ${textoPlanoDeMarkdown(proxima.titulo)}`;
+  return siguienteAbierta.value
+    ? { texto, ir: () => irA(indice.value + 1) }
+    : { texto, ir: irAlPrimeroPendiente, cerrada: true };
+});
 /** Nombre de una vista para los puntos de navegación y el lector de pantalla. */
 function etiquetaDeFila(f: FilaSeccion | undefined, i: number): string {
   if (!f) return `Vista ${i + 1}`;
+  if (f.tipo === 'cierre') return 'Módulo completado';
   let titulo = '';
   if (f.tipo === 'par') titulo = f.texto.titulo ?? f.imagen.pie;
   else if (f.tipo === 'grupo') {
@@ -374,7 +409,27 @@ function etiquetaDeFila(f: FilaSeccion | undefined, i: number): string {
   } else if (f.bloque.tipo === 'actividad') titulo = f.bloque.actividad.titulo;
   else if (f.bloque.tipo === 'imagen') titulo = f.bloque.pie;
   else if ('titulo' in f.bloque && f.bloque.titulo) titulo = f.bloque.titulo;
-  return titulo ? textoPlanoDeMarkdown(titulo) : `Vista ${i + 1}`;
+  if (titulo) return textoPlanoDeMarkdown(titulo);
+  // Sin título: la primera parte es la introducción; las demás, el comienzo de su primer texto.
+  if (i === 0) return 'Introducción';
+  const texto =
+    f.tipo === 'grupo'
+      ? f.lectura.find((b) => b.tipo === 'texto')
+      : f.tipo === 'solo' && f.bloque.tipo === 'texto'
+        ? f.bloque
+        : undefined;
+  return texto?.tipo === 'texto' ? inicioDeTexto(texto.markdown) : `Parte ${i + 1}`;
+}
+function inicioDeTexto(markdown: string): string {
+  const plano = textoPlanoDeMarkdown(markdown.split(/\n\s*\n/)[0] ?? '').trim();
+  const frase = plano.split(/(?<=[.:;])\s/)[0] ?? plano;
+  return frase.length <= 60 ? frase.replace(/[.:;]$/, '') : `${frase.slice(0, 57).trimEnd()}…`;
+}
+/** El título de un texto que ya da nombre a la parte (va en el encabezado 1.1.2 · …) no se repite dentro. */
+function sinTituloRepetido(t: TipoBloqueTexto): TipoBloqueTexto {
+  if (!t.titulo || textoPlanoDeMarkdown(t.titulo) !== nombresPartes.value[vista.value]) return t;
+  const { titulo: _titulo, ...resto } = t;
+  return resto;
 }
 /** Los recuadros van a la derecha del texto, salvo que la vista lleve una tabla: esta necesita todo el ancho. */
 function notasAlLado(f: Extract<FilaSeccion, { tipo: 'grupo' }>): boolean {
@@ -422,6 +477,11 @@ function irA(i: number): void {
 }
 
 const avisoBloqueo = ref('');
+
+function irAPortada(): void {
+  avisoBloqueo.value = '';
+  void router.push({ name: 'modulo', params: { n: props.n } });
+}
 
 function alIntentarSeccionBloqueada(i: number): void {
   const s = secciones.value[i];
@@ -509,14 +569,13 @@ function irAlPrimeroPendiente(): void {
     (f) =>
       f.tipo === 'solo' && f.bloque.tipo === 'actividad' && f.bloque.actividad.id === primera.id,
   );
-  if (enVista >= 0) irAVista(enVista, false);
+  if (enVista >= 0) irAVista(enVista);
   // Tras la transición de la vista, el bloque ya está en la página.
   setTimeout(() => {
     const el = document.getElementById(`actividad-${primera.id}`);
     if (!el) return;
     el.setAttribute('tabindex', '-1');
     el.focus({ preventScroll: true });
-    desplazarA(el);
   }, 60);
 }
 
@@ -659,7 +718,8 @@ onBeforeUnmount(() => {
   <!-- El padding inferior deja el final del contenido por encima de los botones flotantes del menú
        circular y del mentor en móvil (el <main> del shell reserva otro tanto). -->
   <div
-    class="mx-auto w-full max-w-[96rem] px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8 md:pt-10 md:pb-10"
+    class="mx-auto w-full max-w-[96rem] px-4 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8"
+    :class="enPortada ? 'pt-6 md:pt-10 md:pb-10' : 'pt-3 md:pb-3'"
     :style="estiloAcento(n)"
     :aria-busy="fase === 'cargando' ? 'true' : undefined"
     :data-modulo="n"
@@ -746,6 +806,7 @@ onBeforeUnmount(() => {
           :data-posicion="posicion"
         >
           <CabeceraModulo
+            v-if="enPortada"
             :modulo="modulo"
             :avance="avance"
             :puntaje-obtenido="puntajeObtenido"
@@ -775,285 +836,291 @@ onBeforeUnmount(() => {
             </template>
           </CabeceraModulo>
 
-          <p
-            v-if="store.errorEnvio"
-            class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-            role="status"
-            data-testid="error-envio"
-          >
-            <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <span>{{ store.errorEnvio }}</span>
-          </p>
-
-          <p
-            v-if="avisoBloqueo"
-            class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-            role="status"
-            data-testid="aviso-seccion-bloqueada"
-          >
-            <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <span>{{ avisoBloqueo }}</span>
-          </p>
-
-          <div v-if="!enPortada" class="mt-8">
-            <div class="min-w-0">
-              <!-- Sección bloqueada: se explica qué falta -->
-              <section
-                v-if="seccion && seccionBloqueada"
-                class="bg-card space-y-3 rounded-xl border border-dashed p-5"
-                aria-labelledby="titulo-seccion"
-                data-testid="seccion-bloqueada"
+          <!-- Sección: una sola pantalla, sin desplazar la página (indicación de la usuaria, 2026-10-29). Arriba la
+               navegación con las partes de la sección (1.1.1, 1.1.2…); en medio la parte visible, que se ajusta al
+               alto disponible; abajo el paso a la parte anterior o siguiente, que cruza de una sección a otra. -->
+          <div v-else class="pantalla-seccion flex flex-col gap-3" data-testid="pantalla-seccion">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <RouterLink
+                :to="{ name: 'modulo', params: { n } }"
+                class="text-primary text-sm font-bold whitespace-nowrap hover:underline"
+                data-testid="enlace-portada"
               >
-                <h2
-                  id="titulo-seccion"
-                  ref="tituloSeccion"
-                  tabindex="-1"
-                  class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
+                Módulo {{ n }} · {{ modulo.titulo }}
+              </RouterLink>
+              <details class="relative text-sm" data-testid="objetivos-desplegable">
+                <summary
+                  class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
                 >
-                  <Lock class="text-acento size-5" aria-hidden="true" />
-                  Esta sección todavía está bloqueada
-                </h2>
-                <p>
-                  Las secciones se estudian en orden. Antes de abrir «{{
-                    textoPlanoDeMarkdown(seccion.titulo)
-                  }}» termina la sección «{{
-                    textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
-                  }}».
-                </p>
-                <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
-                <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
-                  Ir a la sección «{{
-                    textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
-                  }}»
-                </Button>
-              </section>
-
-              <!-- Sección abierta -->
-              <section
-                v-else-if="seccion"
-                :key="seccion.id"
-                class="min-w-0 space-y-6"
-                aria-labelledby="titulo-seccion"
-                data-testid="seccion"
-                :data-seccion="seccion.id"
+                  Objetivos
+                </summary>
+                <ul
+                  class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
+                >
+                  <li v-for="objetivo in modulo.objetivos" :key="objetivo">
+                    <TextoRico :texto="objetivo" modo="linea" />
+                  </li>
+                </ul>
+              </details>
+              <span
+                class="text-muted-foreground ml-auto text-sm tabular-nums"
+                data-testid="avance-obligatorias"
               >
-                <header class="border-l-acento space-y-1 border-l-4 pl-3">
-                  <h2
-                    id="titulo-seccion"
-                    ref="tituloSeccion"
-                    tabindex="-1"
-                    class="scroll-mt-20 font-serif text-2xl font-semibold outline-none md:text-3xl"
-                  >
-                    {{ seccion.titulo }}
-                  </h2>
-                  <p v-if="seccion.resumen" class="text-muted-foreground text-lg leading-relaxed">
-                    <TextoRico :texto="seccion.resumen" modo="linea" />
-                  </p>
-                </header>
-
-                <!-- Vistas de la sección: una por pantalla, hacia los lados -->
-                <div
-                  ref="carrusel"
-                  class="scroll-mt-20 space-y-4"
-                  data-testid="carrusel-seccion"
-                  :data-vista="vista"
-                >
-                  <nav
-                    v-if="totalVistas > 1"
-                    class="flex items-center gap-3"
-                    aria-label="Vistas de la sección"
-                    @keydown="alTeclaVistas"
-                  >
-                    <button
-                      type="button"
-                      class="hover:bg-accent focus-visible:ring-ring flex size-11 shrink-0 items-center justify-center rounded-full border outline-none focus-visible:ring-2 disabled:opacity-40"
-                      :disabled="vista === 0"
-                      aria-label="Vista anterior"
-                      data-testid="vista-anterior"
-                      @click="irAVista(vista - 1)"
-                    >
-                      <ChevronLeft class="size-5" aria-hidden="true" />
-                    </button>
-                    <ol class="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-1.5">
-                      <li v-for="(f, i) in filasSeccion" :key="f.clave">
-                        <button
-                          type="button"
-                          class="focus-visible:ring-ring block h-2.5 rounded-full outline-none focus-visible:ring-2"
-                          :class="
-                            i === vista
-                              ? 'bg-primary w-8'
-                              : 'bg-muted-foreground/40 hover:bg-muted-foreground/70 w-2.5'
-                          "
-                          :aria-label="`${i + 1}. ${etiquetaDeFila(f, i)}`"
-                          :aria-current="i === vista ? 'step' : undefined"
-                          :title="etiquetaDeFila(f, i)"
-                          @click="irAVista(i)"
-                        />
-                      </li>
-                    </ol>
-                    <span class="text-muted-foreground shrink-0 text-sm tabular-nums">
-                      {{ vista + 1 }} / {{ totalVistas }}
-                    </span>
-                    <button
-                      type="button"
-                      class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex size-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-2 disabled:opacity-40"
-                      :disabled="esUltimaVista"
-                      aria-label="Vista siguiente"
-                      data-testid="vista-siguiente"
-                      @click="irAVista(vista + 1)"
-                    >
-                      <ChevronRight class="size-5" aria-hidden="true" />
-                    </button>
-                  </nav>
-                  <p class="sr-only" aria-live="polite">
-                    Vista {{ vista + 1 }} de {{ totalVistas }}:
-                    {{ etiquetaDeFila(filaActual ?? undefined, vista) }}
-                  </p>
-
-                  <div class="relative overflow-x-clip">
-                    <Transition :name="sentidoVista">
-                      <div
-                        :key="`${seccion.id}:${vista}`"
-                        class="vista-seccion"
-                        :class="conVistas ? '' : 'space-y-8'"
-                        data-testid="vista-seccion"
-                      >
-                        <template v-for="fila in filasMostradas" :key="fila.clave">
-                          <div
-                            v-if="fila.tipo === 'par'"
-                            :class="
-                              fila.texto.fondo
-                                ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
-                                : ''
-                            "
-                            data-testid="fila-texto-imagen"
-                          >
-                            <img
-                              v-if="fila.texto.fondo"
-                              :src="fila.texto.fondo"
-                              alt=""
-                              aria-hidden="true"
-                              loading="lazy"
-                              class="absolute inset-0 -z-10 size-full object-cover"
-                            />
-                            <BloqueImagen
-                              :bloque="fila.imagen"
-                              :largo-lateral="fila.texto.markdown.length"
-                              :lateral-cristal="Boolean(fila.texto.fondo)"
-                            >
-                              <template #lateral>
-                                <BloqueTexto :bloque="sinFondo(fila.texto)" incrustado />
-                              </template>
-                            </BloqueImagen>
-                          </div>
-                          <div
-                            v-else-if="fila.tipo === 'grupo'"
-                            class="grid items-start gap-5"
-                            :class="
-                              notasAlLado(fila)
-                                ? 'lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,1fr)]'
-                                : ''
-                            "
-                            data-testid="grupo-lectura"
-                          >
-                            <div v-if="fila.lectura.length" class="min-w-0 space-y-5">
-                              <template v-for="b in fila.lectura" :key="b.id">
-                                <BloqueTexto
-                                  v-if="b.tipo === 'texto'"
-                                  :bloque="b"
-                                  :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
-                                />
-                                <BloqueTabla v-else :bloque="b" />
-                              </template>
-                            </div>
-                            <aside
-                              v-if="fila.notas.length"
-                              class="grid min-w-0 items-start gap-4"
-                              :class="
-                                !notasAlLado(fila) && fila.notas.length > 1 ? 'md:grid-cols-2' : ''
-                              "
-                            >
-                              <BloqueCallout v-for="c in fila.notas" :key="c.id" :bloque="c" />
-                            </aside>
-                          </div>
-                          <BloqueTexto
-                            v-else-if="fila.bloque.tipo === 'texto'"
-                            :bloque="fila.bloque"
-                            :columnas="fila.bloque.markdown.length > 1200"
-                          />
-                          <BloqueCallout
-                            v-else-if="fila.bloque.tipo === 'callout'"
-                            :bloque="fila.bloque"
-                          />
-                          <BloqueImagen
-                            v-else-if="fila.bloque.tipo === 'imagen'"
-                            :bloque="fila.bloque"
-                          />
-                          <BloqueTabla
-                            v-else-if="fila.bloque.tipo === 'tabla'"
-                            :bloque="fila.bloque"
-                          />
-                          <BloqueEscenarios
-                            v-else-if="fila.bloque.tipo === 'escenarios'"
-                            :bloque="fila.bloque"
-                          />
-                          <BloquePregunta
-                            v-else-if="fila.bloque.tipo === 'pregunta'"
-                            :bloque="fila.bloque"
-                          />
-                          <BloqueActividad
-                            v-else-if="fila.bloque.tipo === 'actividad'"
-                            :actividad="fila.bloque.actividad"
-                            :modulo="n as NumeroModulo"
-                            :solo-lectura="esDocente"
-                          />
-                        </template>
-                      </div>
-                    </Transition>
-                  </div>
-
-                  <div v-if="!esUltimaVista" class="flex justify-end">
-                    <button
-                      type="button"
-                      class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex max-w-full items-center gap-2 rounded-full px-5 py-2.5 text-left font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                      data-testid="vista-siguiente-abajo"
-                      @click="irAVista(vista + 1)"
-                    >
-                      <span class="truncate">
-                        Siguiente: {{ etiquetaDeFila(filasSeccion[vista + 1], vista + 1) }}
-                      </span>
-                      <ChevronRight class="size-5 shrink-0" aria-hidden="true" />
-                    </button>
-                  </div>
-                </div>
-
-                <template v-if="esUltimaVista">
-                  <PieSeccion
-                    :indice="indice"
-                    :total="secciones.length"
-                    :siguiente-abierta="siguienteAbierta"
-                    :texto-pendiente="textoPendientes(pendientes)"
-                    :hay-pendiente="pendientes.length > 0"
-                    @anterior="irA(indice - 1)"
-                    @siguiente="irA(indice + 1)"
-                    @ir-a-pendiente="irAlPrimeroPendiente"
-                  />
-
-                  <ModuloCompletado
-                    v-if="mostrarCompletado"
-                    :numero="n"
-                    :puntaje-obtenido="puntajeObtenido"
-                    :puntaje-maximo="avance.puntajeMaximo"
-                    :guardado="moduloYaCompletado"
-                    :faltantes="titulosFaltantes"
-                    :siguiente-abierto="siguienteModuloAbierto"
-                  />
-                </template>
-              </section>
+                {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} obligatorias
+                · {{ puntajeObtenido }} pts
+              </span>
             </div>
+
+            <NavegacionPartes
+              :numero-modulo="n"
+              :secciones="secciones"
+              :estados="estados"
+              :indice="indice"
+              :partes="seccionBloqueada ? [] : nombresPartes"
+              :parte="vista"
+              @ir-seccion="irA"
+              @ir-parte="irAVista"
+              @bloqueada="alIntentarSeccionBloqueada"
+            />
+
+            <p
+              v-if="store.errorEnvio"
+              class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+              role="status"
+              data-testid="error-envio"
+            >
+              <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              <span>{{ store.errorEnvio }}</span>
+            </p>
+
+            <p
+              v-if="avisoBloqueo"
+              class="bg-accent text-accent-foreground mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+              role="status"
+              data-testid="aviso-seccion-bloqueada"
+            >
+              <Lock class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              <span>{{ avisoBloqueo }}</span>
+            </p>
+
+            <!-- Sección bloqueada: se explica qué falta -->
+            <section
+              v-if="seccion && seccionBloqueada"
+              class="bg-card space-y-3 rounded-xl border border-dashed p-5"
+              aria-labelledby="titulo-seccion"
+              data-testid="seccion-bloqueada"
+            >
+              <h2
+                id="titulo-seccion"
+                ref="tituloSeccion"
+                tabindex="-1"
+                class="flex items-center gap-2 font-serif text-2xl font-semibold outline-none"
+              >
+                <Lock class="text-acento size-5" aria-hidden="true" />
+                Esta sección todavía está bloqueada
+              </h2>
+              <p>
+                Las secciones se estudian en orden. Antes de abrir «{{
+                  textoPlanoDeMarkdown(seccion.titulo)
+                }}» termina la sección «{{
+                  textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '')
+                }}».
+              </p>
+              <p class="text-muted-foreground">{{ textoPendientes(pendientesActual) }}</p>
+              <Button data-testid="ir-a-seccion-actual" @click="irA(indiceActual)">
+                Ir a la sección «{{ textoPlanoDeMarkdown(secciones[indiceActual]?.titulo ?? '') }}»
+              </Button>
+            </section>
+
+            <!-- Sección abierta -->
+            <section
+              v-else-if="seccion"
+              :key="seccion.id"
+              class="flex min-h-0 flex-1 flex-col gap-3"
+              aria-labelledby="titulo-seccion"
+              data-testid="seccion"
+              :data-seccion="seccion.id"
+            >
+              <h2
+                id="titulo-seccion"
+                ref="tituloSeccion"
+                tabindex="-1"
+                class="border-l-acento border-l-4 pl-3 font-serif text-xl leading-tight font-semibold outline-none md:text-2xl"
+                data-testid="titulo-parte"
+              >
+                <span class="sr-only">{{ textoPlanoDeMarkdown(seccion.titulo) }}. Parte </span>
+                <span class="text-primary tabular-nums">{{ numeroParte(vista) }}</span>
+                · {{ nombresPartes[vista] }}
+              </h2>
+              <p class="sr-only" aria-live="polite">
+                Parte {{ vista + 1 }} de {{ totalVistas }}: {{ nombresPartes[vista] }}
+              </p>
+
+              <!-- La parte visible: cabe en el alto disponible; si algo no cabe, se desplaza solo este recuadro. -->
+              <div
+                ref="carrusel"
+                class="vista-contenedor relative min-h-0 flex-1 overflow-x-clip overflow-y-auto overscroll-contain"
+                data-testid="carrusel-seccion"
+                :data-vista="vista"
+                @keydown="alTeclaVistas"
+              >
+                <Transition :name="sentidoVista">
+                  <div
+                    :key="`${seccion.id}:${vista}`"
+                    class="vista-seccion"
+                    data-testid="vista-seccion"
+                  >
+                    <template v-for="fila in filaActual ? [filaActual] : []" :key="fila.clave">
+                      <div
+                        v-if="fila.tipo === 'par'"
+                        :class="
+                          fila.texto.fondo
+                            ? 'relative isolate overflow-hidden rounded-2xl border p-3 sm:p-6'
+                            : ''
+                        "
+                        data-testid="fila-texto-imagen"
+                      >
+                        <img
+                          v-if="fila.texto.fondo"
+                          :src="fila.texto.fondo"
+                          alt=""
+                          aria-hidden="true"
+                          loading="lazy"
+                          class="absolute inset-0 -z-10 size-full object-cover"
+                        />
+                        <BloqueImagen
+                          :bloque="fila.imagen"
+                          :largo-lateral="fila.texto.markdown.length"
+                          :lateral-cristal="Boolean(fila.texto.fondo)"
+                        >
+                          <template #lateral>
+                            <BloqueTexto
+                              :bloque="sinTituloRepetido(sinFondo(fila.texto))"
+                              incrustado
+                            />
+                          </template>
+                        </BloqueImagen>
+                      </div>
+                      <div
+                        v-else-if="fila.tipo === 'grupo'"
+                        class="grid items-start gap-5"
+                        :class="
+                          notasAlLado(fila)
+                            ? 'lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,1fr)]'
+                            : ''
+                        "
+                        data-testid="grupo-lectura"
+                      >
+                        <div v-if="fila.lectura.length" class="min-w-0 space-y-5">
+                          <template v-for="b in fila.lectura" :key="b.id">
+                            <BloqueTexto
+                              v-if="b.tipo === 'texto'"
+                              :bloque="sinTituloRepetido(b)"
+                              :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
+                            />
+                            <BloqueTabla v-else :bloque="b" />
+                          </template>
+                        </div>
+                        <aside
+                          v-if="fila.notas.length"
+                          class="grid min-w-0 items-start gap-4"
+                          :class="
+                            !notasAlLado(fila) && fila.notas.length > 1 ? 'md:grid-cols-2' : ''
+                          "
+                        >
+                          <BloqueCallout v-for="c in fila.notas" :key="c.id" :bloque="c" />
+                        </aside>
+                      </div>
+                      <ModuloCompletado
+                        v-else-if="fila.tipo === 'cierre'"
+                        :numero="n"
+                        :puntaje-obtenido="puntajeObtenido"
+                        :puntaje-maximo="avance.puntajeMaximo"
+                        :guardado="moduloYaCompletado"
+                        :faltantes="titulosFaltantes"
+                        :siguiente-abierto="siguienteModuloAbierto"
+                      />
+                      <BloqueTexto
+                        v-else-if="fila.bloque.tipo === 'texto'"
+                        :bloque="sinTituloRepetido(fila.bloque)"
+                        :columnas="fila.bloque.markdown.length > 1200"
+                      />
+                      <BloqueCallout
+                        v-else-if="fila.bloque.tipo === 'callout'"
+                        :bloque="fila.bloque"
+                      />
+                      <BloqueImagen
+                        v-else-if="fila.bloque.tipo === 'imagen'"
+                        :bloque="fila.bloque"
+                      />
+                      <BloqueTabla v-else-if="fila.bloque.tipo === 'tabla'" :bloque="fila.bloque" />
+                      <BloqueEscenarios
+                        v-else-if="fila.bloque.tipo === 'escenarios'"
+                        :bloque="fila.bloque"
+                      />
+                      <BloquePregunta
+                        v-else-if="fila.bloque.tipo === 'pregunta'"
+                        :bloque="fila.bloque"
+                      />
+                      <BloqueActividad
+                        v-else-if="fila.bloque.tipo === 'actividad'"
+                        :actividad="fila.bloque.actividad"
+                        :modulo="n as NumeroModulo"
+                        :solo-lectura="esDocente"
+                      />
+                    </template>
+                  </div>
+                </Transition>
+              </div>
+
+              <!-- Pie: parte anterior y siguiente; al final de la sección, la sección siguiente (o lo que falta). -->
+              <nav
+                aria-label="Parte anterior y siguiente"
+                class="flex items-center justify-between gap-3 border-t pt-3 lg:pr-20"
+                data-testid="pie-partes"
+              >
+                <button
+                  type="button"
+                  class="hover:bg-accent focus-visible:ring-ring flex min-h-11 max-w-[45%] items-center gap-2 rounded-full border px-4 text-left text-sm font-medium outline-none focus-visible:ring-2"
+                  data-testid="parte-anterior"
+                  @click="anterior.ir()"
+                >
+                  <ChevronLeft class="size-5 shrink-0" aria-hidden="true" />
+                  <span class="truncate">{{ anterior.texto }}</span>
+                </button>
+                <p
+                  v-if="siguiente?.cerrada"
+                  class="text-muted-foreground hidden min-w-0 flex-1 text-center text-sm md:block"
+                  data-testid="motivo-bloqueo"
+                >
+                  {{ textoPendientes(pendientes) }}
+                </p>
+                <button
+                  v-if="siguiente"
+                  type="button"
+                  class="focus-visible:ring-ring flex min-h-11 max-w-[45%] items-center gap-2 rounded-full px-5 text-left text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  :class="
+                    siguiente.cerrada
+                      ? 'bg-muted text-foreground border border-dashed'
+                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  "
+                  :title="siguiente.cerrada ? textoPendientes(pendientes) : undefined"
+                  data-testid="parte-siguiente"
+                  @click="siguiente.ir()"
+                >
+                  <Lock v-if="siguiente.cerrada" class="size-4 shrink-0" aria-hidden="true" />
+                  <span class="truncate">
+                    {{ siguiente.cerrada ? 'Ir a la actividad pendiente' : siguiente.texto }}
+                  </span>
+                  <ChevronRight class="size-5 shrink-0" aria-hidden="true" />
+                </button>
+              </nav>
+            </section>
           </div>
 
+          <!-- Glosario y referencias ocultos por ahora (indicación de la usuaria, 2026-10-29).
           <GlosarioYReferencias :modulo="modulo" />
+          -->
         </div>
       </Transition>
     </div>
@@ -1072,6 +1139,17 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* Una sección ocupa exactamente la pantalla en escritorio: el alto de la ventana menos la barra superior de la
+   aplicación y el relleno de la página. `--alto-vista` es el alto que queda para la parte visible (descontando la
+   fila del módulo, la navegación, el título de la parte y el pie); las imágenes y los textos se ajustan a él. */
+@media (min-width: 1024px) {
+  .pantalla-seccion {
+    height: calc(100dvh - 3.5rem - 1px - var(--area-segura-arriba, 0px) - 1.5rem);
+  }
+  .vista-contenedor {
+    --alto-vista: calc(100dvh - 18rem - var(--area-segura-arriba, 0px));
+  }
+}
 /* No se apaga con `prefers-reduced-motion`: el deslizamiento lo pidió la usuaria y es la pista de hacia dónde se
    avanza (Windows con «Efectos de animación» desactivado lo activa en Chrome y la navegación se veía como un salto).
    Es un único movimiento corto, sin rebotes ni parpadeos, iniciado por quien pulsa la flecha. */
