@@ -75,6 +75,8 @@ const props = withDefaults(
     sinControles?: boolean;
     /** Ancho de cada columna de etiquetas laterales, en fracción del lienzo. */
     anchoEtiquetas?: number;
+    /** La ayuda de uso queda solo para lectores de pantalla (la portada la da con su propio texto). */
+    ayudaOculta?: boolean;
   }>(),
   {
     visitados: () => [],
@@ -84,6 +86,7 @@ const props = withDefaults(
     vistaInicial: 'frontal',
     sinControles: false,
     anchoEtiquetas: 0.22,
+    ayudaOculta: false,
   },
 );
 
@@ -555,7 +558,7 @@ watch(
       />
     </div>
 
-    <p :id="idAyuda" class="text-muted-foreground mt-2 text-sm">
+    <p :id="idAyuda" class="text-muted-foreground mt-2 text-sm" :class="{ 'sr-only': ayudaOculta }">
       <template v-if="listo">
         <template v-if="conEtiquetas">
           Arrastra para girar el modelo y usa la rueda para acercarlo. Cada etiqueta señala una

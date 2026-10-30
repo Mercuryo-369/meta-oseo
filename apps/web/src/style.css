@@ -232,6 +232,17 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Texto justificado en todo el contenido, como «Justificar» en Word (pedido de la usuaria, 2026-10-29), con
+     división silábica en español (`lang="es"`) para que no queden huecos grandes entre palabras. La última línea de
+     cada párrafo queda a la izquierda. Lo centrado o alineado con una utilidad (pies de imagen, botones) la conserva:
+     las utilidades pesan más que esta capa. */
+  #contenido p,
+  #contenido li,
+  #contenido .texto-rico {
+    text-align: justify;
+    hyphens: auto;
+  }
+
   html {
     /* Evita que iOS reescale el texto al girar el teléfono. */
     -webkit-text-size-adjust: 100%;

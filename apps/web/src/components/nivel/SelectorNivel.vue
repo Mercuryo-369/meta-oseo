@@ -95,14 +95,14 @@ function reintentar(): void {
 
 <template>
   <section aria-labelledby="titulo-nivel" class="flex flex-col" data-testid="seccion-nivel">
-    <h2 id="titulo-nivel" class="text-2xl font-semibold">Tu nivel</h2>
+    <h2 id="titulo-nivel" class="text-lg font-semibold">Tu nivel</h2>
 
-    <div class="bg-card mt-4 flex-1 space-y-3 rounded-xl border p-4">
+    <div class="bg-card mt-2 flex-1 space-y-2 rounded-xl border p-3">
       <div
         role="radiogroup"
         aria-labelledby="titulo-nivel"
         aria-describedby="descripcion-nivel"
-        class="grid max-w-sm grid-cols-2 gap-1 rounded-lg border p-1"
+        class="grid grid-cols-2 gap-1 rounded-lg border p-1"
         data-testid="control-nivel"
       >
         <label
@@ -128,9 +128,9 @@ function reintentar(): void {
         </label>
       </div>
 
-      <p id="descripcion-nivel" class="text-muted-foreground max-w-prose text-sm leading-relaxed">
-        El nivel posgrado añade avisos de profundización en los módulos y hace que el mentor
-        responda con más detalle. Puedes cambiarlo cuando quieras; el pregrado es el recorrido base.
+      <p id="descripcion-nivel" class="text-muted-foreground text-xs leading-relaxed">
+        Posgrado añade avisos de profundización y respuestas más detalladas del mentor. Puedes
+        cambiarlo cuando quieras.
       </p>
 
       <p class="text-sm" role="status" aria-live="polite" data-testid="estado-nivel">

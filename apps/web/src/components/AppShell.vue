@@ -26,8 +26,10 @@ import { useProgresoStore } from '@/stores/progreso';
 const auth = useAuthStore();
 const progreso = useProgresoStore();
 const route = useRoute();
-/** Una sección de módulo ocupa la pantalla entera en escritorio: sin el relleno inferior que deja sitio al mentor. */
-const pantallaCompleta = computed(() => route.name === 'modulo' && Boolean(route.query.s));
+/** La portada y una sección de módulo ocupan la pantalla entera en escritorio: sin el relleno inferior del mentor. */
+const pantallaCompleta = computed(
+  () => route.name === 'inicio' || (route.name === 'modulo' && Boolean(route.query.s)),
+);
 const router = useRouter();
 
 // Ruta pública (carpeta public/). Se pasa como valor y no como atributo estático para que el

@@ -9,13 +9,17 @@
  * sección en la que va) o completado. Las tarjetas sobre la escena son una ayuda visual (`aria-hidden`); la
  * alternativa accesible es el recorrido de pasos del inicio y, en pantallas estrechas (donde la escena muestra solo
  * números), la lista de debajo. Si el 3D no carga, la lista y el botón siguen funcionando.
+ *
+ * Disposición (revisión de la portada, 2026-10-29): en pantallas anchas la escena ocupa la columna derecha a todo el
+ * alto de la ventana y la izquierda reúne la ranura `antes` (saludo), el avance global (el círculo de la referencia,
+ * que ya no tapa el hueso), el módulo elegido con su botón y la ranura `despues` (nivel y reconocimiento). En
+ * pantallas estrechas todo va en columna.
  */
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { ArrowRight, CircleCheck, Lock } from '@lucide/vue';
 import { ANCLAS_PIEZAS_DERECHA } from '@/content/nodos3d';
 import type { AnclaNodo } from '@/content/nodos3d';
-import IconoModulo from '@/components/modulo/IconoModulo.vue';
 import { estiloAcento, textoEstadoTarjeta } from '@/components/modulo/identidad';
 import { usePasosModulos } from '@/components/modulo/usePasosModulos';
 import { MODULOS } from '@/data/modulos';
@@ -96,8 +100,33 @@ const verbo = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-3" data-testid="mandibula-modulos">
-    <div class="relative">
+  <div
+    class="flex flex-col gap-4 lg:grid lg:h-full lg:grid-cols-[minmax(20rem,25rem)_minmax(0,1fr)] lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-8"
+    data-testid="mandibula-modulos"
+  >
+    <div class="lg:col-start-1 lg:row-start-1">
+      <slot name="antes" />
+    </div>
+
+    <!-- Avance global: el círculo de la referencia, junto al texto (no sobre el hueso) -->
+    <div class="flex items-center gap-4 lg:col-start-1 lg:row-start-2" data-testid="avance-global">
+      <div
+        class="grid size-20 shrink-0 place-items-center rounded-full bg-[#f0a37a]/90 text-center text-[#3a1d10] shadow-lg ring-4 ring-white/50"
+        aria-hidden="true"
+      >
+        <p class="text-2xl leading-none font-extrabold">{{ completados }}/{{ MODULOS.length }}</p>
+      </div>
+      <p class="text-sm leading-snug">
+        <span class="font-semibold"
+          >{{ completados }} de {{ MODULOS.length }} módulos completados.</span
+        >
+        <span class="text-muted-foreground block">
+          Toca un módulo en la mandíbula para ver tu avance y entrar.
+        </span>
+      </p>
+    </div>
+
+    <div class="relative lg:col-start-2 lg:row-span-4 lg:row-start-1">
       <EscenaExploracion
         modelo="mandibula"
         alt="Mandíbula humana en vista oblicua con los seis módulos del curso marcados en orden, del cóndilo derecho al izquierdo"
@@ -107,8 +136,9 @@ const verbo = computed(() => {
         vista-inicial="oblicua"
         sin-controles
         etiquetas-laterales
-        :ancho-etiquetas="0.27"
-        class="lg:[&_.escena]:h-[40rem]"
+        :ancho-etiquetas="0.25"
+        ayuda-oculta
+        class="lg:[&_.escena]:h-[calc(100dvh-10.5rem)]"
         @seleccionar="(id: string) => (seleccion = id)"
       >
         <template #etiqueta="{ id, numero }">
@@ -118,8 +148,11 @@ const verbo = computed(() => {
             :style="estiloAcento(numero)"
           >
             <span class="min-w-0 flex-1">
-              <span class="block text-[0.82rem] leading-snug font-bold">
-                Módulo {{ numero }} — {{ porId.get(id)?.m.titulo }}
+              <span class="block text-[0.68rem] font-semibold tracking-wide uppercase opacity-75">
+                Módulo {{ numero }}
+              </span>
+              <span class="block text-[0.85rem] leading-snug font-bold">
+                {{ porId.get(id)?.m.titulo }}
               </span>
               <span class="block text-[0.72rem] leading-snug font-medium opacity-80">
                 {{ porId.get(id)?.m.identidad.frase }}
@@ -138,29 +171,9 @@ const verbo = computed(() => {
                 {{ porId.get(id)?.avance }}
               </span>
             </span>
-            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white/10">
-              <IconoModulo :icono="porId.get(id)!.m.identidad.icono" class="size-5" />
-            </span>
           </span>
         </template>
       </EscenaExploracion>
-
-      <!-- Círculo central: el avance global (como el de la imagen de referencia) -->
-      <div
-        class="pointer-events-none absolute top-[44%] left-[45%] hidden -translate-x-1/2 -translate-y-1/2 lg:block"
-        aria-hidden="true"
-      >
-        <div
-          class="grid size-28 place-items-center rounded-full bg-[#f0a37a]/90 text-center text-[#3a1d10] shadow-xl ring-4 ring-white/60"
-        >
-          <div>
-            <p class="text-3xl leading-none font-extrabold">
-              {{ completados }}/{{ MODULOS.length }}
-            </p>
-            <p class="mt-1 text-xs leading-tight font-semibold">módulos<br />completados</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- La lista: visible en pantallas estrechas (la escena muestra solo números); en las anchas, solo para lectores de pantalla -->
@@ -198,7 +211,7 @@ const verbo = computed(() => {
     <!-- Módulo elegido: su avance y el botón para entrar -->
     <div
       v-if="elegido"
-      class="bg-card/80 flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3"
+      class="bg-card/80 flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3 lg:col-start-1 lg:row-start-3"
       aria-live="polite"
       data-testid="modulo-elegido"
     >
@@ -215,6 +228,10 @@ const verbo = computed(() => {
         {{ verbo }}: Módulo {{ elegido.m.numero }}
         <ArrowRight class="size-5" aria-hidden="true" />
       </RouterLink>
+    </div>
+
+    <div class="lg:col-start-1 lg:row-start-4">
+      <slot name="despues" />
     </div>
   </div>
 </template>
