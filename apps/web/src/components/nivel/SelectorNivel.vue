@@ -94,10 +94,10 @@ function reintentar(): void {
 </script>
 
 <template>
-  <section aria-labelledby="titulo-nivel" class="mt-8 md:mt-12" data-testid="seccion-nivel">
+  <section aria-labelledby="titulo-nivel" class="flex flex-col" data-testid="seccion-nivel">
     <h2 id="titulo-nivel" class="text-2xl font-semibold">Tu nivel</h2>
 
-    <div class="bg-card mt-4 space-y-3 rounded-xl border p-4">
+    <div class="bg-card mt-4 flex-1 space-y-3 rounded-xl border p-4">
       <div
         role="radiogroup"
         aria-labelledby="titulo-nivel"

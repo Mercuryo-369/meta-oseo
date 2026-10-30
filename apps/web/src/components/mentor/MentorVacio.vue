@@ -4,31 +4,26 @@
  * estudiante, de lo más a lo menos personal:
  *
  * 1. "Explícame ..." (F3-06): un botón por cada estructura o molécula que tiene seleccionada.
- * 2. "Para reforzar" (F3-07): los conceptos que conviene repasar, si el servidor sugiere alguno.
- * 3. Preguntas de ejemplo.
- * 4. "Ponme a prueba" (F4-03): un quiz corto de práctica.
+ * 2. Preguntas de ejemplo.
+ * 3. "Ponme a prueba" (F4-03): un quiz corto de práctica.
  *
  * También avisa de la recuperación de la conversación anterior: mientras se pide (`cargando`) y si
  * falló (con "Reintentar"). Un historial vacío no dice nada.
  */
 import { ClipboardCheck } from '@lucide/vue';
 import type { ChipExplicame } from '@/ai/explicame';
-import type { SugerenciaRefuerzo } from '@/ai/mentorApi';
 import type { EstadoHistorial } from '@/ai/useMentor';
 import { Button } from '@/components/ui/button';
-import TarjetaRefuerzo from './TarjetaRefuerzo.vue';
 
 withDefaults(
   defineProps<{
     chips?: readonly ChipExplicame[];
-    sugerencias?: readonly SugerenciaRefuerzo[];
     estadoHistorial?: EstadoHistorial;
     errorHistorial?: string | null;
     puedeReintentarHistorial?: boolean;
   }>(),
   {
     chips: () => [],
-    sugerencias: () => [],
     estadoHistorial: 'listo',
     errorHistorial: null,
     puedeReintentarHistorial: true,
@@ -37,8 +32,6 @@ withDefaults(
 const emit = defineEmits<{
   preguntar: [texto: string];
   ponerAPrueba: [];
-  practicar: [sugerencia: SugerenciaRefuerzo];
-  navegar: [];
   reintentarHistorial: [];
 }>();
 
@@ -106,13 +99,6 @@ const CLASE_BOTON =
         </button>
       </li>
     </ul>
-
-    <TarjetaRefuerzo
-      :sugerencias="sugerencias"
-      practicable
-      @navegar="emit('navegar')"
-      @practicar="(s) => emit('practicar', s)"
-    />
 
     <ul class="flex flex-col gap-2" aria-label="Preguntas de ejemplo">
       <li v-for="pregunta in EJEMPLOS" :key="pregunta">

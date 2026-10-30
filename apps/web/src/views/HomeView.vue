@@ -14,8 +14,6 @@
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { Award, Eye, Trophy } from '@lucide/vue';
-import { useRefuerzoStore } from '@/ai/refuerzo';
-import TarjetaRefuerzo from '@/components/mentor/TarjetaRefuerzo.vue';
 import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
 import MandibulaModulos from '@/components/inicio/MandibulaModulos.vue';
 import IconoModulo from '@/components/modulo/IconoModulo.vue';
@@ -29,7 +27,6 @@ import { useProgresoStore } from '@/stores/progreso';
 
 const auth = useAuthStore();
 const progreso = useProgresoStore();
-const refuerzo = useRefuerzoStore();
 const contexto = useContextoStore();
 const { esDocente } = useAccesoModulos();
 const { completados, recorridoCompleto, siguiente, continuar } = usePasosModulos();
@@ -39,8 +36,6 @@ const nombre = computed(() => auth.usuario?.nombre ?? '');
 onMounted(() => {
   contexto.setSeccion('inicio');
   void progreso.load();
-  // Acaba de volver de estudiar: las sugerencias de refuerzo se piden de nuevo (F3-07).
-  void refuerzo.cargar({ force: true });
 });
 </script>
 
@@ -113,11 +108,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- «Para reforzar» (F3-07): solo aparece si hay algo que repasar. -->
-    <div v-if="refuerzo.sugerencias.length > 0" class="mt-8">
-      <TarjetaRefuerzo :sugerencias="refuerzo.sugerencias" :limite="4" />
-    </div>
-
     <div class="mt-4 space-y-3">
       <p
         v-if="esDocente"
@@ -144,48 +134,51 @@ onMounted(() => {
       </p>
     </div>
 
-    <SelectorNivel />
+    <!-- Nivel y reconocimiento en una misma fila: ahorra altura en pantallas anchas. -->
+    <div class="mt-8 grid items-stretch gap-8 md:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <SelectorNivel />
 
-    <section aria-labelledby="titulo-reconocimiento" class="mt-8 md:mt-12">
-      <h2 id="titulo-reconocimiento" class="text-2xl font-semibold">Tu reconocimiento</h2>
-      <ul role="list" class="mt-4 grid gap-3 sm:grid-cols-2">
-        <li class="flex">
-          <RouterLink
-            :to="{ name: 'logros' }"
-            class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-start gap-3 rounded-xl border p-4 transition-colors"
-            data-testid="enlace-logros"
-          >
-            <Trophy class="text-eosina mt-0.5 size-6 shrink-0" aria-hidden="true" />
-            <span class="space-y-1">
-              <span class="block font-serif text-lg leading-snug font-semibold">Mis logros</span>
-              <span class="text-muted-foreground block text-sm">
-                Mira los que ya tienes y cuál es el siguiente.
+      <section aria-labelledby="titulo-reconocimiento" class="flex flex-col">
+        <h2 id="titulo-reconocimiento" class="text-2xl font-semibold">Tu reconocimiento</h2>
+        <ul role="list" class="mt-4 grid flex-1 gap-3 sm:grid-cols-2">
+          <li class="flex">
+            <RouterLink
+              :to="{ name: 'logros' }"
+              class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-start gap-3 rounded-xl border p-4 transition-colors"
+              data-testid="enlace-logros"
+            >
+              <Trophy class="text-eosina mt-0.5 size-6 shrink-0" aria-hidden="true" />
+              <span class="space-y-1">
+                <span class="block font-serif text-lg leading-snug font-semibold">Mis logros</span>
+                <span class="text-muted-foreground block text-sm">
+                  Mira los que ya tienes y cuál es el siguiente.
+                </span>
               </span>
-            </span>
-          </RouterLink>
-        </li>
-        <li class="flex">
-          <RouterLink
-            :to="{ name: 'certificado' }"
-            class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-start gap-3 rounded-xl border p-4 transition-colors"
-            data-testid="enlace-certificado"
-          >
-            <Award class="text-eosina mt-0.5 size-6 shrink-0" aria-hidden="true" />
-            <span class="space-y-1">
-              <span class="block font-serif text-lg leading-snug font-semibold">
-                Mi certificado
+            </RouterLink>
+          </li>
+          <li class="flex">
+            <RouterLink
+              :to="{ name: 'certificado' }"
+              class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-start gap-3 rounded-xl border p-4 transition-colors"
+              data-testid="enlace-certificado"
+            >
+              <Award class="text-eosina mt-0.5 size-6 shrink-0" aria-hidden="true" />
+              <span class="space-y-1">
+                <span class="block font-serif text-lg leading-snug font-semibold">
+                  Mi certificado
+                </span>
+                <span class="text-muted-foreground block text-sm">
+                  {{
+                    recorridoCompleto
+                      ? 'Completaste los seis módulos: revisa si ya puedes obtenerlo.'
+                      : 'Se obtiene al completar los seis módulos con el puntaje mínimo.'
+                  }}
+                </span>
               </span>
-              <span class="text-muted-foreground block text-sm">
-                {{
-                  recorridoCompleto
-                    ? 'Completaste los seis módulos: revisa si ya puedes obtenerlo.'
-                    : 'Se obtiene al completar los seis módulos con el puntaje mínimo.'
-                }}
-              </span>
-            </span>
-          </RouterLink>
-        </li>
-      </ul>
-    </section>
+            </RouterLink>
+          </li>
+        </ul>
+      </section>
+    </div>
   </div>
 </template>

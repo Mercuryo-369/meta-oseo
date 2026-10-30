@@ -416,9 +416,8 @@ Parámetros opcionales: `modulo` (1 a 6) y `limite` (1 a 10, por defecto 5).
   `motivo` es la frase en lenguaje claro para el estudiante.
 - Solo lee las filas del propio usuario (nada de datos ajenos). Errores: `401 token_invalido`, `422` si
   `modulo` o `limite` están fuera de rango.
-- *Interfaz:* la tarjeta «Para reforzar» aparece en el estado vacío del panel del mentor (con «Ponme a
-  prueba» por sugerencia) y en la portada; cada concepto enlaza a su sección. Las `url` que no sean
-  `/modulo/1..6` con `?s=` opcional se descartan.
+- *Interfaz:* sin uso desde 2026-10-29 (la usuaria retiró la tarjeta «Para reforzar» de la portada y del
+  mentor). El endpoint se conserva.
 
 #### «Explícame esto» (F3-06)
 

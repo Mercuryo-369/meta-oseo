@@ -15,7 +15,6 @@
  * también se conserva. Al abrir el panel se recupera la conversación guardada (F3-09).
  *
  * Funciones del mentor (briefing: monitorear, profundizar, evaluar):
- * - Monitoreo (F3-07): tarjeta "Para reforzar" en el estado vacío, con las sugerencias del servidor.
  * - Profundizar (F3-06): "Explícame {nombre}" para lo que el estudiante tiene seleccionado, y un
  *   botón "Preguntar al mentor" junto al del panel (cerrado) que envía esa misma pregunta. Cualquier
  *   componente puede pedirle algo al mentor con el evento de documento `ova:preguntar-al-mentor`
@@ -31,8 +30,6 @@ import { computed, defineAsyncComponent, nextTick, reactive, ref, watch } from '
 import { useEventListener, useMediaQuery } from '@vueuse/core';
 import { ClipboardCheck, MessageCircle, SquarePen, TriangleAlert } from '@lucide/vue';
 import { EVENTO_PREGUNTAR_AL_MENTOR, textoDelEvento, useExplicame } from '@/ai/explicame';
-import type { SugerenciaRefuerzo } from '@/ai/mentorApi';
-import { useRefuerzoStore } from '@/ai/refuerzo';
 import { useMentor } from '@/ai/useMentor';
 import { useQuiz } from '@/ai/useQuiz';
 import { Button } from '@/components/ui/button';
@@ -80,7 +77,6 @@ const {
 
 /** `reactive` desenvuelve los refs del controlador: los componentes lo reciben sin `.value`. */
 const quiz = reactive(useQuiz());
-const refuerzo = useRefuerzoStore();
 const { chips } = useExplicame();
 
 /** Qué se ve en el panel: la conversación o el quiz de práctica. */
@@ -88,7 +84,6 @@ const vista = ref<'chat' | 'quiz'>('chat');
 /** Pide confirmación antes de borrar la conversación. */
 const confirmando = ref(false);
 
-const sugerenciasPanel = computed(() => refuerzo.sugerencias.slice(0, 3));
 /** Lo que el botón junto al del panel pregunta: la primera selección (la molécula si trabaja con ellas). */
 const chipPrincipal = computed(() => chips.value[0] ?? null);
 
@@ -107,9 +102,8 @@ watch(abierto, (valor) => {
   if (valor) {
     sinLeer.value = false;
     void cargarLista();
-    // Al abrir: recupera la conversación guardada y refresca las sugerencias de refuerzo.
+    // Al abrir: recupera la conversación guardada.
     void restaurar();
-    void refuerzo.cargar();
   } else {
     confirmando.value = false;
   }
@@ -178,16 +172,6 @@ useEventListener(document, EVENTO_PREGUNTAR_AL_MENTOR, (evento: Event) => {
 function abrirQuiz(): void {
   vista.value = 'quiz';
   if (quiz.estado === 'inactivo') void quiz.iniciar();
-}
-
-/** Quiz nuevo sobre el concepto de una sugerencia de refuerzo. */
-function practicarSugerencia(sugerencia: SugerenciaRefuerzo): void {
-  vista.value = 'quiz';
-  void quiz.iniciar({
-    tema: sugerencia.concepto,
-    modulo: sugerencia.modulo,
-    seccion: sugerencia.seccion,
-  });
 }
 
 function volverAlChat(): void {
@@ -401,14 +385,11 @@ const estiloHoja = computed(() => estiloDeLaHoja(esEscritorio.value, medidasTecl
           v-if="mensajes.length === 0"
           class="flex-1 overflow-y-auto"
           :chips="chips"
-          :sugerencias="sugerenciasPanel"
           :estado-historial="estadoHistorial"
           :error-historial="errorHistorial"
           :puede-reintentar-historial="errorHistorialReintentable"
           @preguntar="alPreguntarEjemplo"
           @poner-a-prueba="abrirQuiz"
-          @practicar="practicarSugerencia"
-          @navegar="alSeguirUnaFuente"
           @reintentar-historial="restaurar"
         />
         <MentorMensajes
