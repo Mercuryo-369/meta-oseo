@@ -689,7 +689,7 @@ defineExpose({ repetir });
 
 <template>
   <section
-    class="bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6"
+    class="actividad-arrastre bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6 lg:max-w-none"
     :aria-labelledby="`${uid}-titulo`"
     data-actividad="arrastre-molecular"
     :data-modo="modo"
@@ -728,7 +728,11 @@ defineExpose({ repetir });
     <template v-else-if="!jugando">
       <div
         class="escena-envoltura"
-        :style="{ paddingBottom: `${margenInferior}px` }"
+        :style="{
+          paddingBottom: `${margenInferior}px`,
+          '--aspecto': String(aspecto),
+          '--margen-escena': `${margenInferior}px`,
+        }"
         data-modo-revisar
       >
         <div
@@ -895,7 +899,11 @@ defineExpose({ repetir });
       <!-- Escena con los receptores. -->
       <div
         class="escena-envoltura"
-        :style="{ paddingBottom: `${margenInferior}px` }"
+        :style="{
+          paddingBottom: `${margenInferior}px`,
+          '--aspecto': String(aspecto),
+          '--margen-escena': `${margenInferior}px`,
+        }"
         data-escena-envoltura
       >
         <div
@@ -1085,6 +1093,36 @@ defineExpose({ repetir });
 </template>
 
 <style scoped>
+/* En escritorio la actividad cabe en una pantalla (indicación de la usuaria, 2026-10-29): la escena a la izquierda,
+   tan grande como permite el alto disponible (`--alto-vista`, que pone la vista del módulo), y a la derecha el
+   enunciado, el avance, las moléculas y los mensajes. */
+@media (min-width: 1024px) {
+  .actividad-arrastre {
+    display: grid;
+    grid-template-columns: auto minmax(18rem, 1fr);
+    /* La escena abarca todas las filas; la última, flexible, absorbe su alto y la columna derecha queda compacta. */
+    grid-template-rows: repeat(12, auto) 1fr;
+    align-content: start;
+    align-items: start;
+    column-gap: 1.5rem;
+  }
+  .actividad-arrastre > * {
+    grid-column: 2;
+  }
+  .actividad-arrastre > .escena-envoltura {
+    grid-column: 1;
+    grid-row: 1 / 14;
+    width: min(
+      44rem,
+      calc(
+        (var(--alto-vista, 100dvh - 6rem) - 5.5rem - var(--margen-escena, 0px)) *
+          var(--aspecto, 1.5)
+      )
+    );
+    max-width: none;
+  }
+}
+
 .solo-lector {
   position: absolute;
   width: 1px;

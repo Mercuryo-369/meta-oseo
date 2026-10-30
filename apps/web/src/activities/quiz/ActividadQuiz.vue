@@ -472,7 +472,7 @@ const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
 
 <template>
   <section
-    class="bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6"
+    class="actividad-quiz bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6 lg:max-w-none"
     :aria-labelledby="idTitulo"
     :aria-busy="practica === 'cargando' ? 'true' : undefined"
     data-actividad="quiz"
@@ -776,6 +776,7 @@ const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
       <PreguntaQuiz
         ref="pregunta-actual"
         :key="`${semilla}-${posicion}`"
+        class="pregunta-principal"
         :presentada="actual"
         :numero="posicion + 1"
         :total="presentadas.length"
@@ -792,3 +793,27 @@ const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
     </template>
   </section>
 </template>
+
+<style scoped>
+/* En escritorio el quiz cabe en una pantalla (indicación de la usuaria, 2026-10-29): a la izquierda el enunciado y
+   el avance; a la derecha la pregunta (o el resultado). La última fila, flexible, absorbe el alto de la derecha. */
+@media (min-width: 1024px) {
+  .actividad-quiz {
+    display: grid;
+    grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr);
+    grid-template-rows: repeat(6, auto) 1fr;
+    align-content: start;
+    align-items: start;
+    column-gap: 2rem;
+  }
+  .actividad-quiz > * {
+    grid-column: 1;
+  }
+  .actividad-quiz > .pregunta-principal,
+  .actividad-quiz > [data-fase='resumen'],
+  .actividad-quiz > [data-modo='revisar'] {
+    grid-column: 2;
+    grid-row: 1 / 8;
+  }
+}
+</style>

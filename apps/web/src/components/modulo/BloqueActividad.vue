@@ -128,7 +128,7 @@ function practicarDeNuevo(): void {
   <section
     :id="`actividad-${actividad.id}`"
     :aria-label="`Actividad: ${tituloPlano}`"
-    class="bg-card scroll-mt-20 space-y-3 rounded-xl border p-4 shadow-xs md:p-5"
+    class="bg-card scroll-mt-20 space-y-3 rounded-xl border p-4 shadow-xs md:p-5 lg:space-y-2 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
     :data-actividad="actividad.id"
     data-testid="bloque-actividad"
     @focusin="marcarActual()"

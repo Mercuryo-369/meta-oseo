@@ -718,7 +718,7 @@ onBeforeUnmount(() => {
   <!-- El padding inferior deja el final del contenido por encima de los botones flotantes del menú
        circular y del mentor en móvil (el <main> del shell reserva otro tanto). -->
   <div
-    class="mx-auto w-full max-w-[96rem] px-4 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8"
+    class="w-full px-4 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8"
     :class="enPortada ? 'pt-6 md:pt-10 md:pb-10' : 'pt-3 md:pb-3'"
     :style="estiloAcento(n)"
     :aria-busy="fase === 'cargando' ? 'true' : undefined"
