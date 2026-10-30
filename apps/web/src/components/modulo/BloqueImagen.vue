@@ -19,6 +19,8 @@
 import { computed, ref, useSlots } from 'vue';
 import { Check, ChevronLeft, ChevronRight, ImageOff, Lock } from '@lucide/vue';
 import type { BloqueImagen } from '@/content/schema';
+import { textoPlanoDeMarkdown } from '@/content/markdown';
+import BotonAmpliar from './BotonAmpliar.vue';
 import TextoRico from './TextoRico.vue';
 
 const props = withDefaults(
@@ -102,17 +104,20 @@ const claseRecuadro = computed(() =>
           class="space-y-3"
           data-testid="imagen-secuencia"
         >
-          <img
-            :key="pasoActual.src"
-            :src="pasoActual.src"
-            :alt="pasoActual.alt"
-            :width="pasoActual.ancho"
-            :height="pasoActual.alto"
-            decoding="async"
-            class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-            style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5rem)"
-            @error="fallo = true"
-          />
+          <div class="relative mx-auto w-fit max-w-full">
+            <img
+              :key="pasoActual.src"
+              :src="pasoActual.src"
+              :alt="pasoActual.alt"
+              :width="pasoActual.ancho"
+              :height="pasoActual.alto"
+              decoding="async"
+              class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+              style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5rem)"
+              @error="fallo = true"
+            />
+            <BotonAmpliar :src="pasoActual.src" :alt="pasoActual.alt" :pie="pasoActual.etiqueta" />
+          </div>
           <div class="flex items-center gap-2">
             <button
               type="button"
@@ -165,31 +170,45 @@ const claseRecuadro = computed(() =>
           data-testid="imagen-pareja"
         >
           <div class="space-y-2">
-            <img
-              :src="bloque.figura ?? bloque.src"
-              :alt="bloque.alt"
-              :width="bloque.ancho"
-              :height="bloque.alto"
-              loading="lazy"
-              decoding="async"
-              class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-              @error="fallo = true"
-            />
+            <div class="relative mx-auto w-fit max-w-full">
+              <img
+                :src="bloque.figura ?? bloque.src"
+                :alt="bloque.alt"
+                :width="bloque.ancho"
+                :height="bloque.alto"
+                loading="lazy"
+                decoding="async"
+                class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+                @error="fallo = true"
+              />
+              <BotonAmpliar
+                :src="bloque.figura ?? bloque.src"
+                :alt="bloque.alt"
+                :pie="textoPlanoDeMarkdown(bloque.pie)"
+              />
+            </div>
             <p class="text-muted-foreground text-center text-sm">
               <TextoRico :texto="bloque.pie" modo="linea" />
             </p>
           </div>
           <div class="space-y-2">
-            <img
-              :src="bloque.pareja.src"
-              :alt="bloque.pareja.alt"
-              :width="bloque.pareja.ancho"
-              :height="bloque.pareja.alto"
-              loading="lazy"
-              decoding="async"
-              class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-              @error="fallo = true"
-            />
+            <div class="relative mx-auto w-fit max-w-full">
+              <img
+                :src="bloque.pareja.src"
+                :alt="bloque.pareja.alt"
+                :width="bloque.pareja.ancho"
+                :height="bloque.pareja.alto"
+                loading="lazy"
+                decoding="async"
+                class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+                @error="fallo = true"
+              />
+              <BotonAmpliar
+                :src="bloque.pareja.src"
+                :alt="bloque.pareja.alt"
+                :pie="textoPlanoDeMarkdown(bloque.pareja.pie)"
+              />
+            </div>
             <p class="text-muted-foreground text-center text-sm">
               <TextoRico :texto="bloque.pareja.pie" modo="linea" />
             </p>
@@ -232,26 +251,37 @@ const claseRecuadro = computed(() =>
             >
               {{ i + 1 }}
             </button>
+            <BotonAmpliar
+              :src="bloque.figura ?? bloque.src"
+              :alt="bloque.alt"
+              :pie="textoPlanoDeMarkdown(bloque.pie)"
+            />
           </div>
         </div>
 
         <!-- Imagen sola -->
-        <img
-          v-else
-          :src="bloque.figura ?? bloque.src"
-          :alt="bloque.alt"
-          :width="bloque.ancho"
-          :height="bloque.alto"
-          loading="lazy"
-          decoding="async"
-          class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-          :style="
-            apilado
-              ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 12.5rem)' }
-              : undefined
-          "
-          @error="fallo = true"
-        />
+        <div v-else class="relative mx-auto w-fit max-w-full">
+          <img
+            :src="bloque.figura ?? bloque.src"
+            :alt="bloque.alt"
+            :width="bloque.ancho"
+            :height="bloque.alto"
+            loading="lazy"
+            decoding="async"
+            class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+            :style="
+              apilado
+                ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 12.5rem)' }
+                : undefined
+            "
+            @error="fallo = true"
+          />
+          <BotonAmpliar
+            :src="bloque.figura ?? bloque.src"
+            :alt="bloque.alt"
+            :pie="textoPlanoDeMarkdown(bloque.pie)"
+          />
+        </div>
 
         <!-- `contain: inline-size`: el pie (y su fuente, a veces larga) no ensancha la columna más que la imagen. -->
         <figcaption class="text-muted-foreground text-center text-sm [contain:inline-size]">
