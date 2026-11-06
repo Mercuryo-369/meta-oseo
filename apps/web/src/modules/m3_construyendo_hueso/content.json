@@ -181,13 +181,76 @@
           "pie": "El hueso percibe las cargas: el osteocito y sus mecanosensores",
           "credito": "Adaptada de Qin et al. (2020), bajo licencia CC BY 4.0, https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/",
           "ancho": 1415,
-          "alto": 1111
+          "alto": 1111,
+          "puntos": [
+            {
+              "id": "adhesiones_focales",
+              "etiqueta": "Adhesiones focales",
+              "x": 21,
+              "y": 2.5,
+              "markdown": "Conectan la célula con la matriz y transmiten señales mecánicas al citoesqueleto."
+            },
+            {
+              "id": "uniones_comunicantes",
+              "etiqueta": "Uniones comunicantes",
+              "x": 57,
+              "y": 2.5,
+              "markdown": "Permiten la comunicación intercelular entre osteocitos."
+            },
+            {
+              "id": "cilio_primario",
+              "etiqueta": "Cilio primario",
+              "x": 95,
+              "y": 3,
+              "markdown": "Participa en la mecanosensación del osteocito."
+            },
+            {
+              "id": "citoesqueleto",
+              "etiqueta": "Citoesqueleto",
+              "x": 18,
+              "y": 41,
+              "markdown": "Transmite y distribuye las fuerzas mecánicas dentro de la célula."
+            },
+            {
+              "id": "monticulos_de_colageno",
+              "etiqueta": "Montículos de colágeno",
+              "x": 97,
+              "y": 40,
+              "markdown": "Conectan la matriz con los procesos dendríticos y transmiten estímulos mecánicos."
+            },
+            {
+              "id": "canales_ionicos",
+              "etiqueta": "Canales iónicos",
+              "x": 44,
+              "y": 68,
+              "markdown": "Transforman estímulos mecánicos en señales iónicas, especialmente de Ca²⁺."
+            },
+            {
+              "id": "matriz_pericelular",
+              "etiqueta": "Matriz pericelular",
+              "x": 88,
+              "y": 71,
+              "markdown": "Capa de proteoglicanos y glicocálix de 0,5–1,0 μm que rodea al osteocito. Contiene filamentos elásticos de perlecano (HSPG2) que conectan la membrana celular con la matriz circundante y amplifican las fuerzas de arrastre implicadas en la mecanotransducción."
+            }
+          ]
+        },
+        {
+          "id": "vid_m3_1_v01",
+          "tipo": "video",
+          "titulo": "¿Cómo detecta el osteocito la fuerza?",
+          "descripcion": "Mini video desde el movimiento de la membrana hasta la salida de calcio del retículo."
         },
         {
           "id": "t_como_detecta_el_osteocito_la_fuerza",
           "tipo": "texto",
           "titulo": "¿Cómo detecta el osteocito la fuerza?",
           "markdown": "La detección de las cargas depende de la interacción entre la matriz pericelular, las integrinas, las adhesiones focales y el citoesqueleto, que transmiten las fuerzas hacia la membrana y el interior celular. Entre los principales sensores destaca PIEZO1, un canal mecanosensible cuya apertura permite la entrada de Ca²⁺ y constituye una de las primeras señales de mecanotransducción; también se ha descrito la participación de PIEZO2 y TRPV4, aunque su contribución específica está menos caracterizada.\n\nLa entrada de cationes puede modificar el potencial de membrana y favorecer la apertura de canales de calcio dependientes de voltaje (VSC), amplificando la señal. A su vez, la activación de receptores de IP₃ en el retículo endoplásmico permite liberar calcio almacenado, mientras que canales como Panx1 facilitan la liberación de ATP, que puede activar receptores purinérgicos como P2X7 y contribuir a nuevas señales de Ca²⁺. Otros canales, como TRPM6 y TRPM7, también se han relacionado con la regulación de cationes, aunque su papel específico en la mecanotransducción osteocítica está menos definido. En conjunto, estos mecanismos generan señales intracelulares que permiten al osteocito responder a las cargas mecánicas."
+        },
+        {
+          "id": "vid_m3_1_v02",
+          "tipo": "video",
+          "titulo": "De la señal mecánica a la respuesta celular",
+          "descripcion": "Mini video desde que aparece la calmodulina hasta que las 3 moléculas salen por el sistema lacunocanalicular."
         },
         {
           "id": "t_de_la_senal_mecanica_a_la_respuesta",
@@ -344,7 +407,9 @@
                       "texto": "La liberación de esclerostina hacia el líquido intersticial."
                     }
                   ],
-                  "correctas": ["m3_q_eval1_1_b"],
+                  "correctas": [
+                    "m3_q_eval1_1_b"
+                  ],
                   "explicacion": "La deformación de la matriz mineralizada genera gradientes de presión que favorecen el movimiento del líquido intersticial a través del sistema lacunocanalicular. El desplazamiento del fluido produce fuerzas sobre los osteocitos y su entorno pericelular, iniciando la detección del estímulo mecánico.",
                   "concepto": "Movimiento del líquido intersticial"
                 },
@@ -370,7 +435,9 @@
                       "texto": "La existencia del sistema lacunocanalicular."
                     }
                   ],
-                  "correctas": ["m3_q_eval1_2_c"],
+                  "correctas": [
+                    "m3_q_eval1_2_c"
+                  ],
                   "explicacion": "La detección mecánica y la comunicación intercelular son componentes relacionados, pero diferenciables. El bloqueo de la comunicación puede alterar la coordinación de la respuesta ósea y la modulación de la actividad osteoblástica, aunque la detección inicial del estímulo permanezca intacta.",
                   "concepto": "Comunicación intercelular"
                 }
@@ -537,7 +604,9 @@
                       "texto": "La inhibición obligatoria de todas las vías osteogénicas."
                     }
                   ],
-                  "correctas": ["m3_q_eval2_1_b"],
+                  "correctas": [
+                    "m3_q_eval2_1_b"
+                  ],
                   "explicacion": "La integración de señales del microambiente puede favorecer el reclutamiento y el compromiso osteoblástico de los progenitores esqueléticos. El resultado depende del contexto celular y no implica una diferenciación inmediata ni uniforme de todos los progenitores.",
                   "concepto": "Activación de los progenitores osteogénicos"
                 },
@@ -563,7 +632,9 @@
                       "texto": "Es un componente exclusivo del hueso cortical, sin presencia en superficies trabeculares."
                     }
                   ],
-                  "correctas": ["m3_q_eval2_2_b"],
+                  "correctas": [
+                    "m3_q_eval2_2_b"
+                  ],
                   "explicacion": "El canopy contribuye a delimitar el compartimento de remodelado y a organizar las interacciones entre células y señales locales. Su proximidad a los capilares favorece el acceso de precursores y su interacción con células osteoprogenitoras. Se ha caracterizado especialmente en superficies trabeculares humanas, aunque la organización de los compartimentos puede variar según la localización.",
                   "concepto": "Canopy de remodelado óseo"
                 },
@@ -589,7 +660,9 @@
                       "texto": "La activación obligatoria de BMP/SMAD como única respuesta a la falta de carga."
                     }
                   ],
-                  "correctas": ["m3_q_eval2_3_b"],
+                  "correctas": [
+                    "m3_q_eval2_3_b"
+                  ],
                   "explicacion": "La ausencia de carga mecánica puede aumentar la expresión de esclerostina y DKK1, inhibidores de WNT/β-catenina. Esto favorece la degradación de β-catenina, reduce la activación del programa osteogénico y puede disminuir la diferenciación osteoblástica y la formación de matriz, contribuyendo a la osteopenia por desuso.",
                   "concepto": "Ausencia de estímulo mecánico"
                 }
@@ -644,10 +717,23 @@
           "alto": 534
         },
         {
+          "id": "vid_m3_3_v01",
+          "tipo": "video",
+          "titulo": "Activación de los genes COL1A1 y COL1A2",
+          "descripcion": "Mini video desde que estamos en el núcleo del osteoblasto hasta que la ARN polimerasa empieza a transcribir COL1A1 y COL1A2."
+        },
+        {
           "id": "t_fase_i_activacion_genetica_y_sintesis_de",
           "tipo": "texto",
-          "titulo": "Fase I. Activación genética y síntesis de las cadenas de colágeno",
-          "markdown": "**Activación de los genes COL1A1 y COL1A2.** Una vez que las señales llegan al núcleo, el objetivo es activar los genes que permitirán al osteoblasto producir la matriz orgánica, especialmente COL1A1 y COL1A2, que codifican el colágeno tipo I. Para ello participan diferentes vías, entre ellas Wnt/β-catenina, PGE₂/PKA/CREB, BMP/SMAD e integrinas/FAK/MAPK, que pueden actuar de manera paralela o cooperativa. Como ejemplo, en la vía Wnt/β-catenina, la β-catenina se acumula en el núcleo y se une a TCF/LEF, que reconocen regiones reguladoras del ADN y pueden contribuir a la regulación de RUNX2. En su región promotora, la interacción de factores reguladores con el ADN favorece el reclutamiento de la ARN polimerasa II, que utiliza el ADN como molde para sintetizar el ARNm de RUNX2. Este transcrito se procesa y se traduce para producir la proteína RUNX2, un regulador del programa osteogénico cuya expresión y actividad forman parte de una red de regulación celular, sin que deba sintetizarse desde cero cada vez que el osteoblasto produce colágeno. RUNX2 contribuye, entre otros procesos, a la regulación de SP7/Osterix. De manera paralela, PGE₂ puede activar CREB y, tras su fosforilación (p-CREB), este se une a elementos CRE y puede reclutar coactivadores como CBP/p300, favoreciendo la transcripción.\n\nPosteriormente, RUNX2, SP7/Osterix y otros factores reguladores pueden cooperar en el control de la expresión de COL1A1 y COL1A2, según el contexto celular y las regiones reguladoras implicadas. Junto con coactivadores como CBP/p300, favorecen el ensamblaje de la maquinaria transcripcional y el reclutamiento de la ARN polimerasa II al promotor. Así se generan los pre-ARNm de COL1A1 y COL1A2, cuyos transcritos atraviesan las etapas generales de maduración del pre-ARNm, que incluyen procesamiento, corte y empalme (splicing) y poliadenilación, antes de convertirse en ARNm maduros. Estos salen del núcleo a través de los poros nucleares con ayuda del complejo exportador NXF1–NXT1, que facilita el transporte, pero no forma parte estructural del poro. En el citoplasma, los ARNm se traducen para sintetizar las cadenas de colágeno tipo I; la traducción comienza en el citosol y continúa acoplada al retículo endoplasmático rugoso (RER), donde ingresan las cadenas nacientes para su procesamiento, dando inicio a la construcción de la matriz orgánica."
+          "subcapitulo": "Fase I. Activación genética y síntesis de las cadenas de colágeno",
+          "titulo": "Activación de los genes COL1A1 y COL1A2",
+          "markdown": "Una vez que las señales llegan al núcleo, el objetivo es activar los genes que permitirán al osteoblasto producir la matriz orgánica, especialmente COL1A1 y COL1A2, que codifican el colágeno tipo I. Para ello participan diferentes vías, entre ellas Wnt/β-catenina, PGE₂/PKA/CREB, BMP/SMAD e integrinas/FAK/MAPK, que pueden actuar de manera paralela o cooperativa. Como ejemplo, en la vía Wnt/β-catenina, la β-catenina se acumula en el núcleo y se une a TCF/LEF, que reconocen regiones reguladoras del ADN y pueden contribuir a la regulación de RUNX2. En su región promotora, la interacción de factores reguladores con el ADN favorece el reclutamiento de la ARN polimerasa II, que utiliza el ADN como molde para sintetizar el ARNm de RUNX2. Este transcrito se procesa y se traduce para producir la proteína RUNX2, un regulador del programa osteogénico cuya expresión y actividad forman parte de una red de regulación celular, sin que deba sintetizarse desde cero cada vez que el osteoblasto produce colágeno. RUNX2 contribuye, entre otros procesos, a la regulación de SP7/Osterix. De manera paralela, PGE₂ puede activar CREB y, tras su fosforilación (p-CREB), este se une a elementos CRE y puede reclutar coactivadores como CBP/p300, favoreciendo la transcripción.\n\nPosteriormente, RUNX2, SP7/Osterix y otros factores reguladores pueden cooperar en el control de la expresión de COL1A1 y COL1A2, según el contexto celular y las regiones reguladoras implicadas. Junto con coactivadores como CBP/p300, favorecen el ensamblaje de la maquinaria transcripcional y el reclutamiento de la ARN polimerasa II al promotor. Así se generan los pre-ARNm de COL1A1 y COL1A2, cuyos transcritos atraviesan las etapas generales de maduración del pre-ARNm, que incluyen procesamiento, corte y empalme (splicing) y poliadenilación, antes de convertirse en ARNm maduros. Estos salen del núcleo a través de los poros nucleares con ayuda del complejo exportador NXF1–NXT1, que facilita el transporte, pero no forma parte estructural del poro. En el citoplasma, los ARNm se traducen para sintetizar las cadenas de colágeno tipo I; la traducción comienza en el citosol y continúa acoplada al retículo endoplasmático rugoso (RER), donde ingresan las cadenas nacientes para su procesamiento, dando inicio a la construcción de la matriz orgánica."
+        },
+        {
+          "id": "vid_m3_3_v02",
+          "tipo": "video",
+          "titulo": "Transcripción y maduración del ARNm",
+          "descripcion": "Mini video desde que sale el ARNm de COL1A1 y COL1A2 hasta que sale del núcleo."
         },
         {
           "id": "t_transcripcion_y_maduracion_del_arnm",
@@ -656,16 +742,35 @@
           "markdown": "A partir de este punto, independientemente de la vía de señalización que haya activado COL1A1 y COL1A2, ambos genes siguen el mismo proceso de maduración del ARN. La ARN polimerasa II produce inicialmente un pre-ARNm, que debe modificarse antes de salir del núcleo:\n\n1. **Adición de la caperuza 5′:** Mientras la ARN polimerasa II continúa transcribiendo, un complejo enzimático asociado a ella añade una caperuza 5′ (5′ cap) al extremo inicial del ARN. Esta estructura protege el transcrito y posteriormente facilita su reconocimiento durante la traducción.\n2. **Splicing: eliminación de intrones:** El espliceosoma, formado por pequeños ARN nucleares (snRNA) y proteínas, reconoce las regiones que separan intrones y exones, elimina los intrones y une los exones. Así se obtiene una secuencia continua que contiene la información necesaria para producir la proteína.\n3. **Procesamiento del extremo 3′ y cola poli(A):** Una vez transcrito el extremo 3′, el ARN es cortado y la poli(A) polimerasa (PAP) añade una cadena de adeninas denominada cola poli(A). Esta cola se asocia con proteínas como PABPN1, que contribuyen a la estabilidad y procesamiento del ARNm.\n4. **Exportación al citoplasma:** El ARNm ya procesado se asocia con proteínas de unión al ARN y con el complejo de exportación NXF1–NXT1, que lo dirige hacia el poro nuclear. A través de este complejo, el ARNm sale al citoplasma, donde podrá ser reconocido por los ribosomas para iniciar la síntesis de las cadenas de colágeno tipo I."
         },
         {
+          "id": "vid_m3_3_v03",
+          "tipo": "video",
+          "titulo": "Traducción y acoplamiento al RER",
+          "descripcion": "Mini video desde que sale del núcleo hasta que se acopla con el RER."
+        },
+        {
           "id": "t_traduccion_y_acoplamiento_al_rer",
           "tipo": "texto",
           "titulo": "Traducción y acoplamiento al RER",
           "markdown": "Una vez que los ARNm de COL1A1 y COL1A2 salen del núcleo, llegan al citoplasma y se asocian con ribosomas, donde comienza la traducción. Como las cadenas de colágeno tipo I están destinadas a la secreción, su síntesis debe realizarse en el retículo endoplásmico rugoso (RER). Para dirigir el ribosoma hacia el RER ocurre una secuencia especializada:\n\n1. **Inicio de la traducción:** El ARNm de COL1A1 o COL1A2 se asocia inicialmente con la subunidad pequeña (40S) del ribosoma, que reconoce el extremo 5′ del ARNm y comienza a desplazarse hasta identificar el codón de inicio AUG. Luego se incorpora la subunidad grande (60S), formando el ribosoma completo 80S, donde comienza la síntesis de la cadena polipeptídica.\n2. **Aparición del péptido señal:** En las primeras etapas de la traducción emerge del ribosoma una secuencia señal N-terminal, que funciona como una etiqueta que indica que la proteína debe ingresar a la vía secretora.\n3. **Reconocimiento por la SRP:** La partícula de reconocimiento de señal (SRP) reconoce el péptido señal y se une tanto a este como al ribosoma, provocando una pausa transitoria de la traducción.\n4. **Acoplamiento al RER:** El complejo ARNm–ribosoma–SRP se dirige hacia la membrana del RER, donde la SRP se une a su receptor, el receptor de SRP (SR). El ribosoma se transfiere al translocón Sec61, un canal proteico que atraviesa la membrana del RER donde la cadena naciente ingresa mientras continúa la traducción."
         },
         {
+          "id": "vid_m3_3_v04",
+          "tipo": "video",
+          "titulo": "Procesamiento y modificaciones de las cadenas en el RER",
+          "descripcion": "Mini video desde que entra al RER hasta que está listo para enrollarse."
+        },
+        {
           "id": "t_fase_ii_procesamiento_y_ensamblaje",
           "tipo": "texto",
-          "titulo": "Fase II. Procesamiento y ensamblaje intracelular del procolágeno",
-          "markdown": "**Procesamiento y modificaciones de las cadenas en el RER.** Una vez que las cadenas pro-α se encuentran en la luz del RER, comienzan una serie de modificaciones que las preparan para su posterior ensamblaje:\n\n1. **Eliminación del péptido señal:** La peptidasa señal escinde la secuencia señal que dirige la cadena naciente hacia el RER, a diferencia de los propéptidos N- y C-terminales del procolágeno, que se conservan durante el procesamiento intracelular y se eliminan posteriormente en el espacio extracelular.\n2. **Hidroxilación de prolina y lisina:** En la región de colágeno, determinadas prolinas y lisinas son modificadas por enzimas específicas. Las prolil-hidroxilasas generan hidroxiprolina, mientras que las lisil-hidroxilasas generan hidroxilisina. Estas reacciones requieren Fe²⁺, O₂ y 2-oxoglutarato, y la vitamina C es necesaria para mantener la actividad de las hidroxilasas. La hidroxilación, especialmente de las prolinas, será fundamental para la estabilidad de la futura triple hélice.\n3. **Glicosilación de determinadas hidroxilisinas:** Algunas de las hidroxilisinas reciben carbohidratos mediante glicosiltransferasas del RER; primero puede añadirse galactosa y posteriormente glucosa. Esta modificación ocurre solo en residuos específicos y contribuye a regular las propiedades y organización posterior del colágeno.\n4. **Preparación para el ensamblaje:** Mientras las cadenas son modificadas, sus regiones C-terminales permiten su reconocimiento y alineación, preparando las dos cadenas pro-α1(I) y una pro-α2(I) para el siguiente proceso: la formación de la triple hélice del procolágeno tipo I."
+          "subcapitulo": "Fase II. Procesamiento y ensamblaje intracelular del procolágeno",
+          "titulo": "Procesamiento y modificaciones de las cadenas en el RER",
+          "markdown": "Una vez que las cadenas pro-α se encuentran en la luz del RER, comienzan una serie de modificaciones que las preparan para su posterior ensamblaje:\n\n1. **Eliminación del péptido señal:** La peptidasa señal escinde la secuencia señal que dirige la cadena naciente hacia el RER, a diferencia de los propéptidos N- y C-terminales del procolágeno, que se conservan durante el procesamiento intracelular y se eliminan posteriormente en el espacio extracelular.\n2. **Hidroxilación de prolina y lisina:** En la región de colágeno, determinadas prolinas y lisinas son modificadas por enzimas específicas. Las prolil-hidroxilasas generan hidroxiprolina, mientras que las lisil-hidroxilasas generan hidroxilisina. Estas reacciones requieren Fe²⁺, O₂ y 2-oxoglutarato, y la vitamina C es necesaria para mantener la actividad de las hidroxilasas. La hidroxilación, especialmente de las prolinas, será fundamental para la estabilidad de la futura triple hélice.\n3. **Glicosilación de determinadas hidroxilisinas:** Algunas de las hidroxilisinas reciben carbohidratos mediante glicosiltransferasas del RER; primero puede añadirse galactosa y posteriormente glucosa. Esta modificación ocurre solo en residuos específicos y contribuye a regular las propiedades y organización posterior del colágeno.\n4. **Preparación para el ensamblaje:** Mientras las cadenas son modificadas, sus regiones C-terminales permiten su reconocimiento y alineación, preparando las dos cadenas pro-α1(I) y una pro-α2(I) para el siguiente proceso: la formación de la triple hélice del procolágeno tipo I."
+        },
+        {
+          "id": "vid_m3_3_v05",
+          "tipo": "video",
+          "titulo": "Formación de la triple hélice",
+          "descripcion": "Mini video desde que inicia a enrollarse hasta que está listo para salir."
         },
         {
           "id": "t_formacion_de_la_triple_helice",
@@ -676,8 +781,9 @@
         {
           "id": "t_fase_iii_transporte_intracelular_y",
           "tipo": "texto",
-          "titulo": "Fase III. Transporte intracelular y secreción de los componentes orgánicos",
-          "markdown": "**Tránsito por el aparato de Golgi.** Una vez formada la triple hélice, el procolágeno tipo I abandona el retículo endoplásmico y se dirige al aparato de Golgi. Debido a su gran tamaño, su exportación requiere mecanismos especializados asociados a COPII y proteínas como TANGO1 (MIA3) y cTAGE5 (MIA2), que facilitan su transporte desde los sitios de salida del RER. Posteriormente, el cargamento atraviesa el compartimento intermedio ER-Golgi (ERGIC) hasta alcanzar la región cis del Golgi.\n\nDurante su tránsito por el Golgi, el procolágeno puede experimentar modificaciones adicionales de sus componentes glucídicos y comenzar el procesamiento de algunos propéptidos N-terminales. Además, este compartimento participa en la clasificación y distribución del procolágeno y otros componentes de la matriz hacia la vía secretora correspondiente."
+          "subcapitulo": "Fase III. Transporte intracelular y secreción de los componentes orgánicos",
+          "titulo": "Tránsito por el aparato de Golgi",
+          "markdown": "Una vez formada la triple hélice, el procolágeno tipo I abandona el retículo endoplásmico y se dirige al aparato de Golgi. Debido a su gran tamaño, su exportación requiere mecanismos especializados asociados a COPII y proteínas como TANGO1 (MIA3) y cTAGE5 (MIA2), que facilitan su transporte desde los sitios de salida del RER. Posteriormente, el cargamento atraviesa el compartimento intermedio ER-Golgi (ERGIC) hasta alcanzar la región cis del Golgi.\n\nDurante su tránsito por el Golgi, el procolágeno puede experimentar modificaciones adicionales de sus componentes glucídicos y comenzar el procesamiento de algunos propéptidos N-terminales. Además, este compartimento participa en la clasificación y distribución del procolágeno y otros componentes de la matriz hacia la vía secretora correspondiente."
         },
         {
           "id": "img_m3_3_i04",
@@ -704,10 +810,17 @@
           "alto": 534
         },
         {
+          "id": "vid_m3_3_v06",
+          "tipo": "video",
+          "titulo": "Escisión de los propéptidos",
+          "descripcion": "Mini video desde que sale de la célula hasta que queda únicamente tropocolágeno."
+        },
+        {
           "id": "t_fase_iv_procesamiento_extracelular_y",
           "tipo": "texto",
-          "titulo": "Fase IV. Procesamiento extracelular y ensamblaje fibrilar",
-          "markdown": "**Escisión de los propéptidos.** Una vez secretado al espacio extracelular, el procolágeno tipo I experimenta la eliminación de sus propéptidos N- y C-terminales mediante proteinasas específicas: el extremo N-terminal es escindido principalmente por ADAMTS2, con participación de ADAMTS3 y ADAMTS14 en determinados contextos, mientras que el procesamiento del extremo C-terminal depende principalmente de BMP1 (proteasa de la familia tolloid, distinta de las proteínas señalizadoras BMP-2 y BMP-4) y otras proteinasas de la familia tolloid-like. Esta proteólisis da lugar a la molécula de colágeno tipo I, denominada clásicamente tropocolágeno, que queda preparada para su posterior ensamblaje.\n\nTras la escisión, se conserva la región central de triple hélice y permanecen pequeños segmentos no helicoidales en los extremos, denominados telopéptidos, que participan en las interacciones intermoleculares y en la estabilización posterior de las fibrillas. La eliminación de los propéptidos regula el ensamblaje extracelular, ya que estas regiones limitan la asociación prematura del colágeno durante su síntesis y transporte intracelular.\n\n**Nota:** El extremo N-terminal denominado PINP (Procollagen Type I N-terminal Propeptide), pasa a la circulación y puede cuantificarse como marcador bioquímico de formación ósea, ya que sus concentraciones reflejan la actividad de síntesis de colágeno tipo I. Su interpretación debe considerar la función renal, la variabilidad biológica y el método analítico empleado; por tanto, sus valores deben integrarse con el contexto clínico y otros hallazgos."
+          "subcapitulo": "Fase IV. Procesamiento extracelular y ensamblaje fibrilar",
+          "titulo": "Escisión de los propéptidos",
+          "markdown": "Una vez secretado al espacio extracelular, el procolágeno tipo I experimenta la eliminación de sus propéptidos N- y C-terminales mediante proteinasas específicas: el extremo N-terminal es escindido principalmente por ADAMTS2, con participación de ADAMTS3 y ADAMTS14 en determinados contextos, mientras que el procesamiento del extremo C-terminal depende principalmente de BMP1 (proteasa de la familia tolloid, distinta de las proteínas señalizadoras BMP-2 y BMP-4) y otras proteinasas de la familia tolloid-like. Esta proteólisis da lugar a la molécula de colágeno tipo I, denominada clásicamente tropocolágeno, que queda preparada para su posterior ensamblaje.\n\nTras la escisión, se conserva la región central de triple hélice y permanecen pequeños segmentos no helicoidales en los extremos, denominados telopéptidos, que participan en las interacciones intermoleculares y en la estabilización posterior de las fibrillas. La eliminación de los propéptidos regula el ensamblaje extracelular, ya que estas regiones limitan la asociación prematura del colágeno durante su síntesis y transporte intracelular.\n\n**Nota:** El extremo N-terminal denominado PINP (Procollagen Type I N-terminal Propeptide), pasa a la circulación y puede cuantificarse como marcador bioquímico de formación ósea, ya que sus concentraciones reflejan la actividad de síntesis de colágeno tipo I. Su interpretación debe considerar la función renal, la variabilidad biológica y el método analítico empleado; por tanto, sus valores deben integrarse con el contexto clínico y otros hallazgos."
         },
         {
           "id": "t_alineacion_y_fibrilogenesis",
@@ -742,8 +855,9 @@
         {
           "id": "t_fase_v_organizacion_de_la_matriz_y",
           "tipo": "texto",
-          "titulo": "Fase V. Organización de la matriz y deposición del osteoide",
-          "markdown": "**Integración de los componentes de la matriz.** Las fibrillas de colágeno tipo I constituyen el principal andamiaje estructural del osteoide, formando una red tridimensional sobre y entre la cual se distribuyen otros componentes secretados por el osteoblasto, como osteocalcina, osteopontina, osteonectina/SPARC, fibronectina y proteoglucanos. La secreción de estos componentes, su incorporación a la matriz, el ensamblaje de las fibrillas y la formación de enlaces cruzados son procesos que pueden superponerse temporalmente, en lugar de ocurrir como etapas estrictamente secuenciales. La interacción entre estas moléculas y el colágeno permite organizar la matriz extracelular, estabilizar sus componentes y establecer un entorno adecuado para las interacciones entre las células y la matriz.\n\nAunque estas moléculas actúan de manera integrada, sus funciones son diferentes y complementarias: la fibronectina y la osteopontina participan en la adhesión celular y en las interacciones célula–matriz; la osteonectina/SPARC contribuye a la organización de la matriz mediante su interacción con el colágeno y los componentes minerales, mientras que los proteoglucanos modulan la hidratación y las interacciones entre macromoléculas. Por su parte, la osteocalcina y la osteopontina también intervienen en las interacciones con la fase mineral y en la regulación de la mineralización. De este modo, la matriz no constituye una mezcla homogénea de proteínas, sino una estructura organizada cuyas propiedades dependen de la composición, distribución e interacción de sus componentes."
+          "subcapitulo": "Fase V. Organización de la matriz y deposición del osteoide",
+          "titulo": "Integración de los componentes de la matriz",
+          "markdown": "Las fibrillas de colágeno tipo I constituyen el principal andamiaje estructural del osteoide, formando una red tridimensional sobre y entre la cual se distribuyen otros componentes secretados por el osteoblasto, como osteocalcina, osteopontina, osteonectina/SPARC, fibronectina y proteoglucanos. La secreción de estos componentes, su incorporación a la matriz, el ensamblaje de las fibrillas y la formación de enlaces cruzados son procesos que pueden superponerse temporalmente, en lugar de ocurrir como etapas estrictamente secuenciales. La interacción entre estas moléculas y el colágeno permite organizar la matriz extracelular, estabilizar sus componentes y establecer un entorno adecuado para las interacciones entre las células y la matriz.\n\nAunque estas moléculas actúan de manera integrada, sus funciones son diferentes y complementarias: la fibronectina y la osteopontina participan en la adhesión celular y en las interacciones célula–matriz; la osteonectina/SPARC contribuye a la organización de la matriz mediante su interacción con el colágeno y los componentes minerales, mientras que los proteoglucanos modulan la hidratación y las interacciones entre macromoléculas. Por su parte, la osteocalcina y la osteopontina también intervienen en las interacciones con la fase mineral y en la regulación de la mineralización. De este modo, la matriz no constituye una mezcla homogénea de proteínas, sino una estructura organizada cuyas propiedades dependen de la composición, distribución e interacción de sus componentes."
         },
         {
           "id": "img_m3_3_i08",
@@ -891,7 +1005,9 @@
                       "texto": "El hueso entretejido solo aparece después de la mineralización completa del hueso lamelar."
                     }
                   ],
-                  "correctas": ["m3_q_eval3_1_c"],
+                  "correctas": [
+                    "m3_q_eval3_1_c"
+                  ],
                   "explicacion": "El hueso entretejido se caracteriza por una organización relativamente irregular y puede aparecer durante el desarrollo o las primeras etapas de reparación. Durante la maduración y el remodelado, la matriz puede reorganizarse en lamelas con una disposición más regular, característica del hueso lamelar.",
                   "concepto": "Hueso entretejido y hueso lamelar"
                 },
@@ -917,7 +1033,9 @@
                       "texto": "Alteración exclusiva de la composición de la triple hélice."
                     }
                   ],
-                  "correctas": ["m3_q_eval3_2_a"],
+                  "correctas": [
+                    "m3_q_eval3_2_a"
+                  ],
                   "explicacion": "Los proteoglucanos contribuyen a modular la hidratación de la matriz y las interacciones entre sus macromoléculas. Su alteración puede modificar la organización extracelular, incluso si la síntesis de colágeno se mantiene.",
                   "concepto": "Proteoglucanos de la matriz"
                 },

@@ -363,6 +363,27 @@ function pesoDeBloque(b: BloqueLectura | NotaParte): number {
   const saltos = b.markdown.split('\n').length - 1;
   return b.markdown.length + saltos * 70 + (b.tipo === 'callout' ? 80 : 0);
 }
+/*
+ * Video con su texto lateral: cuanto más largo el texto, más ancho para él. Con un texto muy largo (3.3.4, unos 2400
+ * caracteres) dos columnas no caben en la pantalla: el video flota a la izquierda y el texto lo rodea y sigue debajo a
+ * todo lo ancho, como en un documento de Word.
+ */
+const LATERAL_FLOTANTE = 1800;
+function largoLateral(notas: NotaParte[]): number {
+  return notas.reduce((t, n) => t + pesoDeBloque(n), 0);
+}
+function videoFlotante(notas: NotaParte[]): boolean {
+  return largoLateral(notas) > LATERAL_FLOTANTE;
+}
+function columnasVideo(notas: NotaParte[]): string {
+  const largo = largoLateral(notas);
+  if (largo === 0) return 'grid';
+  // Las listas al lado del video flotante son un bloque propio: no se meten debajo de él con la numeración corrida.
+  if (videoFlotante(notas))
+    return 'block lg:flow-root [&_ol]:overflow-hidden [&_ul]:overflow-hidden';
+  if (largo > 1300) return 'grid lg:grid-cols-[minmax(0,1fr)_minmax(18rem,1.2fr)]';
+  return 'grid lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,1fr)]';
+}
 function anunciaElSiguiente(b: BloqueLectura | undefined): boolean {
   return b?.tipo === 'texto' && b.markdown.trimEnd().endsWith(':');
 }
@@ -417,6 +438,13 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
         grupo.lectura.push(b);
         pesoLectura += peso;
       }
+    } else if (b.tipo === 'video') {
+      // «Texto lateral que debe ir allí» (3.1 y 3.3 del documento): el texto que sigue al video va a su lado.
+      const sig = bloques[i + 1];
+      const lateral = textoEmparejable(sig) && !sig.fondo && !pares.has(i + 1) ? [sig] : [];
+      filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b, notas: lateral });
+      if (lateral.length) i++;
+      grupo = null;
     } else {
       filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b, notas: [] });
       grupo = null;
@@ -576,7 +604,7 @@ const subcapitulos = computed<(string | null)[]>(() => {
         : f.tipo === 'grupo'
           ? f.lectura
           : f.tipo === 'solo'
-            ? [f.previo, f.bloque]
+            ? [f.previo, f.bloque, ...f.notas]
             : [];
     for (const b of textos) {
       if (b?.tipo === 'texto' && b.subcapitulo) {
@@ -1366,7 +1394,36 @@ onBeforeUnmount(() => {
                         v-else-if="fila.bloque.tipo === 'pregunta'"
                         :bloque="fila.bloque"
                       />
-                      <BloqueVideo v-else-if="fila.bloque.tipo === 'video'" :bloque="fila.bloque" />
+                      <div
+                        v-else-if="fila.bloque.tipo === 'video'"
+                        class="items-center gap-5"
+                        :class="columnasVideo(fila.notas)"
+                        data-testid="fila-video"
+                      >
+                        <BloqueVideo
+                          :bloque="fila.bloque"
+                          :sin-pie="fila.notas.length > 0"
+                          :class="
+                            videoFlotante(fila.notas)
+                              ? 'mb-4 lg:float-left lg:mr-6 lg:mb-2 lg:w-[34%]'
+                              : ''
+                          "
+                        />
+                        <div v-if="fila.notas.length" class="min-w-0 space-y-4">
+                          <template v-for="nota in fila.notas" :key="nota.id">
+                            <!-- El título del texto lateral repite el del video: se muestra una sola vez. -->
+                            <BloqueTexto
+                              v-if="nota.tipo === 'texto'"
+                              :bloque="
+                                nota.titulo === fila.bloque.titulo
+                                  ? { ...nota, titulo: undefined }
+                                  : nota
+                              "
+                              incrustado
+                            />
+                          </template>
+                        </div>
+                      </div>
                       <template v-else-if="fila.bloque.tipo === 'actividad'">
                         <BloqueTexto v-if="fila.previo" :bloque="fila.previo" class="mb-3" />
                         <BloqueActividad

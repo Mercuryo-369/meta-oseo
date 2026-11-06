@@ -8,7 +8,8 @@ import { Clapperboard } from '@lucide/vue';
 import type { BloqueVideo } from '@/content/schema';
 import TextoRico from './TextoRico.vue';
 
-defineProps<{ bloque: BloqueVideo }>();
+/** `sinPie`: el título ya está en el encabezado de la parte (video con texto lateral). */
+defineProps<{ bloque: BloqueVideo; sinPie?: boolean }>();
 </script>
 
 <template>
@@ -36,6 +37,8 @@ defineProps<{ bloque: BloqueVideo }>();
         <TextoRico :texto="bloque.descripcion" modo="linea" />
       </p>
     </div>
-    <figcaption class="text-muted-foreground text-center text-sm">{{ bloque.titulo }}</figcaption>
+    <figcaption v-if="!sinPie" class="text-muted-foreground text-center text-sm">
+      {{ bloque.titulo }}
+    </figcaption>
   </figure>
 </template>
