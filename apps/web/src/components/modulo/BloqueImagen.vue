@@ -62,6 +62,7 @@ const pasoActual = computed(() => secuencia.value[paso.value]);
 
 const hayLateral = computed(() => Boolean(slots.lateral));
 const hayPuntos = computed(() => puntos.value.length > 0);
+const haySecuencia = computed(() => secuencia.value.length > 0);
 /** Proporción ancho/alto de la imagen (o de la primera de la secuencia). */
 const aspecto = computed(() => {
   const a = pasoActual.value ?? props.bloque;
@@ -81,7 +82,8 @@ const lateralCorto = computed(
   () =>
     !apilado.value &&
     // Con letreros y texto a la vez (Ley de Wolff, 1.4) la columna lleva también la ficha: letra normal.
-    ((hayLateral.value && !hayPuntos.value && props.largoLateral < 1000) ||
+    // Las secuencias tampoco: la imagen es la protagonista («que se vean grandes», 2.1 del documento).
+    ((hayLateral.value && !hayPuntos.value && !haySecuencia.value && props.largoLateral < 1000) ||
       (hayPuntos.value && !hayLateral.value)),
 );
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
@@ -91,7 +93,7 @@ const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPun
  * un hueco hasta el texto) y el texto ocupa el resto. Con poco texto la imagen puede crecer más.
  */
 const anchoImagenMax = computed(() => {
-  if (hayPuntos.value) return '72%';
+  if (hayPuntos.value || haySecuencia.value) return '72%';
   const n = props.largoLateral;
   return n < 500 ? '74%' : n < 1200 ? '66%' : '60%';
 });
@@ -148,7 +150,7 @@ const claseRecuadro = computed(() =>
               :height="pasoActual.alto"
               decoding="async"
               class="imagen-ajustada bg-card mx-auto block rounded-lg border"
-              style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 7rem)"
+              style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5.5rem)"
               @error="fallo = true"
             />
             <BotonAmpliar :src="pasoActual.src" :alt="pasoActual.alt" :pie="pasoActual.etiqueta" />
@@ -163,8 +165,10 @@ const claseRecuadro = computed(() =>
             >
               <ChevronLeft class="size-5" aria-hidden="true" />
             </button>
+            <!-- En escritorio, una sola fila: el paso abierto con su nombre y los demás con su número, para que la
+                 imagen gane alto. -->
             <ol
-              class="flex min-w-0 flex-1 flex-wrap justify-center gap-2"
+              class="flex min-w-0 flex-1 flex-wrap justify-center gap-2 lg:flex-nowrap"
               aria-label="Pasos de la secuencia"
             >
               <li v-for="(s, i) in secuencia" :key="s.src">
@@ -177,9 +181,11 @@ const claseRecuadro = computed(() =>
                       : 'bg-card hover:bg-accent'
                   "
                   :aria-current="i === paso ? 'step' : undefined"
+                  :aria-label="`${i + 1}. ${s.etiqueta}`"
+                  :title="s.etiqueta"
                   @click="paso = i"
                 >
-                  {{ i + 1 }}. {{ s.etiqueta }}
+                  {{ i + 1 }}<span :class="i === paso ? '' : 'lg:hidden'">. {{ s.etiqueta }}</span>
                 </button>
               </li>
             </ol>
