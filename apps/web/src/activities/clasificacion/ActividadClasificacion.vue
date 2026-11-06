@@ -56,6 +56,22 @@ const total = computed(() => elementos.value.length);
 const tabla = computed(() =>
   config.value.disposicion === 'tabla' ? armarTabla(config.value.categorias) : null,
 );
+/** Disposición `esquema`: espacios sobre un dibujo (4.1: cristales dentro y fuera de la fibrilla). */
+const esquema = computed(() =>
+  config.value.disposicion === 'esquema' && config.value.esquema ? config.value.esquema : null,
+);
+/** Cada espacio del esquema, con su categoría y el elemento colocado en él (por orden de colocación). */
+const espacios = computed(() =>
+  config.value.categorias.flatMap((c) => {
+    const puestos = colocadosEn(c);
+    return (c.zonas ?? []).map((z, k) => ({ categoria: c, zona: z, k, elemento: puestos[k] }));
+  }),
+);
+/** Una categoría está completa cuando todos sus elementos ya están en el esquema: entonces se ve su nombre. */
+function completa(c: CategoriaClasificacion): boolean {
+  const suyos = elementos.value.filter((e) => e.categoria === c.id).length;
+  return suyos > 0 && colocadosEn(c).length === suyos;
+}
 
 /** HTML de una línea de Markdown, sin enlaces (dentro de un botón no puede haber otro control). */
 function linea(texto: string): string {
@@ -187,7 +203,7 @@ function elegir(i: number): void {
       ? null
       : {
           tipo: 'info',
-          texto: `Elegiste «${textoPlanoDeMarkdown(elementos.value[i]?.texto ?? '')}». Ahora toca su ${tabla.value ? 'celda' : 'categoría'}.`,
+          texto: `Elegiste «${textoPlanoDeMarkdown(elementos.value[i]?.texto ?? '')}». Ahora toca su ${tabla.value ? 'celda' : esquema.value ? 'espacio en el esquema' : 'categoría'}.`,
         };
 }
 
@@ -270,7 +286,8 @@ const textoFinal = computed(() =>
     data-testid="actividad-clasificacion"
   >
     <header class="space-y-1">
-      <h3 class="font-serif text-xl font-semibold">{{ actividad.titulo }}</h3>
+      <!-- En escritorio el título ya está en el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 class="font-serif text-xl font-semibold lg:sr-only">{{ actividad.titulo }}</h3>
       <!-- eslint-disable-next-line vue/no-v-html -- Markdown saneado (renderizarLinea, regla R10) -->
       <p class="text-muted-foreground text-sm" v-html="linea(actividad.instrucciones)" />
       <p v-if="jugando" class="text-sm font-semibold tabular-nums">
@@ -333,6 +350,84 @@ const textoFinal = computed(() =>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Esquema: los espacios de cada categoría sobre el dibujo; su nombre aparece al completarla -->
+    <div
+      v-else-if="esquema"
+      class="zonas-clasificacion space-y-3"
+      data-testid="clasificacion-esquema"
+    >
+      <!-- La caja tiene la proporción del dibujo: así los espacios (en %) caen sobre él a cualquier tamaño. -->
+      <div
+        class="lienzo-esquema relative mx-auto"
+        :style="{
+          aspectRatio: `${esquema.ancho} / ${esquema.alto}`,
+          '--proporcion': esquema.ancho / esquema.alto,
+        }"
+      >
+        <img
+          :src="esquema.imagen"
+          :alt="esquema.alt"
+          draggable="false"
+          class="bg-card absolute inset-0 size-full rounded-xl border object-contain"
+        />
+        <button
+          v-for="(e, n) in espacios"
+          :key="`${e.categoria.id}-${e.k}`"
+          type="button"
+          class="zona focus-visible:ring-ring absolute flex items-center justify-center rounded-md border-2 p-0.5 outline-none focus-visible:ring-2"
+          :class="[
+            e.elemento !== undefined
+              ? completa(e.categoria)
+                ? 'border-success bg-success-soft/70'
+                : 'border-transparent'
+              : objetivo === e.categoria.id
+                ? 'border-primary bg-primary/15 border-dashed'
+                : seleccion !== null
+                  ? 'border-primary/70 bg-card/40 border-dashed'
+                  : 'border-foreground/40 bg-card/30 border-dashed',
+          ]"
+          :style="{
+            left: `${e.zona.x}%`,
+            top: `${e.zona.y}%`,
+            width: `${e.zona.ancho}%`,
+            height: `${e.zona.alto}%`,
+          }"
+          :data-zona="uid"
+          :data-categoria="e.categoria.id"
+          :aria-label="
+            e.elemento !== undefined
+              ? `Espacio ${n + 1}: ${textoPlanoDeMarkdown(elementos[e.elemento]!.texto)}`
+              : `Colocar en el espacio ${n + 1} del esquema`
+          "
+          :disabled="!jugando || completada || e.elemento !== undefined"
+          @click="alTocarCategoria(e.categoria.id)"
+        >
+          <img
+            v-if="e.elemento !== undefined && elementos[e.elemento]?.imagen"
+            :src="elementos[e.elemento]!.imagen"
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+            class="size-full object-contain"
+          />
+          <Check
+            v-else-if="e.elemento !== undefined"
+            class="text-success size-5"
+            aria-hidden="true"
+          />
+          <span
+            v-if="
+              completa(e.categoria) && e.categoria.rotulo && e.k === (e.categoria.rotulo_zona ?? 0)
+            "
+            class="bg-success text-primary-foreground absolute left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap shadow"
+            :class="e.zona.y > 50 ? '-bottom-6' : '-top-6'"
+          >
+            {{ e.categoria.rotulo }}
+          </span>
+        </button>
+      </div>
     </div>
 
     <!-- Cajas: una por categoría, con su dibujo si lo trae -->
@@ -412,6 +507,26 @@ const textoFinal = computed(() =>
       </template>
     </p>
 
+    <!-- Títulos que «salen» al completar cada tipo de mineralización -->
+    <ul
+      v-if="esquema"
+      class="titulos-esquema grid gap-2 sm:grid-cols-2 lg:grid-cols-1"
+      aria-live="polite"
+    >
+      <li
+        v-for="c in config.categorias.filter((x) => completa(x))"
+        :key="c.id"
+        class="border-success bg-success-soft rounded-lg border-l-4 p-3 text-sm"
+        :data-categoria-completa="c.id"
+      >
+        <p class="flex items-center gap-1.5 font-semibold">
+          <Check class="text-success size-4 shrink-0" aria-hidden="true" />
+          {{ c.etiqueta }}
+        </p>
+        <TextoRico v-if="c.descripcion" :texto="c.descripcion" modo="linea" class="block" />
+      </li>
+    </ul>
+
     <!-- Bandeja -->
     <section
       v-if="jugando && !completada"
@@ -419,18 +534,26 @@ const textoFinal = computed(() =>
       class="bandeja-clasificacion space-y-2"
     >
       <h4 :id="`${uid}-bandeja`" class="text-sm font-semibold">
-        {{ tabla ? 'Características para acomodar' : 'Elementos para clasificar' }}
+        {{
+          tabla
+            ? 'Características para acomodar'
+            : esquema
+              ? 'Cristales para colocar'
+              : 'Elementos para clasificar'
+        }}
       </h4>
       <ul class="flex flex-wrap gap-2">
         <li v-for="i in enBandeja" :key="i">
           <button
             type="button"
             class="pieza bg-card focus-visible:ring-ring min-h-11 rounded-lg border px-3 py-2 text-left text-sm shadow-sm outline-none select-none focus-visible:ring-2"
-            :class="
+            :class="[
               seleccion === i
                 ? 'border-primary bg-primary/10 ring-primary ring-2'
-                : 'hover:bg-accent'
-            "
+                : 'hover:bg-accent',
+              esquema && elementos[i]!.imagen ? 'px-2 py-1.5' : '',
+            ]"
+            :title="esquema ? textoPlanoDeMarkdown(elementos[i]!.texto) : undefined"
             :aria-pressed="seleccion === i"
             :data-elemento="elementos[i]!.id"
             @pointerdown="alPresionar($event, i)"
@@ -440,8 +563,23 @@ const textoFinal = computed(() =>
             @keydown.enter.prevent="elegir(i)"
             @keydown.space.prevent="elegir(i)"
           >
-            <!-- eslint-disable-next-line vue/no-v-html -- Markdown saneado (R10) -->
-            <span v-html="linea(elementos[i]!.texto)" />
+            <span class="flex items-center gap-2">
+              <img
+                v-if="elementos[i]!.imagen"
+                :src="elementos[i]!.imagen"
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                class="shrink-0 object-contain"
+                :class="esquema ? 'h-10 w-16' : 'h-7 w-12'"
+              />
+              <!-- En el esquema, la pieza es su dibujo; el nombre queda para el lector de pantalla. -->
+              <!-- eslint-disable-next-line vue/no-v-html -- Markdown saneado (R10) -->
+              <span
+                :class="esquema && elementos[i]!.imagen ? 'sr-only' : ''"
+                v-html="linea(elementos[i]!.texto)"
+              />
+            </span>
           </button>
         </li>
       </ul>
@@ -513,11 +651,25 @@ const textoFinal = computed(() =>
     grid-column: 2;
     grid-row: 2;
   }
+  .actividad-clasificacion > .titulos-esquema {
+    grid-column: 2;
+    grid-row: 4;
+  }
   .actividad-clasificacion > .bandeja-clasificacion {
     grid-column: 2;
     grid-row: 3;
     position: sticky;
     top: 0;
+  }
+}
+
+/* El esquema ocupa el ancho disponible sin pasar del alto de la parte visible (`--alto-vista`, lo mide ModuloView). */
+.lienzo-esquema {
+  width: min(100%, calc(32rem * var(--proporcion)));
+}
+@media (min-width: 1024px) {
+  .lienzo-esquema {
+    width: min(100%, calc(max(18rem, var(--alto-vista, 100dvh) - 9.5rem) * var(--proporcion)));
   }
 }
 

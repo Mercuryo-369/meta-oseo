@@ -271,49 +271,150 @@
             "id": "m4_1_dentro_fuera_fibrilla",
             "tipo": "clasificacion",
             "titulo": "¿Dentro o fuera de la fibrilla?",
-            "instrucciones": "Objetivo: comprender espacialmente los dos patrones de mineralización. Arrastra cada depósito de apatita a la región donde ocurre: interior de la fibrilla (zonas de separación o gap zones) o espacio extrafibrilar.",
+            "instrucciones": "Objetivo: comprender espacialmente los dos patrones de mineralización. Coloca cada cristal de apatita en un espacio del esquema donde quepa: en las zonas de separación (gap zones) del interior de la fibrilla o en los espacios entre las fibrillas. Arrástralo, o tócalo y luego toca el espacio. Al completar cada tipo aparece su nombre.",
             "obligatoria": true,
             "puntaje_max": 50,
             "retroalimentacion": {
               "correcta": "Correcto: ambos patrones contribuyen a integrar la fase mineral con la matriz orgánica y a establecer la estructura compuesta característica del hueso.",
-              "incorrecta": "Ese depósito va en la otra región. Repasa la imagen «Crecimiento y propagación de los cristales minerales»."
+              "incorrecta": "Ese cristal no va en ese espacio. Repasa la imagen «Crecimiento y propagación de los cristales minerales»: los nanocristales en placa ocupan las zonas de separación de la fibrilla; los agregados se depositan sobre las fibrillas y entre ellas."
             },
             "concepto": "Mineralización intrafibrilar y extrafibrilar",
             "config": {
-              "disposicion": "cajas",
+              "disposicion": "esquema",
+              "esquema": {
+                "imagen": "/images/m4/m4_fibrilla_sin_cristales.svg",
+                "alt": "Esquema de una fibrilla de colágeno tipo I entre dos fibrillas vecinas: cinco filas de moléculas escalonadas con sus zonas de separación (gap zones) vacías y espacios entre las fibrillas. A la izquierda, un nódulo mineral de origen vesicular. Esquema no a escala.",
+                "ancho": 800,
+                "alto": 600
+              },
               "barajar": true,
               "categorias": [
                 {
                   "id": "intrafibrilar",
-                  "etiqueta": "Interior de la fibrilla",
-                  "descripcion": "Mineralización intrafibrilar, preferentemente en las zonas de separación (gap zones)"
+                  "etiqueta": "Mineralización intrafibrilar en la zona gap",
+                  "descripcion": "Los primeros depósitos minerales intrafibrilares se observan con mayor frecuencia en las zonas de separación (gap zones), con los nanocristales orientados en relación con el eje longitudinal de la fibrilla.",
+                  "rotulo": "Intrafibrilar · gap",
+                  "zonas": [
+                    {
+                      "x": 75.5,
+                      "y": 29.67,
+                      "ancho": 9.25,
+                      "alto": 6.67
+                    },
+                    {
+                      "x": 10.5,
+                      "y": 36.67,
+                      "ancho": 9.25,
+                      "alto": 6.67
+                    },
+                    {
+                      "x": 26.75,
+                      "y": 43.67,
+                      "ancho": 9.25,
+                      "alto": 6.67
+                    },
+                    {
+                      "x": 43.0,
+                      "y": 50.67,
+                      "ancho": 9.25,
+                      "alto": 6.67
+                    },
+                    {
+                      "x": 59.25,
+                      "y": 57.67,
+                      "ancho": 9.25,
+                      "alto": 6.67
+                    }
+                  ],
+                  "rotulo_zona": 4
                 },
                 {
                   "id": "extrafibrilar",
-                  "etiqueta": "Espacio extrafibrilar",
-                  "descripcion": "Depósitos sobre la superficie de las fibrillas y entre ellas"
+                  "etiqueta": "Mineralización extrafibrilar",
+                  "descripcion": "Depósito mineral sobre la superficie de las fibrillas y entre ellas. Ambos patrones contribuyen a integrar la fase mineral con la matriz orgánica y a establecer la estructura compuesta del hueso.",
+                  "rotulo": "Extrafibrilar",
+                  "zonas": [
+                    {
+                      "x": 23.0,
+                      "y": 16.33,
+                      "ancho": 15.0,
+                      "alto": 10.67
+                    },
+                    {
+                      "x": 66.75,
+                      "y": 16.67,
+                      "ancho": 15.25,
+                      "alto": 10.67
+                    },
+                    {
+                      "x": 37.0,
+                      "y": 65.67,
+                      "ancho": 14.0,
+                      "alto": 11.0
+                    },
+                    {
+                      "x": 77.0,
+                      "y": 65.67,
+                      "ancho": 15.25,
+                      "alto": 10.67
+                    }
+                  ]
                 }
               ],
               "elementos": [
                 {
-                  "id": "depositos_gap",
-                  "texto": "Primeros depósitos minerales en las zonas de separación (gap zones) de la fibrilla",
-                  "categoria": "intrafibrilar"
+                  "id": "cristal_placa_1",
+                  "texto": "Nanocristal de apatita en placa",
+                  "categoria": "intrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_placa.svg"
                 },
                 {
-                  "id": "nanocristales_eje_c",
-                  "texto": "Nanocristales de apatita con su eje c aproximadamente paralelo al eje longitudinal de la fibrilla",
-                  "categoria": "intrafibrilar"
+                  "id": "cristal_placa_2",
+                  "texto": "Nanocristal de apatita en placa",
+                  "categoria": "intrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_placa.svg"
                 },
                 {
-                  "id": "depositos_superficie",
-                  "texto": "Depósitos sobre la superficie de las fibrillas",
-                  "categoria": "extrafibrilar"
+                  "id": "cristal_placa_3",
+                  "texto": "Nanocristal de apatita en placa",
+                  "categoria": "intrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_placa.svg"
                 },
                 {
-                  "id": "depositos_entre",
-                  "texto": "Depósitos entre las fibrillas",
-                  "categoria": "extrafibrilar"
+                  "id": "cristal_placa_4",
+                  "texto": "Nanocristal de apatita en placa",
+                  "categoria": "intrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_placa.svg"
+                },
+                {
+                  "id": "cristal_placa_5",
+                  "texto": "Nanocristal de apatita en placa",
+                  "categoria": "intrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_placa.svg"
+                },
+                {
+                  "id": "agregado_cristales_1",
+                  "texto": "Agregado de cristales de apatita",
+                  "categoria": "extrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_agregado.svg"
+                },
+                {
+                  "id": "agregado_cristales_2",
+                  "texto": "Agregado de cristales de apatita",
+                  "categoria": "extrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_agregado.svg"
+                },
+                {
+                  "id": "agregado_cristales_3",
+                  "texto": "Agregado de cristales de apatita",
+                  "categoria": "extrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_agregado.svg"
+                },
+                {
+                  "id": "agregado_cristales_4",
+                  "texto": "Agregado de cristales de apatita",
+                  "categoria": "extrafibrilar",
+                  "imagen": "/images/m4/m4_cristal_agregado.svg"
                 }
               ]
             }
@@ -458,7 +559,9 @@
                       "texto": "Ninguna"
                     }
                   ],
-                  "correctas": ["m4_2_lab_1_a"],
+                  "correctas": [
+                    "m4_2_lab_1_a"
+                  ],
                   "explicacion": "Una matriz recientemente mineralizada contiene una proporción relativa mayor de componentes orgánicos y agua, lo que favorece su deformabilidad."
                 },
                 {
@@ -483,7 +586,9 @@
                       "texto": "Ninguna"
                     }
                   ],
-                  "correctas": ["m4_2_lab_2_b"],
+                  "correctas": [
+                    "m4_2_lab_2_b"
+                  ],
                   "explicacion": "Durante la maduración aumenta el contenido mineral y cambian las características de los cristales, modificando progresivamente las propiedades mecánicas."
                 },
                 {
@@ -508,7 +613,9 @@
                       "texto": "Ninguna"
                     }
                   ],
-                  "correctas": ["m4_2_lab_3_c"],
+                  "correctas": [
+                    "m4_2_lab_3_c"
+                  ],
                   "explicacion": "Una mineralización excesiva puede aumentar la rigidez a costa de reducir la deformabilidad y la tenacidad."
                 },
                 {
@@ -533,7 +640,9 @@
                       "texto": "Ninguna"
                     }
                   ],
-                  "correctas": ["m4_2_lab_4_d"],
+                  "correctas": [
+                    "m4_2_lab_4_d"
+                  ],
                   "explicacion": "No existe una relación en la que maximizar el contenido mineral garantice las mejores propiedades mecánicas. El comportamiento del hueso depende también de la organización del colágeno, la distribución del mineral, la microarquitectura y los demás componentes de la matriz."
                 }
               ],
