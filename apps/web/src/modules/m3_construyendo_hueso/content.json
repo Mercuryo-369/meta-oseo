@@ -523,7 +523,7 @@
           "id": "esc_rutas_senalizacion",
           "tipo": "escenarios",
           "titulo": "Actividad: Interactiva",
-          "instrucciones": "Analizar cómo diferentes condiciones del microambiente óseo activan o inhiben rutas de señalización que convergen sobre el programa osteogénico y modulan la expresión de genes asociados con la formación de matriz, incluyendo COL1A1 y COL1A2. Selecciona uno de los cuatro escenarios del microambiente óseo.",
+          "instrucciones": "Analizar cómo diferentes condiciones del microambiente óseo activan o inhiben rutas de señalización que convergen sobre el programa osteogénico y modulan la expresión de genes asociados con la formación de matriz, incluyendo COL1A1 y COL1A2. Selecciona uno de los cuatro escenarios del microambiente óseo, predice qué ocurrirá y compara tu predicción con las rutas.",
           "escenarios": [
             {
               "id": "esc_i05",
@@ -533,7 +533,26 @@
               "imagen": "/images/m3/m3_2_imagen_05.webp",
               "alt": "Carga mecánica dinámica: vías Wnt/β-catenina, PGE₂/EP4/PKA e integrinas/FAK/p38 MAPK que convergen en RUNX2 y la expresión de genes osteogénicos.",
               "ancho": 1538,
-              "alto": 1023
+              "alto": 1023,
+              "prediccion": {
+                "pregunta": "Durante la masticación, el hueso se deforma y el líquido se mueve en el sistema lacunocanalicular. ¿Qué esperas que ocurra en el osteocito?",
+                "opciones": [
+                  {
+                    "id": "p05_unica",
+                    "texto": "Se activa una única vía, Wnt/β-catenina, que por sí sola explica la respuesta osteogénica."
+                  },
+                  {
+                    "id": "p05_paralelas",
+                    "texto": "Se activan en paralelo varias vías (Wnt/β-catenina, PGE₂ e integrinas/FAK) que convergen sobre el programa osteogénico."
+                  },
+                  {
+                    "id": "p05_inhibe",
+                    "texto": "La carga aumenta la esclerostina, inhibe la vía Wnt/β-catenina y reduce la expresión de RUNX2."
+                  }
+                ],
+                "correcta": "p05_paralelas",
+                "retroalimentacion": "La mecanotransducción no activa una única vía de señalización: la deformación mecánica y el flujo de líquido activan simultáneamente Wnt/β-catenina, PGE₂/EP4/PKA e integrinas/FAK/p38 MAPK, respuestas paralelas y complementarias que convergen sobre RUNX2 y el programa osteogénico. El aumento de esclerostina con inhibición de Wnt corresponde a la ausencia de estímulo mecánico (escenario 4)."
+              }
             },
             {
               "id": "esc_i06",
@@ -542,7 +561,26 @@
               "imagen": "/images/m3/m3_2_imagen_06.webp",
               "alt": "Señales posteriores a la resorción: eje canónico BMP/SMAD y eje no canónico BMP/TAK1/p38 MAPK sobre RUNX2 y osterix.",
               "ancho": 1538,
-              "alto": 1022
+              "alto": 1022,
+              "prediccion": {
+                "pregunta": "Durante la resorción osteoclástica, la degradación de la matriz libera factores de crecimiento. ¿Qué papel esperas que cumplan?",
+                "opciones": [
+                  {
+                    "id": "p06_acoplamiento",
+                    "texto": "El TGF-β recluta progenitores osteogénicos y las BMP-2/4 favorecen su diferenciación osteoblástica, contribuyendo al acoplamiento entre resorción y formación."
+                  },
+                  {
+                    "id": "p06_resorcion",
+                    "texto": "Estimulan a los osteoclastos para que la resorción continúe, sin efecto sobre la formación de hueso nuevo."
+                  },
+                  {
+                    "id": "p06_total",
+                    "texto": "Explican por sí solos todo el acoplamiento entre resorción y formación."
+                  }
+                ],
+                "correcta": "p06_acoplamiento",
+                "retroalimentacion": "Los factores liberados de la matriz contribuyen a la formación posterior de hueso nuevo: el TGF-β participa en la quimiotaxis y el reclutamiento de progenitores, y las BMP-2/4 activan la vía BMP/SMAD (y la no canónica TAK1/p38 MAPK), que favorece RUNX2 y SP7/Osterix. Son algunos de los mecanismos del acoplamiento, pero no lo explican por sí solos: su regulación depende de múltiples factores celulares y moleculares."
+              }
             },
             {
               "id": "esc_i07",
@@ -552,7 +590,26 @@
               "imagen": "/images/m3/m3_2_imagen_07.webp",
               "alt": "Señalización angiogénica y vascular: FGF-2 de vasos tipo H sobre FGFR1/2 con el eje Ras–Raf–MEK–ERK1/2 y su efecto en la proliferación de progenitores.",
               "ancho": 1535,
-              "alto": 1024
+              "alto": 1024,
+              "prediccion": {
+                "pregunta": "Los vasos tipo H producen factores angiocrinos como los FGF. ¿Qué efecto esperas sobre las células osteoprogenitoras?",
+                "opciones": [
+                  {
+                    "id": "p07_universal",
+                    "texto": "Activan un mecanismo universal que, por sí solo, explica toda la osteogénesis."
+                  },
+                  {
+                    "id": "p07_erk",
+                    "texto": "Activan la vía FGFR–Ras–Raf–MEK–ERK1/2 y modulan la proliferación y diferenciación de los preosteoblastos según su estado celular."
+                  },
+                  {
+                    "id": "p07_detiene",
+                    "texto": "Detienen siempre la maduración terminal de los osteoblastos."
+                  }
+                ],
+                "correcta": "p07_erk",
+                "retroalimentacion": "En el acoplamiento angiogénesis–osteogénesis, los FGF de origen vascular pueden activar FGFR1/2 y el eje Ras → Raf → MEK → ERK1/2, modulando la proliferación y diferenciación de los preosteoblastos. Sus efectos dependen de la etapa celular y de las características de la señal, no implican necesariamente detener la maduración terminal y representan un ejemplo de comunicación vascular, estudiado sobre todo en modelos murinos, no un mecanismo universal."
+              }
             },
             {
               "id": "esc_i08",
@@ -562,7 +619,26 @@
               "imagen": "/images/m3/m3_2_imagen_08.webp",
               "alt": "Ausencia de estímulo mecánico: aumento de esclerostina y DKK1, bloqueo del receptor Wnt, degradación de β-catenina y menor activación de RUNX2.",
               "ancho": 1536,
-              "alto": 1024
+              "alto": 1024,
+              "prediccion": {
+                "pregunta": "Si disminuye la carga oclusal o hay una inmovilización prolongada, ¿qué esperas que ocurra con la vía Wnt/β-catenina?",
+                "opciones": [
+                  {
+                    "id": "p08_refuerza",
+                    "texto": "Se refuerza, porque el osteocito deja de producir esclerostina."
+                  },
+                  {
+                    "id": "p08_inhibe",
+                    "texto": "Aumentan SOST y DKK1, se inhibe la vía y la β-catenina se degrada; disminuye la formación de matriz ósea."
+                  },
+                  {
+                    "id": "p08_igual",
+                    "texto": "No cambia, porque la vía Wnt/β-catenina no depende de la carga mecánica."
+                  }
+                ],
+                "correcta": "p08_inhibe",
+                "retroalimentacion": "La reducción de la carga aumenta la expresión de SOST y DKK1: la esclerostina se une a LRP5/6, el complejo de destrucción (GSK-3β/Axin/APC) permanece activo y la β-catenina se degrada en el proteasoma. Disminuyen RUNX2, la diferenciación osteoblástica y la formación de matriz; cuando la formación disminuida no compensa la resorción, se produce pérdida neta de masa ósea (osteopenia por desuso)."
+              }
             }
           ]
         },

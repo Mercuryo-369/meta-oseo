@@ -1404,6 +1404,29 @@ export const BloqueActividadSchema = z.strictObject({
  * Bloque `escenarios`: el estudiante elige uno de varios escenarios y ve su contenido (texto e imagen). No puntúa:
  * es la «Actividad: Interactiva» de la 3.2 (analizar cómo cada condición del microambiente activa o inhibe rutas).
  */
+/**
+ * Pregunta de predicción de un escenario (3.2, comentario de la docente: «incluir una pregunta de predicción y una
+ * retroalimentación explicativa para cada escenario»). Se responde antes de ver las rutas; no puntúa.
+ */
+export const PrediccionEscenarioSchema = z
+  .strictObject({
+    pregunta: markdownLinea(10, 300),
+    opciones: z
+      .array(z.strictObject({ id: IdSchema, texto: markdownLinea(2, 300) }))
+      .min(2)
+      .max(4),
+    correcta: IdSchema,
+    retroalimentacion: markdownLinea(20, 900),
+  })
+  .superRefine((p, ctx) => {
+    const ids = p.opciones.map((o) => o.id);
+    if (new Set(ids).size !== ids.length)
+      agregar(ctx, ['opciones'], 'Hay ids de opción repetidos.');
+    if (!ids.includes(p.correcta)) {
+      agregar(ctx, ['correcta'], `La opción correcta "${p.correcta}" no está entre las opciones.`);
+    }
+  });
+
 export const EscenarioBloqueSchema = z.strictObject({
   id: IdSchema,
   etiqueta: textoPlano(2, 100),
@@ -1414,6 +1437,7 @@ export const EscenarioBloqueSchema = z.strictObject({
   alt: textoPlano(10, 250).optional(),
   ancho: z.number().int().min(1).max(4000).optional(),
   alto: z.number().int().min(1).max(4000).optional(),
+  prediccion: PrediccionEscenarioSchema.optional(),
 });
 
 export const BloqueEscenariosSchema = z.strictObject({

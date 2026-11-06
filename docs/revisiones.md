@@ -168,3 +168,24 @@ real de Anthropic; nada se ha probado en un teléfono real; Docker nunca se ha c
 Causa común de 4, 5, 8, 9, 13, 15, 16 y 18: el emparejamiento texto-imagen era por posición. Ahora cada texto va con la
 imagen de su mismo tema y, si no hay tema común, con la que lo sigue (el orden del documento); las notas van debajo de
 la parte a la que siguen.
+
+### Documento de la docente: 2026-11-05 (correcciones de los módulos 1 a 3 y módulos 4 a 6 nuevos)
+
+**Cambios pedidos y estado:**
+
+| # | Referencia | Cambio pedido | Estado | Aplicado (fecha y versión) |
+|---|---|---|---|---|
+| 1 | Módulos 4, 5 y 6 | Reemplazarlos por los del documento (textos, imágenes y actividades) | hecho; pendientes las actividades de los puntos 9 a 12 | 2026-11-05 |
+| 2 | 1.2 | Anatomía del hueso largo «como ya está en la página, como una actividad» | hecho: vuelve la actividad por capas, sin desplazarse | 2026-11-05 |
+| 3 | 1.2 | Tabla comparativa después del hueso cortical y el trabecular | ya estaba en ese orden | 2026-11-05 |
+| 4 | 1.4 | Ley de Wolff interactiva, como «Las trabéculas siguen la carga» | hecho: seis grupos trabeculares tocables con su texto | 2026-11-05 |
+| 5 | 2.1 | Secuencias de osificación grandes | hecho | 2026-11-05 |
+| 6 | 2.2 | «Identifica el destino del osteoblasto» dinámica, arrastrando | hecho: relación de columnas | 2026-11-05 |
+| 7 | 3.1 y 3.3 | Espacio para los mini videos del diseñador con su texto lateral | hecho: 2 en 3.1 y 6 en 3.3, «Video en preparación» | 2026-11-05 |
+| 8 | 3.2 | Pregunta de predicción y retroalimentación en cada escenario | redactadas a partir de los textos de cada escenario; **pendiente de su aprobación** | 2026-11-05 |
+| 9 | 4.1 | «¿Dentro o fuera de la fibrilla?» arrastrando los cristales sobre el esquema | provisional como clasificación por cajas | pendiente |
+| 10 | 4.1 | Corrección con IA de las evaluaciones de detección y corrección de errores | provisional como pregunta abierta; la IA solo dará retroalimentación | pendiente |
+| 11 | 6.2 | Actividad 2 «Completa la secuencia» | sin crear (falta el componente de huecos) | pendiente |
+| 12 | 4.2 | Bingo | al final, por decisión de la docente | pendiente |
+| 13 | 4.2 | Evaluación (el documento repite la de la 4.1 por error) | esperando la evaluación correcta | pendiente |
+| 14 | 3.1 | Imagen #2 con botones en orden «que voy a señalar» | ya tiene seis botones en orden; ajustar cuando lleguen sus marcas | pendiente de sus marcas |

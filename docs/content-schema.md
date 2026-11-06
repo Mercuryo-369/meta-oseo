@@ -417,7 +417,10 @@ de la docente: tabla o cajas para arrastrar y marcador sobre la curva esfuerzo-d
 nuevos: `escenarios` (elegir un escenario y ver su contenido) y `pregunta` (respuesta abierta comparada con la del
 docente). Desde el 2026-11-05 (documento de la docente con los módulos 4 a 6): bloque `video` (mini video del
 diseñador; sin `src` muestra su espacio reservado con la `descripcion`) y campo `subcapitulo` en los textos (el
-«título grande» que abarca varias partes; se muestra encima del título de la parte y separa grupos en la navegación).
+«título grande» que abarca varias partes; se muestra encima del título de la parte y separa grupos en la navegación). El
+texto que sigue a un `video` va a su lado («Texto lateral que debe ir allí»). Cada escenario de un bloque `escenarios`
+admite `prediccion` (`pregunta`, 2 a 4 `opciones`, `correcta` y `retroalimentacion`): se responde antes de ver las rutas
+y no puntúa.
 No se inventan más tipos sin acordarlo.
 
 ### Campos comunes
