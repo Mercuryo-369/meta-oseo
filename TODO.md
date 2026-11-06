@@ -30,8 +30,9 @@ Detalle de fases en [PLAN.md](PLAN.md). Pedagogía en [docs/briefing-pedagogico.
 5. Acceso solo con documento, sin contraseña (F6-08): decidir antes de abrirlo.
 6. Videos reales del docente, modelos 3D de células, logros transversales y herramientas del mentor sobre la escena (explícame esto, preguntas generadas por IA, pulgares en el chat).
 7. Detalles conocidos: nueve puntos alveolares del módulo 5 se rozan, el foramen mandibular solo se ve de perfil, las portadas recortan algo de rótulo, M4 y M6 sin `aprobacion_min`.
+**Documento de la docente del 2026-11-05 (correcciones de los módulos 1 a 3 y módulos 4 a 6 nuevos), aplicado:** módulos 4 a 6 reemplazados; hueso largo por capas (1.2), Ley de Wolff tocable (1.4), secuencias de osificación grandes (2.1), destino del osteoblasto arrastrando (2.2), espacios de video con su texto lateral (3.1 y 3.3), predicción en cada escenario (3.2, **pendiente de su aprobación**), cristales sobre el esquema de la fibrilla (4.1), retroalimentación con IA de las preguntas abiertas (`POST /api/mentor/retroalimentacion`) y «Completa la secuencia» (6.2, formato `completar` del quiz). Estado fila por fila en `docs/revisiones.md`. **Falta:** bingo de la 4.2 (al final, por decisión de la docente; revisar con ella), la evaluación de la 4.2 (el documento repite la de la 4.1), las marcas de la docente sobre la imagen 2 de la 3.1 y los videos del diseñador. Las pruebas automáticas (vitest, pytest) no se han corrido durante estas iteraciones: hay que ponerlas al día al final (varias describen la versión anterior de los módulos 4 a 6 y del diseño).
 **Bloqueos:** ninguno técnico. El límite de uso de la cuenta se agota tras unas 3 horas de trabajo intensivo en paralelo.
-**Última actualización:** 2026-10-14.
+**Última actualización:** 2026-11-05.
 
 ---
 
