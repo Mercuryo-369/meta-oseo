@@ -494,7 +494,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s1_a"],
+                  "correctas": [
+                    "m1_1_s1_a"
+                  ],
                   "explicacion": "Función predominante: mecánica y estructural."
                 },
                 {
@@ -519,7 +521,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s2_a"],
+                  "correctas": [
+                    "m1_1_s2_a"
+                  ],
                   "explicacion": "Función predominante: mecánica y estructural."
                 },
                 {
@@ -544,7 +548,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s3_a"],
+                  "correctas": [
+                    "m1_1_s3_a"
+                  ],
                   "explicacion": "Función predominante: mecánica y estructural."
                 },
                 {
@@ -569,7 +575,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s4_a"],
+                  "correctas": [
+                    "m1_1_s4_a"
+                  ],
                   "explicacion": "Función predominante: mecánica y estructural."
                 },
                 {
@@ -594,7 +602,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s5_b"],
+                  "correctas": [
+                    "m1_1_s5_b"
+                  ],
                   "explicacion": "Función predominante: metabólica y homeostática."
                 },
                 {
@@ -619,7 +629,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s6_b"],
+                  "correctas": [
+                    "m1_1_s6_b"
+                  ],
                   "explicacion": "Función predominante: metabólica y homeostática."
                 },
                 {
@@ -644,7 +656,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s7_b"],
+                  "correctas": [
+                    "m1_1_s7_b"
+                  ],
                   "explicacion": "Función predominante: metabólica y homeostática."
                 },
                 {
@@ -669,7 +683,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s8_b"],
+                  "correctas": [
+                    "m1_1_s8_b"
+                  ],
                   "explicacion": "Función predominante: metabólica y homeostática."
                 },
                 {
@@ -694,7 +710,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s9_c"],
+                  "correctas": [
+                    "m1_1_s9_c"
+                  ],
                   "explicacion": "Función predominante: hematopoyética e inmunológica."
                 },
                 {
@@ -719,7 +737,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s10_c"],
+                  "correctas": [
+                    "m1_1_s10_c"
+                  ],
                   "explicacion": "Función predominante: hematopoyética e inmunológica."
                 },
                 {
@@ -744,7 +764,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s11_c"],
+                  "correctas": [
+                    "m1_1_s11_c"
+                  ],
                   "explicacion": "Función predominante: hematopoyética e inmunológica."
                 },
                 {
@@ -769,7 +791,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s12_c"],
+                  "correctas": [
+                    "m1_1_s12_c"
+                  ],
                   "explicacion": "Función predominante: hematopoyética e inmunológica."
                 },
                 {
@@ -794,7 +818,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s13_d"],
+                  "correctas": [
+                    "m1_1_s13_d"
+                  ],
                   "explicacion": "Función predominante: neurobiológica y sistémica."
                 },
                 {
@@ -819,7 +845,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s14_d"],
+                  "correctas": [
+                    "m1_1_s14_d"
+                  ],
                   "explicacion": "Función predominante: neurobiológica y sistémica."
                 },
                 {
@@ -844,7 +872,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s15_d"],
+                  "correctas": [
+                    "m1_1_s15_d"
+                  ],
                   "explicacion": "Función predominante: neurobiológica y sistémica."
                 },
                 {
@@ -869,7 +899,9 @@
                       "texto": "Neurobiológica y sistémica"
                     }
                   ],
-                  "correctas": ["m1_1_s16_d"],
+                  "correctas": [
+                    "m1_1_s16_d"
+                  ],
                   "explicacion": "Función predominante: neurobiológica y sistémica."
                 }
               ],
@@ -916,7 +948,9 @@
                       "texto": "Su participación en el equilibrio ácido-base"
                     }
                   ],
-                  "correctas": ["m1_1_e1_b"],
+                  "correctas": [
+                    "m1_1_e1_b"
+                  ],
                   "explicacion": "La capacidad regenerativa permite que el hueso repare lesiones y recupere su continuidad cuando las condiciones biológicas y mecánicas son favorables."
                 },
                 {
@@ -941,7 +975,9 @@
                       "texto": "La función metabólica solo aparece cuando se produce una lesión"
                     }
                   ],
-                  "correctas": ["m1_1_e2_b"],
+                  "correctas": [
+                    "m1_1_e2_b"
+                  ],
                   "explicacion": "El hueso proporciona soporte y transmite cargas, pero también constituye un reservorio mineral que participa en la regulación del calcio y el fosfato."
                 }
               ]
@@ -1042,9 +1078,9 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m1_1_hueso_largo",
-            "tipo": "exploracion-3d",
+            "tipo": "multicapa",
             "titulo": "Recorre un hueso largo",
-            "instrucciones": "Gira el hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): está serrado a lo largo para que veas su interior. Toca cada región para leer qué es y qué hace. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco regiones requeridas.",
+            "instrucciones": "Toca cada región del hueso largo para leer qué es y qué hace (con teclado, usa Tab para pasar de una región a otra y Enter para abrir su descripción; también puedes usar la lista de regiones junto a la imagen). Visita al menos las cinco regiones marcadas como obligatorias.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
@@ -1053,9 +1089,11 @@
             },
             "concepto": "Anatomía de un hueso largo",
             "config": {
-              "modelo": "hueso_largo",
-              "alt": "Modelo tridimensional de un hueso largo (un fémur acortado) serrado a lo largo: se ven la cortical, el hueso esponjoso de los extremos, la cavidad medular con médula amarilla, la línea epifisaria, el cartílago articular y la arteria nutricia.",
-              "nodos": [
+              "svg": "/images/m1/m1_hueso_largo_macro.svg",
+              "viewBox": "0 0 800 600",
+              "alt": "Corte longitudinal de un hueso largo con sus regiones: cartílago articular, epífisis, línea epifisaria, metáfisis, diáfisis, cavidad medular y arteria nutricia.",
+              "modo": "explorar",
+              "capas": [
                 {
                   "id": "cartilago_articular",
                   "etiqueta": "Cartílago articular",
@@ -1092,7 +1130,7 @@
                   "descripcion": "Vaso principal del hueso. Entra por un foramen de la diáfisis y se ramifica en la médula. Irriga la médula y la parte interna de la cortical; los vasos del periostio irrigan la parte externa."
                 }
               ],
-              "requeridos": [
+              "requeridas": [
                 "epifisis",
                 "metafisis",
                 "diafisis",
@@ -1271,15 +1309,24 @@
           "tipo": "tabla",
           "titulo": "Tabla: Rasgo, Hueso cortical, Hueso trabecular",
           "encabezado_criterio": "Rasgo",
-          "columnas": ["Hueso cortical", "Hueso trabecular"],
+          "columnas": [
+            "Hueso cortical",
+            "Hueso trabecular"
+          ],
           "filas": [
             {
               "criterio": "Aspecto",
-              "celdas": ["Masa densa y continua", "Red de trabéculas con espacios medulares"]
+              "celdas": [
+                "Masa densa y continua",
+                "Red de trabéculas con espacios medulares"
+              ]
             },
             {
               "criterio": "Proporción de la masa esquelética",
-              "celdas": ["Aproximadamente el 80 %", "Aproximadamente el 20 %"]
+              "celdas": [
+                "Aproximadamente el 80 %",
+                "Aproximadamente el 20 %"
+              ]
             },
             {
               "criterio": "Porosidad",
@@ -1311,7 +1358,10 @@
             },
             {
               "criterio": "Ritmo de renovación",
-              "celdas": ["Más lento", "Más rápido, por su mayor superficie"]
+              "celdas": [
+                "Más lento",
+                "Más rápido, por su mayor superficie"
+              ]
             }
           ]
         },
@@ -1739,7 +1789,9 @@
                       "texto": "El conducto de Havers"
                     }
                   ],
-                  "correctas": ["m1_2_e1_a"],
+                  "correctas": [
+                    "m1_2_e1_a"
+                  ],
                   "explicacion": "En el cráneo, el componente trabecular recibe el nombre de diploe."
                 },
                 {
@@ -1764,7 +1816,9 @@
                       "texto": "Conectar conductos de Havers y comunicar la circulación periostal, endostal y medular"
                     }
                   ],
-                  "correctas": ["m1_2_e3_d"],
+                  "correctas": [
+                    "m1_2_e3_d"
+                  ],
                   "explicacion": "Conductos Transversales de Volkmann: Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular."
                 },
                 {
@@ -1789,7 +1843,9 @@
                       "texto": "Se organiza exclusivamente en laminillas circunferenciales externas"
                     }
                   ],
-                  "correctas": ["m1_2_e4_c"],
+                  "correctas": [
+                    "m1_2_e4_c"
+                  ],
                   "explicacion": "Ausencia de conducto de Havers: A diferencia de las osteonas del hueso cortical, las trabéculas generalmente carecen de conductos vasculares centrales, por lo que el aporte de nutrientes depende principalmente de la difusión desde los vasos sanguíneos de la médula ósea a través de la superficie trabecular."
                 },
                 {
@@ -1821,7 +1877,9 @@
                       "texto": "Se comprometerían las conexiones vasculares entre los conductos de Havers y las regiones periostal, endostal y medular."
                     }
                   ],
-                  "correctas": ["m1_2_e6_d"],
+                  "correctas": [
+                    "m1_2_e6_d"
+                  ],
                   "explicacion": "Conductos Transversales de Volkmann: Son canales vasculares transversales u oblicuos que atraviesan el hueso cortical, conectan los conductos de Havers y establecen la comunicación vascular entre el periostio, el endostio y la cavidad medular.",
                   "siempre": true
                 },
@@ -1847,7 +1905,9 @@
                       "texto": "La inervación simpática y sensitiva participan exclusivamente en la regulación del dolor, sin influir en la actividad celular ósea."
                     }
                   ],
-                  "correctas": ["m1_2_e7_c"],
+                  "correctas": [
+                    "m1_2_e7_c"
+                  ],
                   "explicacion": "La señalización simpática se ha relacionado con la inhibición de la autorrenovación y del potencial osteogénico de las células madre esqueléticas, mientras que la señalización sensitiva se asocia con la promoción de estas capacidades.",
                   "siempre": true
                 },
@@ -1873,7 +1933,9 @@
                       "texto": "La cortical conservará su viabilidad siempre que permanezcan intactos los conductos de Havers, aunque se pierdan todas las conexiones vasculares con otras regiones del hueso."
                     }
                   ],
-                  "correctas": ["m1_2_e8_b"],
+                  "correctas": [
+                    "m1_2_e8_b"
+                  ],
                   "explicacion": "La matriz mineralizada proporciona soporte estructural, pero el tejido óseo también depende de su vascularización para recibir oxígeno y nutrientes y mantener la actividad celular. Por ello, conservar la estructura del segmento no garantiza que sus células continúen funcionando normalmente cuando se compromete el aporte sanguíneo.",
                   "siempre": true
                 }
@@ -2106,7 +2168,9 @@
                       "texto": "La fase acuosa es la principal responsable de la rigidez, mientras que el colágeno y el mineral cumplen una función estructural secundaria."
                     }
                   ],
-                  "correctas": ["m1_3_e1_b"],
+                  "correctas": [
+                    "m1_3_e1_b"
+                  ],
                   "explicacion": "El colágeno tipo I aporta resistencia a la tensión y tenacidad; la apatita biológica contribuye a la rigidez y resistencia a la compresión."
                 },
                 {
@@ -2131,7 +2195,9 @@
                       "texto": "Línea de cemento."
                     }
                   ],
-                  "correctas": ["m1_3_e2_c"],
+                  "correctas": [
+                    "m1_3_e2_c"
+                  ],
                   "explicacion": "El osteoide es la matriz orgánica recién sintetizada y secretada por los osteoblastos, antes de su mineralización."
                 },
                 {
@@ -2156,7 +2222,9 @@
                       "texto": "La regulación de la perfusión sanguínea por las fibras nerviosas simpáticas."
                     }
                   ],
-                  "correctas": ["m1_3_e3_a"],
+                  "correctas": [
+                    "m1_3_e3_a"
+                  ],
                   "explicacion": "Las fibrillas de colágeno constituyen un andamiaje estructural para la incorporación del mineral y para las interacciones entre los componentes de la matriz. Las demás opciones corresponden a procesos o estructuras diferentes."
                 },
                 {
@@ -2181,7 +2249,9 @@
                       "texto": "Los dos modelos podrían presentar comportamientos mecánicos diferentes, porque la resistencia del hueso depende de la contribución complementaria de las fases orgánica e inorgánica."
                     }
                   ],
-                  "correctas": ["m1_3_e4_d"],
+                  "correctas": [
+                    "m1_3_e4_d"
+                  ],
                   "explicacion": "El hueso es un material compuesto. La fase orgánica y la mineral aportan propiedades distintas, de modo que una alteración en su representación puede modificar el comportamiento mecánico global. No es posible determinar cuál modelo será superior en todos los aspectos con la información proporcionada."
                 }
               ]
@@ -2871,7 +2941,9 @@
                       "texto": "Fragilidad."
                     }
                   ],
-                  "correctas": ["m1_4_e1_b"],
+                  "correctas": [
+                    "m1_4_e1_b"
+                  ],
                   "explicacion": "La elasticidad es la capacidad de recuperar la forma original después de retirar la carga, siempre que no se haya superado el rango elástico."
                 },
                 {
@@ -2896,7 +2968,9 @@
                       "texto": "La organización trabecular se establece una vez y no cambia durante la vida del individuo."
                     }
                   ],
-                  "correctas": ["m1_4_e2_a"],
+                  "correctas": [
+                    "m1_4_e2_a"
+                  ],
                   "explicacion": "La ley de Wolff describe la adaptación progresiva de la arquitectura ósea a las demandas mecánicas, mediante cambios en la distribución y orientación del tejido."
                 },
                 {
@@ -2921,7 +2995,9 @@
                       "texto": "Las cargas repetitivas no pueden causar fracturas si cada una permanece por debajo de la resistencia última del hueso."
                     }
                   ],
-                  "correctas": ["m1_4_e3_b"],
+                  "correctas": [
+                    "m1_4_e3_b"
+                  ],
                   "explicacion": "La fatiga ósea puede producirse por acumulación progresiva de microdaño bajo cargas cíclicas repetidas, incluso cuando cada ciclo no supera por sí solo la resistencia última del tejido."
                 },
                 {
@@ -2946,7 +3022,9 @@
                       "texto": "La respuesta mecánica depende exclusivamente de la orientación de las trabéculas, sin participación de la matriz extracelular."
                     }
                   ],
-                  "correctas": ["m1_4_e4_c"],
+                  "correctas": [
+                    "m1_4_e4_c"
+                  ],
                   "explicacion": "La resistencia ósea depende tanto de las propiedades de la matriz como de la arquitectura cortical y trabecular. La respuesta también depende del tipo y dirección de la carga; por eso, no puede establecerse una superioridad universal a partir de una sola característica estructural."
                 },
                 {
@@ -2971,7 +3049,9 @@
                       "texto": "Porque las propiedades mecánicas son independientes de la organización estructural."
                     }
                   ],
-                  "correctas": ["m1_4_e5_b"],
+                  "correctas": [
+                    "m1_4_e5_b"
+                  ],
                   "explicacion": "Sus propiedades mecánicas dependen tanto de la composición y microestructura de la matriz como de la arquitectura cortical y trabecular, incluyendo el espesor cortical, la orientación y conectividad de las trabéculas y su distribución regional; por ello, dos sitios con propiedades materiales similares pueden presentar respuestas mecánicas diferentes frente a una misma carga, debido a las características de su organización estructural."
                 }
               ]

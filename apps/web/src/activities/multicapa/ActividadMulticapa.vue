@@ -576,15 +576,24 @@ defineExpose({ activar, reiniciar });
 </script>
 
 <template>
+  <!-- En escritorio, una pantalla sin desplazarse (2026-11-05): la cabecera y el dibujo a la izquierda; a la derecha,
+       el avance (a la altura de la cabecera), la ficha y la lista de capas en dos columnas. -->
   <section
-    class="multicapa space-y-4"
+    class="multicapa space-y-4 lg:grid lg:grid-flow-row-dense lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start lg:gap-x-4 lg:gap-y-3 lg:space-y-0"
     :aria-labelledby="idTitulo"
     :data-movimiento="movimientoReducido ? 'reducido' : 'normal'"
     :data-modo="config.modo"
     data-testid="actividad-multicapa"
   >
-    <header class="space-y-1">
-      <h3 :id="idTitulo" ref="titulo" tabindex="-1" class="text-lg font-semibold outline-offset-4">
+    <header class="space-y-1 lg:col-start-1">
+      <!-- En escritorio el título ya está en el encabezado de la parte («1.2.4 · Recorre un hueso largo»): queda solo
+           para el lector de pantalla y así el dibujo gana alto. -->
+      <h3
+        :id="idTitulo"
+        ref="titulo"
+        tabindex="-1"
+        class="text-lg font-semibold outline-offset-4 lg:sr-only"
+      >
         {{ actividad.titulo }}
       </h3>
       <p class="text-muted-foreground text-sm">
@@ -594,7 +603,7 @@ defineExpose({ activar, reiniciar });
 
     <p
       v-if="!jugando"
-      class="bg-muted text-foreground flex items-start gap-2 rounded-lg p-3 text-sm"
+      class="bg-muted text-foreground flex items-start gap-2 rounded-lg p-3 text-sm lg:col-span-2"
       data-testid="multicapa-aviso-revision"
     >
       <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -606,7 +615,7 @@ defineExpose({ activar, reiniciar });
 
     <p
       v-if="sinContenido"
-      class="border-input bg-muted flex items-start gap-2 rounded-lg border border-dashed p-3 text-sm"
+      class="border-input bg-muted flex items-start gap-2 rounded-lg border border-dashed p-3 text-sm lg:col-span-2"
       role="status"
       data-testid="multicapa-sin-contenido"
     >
@@ -617,7 +626,7 @@ defineExpose({ activar, reiniciar });
     <!-- Resultado (al completar) -->
     <div
       v-if="resultado"
-      class="border-success bg-success-soft text-foreground space-y-3 rounded-lg border p-4"
+      class="border-success bg-success-soft text-foreground space-y-3 rounded-lg border p-4 lg:col-start-2 lg:row-start-1"
       data-testid="multicapa-resultado"
     >
       <h4
@@ -663,7 +672,7 @@ defineExpose({ activar, reiniciar });
     <!-- Avance y consigna (jugando) -->
     <div
       v-else-if="jugando && !sinContenido"
-      class="border-input bg-card space-y-2 rounded-lg border p-3"
+      class="border-input bg-card space-y-2 rounded-lg border p-3 lg:col-start-2 lg:row-start-1 lg:space-y-1.5 lg:py-2"
       data-testid="multicapa-progreso"
     >
       <div class="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
@@ -698,7 +707,11 @@ defineExpose({ activar, reiniciar });
     </div>
 
     <!-- Repaso de identificar: consignas con su respuesta -->
-    <div v-else-if="!jugando && esIdentificar" class="space-y-2" data-testid="multicapa-respuestas">
+    <div
+      v-else-if="!jugando && esIdentificar"
+      class="space-y-2 lg:col-span-2"
+      data-testid="multicapa-respuestas"
+    >
       <h4 class="text-sm font-semibold">Consignas y respuestas</h4>
       <ol class="list-decimal space-y-2 pl-5 text-sm">
         <li v-for="(fila, i) in respuestasCorrectas" :key="i">
@@ -708,10 +721,10 @@ defineExpose({ activar, reiniciar });
       </ol>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,19rem)]">
+    <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,19rem)] lg:contents">
       <!-- Dibujo -->
       <div
-        class="lienzo border-input bg-card rounded-lg border p-2"
+        class="lienzo border-input bg-card rounded-lg border p-2 lg:col-start-1 lg:row-span-2"
         :aria-busy="estadoSvg === 'cargando'"
         data-testid="multicapa-lienzo"
       >
@@ -771,7 +784,7 @@ defineExpose({ activar, reiniciar });
         </div>
       </div>
 
-      <div class="min-w-0 space-y-4">
+      <div class="min-w-0 space-y-4 lg:col-start-2 lg:space-y-3">
         <!-- Ficha -->
         <div
           class="border-input bg-card min-h-24 space-y-2 rounded-lg border p-3"
@@ -809,11 +822,15 @@ defineExpose({ activar, reiniciar });
         <!-- Lista de capas: alternativa de teclado y de lector de pantalla (R1) -->
         <div>
           <h4 :id="idLista" class="mb-2 text-sm font-semibold">Capas del dibujo</h4>
-          <ul :aria-labelledby="idLista" class="flex flex-col gap-2" data-testid="multicapa-lista">
+          <ul
+            :aria-labelledby="idLista"
+            class="flex flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-1.5"
+            data-testid="multicapa-lista"
+          >
             <li v-for="{ capa, indice } in listaCapas" :key="`${indice}-${capa.id}`">
               <button
                 type="button"
-                class="border-input bg-card hover:bg-secondary flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm font-medium [overflow-wrap:anywhere]"
+                class="border-input bg-card hover:bg-secondary flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm font-medium [overflow-wrap:anywhere] lg:h-full lg:flex-wrap lg:gap-x-1.5 lg:gap-y-0 lg:min-h-10 lg:px-2 lg:py-1 lg:leading-tight"
                 :class="seleccionada === capa.id ? 'border-primary bg-secondary border-2' : ''"
                 :aria-current="seleccionada === capa.id ? 'true' : undefined"
                 :data-capa="capa.id"
@@ -832,7 +849,7 @@ defineExpose({ activar, reiniciar });
                 <span class="min-w-0 flex-1">{{ capa.etiqueta }}</span>
                 <span
                   v-if="rotuloEstado(capa.id)"
-                  class="text-muted-foreground shrink-0 text-xs font-normal"
+                  class="text-muted-foreground shrink-0 text-xs font-normal lg:basis-full lg:pl-[1.375rem]"
                 >
                   {{ rotuloEstado(capa.id) }}
                 </span>
@@ -867,6 +884,12 @@ defineExpose({ activar, reiniciar });
   height: auto;
   max-height: 30rem;
   /* El desplazamiento de la página con el dedo sigue funcionando (R8): sin touch-action. */
+}
+@media (min-width: 1024px) {
+  /* Alto de la parte visible menos la cabecera de la actividad (`--alto-vista`, lo mide ModuloView). */
+  .anfitrion :deep(.multicapa-svg) {
+    max-height: max(16rem, calc(var(--alto-vista, 100dvh) - 9.5rem));
+  }
 }
 .anfitrion :deep(g[data-capa]) {
   cursor: pointer;
