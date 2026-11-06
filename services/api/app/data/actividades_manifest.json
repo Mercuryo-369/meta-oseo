@@ -147,7 +147,7 @@
     },
     "m2_2_destino_osteoblasto": {
       "modulo": 2,
-      "tipo": "quiz",
+      "tipo": "relacion-columnas",
       "puntaje_max": 15,
       "obligatoria": true,
       "seccion": "m2_2_osteoblastos",

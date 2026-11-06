@@ -559,7 +559,9 @@
                       "texto": "Producir exclusivamente células sanguíneas"
                     }
                   ],
-                  "correctas": ["m2_1_e1_b"],
+                  "correctas": [
+                    "m2_1_e1_b"
+                  ],
                   "explicacion": "Estas poblaciones participan en el crecimiento, mantenimiento y reparación del tejido esquelético."
                 },
                 {
@@ -584,7 +586,9 @@
                       "texto": "Colágeno y osteoide"
                     }
                   ],
-                  "correctas": ["m2_1_e2_a"],
+                  "correctas": [
+                    "m2_1_e2_a"
+                  ],
                   "explicacion": "Ambas señales son reguladoras de la diferenciación de los precursores osteoclásticos."
                 },
                 {
@@ -1053,81 +1057,69 @@
           "tipo": "actividad",
           "actividad": {
             "id": "m2_2_destino_osteoblasto",
-            "tipo": "quiz",
+            "tipo": "relacion-columnas",
             "titulo": "Identifica el destino del osteoblasto",
-            "instrucciones": "Objetivo: diferenciar los tres destinos principales que puede seguir un osteoblasto después de su participación activa en la formación de matriz. Instrucción: lee cada descripción y elige el destino celular correspondiente: osteocito, célula de revestimiento óseo o apoptosis.",
+            "instrucciones": "Objetivo: diferenciar los tres destinos principales que puede seguir un osteoblasto después de su participación activa en la formación de matriz. Arrastra cada destino celular hasta la descripción que le corresponde (o toca una de cada columna; con teclado, Enter para elegir y flechas para moverte).",
             "obligatoria": true,
             "puntaje_max": 15,
             "retroalimentacion": {
-              "correcta": "Identificaste los tres destinos del osteoblasto.",
-              "parcial": "Algún destino no es correcto. Lee la justificación de cada descripción.",
-              "incorrecta": "Revisa la justificación de cada descripción y vuelve a leer «El destino de los osteoblastos»."
+              "correcta": "Identificaste los tres destinos del osteoblasto. Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso.",
+              "incorrecta": "Algún destino no corresponde. Vuelve a leer «El destino de los osteoblastos»: Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
             },
             "concepto": "Destino osteoblasto",
             "config": {
-              "preguntas": [
+              "columna_a": {
+                "titulo": "Descripción",
+                "elementos": [
+                  {
+                    "id": "d_osteocito",
+                    "texto": "El osteoblasto queda rodeado por el osteoide que produce, desarrolla prolongaciones citoplasmáticas y establece conexiones a través de los canalículos."
+                  },
+                  {
+                    "id": "d_revestimiento",
+                    "texto": "El osteoblasto disminuye su actividad secretora, adquiere una morfología aplanada y cubre superficies óseas en reposo."
+                  },
+                  {
+                    "id": "d_apoptosis",
+                    "texto": "El osteoblasto activa mecanismos regulados de muerte celular que permiten eliminar células que han completado su función."
+                  }
+                ]
+              },
+              "columna_b": {
+                "titulo": "Destino celular",
+                "elementos": [
+                  {
+                    "id": "r_osteocito",
+                    "texto": "Diferenciación en osteocito"
+                  },
+                  {
+                    "id": "r_revestimiento",
+                    "texto": "Conversión en célula de revestimiento óseo"
+                  },
+                  {
+                    "id": "r_apoptosis",
+                    "texto": "Apoptosis"
+                  }
+                ]
+              },
+              "pares": [
                 {
-                  "id": "m2_2_destino_1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "El osteoblasto queda rodeado por el osteoide que produce, desarrolla prolongaciones citoplasmáticas y establece conexiones a través de los canalículos.",
-                  "opciones": [
-                    {
-                      "id": "m2_2_destino_1_osteocito",
-                      "texto": "Osteocito"
-                    },
-                    {
-                      "id": "m2_2_destino_1_revestimiento",
-                      "texto": "Célula de revestimiento óseo"
-                    },
-                    {
-                      "id": "m2_2_destino_1_apoptosis",
-                      "texto": "Apoptosis"
-                    }
-                  ],
-                  "correctas": ["m2_2_destino_1_osteocito"],
-                  "explicacion": "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+                  "id": "par_osteocito",
+                  "a": "d_osteocito",
+                  "b": "r_osteocito",
+                  "explicacion": "Al quedar incluido en la matriz y conectarse por los canalículos, el osteoblasto se diferencia en osteocito."
                 },
                 {
-                  "id": "m2_2_destino_2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "El osteoblasto disminuye su actividad secretora, adquiere una morfología aplanada y cubre superficies óseas en reposo.",
-                  "opciones": [
-                    {
-                      "id": "m2_2_destino_2_osteocito",
-                      "texto": "Osteocito"
-                    },
-                    {
-                      "id": "m2_2_destino_2_revestimiento",
-                      "texto": "Célula de revestimiento óseo"
-                    },
-                    {
-                      "id": "m2_2_destino_2_apoptosis",
-                      "texto": "Apoptosis"
-                    }
-                  ],
-                  "correctas": ["m2_2_destino_2_revestimiento"],
-                  "explicacion": "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+                  "id": "par_revestimiento",
+                  "a": "d_revestimiento",
+                  "b": "r_revestimiento",
+                  "explicacion": "Con menor actividad secretora y forma aplanada, cubre superficies óseas en reposo como célula de revestimiento."
                 },
                 {
-                  "id": "m2_2_destino_3",
-                  "formato": "opcion_multiple",
-                  "enunciado": "El osteoblasto activa mecanismos regulados de muerte celular que permiten eliminar células que han completado su función.",
-                  "opciones": [
-                    {
-                      "id": "m2_2_destino_3_osteocito",
-                      "texto": "Osteocito"
-                    },
-                    {
-                      "id": "m2_2_destino_3_revestimiento",
-                      "texto": "Célula de revestimiento óseo"
-                    },
-                    {
-                      "id": "m2_2_destino_3_apoptosis",
-                      "texto": "Apoptosis"
-                    }
-                  ],
-                  "correctas": ["m2_2_destino_3_apoptosis"],
-                  "explicacion": "Los osteoblastos pueden incorporarse a la matriz y diferenciarse en osteocitos, permanecer sobre la superficie como células de revestimiento o experimentar apoptosis; estos destinos contribuyen a regular la población celular y la actividad formadora del hueso."
+                  "id": "par_apoptosis",
+                  "a": "d_apoptosis",
+                  "b": "r_apoptosis",
+                  "explicacion": "La muerte celular regulada elimina los osteoblastos que completaron su función."
                 }
               ]
             }
@@ -1172,7 +1164,9 @@
                       "texto": "Transportar proteínas de la matriz fuera de la célula."
                     }
                   ],
-                  "correctas": ["m2_2_e1_b"],
+                  "correctas": [
+                    "m2_2_e1_b"
+                  ],
                   "explicacion": "RUNX2 es un factor de transcripción fundamental para establecer el programa osteogénico; SP7/Osterix participa posteriormente en la progresión y maduración osteoblástica."
                 },
                 {
@@ -1197,7 +1191,9 @@
                       "texto": "Activa la vía de las caspasas para eliminar osteoclastos."
                     }
                   ],
-                  "correctas": ["m2_2_e2_b"],
+                  "correctas": [
+                    "m2_2_e2_b"
+                  ],
                   "explicacion": "OPG funciona como un receptor señuelo y contribuye a limitar la osteoclastogénesis al bloquear la interacción entre RANKL y RANK."
                 },
                 {
@@ -1647,7 +1643,9 @@
                       "texto": "Producir células sanguíneas dentro de la matriz ósea."
                     }
                   ],
-                  "correctas": ["m2_3_e1_b"],
+                  "correctas": [
+                    "m2_3_e1_b"
+                  ],
                   "explicacion": "El osteocito actúa como sensor y regulador del tejido óseo; detecta estímulos mecánicos, transmite señales y modula la actividad de osteoblastos y osteoclastos."
                 },
                 {
@@ -1672,7 +1670,9 @@
                       "texto": "En el interior de los vasos sanguíneos."
                     }
                   ],
-                  "correctas": ["m2_3_e2_c"],
+                  "correctas": [
+                    "m2_3_e2_c"
+                  ],
                   "explicacion": "El cuerpo celular del osteocito permanece en una laguna ósea, mientras que sus prolongaciones citoplasmáticas se extienden a través de los canalículos."
                 },
                 {
@@ -1859,7 +1859,9 @@
                       "texto": "Porque la matriz mineralizada contiene múltiples núcleos celulares."
                     }
                   ],
-                  "correctas": ["m2_4_e1_a"],
+                  "correctas": [
+                    "m2_4_e1_a"
+                  ],
                   "explicacion": "La fusión de los precursores permite adquirir la organización celular característica del osteoclasto maduro."
                 },
                 {
@@ -1884,7 +1886,9 @@
                       "texto": "Formar las lagunas óseas que alojan a los osteocitos."
                     }
                   ],
-                  "correctas": ["m2_4_e2_b"],
+                  "correctas": [
+                    "m2_4_e2_b"
+                  ],
                   "explicacion": "La señalización inducida por RANKL conduce a la activación de NFATc1, un factor que coordina la diferenciación de los precursores hacia el fenotipo osteoclástico."
                 },
                 {
@@ -1909,7 +1913,9 @@
                       "texto": "La interrupción permanente de la formación ósea."
                     }
                   ],
-                  "correctas": ["m2_4_e3_b"],
+                  "correctas": [
+                    "m2_4_e3_b"
+                  ],
                   "explicacion": "La resorción contribuye al equilibrio mineral al liberar calcio y fosfato, además de retirar tejido envejecido o alterado"
                 }
               ]
@@ -2073,7 +2079,9 @@
                       "texto": "Adipocitos medulares"
                     }
                   ],
-                  "correctas": ["m2_5_caso_a_osteomacs"],
+                  "correctas": [
+                    "m2_5_caso_a_osteomacs"
+                  ],
                   "explicacion": "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
                 },
                 {
@@ -2098,7 +2106,9 @@
                       "texto": "Adipocitos medulares"
                     }
                   ],
-                  "correctas": ["m2_5_caso_b_endoteliales"],
+                  "correctas": [
+                    "m2_5_caso_b_endoteliales"
+                  ],
                   "explicacion": "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
                 },
                 {
@@ -2123,7 +2133,9 @@
                       "texto": "Adipocitos medulares"
                     }
                   ],
-                  "correctas": ["m2_5_caso_c_inmunitarias"],
+                  "correctas": [
+                    "m2_5_caso_c_inmunitarias"
+                  ],
                   "explicacion": "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
                 },
                 {
@@ -2148,7 +2160,9 @@
                       "texto": "Adipocitos medulares"
                     }
                   ],
-                  "correctas": ["m2_5_caso_d_adipocitos"],
+                  "correctas": [
+                    "m2_5_caso_d_adipocitos"
+                  ],
                   "explicacion": "Cada población desempeña una función característica en el microambiente óseo, desde el soporte vascular y la regulación inflamatoria hasta la fagocitosis y la comunicación metabólica."
                 }
               ]
@@ -2194,7 +2208,9 @@
                       "texto": "Destruir todos los restos celulares del tejido."
                     }
                   ],
-                  "correctas": ["m2_5_e1_b"],
+                  "correctas": [
+                    "m2_5_e1_b"
+                  ],
                   "explicacion": "Estas poblaciones se localizan en nichos del periostio, endostio y médula ósea, donde contribuyen al mantenimiento y la regeneración del tejido y proporcionan precursores osteoblásticos."
                 },
                 {
@@ -2219,7 +2235,9 @@
                       "texto": "Producir exclusivamente FGF23."
                     }
                   ],
-                  "correctas": ["m2_5_e2_c"],
+                  "correctas": [
+                    "m2_5_e2_c"
+                  ],
                   "explicacion": "Los osteomacs son macrófagos residentes que participan en la eliminación de restos celulares, el soporte a los osteoblastos y la coordinación de la reparación ósea."
                 },
                 {
@@ -2251,7 +2269,9 @@
                       "texto": "Los osteoblastos se transforman obligatoriamente en células inmunitarias para combatir la infección."
                     }
                   ],
-                  "correctas": ["m2_5_e8_c"],
+                  "correctas": [
+                    "m2_5_e8_c"
+                  ],
                   "explicacion": "Las células inmunitarias modulan la actividad osteoblástica y osteoclástica mediante mediadores como RANKL, OPG, TNF e interleucinas; cuando la respuesta inflamatoria persiste, puede alterarse el equilibrio entre formación y resorción, favoreciendo la pérdida ósea, como puede ocurrir en procesos infecciosos e inflamatorios del territorio maxilofacial."
                 }
               ]
