@@ -2469,9 +2469,53 @@
           "tipo": "imagen",
           "src": "/images/m1/m1_4_imagen_09.webp",
           "alt": "Fémur proximal con los grupos trabeculares rotulados: tracción principal y secundaria, compresión principal y secundaria, grupo trocantérico mayor y triángulo de Ward.",
-          "pie": "Ley de Wolff: orientación trabecular de la cabeza femoral",
+          "pie": "Ley de Wolff: toca cada grupo trabecular de la cabeza femoral",
           "ancho": 1312,
-          "alto": 1199
+          "alto": 1199,
+          "puntos": [
+            {
+              "id": "grupo_compresion_principal",
+              "etiqueta": "Grupo de compresión principal",
+              "x": 73.0,
+              "y": 26.1,
+              "markdown": "Trabéculas orientadas en dirección de la carga axial; transmiten las fuerzas de compresión desde la cabeza femoral hacia la diáfisis."
+            },
+            {
+              "id": "grupo_traccion_principal",
+              "etiqueta": "Grupo de tracción principal",
+              "x": 55.6,
+              "y": 36.8,
+              "markdown": "Trabéculas que siguen las líneas de tracción generadas por la carga; soportan la tensión en la superficie superior del cuello femoral."
+            },
+            {
+              "id": "grupo_trocanterico_mayor",
+              "etiqueta": "Grupo trocantérico mayor",
+              "x": 34.8,
+              "y": 47.6,
+              "markdown": "Trabéculas que se dirigen hacia el trocánter mayor; se relacionan con las inserciones musculares y las fuerzas de tracción laterales."
+            },
+            {
+              "id": "triangulo_de_ward",
+              "etiqueta": "Triángulo de Ward",
+              "x": 56.5,
+              "y": 51.4,
+              "markdown": "Zona con menor densidad trabecular entre los grupos de compresión y tracción; es un área de menor resistencia mecánica."
+            },
+            {
+              "id": "grupo_compresion_secundario",
+              "etiqueta": "Grupo de compresión secundario",
+              "x": 55.6,
+              "y": 66.1,
+              "markdown": "Trabéculas orientadas en la región medial e inferior del cuello femoral; soportan fuerzas de compresión adicionales y ayudan a transmitir la carga hacia la diáfisis."
+            },
+            {
+              "id": "grupo_traccion_secundario",
+              "etiqueta": "Grupo de tracción secundario",
+              "x": 43.6,
+              "y": 68.5,
+              "markdown": "Trabéculas orientadas hacia la región medial del cuello femoral; resisten fuerzas de tracción adicionales y estabilizan el cuello."
+            }
+          ]
         },
         {
           "id": "t_frost",

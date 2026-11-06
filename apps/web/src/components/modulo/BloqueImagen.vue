@@ -80,7 +80,9 @@ const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.v
 const lateralCorto = computed(
   () =>
     !apilado.value &&
-    ((hayLateral.value && props.largoLateral < 1000) || (hayPuntos.value && !hayLateral.value)),
+    // Con letreros y texto a la vez (Ley de Wolff, 1.4) la columna lleva también la ficha: letra normal.
+    ((hayLateral.value && !hayPuntos.value && props.largoLateral < 1000) ||
+      (hayPuntos.value && !hayLateral.value)),
 );
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
