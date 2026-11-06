@@ -1113,9 +1113,13 @@ onBeforeUnmount(() => {
               @ir="irA"
               @bloqueada="alIntentarSeccionBloqueada"
             />
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <!-- Fila de la sección: a la izquierda los desplegables (objetivos y referencias), en el centro el
+                 indicador de partes «· · · 3.3.1 · · ·» y a la derecha el avance. En móvil el indicador va arriba. -->
+            <div
+              class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+            >
               <NavegacionPartes
-                class="min-w-0 flex-1"
+                class="col-span-2 flex justify-center md:order-2 md:col-span-1"
                 solo-partes
                 :numero-modulo="n"
                 :secciones="secciones"
@@ -1126,48 +1130,50 @@ onBeforeUnmount(() => {
                 :parte="vista"
                 @ir-parte="irAVista"
               />
-              <details class="relative text-sm" data-testid="objetivos-desplegable">
-                <summary
-                  class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
-                >
-                  Objetivos
-                </summary>
-                <ul
-                  class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
-                >
-                  <li v-for="objetivo in modulo.objetivos" :key="objetivo">
-                    <TextoRico :texto="objetivo" modo="linea" />
-                  </li>
-                </ul>
-              </details>
-              <!-- Referencias del módulo (bibliografía de la docente, 2026-11-05): desplegable como los objetivos, para
+              <div class="flex items-center gap-x-4 md:order-1">
+                <details class="relative text-sm" data-testid="objetivos-desplegable">
+                  <summary
+                    class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
+                  >
+                    Objetivos
+                  </summary>
+                  <ul
+                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
+                  >
+                    <li v-for="objetivo in modulo.objetivos" :key="objetivo">
+                      <TextoRico :texto="objetivo" modo="linea" />
+                    </li>
+                  </ul>
+                </details>
+                <!-- Referencias del módulo (bibliografía de la docente, 2026-11-05): desplegable como los objetivos, para
                    no ocupar la pantalla de la sección. El glosario sigue oculto. -->
-              <details class="relative text-sm" data-testid="referencias-desplegable">
-                <summary
-                  class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
-                >
-                  Referencias ({{ modulo.referencias.length }})
-                </summary>
-                <ol
-                  class="bg-card marker:text-primary absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] list-decimal space-y-3 overflow-y-auto overscroll-contain rounded-xl border p-4 pl-9 leading-relaxed shadow-lg"
-                >
-                  <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
-                    {{ r.cita }}
-                    <a
-                      v-if="r.url"
-                      :href="r.url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-primary block break-all underline underline-offset-2"
-                    >
-                      {{ r.url }}
-                      <span class="sr-only">(se abre en otra pestaña)</span>
-                    </a>
-                  </li>
-                </ol>
-              </details>
+                <details class="relative text-sm" data-testid="referencias-desplegable">
+                  <summary
+                    class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
+                  >
+                    Referencias ({{ modulo.referencias.length }})
+                  </summary>
+                  <ol
+                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] list-decimal space-y-3 overflow-y-auto overscroll-contain rounded-xl border p-4 pl-9 leading-relaxed shadow-lg"
+                  >
+                    <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
+                      {{ r.cita }}
+                      <a
+                        v-if="r.url"
+                        :href="r.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary block break-all underline underline-offset-2"
+                      >
+                        {{ r.url }}
+                        <span class="sr-only">(se abre en otra pestaña)</span>
+                      </a>
+                    </li>
+                  </ol>
+                </details>
+              </div>
               <span
-                class="text-muted-foreground ml-auto text-sm tabular-nums"
+                class="text-muted-foreground justify-self-end text-right text-sm tabular-nums md:order-3"
                 data-testid="avance-obligatorias"
               >
                 {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} obligatorias
