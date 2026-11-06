@@ -1,7 +1,8 @@
 /**
  * Tema claro / oscuro.
  *
- * Por defecto sigue la preferencia del sistema. Si el estudiante elige uno con el botón de la cabecera
+ * Por defecto, tema claro con fondos pastel (indicación de la docente, 2026-11-05: «usar colores claros o pastel para
+ * los fondos»), aunque el sistema esté en oscuro. El oscuro se mantiene como opción. Si el estudiante elige uno con el botón de la cabecera
  * (`SelectorTema.vue`), esa elección se guarda en el navegador (`localStorage`, clave `ova.tema`) y manda
  * sobre el sistema en las visitas siguientes. Añade o quita la clase `dark` de <html> (los tokens de
  * src/style.css dependen de ella). El script en línea de index.html aplica lo mismo antes del primer
@@ -14,7 +15,6 @@ export type PreferenciaTema = 'claro' | 'oscuro' | 'sistema';
 export const CLAVE_TEMA = 'ova.tema';
 
 const preferencia = ref<PreferenciaTema>('sistema');
-const sistemaOscuro = ref(false);
 
 export function aplicarTema(oscuro: boolean): void {
   document.documentElement.classList.toggle('dark', oscuro);
@@ -39,9 +39,7 @@ function guardarPreferencia(p: PreferenciaTema): void {
   }
 }
 
-const oscuro = computed(() =>
-  preferencia.value === 'sistema' ? sistemaOscuro.value : preferencia.value === 'oscuro',
-);
+const oscuro = computed(() => preferencia.value === 'oscuro');
 
 /** Elige un tema y lo recuerda (`sistema` vuelve a seguir al sistema operativo). */
 function establecer(p: PreferenciaTema): void {
@@ -60,20 +58,9 @@ export function useTema() {
   return { preferencia, oscuro, establecer, alternar };
 }
 
-/** Aplica el tema al arrancar y sigue los cambios del sistema. Devuelve la función para dejar de escuchar. */
+/** Aplica el tema guardado al arrancar (claro si no hay elección). Devuelve una función de limpieza, por contrato. */
 export function iniciarTema(): () => void {
   preferencia.value = leerPreferencia();
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-    aplicarTema(oscuro.value);
-    return () => {};
-  }
-  const consulta = window.matchMedia('(prefers-color-scheme: dark)');
-  sistemaOscuro.value = consulta.matches;
   aplicarTema(oscuro.value);
-  const alCambiar = (e: MediaQueryListEvent) => {
-    sistemaOscuro.value = e.matches;
-    aplicarTema(oscuro.value);
-  };
-  consulta.addEventListener('change', alCambiar);
-  return () => consulta.removeEventListener('change', alCambiar);
+  return () => {};
 }

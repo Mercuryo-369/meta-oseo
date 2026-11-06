@@ -22,6 +22,8 @@ const props = defineProps<{
   actual: boolean;
   /** El primer paso no lleva muesca a la izquierda. */
   primero: boolean;
+  /** Más baja, para la barra de cada sección (la portada usa la alta). */
+  compacta?: boolean;
 }>();
 
 const icono = computed(() => iconoDeSeccion(props.titulo));
@@ -29,8 +31,9 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
 
 <template>
   <span
-    class="paso-flecha flex h-full min-h-[4.5rem] w-full items-center gap-2.5 py-2 pr-6 transition-colors"
+    class="paso-flecha flex h-full w-full items-center gap-2.5 pr-6 transition-colors"
     :class="[
+      compacta ? 'min-h-[3.25rem] py-1' : 'min-h-[4.5rem] py-2',
       primero ? 'paso-flecha--primero pl-3' : 'pl-7',
       actual
         ? 'bg-primary text-primary-foreground'
@@ -40,7 +43,13 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
     ]"
     data-testid="nodo-paso"
   >
-    <component :is="icono" class="size-7 shrink-0" :stroke-width="1.5" aria-hidden="true" />
+    <component
+      :is="icono"
+      class="shrink-0"
+      :class="compacta ? 'size-5' : 'size-7'"
+      :stroke-width="1.5"
+      aria-hidden="true"
+    />
     <span class="min-w-0 leading-tight">
       <span class="flex items-center gap-1 text-sm font-semibold tabular-nums">
         {{ numero }}
@@ -58,7 +67,10 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
           aria-hidden="true"
         />
       </span>
-      <span class="mt-0.5 line-clamp-3 block text-[0.78rem]" :class="actual ? 'font-semibold' : ''">
+      <span
+        class="mt-0.5 block text-[0.78rem]"
+        :class="[actual ? 'font-semibold' : '', compacta ? 'line-clamp-2' : 'line-clamp-3']"
+      >
         {{ titulo }}
       </span>
       <span class="sr-only">({{ etiqueta }})</span>

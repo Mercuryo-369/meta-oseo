@@ -20,6 +20,10 @@ const props = defineProps<{
   partes: readonly string[];
   /** Parte visible. */
   parte: number;
+  /** Solo las partes de la sección abierta (las secciones van en `BarraModulo`, con flechas). */
+  soloPartes?: boolean;
+  /** Subcapítulo de cada parte: entre un subcapítulo y el siguiente va una separación con su nombre. */
+  subcapitulos?: readonly (string | null)[];
 }>();
 
 const emit = defineEmits<{
@@ -51,8 +55,41 @@ function alPulsarSeccion(i: number): void {
 </script>
 
 <template>
-  <nav aria-label="Secciones y partes del módulo" data-testid="navegacion-partes">
-    <ol ref="fila" class="fila-partes flex items-center gap-1.5 overflow-x-auto pb-1">
+  <nav
+    :aria-label="soloPartes ? 'Partes de la sección' : 'Secciones y partes del módulo'"
+    data-testid="navegacion-partes"
+  >
+    <ol
+      v-if="soloPartes"
+      ref="fila"
+      class="fila-partes flex items-center gap-1 overflow-x-auto pb-1"
+    >
+      <li v-for="(p, j) in partes" :key="j" class="flex shrink-0 items-center gap-1">
+        <span
+          v-if="j > 0 && subcapitulos?.[j] && subcapitulos[j] !== subcapitulos[j - 1]"
+          class="bg-border mx-1 h-6 w-px"
+          :title="subcapitulos[j] ?? undefined"
+          aria-hidden="true"
+        />
+        <button
+          type="button"
+          class="focus-visible:ring-ring min-h-8 rounded-full px-2.5 text-xs font-semibold tabular-nums outline-none focus-visible:ring-2"
+          :class="
+            j === parte
+              ? 'bg-primary text-primary-foreground'
+              : 'hover:bg-primary/15 text-foreground bg-card border'
+          "
+          :aria-current="j === parte ? 'step' : undefined"
+          :aria-label="`${numero(indice)}.${j + 1}: ${p}`"
+          :title="p"
+          :data-parte="j"
+          @click="emit('irParte', j)"
+        >
+          {{ numero(indice) }}.{{ j + 1 }}
+        </button>
+      </li>
+    </ol>
+    <ol v-else ref="fila" class="fila-partes flex items-center gap-1.5 overflow-x-auto pb-1">
       <li v-for="(s, i) in secciones" :key="s.id" class="shrink-0">
         <!-- Sección abierta: su número y título, y a continuación sus partes -->
         <div

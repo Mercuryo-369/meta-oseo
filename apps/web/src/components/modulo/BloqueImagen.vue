@@ -93,8 +93,23 @@ const anchoImagenMax = computed(() => {
   const n = props.largoLateral;
   return n < 500 ? '74%' : n < 1200 ? '66%' : '60%';
 });
+/** La fuente sin su URL y la URL aparte, para enlazarla. */
+const fuente = computed(() => {
+  const credito = props.bloque.credito ?? '';
+  const url = /https:\/\/\S+/.exec(credito)?.[0]?.replace(/[.,;)»”"]+$/, '');
+  const texto = url
+    ? credito
+        .replace(url, '')
+        .replace(/[\s,;“”"«»]+$/, '')
+        .trim()
+    : credito;
+  return { url, texto };
+});
 const claseRecuadro = computed(() =>
-  props.lateralCristal ? 'cristal-portada' : 'bg-card border shadow-sm',
+  // Barra de acento a la izquierda del texto, como en la referencia «Títulos y subtítulos» de la docente.
+  props.lateralCristal
+    ? 'cristal-portada border-l-4 border-l-acento'
+    : 'bg-card border border-l-4 border-l-acento shadow-sm',
 );
 </script>
 
@@ -304,8 +319,19 @@ const claseRecuadro = computed(() =>
         <!-- `contain: inline-size`: el pie (y su fuente, a veces larga) no ensancha la columna más que la imagen. -->
         <figcaption class="text-muted-foreground text-center text-sm [contain:inline-size]">
           <TextoRico v-if="!bloque.pareja" :texto="bloque.pie" modo="linea" />
+          <!-- Si la fuente trae su enlace, toda la línea lleva al artículo (pedido de la docente, 2026-11-05). -->
+          <a
+            v-if="bloque.credito && fuente.url"
+            :href="fuente.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary block truncate text-xs underline underline-offset-2"
+            :title="`Fuente: ${fuente.texto} (abre el artículo en otra pestaña)`"
+            data-testid="fuente-enlace"
+            >Fuente: {{ fuente.texto }}</a
+          >
           <span
-            v-if="bloque.credito"
+            v-else-if="bloque.credito"
             class="block truncate text-xs"
             :title="`Fuente: ${bloque.credito}`"
             >Fuente: {{ bloque.credito }}</span

@@ -34,7 +34,9 @@ withDefaults(
       decoding="async"
       class="absolute inset-0 -z-10 size-full object-cover"
     />
-    <div class="cristal-portada max-w-3xl space-y-2 rounded-2xl p-5 sm:p-7">
+    <div
+      class="cristal-portada border-l-acento max-w-3xl space-y-2 rounded-2xl border-l-4 p-5 sm:p-7"
+    >
       <h3 v-if="bloque.titulo" class="font-serif text-xl font-semibold">{{ bloque.titulo }}</h3>
       <TextoRico
         :texto="bloque.markdown"

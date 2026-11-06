@@ -23,10 +23,8 @@
         try {
           t = localStorage.getItem('ova.tema');
         } catch (e) {}
-        if (
-          t === 'oscuro' ||
-          (t !== 'claro' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-        ) {
+        // Claro por defecto (fondos pastel); oscuro solo si el estudiante lo eligió.
+        if (t === 'oscuro') {
           document.documentElement.classList.add('dark');
         }
       } catch (e) {}

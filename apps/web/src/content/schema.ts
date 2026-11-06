@@ -82,6 +82,7 @@ export const TIPOS_BLOQUE = [
   'actividad',
   'escenarios',
   'pregunta',
+  'video',
 ] as const;
 export type TipoBloque = (typeof TIPOS_BLOQUE)[number];
 
@@ -1258,6 +1259,11 @@ export const BloqueTextoSchema = z.strictObject({
   tipo: z.literal('texto'),
   /** Subtítulo opcional (se muestra como encabezado de nivel 3). */
   titulo: textoPlano(3, 80).optional(),
+  /**
+   * «Título grande» del documento de la docente: abre un subcapítulo que abarca este texto y las partes siguientes
+   * hasta el próximo subcapítulo («lo que hay entre título grande y título grande pertenece al mismo tema»).
+   */
+  subcapitulo: textoPlano(3, 120).optional(),
   markdown: markdownBloque(20, 2500, true),
   /**
    * Ilustración de fondo (pedido de la docente: «usemos este fondo para poner la información de abajo»): el texto
@@ -1433,6 +1439,21 @@ export const BloquePreguntaSchema = z.strictObject({
   nivel: nivelBloque,
 });
 
+/**
+ * Bloque `video`: un mini video del diseñador (3.1 y 3.3). Mientras no llega (`src` ausente), se muestra su espacio
+ * reservado con lo que mostrará («Dejar el espacio para los videos que me pase el diseñador»).
+ */
+export const BloqueVideoSchema = z.strictObject({
+  id: IdSchema,
+  tipo: z.literal('video'),
+  titulo: textoPlano(3, 120),
+  /** Lo que mostrará el video, tal cual lo describe la docente. */
+  descripcion: markdownLinea(10, 400),
+  src: rutaVideo.optional(),
+  poster: rutaImagen.optional(),
+  nivel: nivelBloque,
+});
+
 export const BloqueSchema = z.discriminatedUnion('tipo', [
   BloqueTextoSchema,
   BloqueImagenSchema,
@@ -1441,6 +1462,7 @@ export const BloqueSchema = z.discriminatedUnion('tipo', [
   BloqueActividadSchema,
   BloqueEscenariosSchema,
   BloquePreguntaSchema,
+  BloqueVideoSchema,
 ]);
 
 export const SeccionSchema = z
@@ -1728,6 +1750,7 @@ export type BloqueTabla = z.infer<typeof BloqueTablaSchema>;
 export type BloqueActividad = z.infer<typeof BloqueActividadSchema>;
 export type BloqueEscenarios = z.infer<typeof BloqueEscenariosSchema>;
 export type BloquePregunta = z.infer<typeof BloquePreguntaSchema>;
+export type BloqueVideo = z.infer<typeof BloqueVideoSchema>;
 export type Actividad = z.infer<typeof ActividadSchema>;
 export type ActividadDe<T extends TipoActividad> = Extract<Actividad, { tipo: T }>;
 export type ActividadMulticapa = z.infer<typeof ActividadMulticapaSchema>;

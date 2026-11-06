@@ -415,7 +415,10 @@ El motor tiene **seis tipos**, exactamente los del contrato con la API y con el 
 `quiz`, `video-texto` y `exploracion-3d`, más `clasificacion` y `curva-esfuerzo` (2026-10-27, pedidas en el documento
 de la docente: tabla o cajas para arrastrar y marcador sobre la curva esfuerzo-deformación). Bloques no puntuables
 nuevos: `escenarios` (elegir un escenario y ver su contenido) y `pregunta` (respuesta abierta comparada con la del
-docente). No se inventan más tipos sin acordarlo.
+docente). Desde el 2026-11-05 (documento de la docente con los módulos 4 a 6): bloque `video` (mini video del
+diseñador; sin `src` muestra su espacio reservado con la `descripcion`) y campo `subcapitulo` en los textos (el
+«título grande» que abarca varias partes; se muestra encima del título de la parte y separa grupos en la navegación).
+No se inventan más tipos sin acordarlo.
 
 ### Campos comunes
 

@@ -29,6 +29,8 @@ const props = defineProps<{
   numeroModulo?: number;
   /** La fila continúa otra flecha (el título del módulo en la portada): el primer paso también lleva muesca. */
   encadenada?: boolean;
+  /** Pasos más bajos (barra de cada sección). */
+  compacta?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -133,6 +135,7 @@ watch(
             :estado="item.marca"
             :actual="item.actual"
             :primero="item.i === 0 && !encadenada"
+            :compacta="compacta"
           />
         </button>
       </li>

@@ -74,8 +74,9 @@
   color-scheme: light;
   --radius: 0.75rem;
 
-  /* Lámina (fondo) y tinta (texto) */
-  --background: #f5f7fa;
+  /* Lámina (fondo) y tinta (texto). Fondo pastel azulado (indicación de la docente, 2026-11-05: «usar colores
+     claros o pastel para los fondos de la página»). */
+  --background: #edf3fa;
   --foreground: #0f1b2d;
   --card: #ffffff;
   --card-foreground: #0f1b2d;
@@ -87,7 +88,7 @@
   --primary-foreground: #ffffff;
   --secondary: #e8eef6;
   --secondary-foreground: #0f1b2d;
-  --muted: #eef2f6;
+  --muted: #e6eef7;
   --muted-foreground: #4d5b6e;
 
   /* Eosina: resalte cálido (siguiente logro, avisos suaves) */

@@ -36,6 +36,7 @@ import BloqueCallout from '@/components/modulo/BloqueCallout.vue';
 import BloqueImagen from '@/components/modulo/BloqueImagen.vue';
 import BloqueEscenarios from '@/components/modulo/BloqueEscenarios.vue';
 import BloquePregunta from '@/components/modulo/BloquePregunta.vue';
+import BloqueVideo from '@/components/modulo/BloqueVideo.vue';
 import BloqueTabla from '@/components/modulo/BloqueTabla.vue';
 import BloqueTexto from '@/components/modulo/BloqueTexto.vue';
 import CabeceraModulo from '@/components/modulo/CabeceraModulo.vue';
@@ -44,6 +45,7 @@ import GlosarioHoja from '@/components/modulo/GlosarioHoja.vue';
 // import GlosarioYReferencias from '@/components/modulo/GlosarioYReferencias.vue';
 import ModuloBloqueado from '@/components/modulo/ModuloBloqueado.vue';
 import ModuloCompletado from '@/components/modulo/ModuloCompletado.vue';
+import BarraModulo from '@/components/modulo/BarraModulo.vue';
 import NavegacionPartes from '@/components/modulo/NavegacionPartes.vue';
 import NavegacionSecciones from '@/components/modulo/NavegacionSecciones.vue';
 import TextoRico from '@/components/modulo/TextoRico.vue';
@@ -561,6 +563,30 @@ function irAVista(i: number): void {
     if (carrusel.value) carrusel.value.scrollTop = 0;
   });
 }
+/*
+ * Subcapítulo de cada parte: el último «título grande» (`subcapitulo` de un texto) visto hasta ella, como en el
+ * documento de la docente, donde un título grande abarca varias imágenes y subtítulos.
+ */
+const subcapitulos = computed<(string | null)[]>(() => {
+  let actual: string | null = null;
+  return filasSeccion.value.map((f) => {
+    const textos =
+      f.tipo === 'par'
+        ? [f.previo, f.texto]
+        : f.tipo === 'grupo'
+          ? f.lectura
+          : f.tipo === 'solo'
+            ? [f.previo, f.bloque]
+            : [];
+    for (const b of textos) {
+      if (b?.tipo === 'texto' && b.subcapitulo) {
+        actual = b.subcapitulo;
+        break;
+      }
+    }
+    return actual;
+  });
+});
 /** Nombres de las partes (1.1.1, 1.1.2…) de la sección abierta, para la navegación. */
 const nombresPartes = computed(() => filasSeccion.value.map((f, i) => etiquetaDeFila(f, i)));
 function numeroParte(i: number): string {
@@ -1050,14 +1076,28 @@ onBeforeUnmount(() => {
                navegación con las partes de la sección (1.1.1, 1.1.2…); en medio la parte visible, que se ajusta al
                alto disponible; abajo el paso a la parte anterior o siguiente, que cruza de una sección a otra. -->
           <div v-else class="pantalla-seccion flex flex-col gap-3" data-testid="pantalla-seccion">
+            <BarraModulo
+              :numero="n"
+              :titulo="modulo.titulo"
+              :secciones="secciones"
+              :estados="estados"
+              :indice="indice"
+              @ir="irA"
+              @bloqueada="alIntentarSeccionBloqueada"
+            />
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <RouterLink
-                :to="{ name: 'modulo', params: { n } }"
-                class="text-primary text-sm font-bold whitespace-nowrap hover:underline"
-                data-testid="enlace-portada"
-              >
-                Módulo {{ n }} · {{ modulo.titulo }}
-              </RouterLink>
+              <NavegacionPartes
+                class="min-w-0 flex-1"
+                solo-partes
+                :numero-modulo="n"
+                :secciones="secciones"
+                :estados="estados"
+                :indice="indice"
+                :partes="seccionBloqueada ? [] : nombresPartes"
+                :subcapitulos="subcapitulos"
+                :parte="vista"
+                @ir-parte="irAVista"
+              />
               <details class="relative text-sm" data-testid="objetivos-desplegable">
                 <summary
                   class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
@@ -1106,18 +1146,6 @@ onBeforeUnmount(() => {
                 · {{ puntajeObtenido }} pts
               </span>
             </div>
-
-            <NavegacionPartes
-              :numero-modulo="n"
-              :secciones="secciones"
-              :estados="estados"
-              :indice="indice"
-              :partes="seccionBloqueada ? [] : nombresPartes"
-              :parte="vista"
-              @ir-seccion="irA"
-              @ir-parte="irAVista"
-              @bloqueada="alIntentarSeccionBloqueada"
-            />
 
             <p
               v-if="store.errorEnvio"
@@ -1184,6 +1212,12 @@ onBeforeUnmount(() => {
                 class="border-l-acento border-l-4 pl-3 font-serif text-xl leading-tight font-semibold outline-none md:text-2xl"
                 data-testid="titulo-parte"
               >
+                <span
+                  v-if="subcapitulos[vista]"
+                  class="text-acento block font-sans text-xs font-bold tracking-wide uppercase"
+                  data-testid="subcapitulo-parte"
+                  >{{ subcapitulos[vista] }}</span
+                >
                 <span class="sr-only">{{ textoPlanoDeMarkdown(seccion.titulo) }}. Parte </span>
                 <span class="text-primary tabular-nums">{{ numeroParte(vista) }}</span>
                 · {{ nombresPartes[vista] }}
@@ -1332,6 +1366,7 @@ onBeforeUnmount(() => {
                         v-else-if="fila.bloque.tipo === 'pregunta'"
                         :bloque="fila.bloque"
                       />
+                      <BloqueVideo v-else-if="fila.bloque.tipo === 'video'" :bloque="fila.bloque" />
                       <template v-else-if="fila.bloque.tipo === 'actividad'">
                         <BloqueTexto v-if="fila.previo" :bloque="fila.previo" class="mb-3" />
                         <BloqueActividad
