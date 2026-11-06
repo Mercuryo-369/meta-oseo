@@ -48,6 +48,10 @@ from app.scripts.build_manifest import MODULES_DIR, discover_content_files
 
 GUION_DIR = REPO_ROOT / "docs" / "guion-por-modulo"
 BIBLIOGRAFIA_PATH = Path(__file__).resolve().parents[1] / "data" / "bibliografia_mentor.json"
+# Módulos cuyo contenido se reemplazó con el documento de la docente (2026-11-05): su guion es del
+# borrador anterior, así que su banco de preguntas y sus ganchos ya no corresponden al texto y no
+# entran al corpus hasta rehacerlos.
+MODULOS_SIN_GUION = frozenset({4, 5, 6})
 
 EXIT_OK = 0
 EXIT_OUTDATED = 1
@@ -591,6 +595,8 @@ def construir(
     for contenido in sorted(contenidos, key=lambda c: int(c["numero"])):
         numero = int(contenido["numero"])
         fragmentos += fragmentos_de_modulo(contenido)
+        if numero in MODULOS_SIN_GUION:
+            continue
         ruta = guiones.get(numero)
         if ruta is None:
             raise CorpusBuildError(f"No hay guion para el módulo {numero} en {GUION_DIR}.")

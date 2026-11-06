@@ -122,10 +122,10 @@ export const MODULOS: readonly Modulo[] = [
       rotulo: 'Mineralización',
       frase: 'Del osteoide al mineral',
       icono: 'mineral',
-      // Lleva «Eje c» y «Esquema: no está a escala» al pie: se muestra entera (su fondo oscuro es propio).
+      // Imagen de la docente (4.1 Imagen #1, «la imagen de fondo usada en este módulo 4»; documento del 2026-11-05).
       portada: {
-        src: '/images/m4/m4_fibrilla_mineralizada_figura.webp',
-        ajuste: 'contener',
+        src: '/images/m4/m4_1_imagen_01.webp',
+        ajuste: 'cubrir',
         posicion: 'center',
       },
     },
@@ -134,16 +134,16 @@ export const MODULOS: readonly Modulo[] = [
     numero: 5,
     slug: 'renovando_el_hueso',
     titulo: 'Renovando el hueso',
-    foco: 'Remodelado, reparación y equilibrio óseo',
+    foco: 'Remodelado y equilibrio óseo',
     densidad: 'alta',
     logro: 'remodelador',
     identidad: {
       rotulo: 'Remodelado',
       frase: 'Un ciclo que nunca se detiene',
       icono: 'renovacion',
-      // Rótulos arriba y abajo (Inversión, Cono de corte...): entera y sobre fondo claro.
+      // Primera imagen de la docente (5.1 Imagen #1): sin indicación de fondo, se usa la primera (2026-11-05).
       portada: {
-        src: '/images/m5/m5_bmu_cortical_longitudinal.svg',
+        src: '/images/m5/m5_1_imagen_01.webp',
         ajuste: 'contener',
         posicion: 'center',
         fondo: 'papel',
@@ -154,16 +154,16 @@ export const MODULOS: readonly Modulo[] = [
     numero: 6,
     slug: 'el_paso_del_tiempo',
     titulo: 'El paso del tiempo',
-    foco: 'Envejecimiento y cambios degenerativos',
+    foco: 'Envejecimiento y cambios del tejido óseo',
     densidad: 'media',
     logro: 'cronista',
     identidad: {
       rotulo: 'Envejecimiento',
       frase: 'Lo que cambia con los años',
       icono: 'tiempo',
-      // Gráfico con rótulos en todos los bordes («Pico de masa ósea», «Edad (años)»): entero.
+      // Primera imagen de la docente (6.1 Imagen #1, la masa ósea a lo largo de la vida), entera (2026-11-05).
       portada: {
-        src: '/images/m6/m6_curva_masa_osea_figura.webp',
+        src: '/images/m6/m6_1_imagen_01.webp',
         ajuste: 'contener',
         posicion: 'center',
         fondo: 'papel',

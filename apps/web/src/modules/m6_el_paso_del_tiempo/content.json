@@ -3,67 +3,20 @@
   "numero": 6,
   "slug": "el_paso_del_tiempo",
   "titulo": "El paso del tiempo",
-  "subtitulo": "Envejecimiento y cambios degenerativos del tejido óseo",
-  "resumen": "Envejecimiento y cambios degenerativos del tejido óseo. La mandíbula es el lugar del esqueleto donde el paso del tiempo se ve y se palpa en la consulta odontológica.",
+  "subtitulo": "Envejecimiento y cambios del tejido óseo",
+  "resumen": "La masa ósea cambia a lo largo de la vida; durante el crecimiento, el aumento del tamaño y la geometría del esqueleto dependen del crecimiento longitudinal, el modelado y el remodelado, mientras la formación supera globalmente a la resorción.",
   "objetivos": [
-    "**Describir** las tres fases de la curva de la masa ósea (construcción, meseta y pérdida) y **explicar** cómo el pico y sus determinantes modifican el riesgo futuro de osteoporosis.",
-    "**Explicar** cómo el déficit de estrógenos de la menopausia altera el eje RANKL/OPG y acelera la pérdida de hueso.",
-    "**Relacionar** la [senescencia](glosario:senescencia_celular) de osteoblastos y osteocitos, la adipogénesis medular, el microdaño y la glicación con la pérdida de calidad de la matriz ósea.",
-    "**Diferenciar** cantidad de calidad ósea, **clasificar** un T-score en casos sencillos y **distinguir** el T-score del Z-score y de la estimación de riesgo de FRAX.",
-    "**Ordenar** la cascada de reabsorción del [reborde alveolar](glosario:reborde_alveolar) tras la pérdida dentaria y **describir** los cambios de la mandíbula atrófica y de la articulación temporomandibular.",
-    "**Justificar** medidas de prevención y tratamiento a partir de los mecanismos de los módulos anteriores y **reconocer**, con prudencia clínica, la osteonecrosis de los maxilares asociada a medicamentos."
+    "Describir los cambios de la masa ósea y de la microarquitectura cortical y trabecular asociados con el envejecimiento, considerando la variabilidad entre sitios anatómicos, sexos y estados hormonales.",
+    "Explicar cómo los cambios en las células óseas, la senescencia y las alteraciones del microambiente pueden modificar la formación, la resorción y la reparación del tejido.",
+    "Relacionar las modificaciones del colágeno, la glicación, el mineral y el agua de la matriz con la capacidad del hueso para deformarse, disipar energía y resistir la fractura.",
+    "Diferenciar el balance de cada ciclo, el acoplamiento entre sus fases y la velocidad del recambio, e integrar sus alteraciones con la fragilidad ósea asociada con la edad."
   ],
-  "duracion_estimada_min": 40,
+  "duracion_estimada_min": 45,
   "glosario": [
-    {
-      "id": "masa_osea_maxima_pico_de_masa_osea",
-      "termino": "Masa ósea máxima (pico de masa ósea)",
-      "definicion": "Mayor cantidad de tejido óseo que alcanza una persona, al final de la maduración esquelética."
-    },
-    {
-      "id": "densidad_mineral_osea_dmo",
-      "termino": "Densidad mineral ósea (DMO)",
-      "definicion": "Cantidad de mineral por unidad de área (DXA) o de volumen; es una medida de cantidad, no de calidad."
-    },
-    {
-      "id": "dxa",
-      "termino": "DXA",
-      "definicion": "Absorciometría de rayos X de doble energía; técnica estándar para medir la DMO en columna lumbar y cadera."
-    },
-    {
-      "id": "t_score",
-      "termino": "T-score",
-      "definicion": "Número de desviaciones estándar que separa la DMO de una persona de la media de adultos jóvenes sanos; se usa en mujeres posmenopáusicas y hombres de 50 años o más."
-    },
-    {
-      "id": "z_score",
-      "termino": "Z-score",
-      "definicion": "Número de desviaciones estándar respecto de personas de la misma edad y sexo; se prefiere en premenopáusicas, hombres menores de 50 años y niños."
-    },
-    {
-      "id": "frax",
-      "termino": "FRAX",
-      "definicion": "Herramienta que estima la probabilidad a 10 años de fractura osteoporótica mayor y de fractura de cadera a partir de factores clínicos, con o sin DMO."
-    },
     {
       "id": "osteoporosis",
       "termino": "Osteoporosis",
       "definicion": "Trastorno de la resistencia ósea que predispone a un mayor riesgo de fractura; la resistencia integra la densidad y la calidad del hueso."
-    },
-    {
-      "id": "baja_masa_osea_osteopenia",
-      "termino": "Baja masa ósea (osteopenia)",
-      "definicion": "Categoría de la OMS con T-score entre −1,0 y −2,5."
-    },
-    {
-      "id": "fractura_por_fragilidad",
-      "termino": "Fractura por fragilidad",
-      "definicion": "Fractura producida por una caída desde la altura de pie o menos, o por un esfuerzo cotidiano."
-    },
-    {
-      "id": "senescencia_celular",
-      "termino": "Senescencia celular",
-      "definicion": "Estado de estrés celular con arresto del ciclo o pérdida de función y secreción de señales inflamatorias (SASP). En los osteocitos, que no se dividen, se reconoce por marcadores de daño y por el SASP."
     },
     {
       "id": "sasp_fenotipo_secretor_asociado_a_la_senescencia",
@@ -71,24 +24,9 @@
       "definicion": "Conjunto de citocinas y otras señales inflamatorias que secretan las células senescentes."
     },
     {
-      "id": "adipogenesis_medular",
-      "termino": "Adipogénesis medular",
-      "definicion": "Aumento de adipocitos en la médula ósea, a costa de osteoblastos, con la edad y en la osteoporosis."
-    },
-    {
       "id": "microdano_microfisura",
       "termino": "Microdaño (microfisura)",
       "definicion": "Grieta microscópica del hueso producida por la carga cotidiana; se repara con remodelado dirigido."
-    },
-    {
-      "id": "productos_de_glicacion_avanzada_age",
-      "termino": "Productos de glicación avanzada (AGE)",
-      "definicion": "Enlaces y aductos que se forman sin enzimas entre azúcares y proteínas; en el colágeno óseo reducen la tenacidad. Ejemplo: pentosidina."
-    },
-    {
-      "id": "micropetrosis",
-      "termino": "Micropetrosis",
-      "definicion": "Relleno mineral de la laguna de un osteocito muerto."
     },
     {
       "id": "esclerostina",
@@ -99,56 +37,6 @@
       "id": "rankl",
       "termino": "RANKL",
       "definicion": "Ligando que activa a RANK en los precursores y promueve la formación de osteoclastos."
-    },
-    {
-      "id": "opg_osteoprotegerina",
-      "termino": "OPG (osteoprotegerina)",
-      "definicion": "Receptor señuelo soluble que se une a RANKL e impide su acción."
-    },
-    {
-      "id": "hueso_alveolar_propio_hueso_fasciculado_bundle",
-      "termino": "Hueso alveolar propio (hueso fasciculado, bundle bone)",
-      "definicion": "Lámina de hueso que reviste el alvéolo y recibe las fibras del ligamento periodontal; depende del diente."
-    },
-    {
-      "id": "reborde_alveolar",
-      "termino": "Reborde alveolar",
-      "definicion": "Relieve de la apófisis alveolar que queda tras la pérdida de los dientes."
-    },
-    {
-      "id": "atrofia_mandibular",
-      "termino": "Atrofia mandibular",
-      "definicion": "Reducción de altura y ancho de la mandíbula edéntula por reabsorción del reborde y, en casos severos, del hueso basal."
-    },
-    {
-      "id": "clasificacion_de_cawood_y_howell",
-      "termino": "Clasificación de Cawood y Howell",
-      "definicion": "Seis clases (I a VI) que describen la forma del reborde desde el dentado hasta el deprimido."
-    },
-    {
-      "id": "indice_de_klemetti_indice_cortical_mandibular",
-      "termino": "Índice de Klemetti (índice cortical mandibular)",
-      "definicion": "Clasificación en C1, C2 y C3 de la cortical inferior de la mandíbula en la radiografía panorámica."
-    },
-    {
-      "id": "articulacion_temporomandibular_atm",
-      "termino": "Articulación temporomandibular (ATM)",
-      "definicion": "Articulación entre el cóndilo mandibular y la fosa mandibular del temporal, con un disco articular y superficies de fibrocartílago."
-    },
-    {
-      "id": "osteoartrosis_de_la_atm",
-      "termino": "Osteoartrosis de la ATM",
-      "definicion": "Enfermedad degenerativa de la articulación, con aplanamiento, osteofitos, erosiones o esclerosis subcondral del cóndilo."
-    },
-    {
-      "id": "antirreabsortivo",
-      "termino": "Antirreabsortivo",
-      "definicion": "Fármaco que reduce la reabsorción ósea, como los bisfosfonatos y el denosumab."
-    },
-    {
-      "id": "onm",
-      "termino": "ONM",
-      "definicion": "Osteonecrosis de los maxilares asociada a medicamentos, MRONJ. Hueso expuesto en la región maxilofacial durante más de 8 semanas en un paciente con tratamiento antirreabsortivo o afín, sin radioterapia de los maxilares ni metástasis en ellos."
     }
   ],
   "referencias": [
@@ -279,1282 +167,358 @@
   ],
   "estado_revision": {
     "estado": "borrador",
-    "notas": "Borrador generado desde m6_el_paso_del_tiempo.md, pendiente de validación del docente. Las 48 marcas de cifras dudosas del guion se quitaron del texto y están en «pendientes»; el detalle, en la sección 12 del guion. No se transcriben el banco del mentor ni sus ganchos. Ajustes manuales (regenerar los borra): 24 de 27 términos del glosario enlazados; leyendas «Figura 6.n» como pie de su imagen; encabezado de la lista de Cawood y Howell; títulos propios de las columnas de las relaciones; receptores del arrastre sobre el dibujo.",
-    "pendientes": [
-      {
-        "id": "m6",
-        "nota": "Confirmar: «40 minutos (rango de 35 a 45), contando la lectura y solo las actividades obligatorias»"
-      },
-      {
-        "id": "tb_los_tres_tramos",
-        "nota": "Confirmar: «| Meseta | De los 20 a los 50 años, aproximadamente»"
-      },
-      {
-        "id": "c_dato_el_pico_de_masa_osea_es_la",
-        "nota": "Confirmar: «> Dato: el pico de masa ósea es la mayor cantidad de hueso que alcanza una persona al terminar la maduración del esqueleto, entre la segunda y la tercera década según el sitio»"
-      },
-      {
-        "id": "c_dato_el_pico_de_masa_osea_es_la",
-        "nota": "Confirmar: «Alrededor del 90 % de ese pico se ha acumulado a los 18 años en las niñas y a los 20 en los niños»"
-      },
-      {
-        "id": "t_que_determina_el_pico",
-        "nota": "Confirmar: «- Genética: aproximadamente entre el 60 y el 80 % de la variación entre personas»"
-      },
-      {
-        "id": "t_hombres_y_mujeres",
-        "nota": "Confirmar: «En las mujeres, la menopausia (en promedio hacia los 51 años»"
-      },
-      {
-        "id": "t_hombres_y_mujeres",
-        "nota": "Confirmar: «Eso suma cerca del 7 % en la columna en ese lapso, y cerca del 10 % acumulado en unos diez años alrededor de la menopausia»"
-      },
-      {
-        "id": "t_hombres_y_mujeres",
-        "nota": "Confirmar: «En toda la vida, una mujer puede perder hasta cerca del 50 % de su hueso trabecular y del 30 % del cortical; los hombres pierden menos»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «Alrededor del 90 % del pico se ha acumulado a los 18 años en las niñas y a los 20 en los niños»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «Se alcanza entre la segunda y la tercera década, según el sitio del esqueleto»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «La genética explica aproximadamente entre el 60 y el 80 % de su variación; el resto depende de la nutrición, la actividad física, las hormonas y la salud»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «Entre los 20 y los 50 años, aproximadamente, la masa ósea cambia poco porque el remodelado está casi en equilibrio»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «Alrededor de la menopausia, que ocurre en promedio hacia los 51 años»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «…udio longitudinal se midió aproximadamente 2,5 % al año en la columna lumbar y 1,8 % al año en el cuello femoral, desde cerca de un año antes hasta cerca de dos años después de la última menstruación»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «En la columna eso suma cerca del 7 % en ese lapso»"
-      },
-      {
-        "id": "m6_1_video_curva",
-        "nota": "Confirmar: «A lo largo de la vida, una mujer puede perder hasta cerca de la mitad de su hueso trabecular y del 30 % del cortical»"
-      },
-      {
-        "id": "mol_esclerostina",
-        "nota": "Confirmar: «La producen los osteocitos y actúa sobre la vía Wnt: se une a LRP5 y LRP6 en osteoblastos y osteocitos y frena la formación de hueso y, de forma indirecta, puede favorecer la reabsorción»"
-      },
-      {
-        "id": "tb_que_cambia",
-        "nota": "Confirmar: «La esclerostina circulante aumenta con la edad»"
-      },
-      {
-        "id": "tb_que_cambia",
-        "nota": "Confirmar: «| En ratones, eliminarlas reduce la pérdida de hueso; en humanos la evidencia es más limitada»"
-      },
-      {
-        "id": "tb_que_cambia",
-        "nota": "Confirmar: «Falta aclarar si los AGE causan fracturas o solo marcan el envejecimiento»"
-      },
-      {
-        "id": "tb_que_cambia",
-        "nota": "Confirmar: «| Hueso más frágil aunque su densidad parezca aceptable»"
-      },
-      {
-        "id": "t_osteoporosis_3",
-        "nota": "Confirmar: «La DMO explica aproximadamente el 70 % de la resistencia ósea; el resto depende de la calidad»"
-      },
-      {
-        "id": "t_osteoporosis_3",
-        "nota": "Confirmar: «Por eso hay personas con densidad casi normal que se fracturan, por ejemplo en la diabetes tipo 2 de larga evolución»"
-      },
-      {
-        "id": "t_osteoporosis_3",
-        "nota": "Confirmar: «- T-score: desviaciones estándar respecto de la media de adultos jóvenes sanos, de 20 a 29 años»"
-      },
-      {
-        "id": "c_atencion_la_dxa_es_una_proyeccion",
-        "nota": "Confirmar: «Una parte considerable de las fracturas por fragilidad ocurre con un T-score por encima de −2,5»"
-      },
-      {
-        "id": "c_clinico_una_fractura_por",
-        "nota": "Confirmar: «> Clinico: una fractura por fragilidad de cadera o de vértebra (por una caída desde la altura de pie o menos) permite diagnosticar osteoporosis, sea cual sea el T-score»"
-      },
-      {
-        "id": "t_frax_y_factores_de_riesgo",
-        "nota": "Confirmar: «Cada país fija sus umbrales de intervención»"
-      },
-      {
-        "id": "c_dato_segun_la_international",
-        "nota": "Confirmar: «> Dato: según la International Osteoporosis Foundation, aproximadamente 1 de cada 3 mujeres y 1 de cada 5 hombres mayores de 50 años sufrirá una fractura osteoporótica a lo largo de la vida»"
-      },
-      {
-        "id": "m6_3_relacion_factores",
-        "nota": "Confirmar: «Se propone que reducen la tenacidad de la matriz, lo que explicaría el mayor riesgo de fractura con una densidad normal o alta»"
-      },
-      {
-        "id": "t_la_cascada_tras_la_perdida_de_un_diente",
-        "nota": "Confirmar: «…una revisión sistemática (con sitios mixtos, en su mayoría no molares), a los 6 meses la pérdida fue de 29 a 63 % del ancho y de 11 a 22 % de la altura, con medias de aproximadamente 3,8 mm y 1,2 mm»"
-      },
-      {
-        "id": "t_la_cascada_tras_la_perdida_de_un_diente",
-        "nota": "Confirmar: «Después sigue despacio durante años, más si una prótesis mucosoportada carga el reborde de forma no fisiológica»"
-      },
-      {
-        "id": "t_la_cascada_tras_la_perdida_de_un_diente",
-        "nota": "Confirmar: «En la región anterior, la mandíbula se reabsorbe unas cuatro veces más que el maxilar»"
-      },
-      {
-        "id": "c_clinico_preservar_el_alveolo_tras",
-        "nota": "Confirmar: «Los implantes, al transmitir carga al hueso, tienden a conservarlo mejor que una prótesis mucosoportada»"
-      },
-      {
-        "id": "t_osteoporosis_y_perdida_de_dientes",
-        "nota": "Confirmar: «…o que la osteoporosis cause la pérdida dentaria: la edad, el tabaco, la nutrición y la vitamina D son factores compartidos, y los factores locales (placa, periodontitis, caries, prótesis) pesan mucho»"
-      },
-      {
-        "id": "t_osteoporosis_y_perdida_de_dientes",
-        "nota": "Confirmar: «No diagnostica osteoporosis y su rendimiento es moderado»"
-      },
-      {
-        "id": "t_mandibula_y_tiempo_3",
-        "nota": "Confirmar: «La osteoartrosis es más frecuente con la edad, y en muchas personas mayores los hallazgos de imagen no producen síntomas»"
-      },
-      {
-        "id": "t_mandibula_y_tiempo_3",
-        "nota": "Confirmar: «El papel de la pérdida de dientes posteriores y de las hormonas está en discusión»"
-      },
-      {
-        "id": "m6_4_mandibula_3d",
-        "nota": "Confirmar: «La mayor parte del cambio ocurre en los primeros 3 a 6 meses»"
-      },
-      {
-        "id": "m6_4_mandibula_3d",
-        "nota": "Confirmar: «La masticación con dientes o implantes genera cargas que mantienen el hueso; en el edentulismo, la fuerza de mordida suele disminuir»"
-      },
-      {
-        "id": "m6_4_mandibula_3d",
-        "nota": "Confirmar: «Muchos de estos hallazgos no producen síntomas»"
-      },
-      {
-        "id": "m6_4_mandibula_3d",
-        "nota": "Confirmar: «Cuando el reborde se reabsorbe queda prominente bajo una mucosa delgada: puede doler bajo una prótesis y es un sitio frecuente de exposición ósea en la osteonecrosis asociada a medicamentos»"
-      },
-      {
-        "id": "t_prevencion",
-        "nota": "Confirmar: «| Según el IOM: 1000 mg al día de los 19 a los 50 años, y 1200 mg en mujeres desde los 51 y en hombres desde los 71»"
-      },
-      {
-        "id": "t_prevencion",
-        "nota": "Confirmar: «| Según el IOM: 600 UI al día hasta los 70 años y 800 UI desde los 71; las guías varían»"
-      },
-      {
-        "id": "t_osteonecrosis_de_los_maxilares_asociada",
-        "nota": "Confirmar: «Se han descrito casos con romosozumab»"
-      },
-      {
-        "id": "t_osteonecrosis_de_los_maxilares_asociada",
-        "nota": "Confirmar: «…ecuencia: baja en osteoporosis (aproximadamente 0,02 a 0,05 % según la AAOMS; otras fuentes dan entre 0,001 y 0,1 %) y mayor en oncología, con dosis más altas (de 1 a varios por ciento en las series)»"
-      },
-      {
-        "id": "t_osteonecrosis_de_los_maxilares_asociada",
-        "nota": "Confirmar: «Por qué afecta a los maxilares no está resuelto: se han propuesto la exposición a bacterias desde los dientes, una mucosa delgada y el alto recambio del hueso alveolar»"
-      },
-      {
-        "id": "c_clinico_antes_de_iniciar_un",
-        "nota": "Confirmar: «No hay evidencia suficiente para recomendar una pausa rutinaria del fármaco»"
-      },
-      {
-        "id": "c_atencion_el_paciente_no_debe",
-        "nota": "Confirmar: «En el caso del denosumab, suspenderlo sin un plan de transición puede causar un rebote del recambio óseo, con pérdida rápida de densidad y fracturas vertebrales múltiples»"
-      }
-    ]
+    "notas": "Contenido del documento de la docente «Copia de Metabolismo óseo… (1).docx» (2026-11-05), que reemplaza al borrador anterior. Pendientes: las actividades que piden un componente nuevo.",
+    "pendientes": []
   },
   "secciones": [
     {
-      "id": "m6_1_curva_y_menopausia",
-      "titulo": "La curva de la masa ósea y la menopausia",
+      "id": "m6_1_cambios_estructurales",
+      "titulo": "Cambios estructurales celulares y de la matriz durante el envejecimiento",
+      "fondo": "/images/m6/m6_1_imagen_01.webp",
       "bloques": [
         {
-          "id": "t_curva_y_menopausia",
+          "id": "t_m6_1_cambios_estructurales_00",
           "tipo": "texto",
-          "markdown": "Los huesos de los módulos anteriores no son iguales a los 20, a los 50 y a los 80 años. La cantidad de hueso sigue una curva con tres tramos: se construye, se mantiene y se pierde. Esa curva explica por qué la [osteoporosis](glosario:osteoporosis) aparece tarde, pero se prepara temprano."
+          "titulo": "La masa ósea a lo largo de la vida",
+          "subcapitulo": "Masa y microarquitectura",
+          "markdown": "La masa ósea cambia a lo largo de la vida; durante el crecimiento, el aumento del tamaño y la geometría del esqueleto dependen del crecimiento longitudinal, el modelado y el remodelado, mientras la formación supera globalmente a la resorción. Durante la adolescencia se adquiere una proporción importante de la masa ósea adulta, cuya consolidación continúa durante la adultez joven; el pico de masa ósea suele alcanzarse entre los 20 y 30 años, aunque varía según el sitio anatómico y la variable evaluada. Su adquisición depende de factores genéticos, hormonales, nutricionales y mecánicos, entre otros.\n\nTras alcanzar el pico, la masa ósea puede mantenerse relativamente estable durante un periodo; posteriormente, la formación puede dejar de compensar la resorción y favorecer la pérdida de tejido y los cambios microarquitectónicos. El envejecimiento cronológico no equivale a osteoporosis ni implica el mismo grado de deterioro en todas las personas, pues el hueso contiene tejido de distinta edad y la pérdida ósea varía entre individuos. La disminución de estrógenos durante la transición menopáusica acelera este proceso en las mujeres, mientras que en los hombres la pérdida suele ser más gradual."
         },
         {
-          "id": "i_curva_masa_osea",
+          "id": "img_m6_1_cambios_estructurales_01",
           "tipo": "imagen",
-          "src": "/images/m6/m6_curva_masa_osea.svg",
-          "figura": "/images/m6/m6_curva_masa_osea_figura.webp",
-          "alt": "Curva esquemática de la masa ósea a lo largo de la vida en mujeres y hombres, con el pico, la meseta y la pérdida acelerada de la menopausia",
-          "pie": "Figura 6.1. Curva esquemática de la masa ósea. Es un modelo, no los datos de una persona."
+          "src": "/images/m6/m6_1_imagen_01.webp",
+          "alt": "Ilustración de la docente: La masa ósea a lo largo de la vida",
+          "pie": "La masa ósea a lo largo de la vida",
+          "ancho": 1600,
+          "alto": 802
         },
         {
-          "id": "tb_los_tres_tramos",
-          "tipo": "tabla",
-          "titulo": "Los tres tramos",
-          "encabezado_criterio": "Tramo",
-          "columnas": ["Edad aproximada", "Qué ocurre en el remodelado"],
-          "filas": [
-            {
-              "criterio": "Construcción",
-              "celdas": [
-                "Infancia y adolescencia",
-                "La formación supera a la reabsorción. El ritmo máximo de acumulación ocurre en la pubertad."
-              ]
-            },
-            {
-              "criterio": "Meseta",
-              "celdas": [
-                "De los 20 a los 50 años, aproximadamente",
-                "Formación y reabsorción casi en equilibrio, con cambios pequeños."
-              ]
-            },
-            {
-              "criterio": "Pérdida",
-              "celdas": [
-                "Desde la mediana edad",
-                "Cada ciclo de remodelado reabsorbe algo más de lo que forma. En las mujeres se acelera con la menopausia."
-              ]
-            }
-          ]
-        },
-        {
-          "id": "c_dato_el_pico_de_masa_osea_es_la",
-          "tipo": "callout",
-          "variante": "dato",
-          "markdown": "El [pico de masa ósea](glosario:masa_osea_maxima_pico_de_masa_osea) es la mayor cantidad de hueso que alcanza una persona al terminar la maduración del esqueleto, entre la segunda y la tercera década según el sitio. Alrededor del 90 % de ese pico se ha acumulado a los 18 años en las niñas y a los 20 en los niños."
-        },
-        {
-          "id": "t_que_determina_el_pico",
+          "id": "t_m6_1_cambios_estructurales_02",
           "tipo": "texto",
-          "titulo": "Qué determina el pico",
-          "markdown": "- **Genética:** aproximadamente entre el 60 y el 80 % de la variación entre personas.\n- **Nutrición:** calcio, proteínas y vitamina D suficientes durante el crecimiento.\n- **Actividad física:** la carga y el impacto en la infancia y la adolescencia.\n- **Hormonas:** esteroides sexuales, hormona de crecimiento y momento de la pubertad.\n- **Salud y hábitos:** las enfermedades crónicas, el bajo peso, algunos fármacos y el tabaco lo reducen."
+          "titulo": "Cambios en el hueso cortical",
+          "markdown": "El envejecimiento modifica la cantidad y la organización del tejido óseo, con cambios diferenciados en los compartimentos cortical y trabecular. En el hueso cortical, la resorción endóstica amplía la cavidad medular y reduce el espesor cortical, mientras que el aumento de las cavidades de remodelado y su relleno incompleto pueden incrementar la porosidad intracortical.\n\nLa formación en la superficie perióstica puede conservar o aumentar parcialmente el diámetro externo del hueso y compensar parte de la pérdida de resistencia a la flexión mediante la redistribución del tejido; sin embargo, no siempre contrarresta el adelgazamiento cortical ni el aumento de la porosidad. Estos cambios pueden reducir la resistencia mecánica, especialmente en los huesos largos, donde esta depende tanto de la cantidad de tejido como de su distribución geométrica."
         },
         {
-          "id": "c_recuerda_lo_que_se_pierde_despues",
-          "tipo": "callout",
-          "variante": "recuerda",
-          "markdown": "Lo que se pierde después se resta del pico. Un pico alto retrasa el momento en que la masa ósea llega al umbral de fragilidad."
+          "id": "img_m6_1_cambios_estructurales_03",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_02.webp",
+          "alt": "Ilustración de la docente: Cambios en el hueso cortical",
+          "pie": "Cambios en el hueso cortical",
+          "ancho": 1600,
+          "alto": 800
         },
         {
-          "id": "t_hombres_y_mujeres",
+          "id": "t_m6_1_cambios_estructurales_04",
           "tipo": "texto",
-          "titulo": "Hombres y mujeres",
-          "markdown": "Los hombres alcanzan un pico algo mayor y pierden hueso de forma gradual. En las mujeres, la menopausia (en promedio hacia los 51 años) añade una fase de pérdida acelerada: en un estudio longitudinal, la densidad de la columna lumbar bajó aproximadamente 2,5 % al año, y la del cuello femoral 1,8 % al año, durante los tres años de la transición (desde cerca de un año antes hasta cerca de dos años después de la última menstruación). Eso suma cerca del 7 % en la columna en ese lapso, y cerca del 10 % acumulado en unos diez años alrededor de la menopausia. En toda la vida, una mujer puede perder hasta cerca del 50 % de su hueso trabecular y del 30 % del cortical; los hombres pierden menos.\n\n#### Por qué la menopausia acelera la pérdida\n\nLos estrógenos actúan como un freno del remodelado.\n\n**[RANKL](glosario:rankl) y relación RANKL/[OPG](glosario:opg_osteoprotegerina) (linaje osteoblástico y linfocitos T)**\n\n- **Con estrógenos:** Bajos\n- **Sin estrógenos (menopausia):** Aumentan\n\n**TNF-α, IL-1, IL-6 y M-CSF**\n\n- **Con estrógenos:** Bajos\n- **Sin estrógenos (menopausia):** Aumentan; los linfocitos T producen más TNF-α\n\n**Osteoclastos**\n\n- **Con estrógenos:** Menos y de vida más corta\n- **Sin estrógenos (menopausia):** Más numerosos y con mayor supervivencia\n\n**Osteoblastos y osteocitos**\n\n- **Con estrógenos:** Protegidos de la apoptosis\n- **Sin estrógenos (menopausia):** Mayor apoptosis\n\n**Remodelado**\n\n- **Con estrógenos:** Equilibrado\n- **Sin estrógenos (menopausia):** Más rápido, con saldo negativo\n\nEl hueso trabecular, con más superficie de remodelado, es el que más pierde al principio."
+          "titulo": "Cambios en el hueso trabecular",
+          "markdown": "En el hueso trabecular, la pérdida de tejido puede afectar el grosor, el número y la conectividad de las trabéculas, con variaciones según el sitio anatómico y el contexto. La resorción puede adelgazarlas y, cuando es suficientemente intensa, producir perforaciones y pérdida completa de algunas trabéculas; las que permanecen pueden presentar menor grosor y conectividad. Una vez que una trabécula desaparece por completo, la formación posterior no siempre reconstruye su disposición original, por lo que la red pierde continuidad y capacidad para distribuir las cargas.\n\nLa magnitud y distribución de estos cambios dependen del sitio anatómico, la edad, el sexo y el estado hormonal, y pueden afectar simultáneamente a los compartimentos cortical y trabecular. Por tanto, la fragilidad asociada al envejecimiento no depende únicamente de la cantidad de hueso, sino también de la pérdida de organización estructural y de la capacidad para soportar las cargas."
         },
         {
-          "id": "c_recuerda_rankl_se_une_a_rank_en_el",
-          "tipo": "callout",
-          "variante": "recuerda",
-          "markdown": "RANKL se une a RANK en el precursor y ordena la formación del osteoclasto; la OPG es el señuelo que atrapa a RANKL (módulo 5)."
+          "id": "img_m6_1_cambios_estructurales_05",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_03.webp",
+          "alt": "Ilustración de la docente: Cambios en el hueso trabecular",
+          "pie": "Cambios en el hueso trabecular",
+          "ancho": 1600,
+          "alto": 800
         },
         {
-          "id": "c_clinico_los_estrogenos_tambien",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "Los estrógenos también protegen el hueso de los hombres. Parte proviene de la aromatización de la testosterona, y su descenso contribuye a la pérdida ósea con la edad.\n\nLa mandíbula sigue las mismas reglas que el resto del esqueleto. El hueso alveolar y la cortical inferior reflejan a la vez la pérdida sistémica de los años y factores locales (dientes, periodontitis, prótesis). Por eso el hueso de un paciente mayor no se interpreta solo por su edad (sección 6.4)."
-        },
-        {
-          "id": "t_curva_y_menopausia_4",
+          "id": "t_m6_1_cambios_estructurales_06",
           "tipo": "texto",
-          "markdown": "Recorre la curva paso a paso, arrastra las moléculas del eje estrógeno-RANKL-OPG y comprueba lo aprendido."
+          "titulo": "Deterioro de la microarquitectura ósea",
+          "markdown": "El deterioro de la microarquitectura compromete la continuidad estructural del hueso y modifica la distribución de las cargas a través del tejido; estas alteraciones pueden concentrar los esfuerzos en determinadas regiones y favorecer la aparición de microdaño, que comprende lesiones microscópicas de la matriz, como microgrietas y daño difuso. Los osteocitos participan en la detección de estas alteraciones y en la señalización que regula la respuesta del tejido.\n\nEn condiciones normales, el remodelado permite retirar el tejido dañado y sustituirlo por matriz nueva; cuando la reparación es suficiente, contribuye a recuperar la integridad del tejido, pero si resulta insuficiente, el microdaño puede acumularse y comprometer la resistencia mecánica. Así, la combinación de deterioro microarquitectónico y reparación insuficiente puede aumentar la susceptibilidad a la fractura, incluso sin que la masa ósea explique por sí sola la fragilidad observada."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_07",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_04.webp",
+          "alt": "Ilustración de la docente: Deterioro de la microarquitectura ósea",
+          "pie": "Deterioro de la microarquitectura ósea",
+          "ancho": 1600,
+          "alto": 800
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_08",
+          "tipo": "texto",
+          "titulo": "Osteoblastos y progenitores osteogénicos",
+          "subcapitulo": "Envejecimiento de las células óseas",
+          "markdown": "El envejecimiento puede reducir la actividad osteogénica mediante cambios en la proliferación, diferenciación y disponibilidad de las células progenitoras, aunque la magnitud del efecto varía según la población celular y el microambiente. Algunas poblaciones mesenquimales pueden mostrar menor capacidad para generar osteoblastos funcionales y, en determinados contextos, una mayor tendencia hacia la diferenciación adipocítica; además, los osteoblastos formados pueden presentar menor actividad, lo que reduce la cantidad de tejido producido durante cada ciclo y dificulta la reposición completa del hueso resorbido.\n\nEstas modificaciones reflejan la interacción entre el envejecimiento celular y los cambios del microambiente óseo, incluidas las alteraciones de las señales que regulan la diferenciación osteogénica. La reducción de la disponibilidad de progenitores osteogénicos y de la actividad de las células formadoras puede limitar el relleno de las superficies resorbidas y favorecer un balance negativo del remodelado."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_09",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_05.webp",
+          "alt": "Ilustración de la docente: Osteoblastos y progenitores osteogénicos",
+          "pie": "Osteoblastos y progenitores osteogénicos",
+          "ancho": 1600,
+          "alto": 800
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_10",
+          "tipo": "texto",
+          "titulo": "Cambios en los osteoclastos y la resorción",
+          "markdown": "Los cambios asociados a la edad también afectan al linaje osteoclástico, aunque su comportamiento varía entre compartimentos y no implica necesariamente un aumento constante del número de osteoclastos. En modelos murinos se han observado diferencias entre el hueso cortical y el trabecular, incluida una disminución de osteoclastos en determinados compartimentos; estos hallazgos no deben extrapolarse directamente a la histología humana. En el hueso cortical, algunos estudios experimentales han relacionado el envejecimiento con un aumento de las señales proresortivas y una mayor pérdida de tejido.\n\nMás que un incremento generalizado de la actividad osteoclástica, el envejecimiento puede alterar la coordinación entre resorción y formación. Los cambios en osteocitos y células mesenquimales pueden modificar señales como RANKL y favorecer, en determinados contextos, una resorción que no es compensada adecuadamente por la formación. Por ello, las alteraciones del linaje osteoclástico pueden contribuir al desequilibrio del remodelado, pero no explican por sí solas la pérdida ósea asociada a la edad."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_11",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_06.webp",
+          "alt": "Ilustración de la docente: Cambios en los osteoclastos y la resorción",
+          "pie": "Cambios en los osteoclastos y la resorción",
+          "ancho": 1600,
+          "alto": 698
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_12",
+          "tipo": "texto",
+          "titulo": "Envejecimiento de los osteocitos",
+          "markdown": "Debido a su larga permanencia en la matriz ósea, los osteocitos acumulan cambios asociados al envejecimiento que pueden afectar su supervivencia y función reguladora. Con la edad puede disminuir su densidad y alterarse la integridad de su red de prolongaciones, lo que compromete la comunicación entre osteocitos y con las células de las superficies óseas; además, estos cambios pueden modificar la producción y la respuesta a señales que regulan la formación y la resorción, sin implicar una disminución global de todas ellas.\n\nLos osteocitos regulan el remodelado y participan en la adaptación del hueso a su microambiente; por ello, el deterioro de su red de prolongaciones puede limitar la detección de cargas mecánicas y la coordinación de la respuesta adaptativa. En modelos experimentales de envejecimiento, la señalización de RANKL de origen osteocitario se ha relacionado con la pérdida cortical, mientras que las alteraciones de esclerostina pueden modificar la señalización osteogénica. Estos mecanismos dependen del contexto y no deben interpretarse como relaciones lineales o universales."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_13",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_07.webp",
+          "alt": "Ilustración de la docente: Envejecimiento de los osteocitos",
+          "pie": "Envejecimiento de los osteocitos",
+          "ancho": 1600,
+          "alto": 800
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_14",
+          "tipo": "texto",
+          "titulo": "Senescencia celular y SASP (fenotipo secretor asociado a la senescencia)",
+          "markdown": "El envejecimiento puede favorecer la acumulación de células con fenotipos asociados a senescencia, caracterizados, en células con capacidad proliferativa, por un arresto persistente del ciclo celular y otros cambios funcionales. En los osteocitos, que son células posmitóticas, la ausencia de división no demuestra por sí sola senescencia; por ello, su identificación requiere considerar un conjunto de rasgos asociados con daño persistente, alteraciones funcionales y cambios del secretoma. En el tejido óseo, estos fenotipos pueden afectar a progenitores osteogénicos y osteocitos, modificando su función y las señales que regulan el microambiente.\n\nUna característica relevante es el fenotipo secretor asociado a la senescencia (SASP), mediante el cual las células con estos fenotipos liberan mediadores capaces de modificar el comportamiento de las células vecinas. Su composición y sus efectos varían según el tipo celular y el contexto, por lo que puede favorecer señales proresortivas o alterar la actividad osteogénica. La evidencia de que la eliminación de células senescentes previene la pérdida ósea procede principalmente de modelos murinos y no constituye, por sí sola, una demostración de eficacia clínica en humanos."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_15",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_08.webp",
+          "alt": "Ilustración de la docente: Senescencia celular y SASP (fenotipo secretor asociado a la senescencia)",
+          "pie": "Senescencia celular y SASP (fenotipo secretor asociado a la senescencia)",
+          "ancho": 1600,
+          "alto": 788
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_16",
+          "tipo": "texto",
+          "titulo": "Cambios en el colágeno tipo I y la matriz orgánica",
+          "subcapitulo": "Envejecimiento de la matriz ósea y mineralización",
+          "markdown": "Con el envejecimiento, el colágeno tipo I de la matriz ósea experimenta modificaciones acumulativas que afectan principalmente su organización, maduración e interacción con el componente mineral, más que una disminución uniforme de su cantidad. Debido a su larga permanencia en el hueso, puede acumular modificaciones postraduccionales, cambios en los enlaces cruzados y alteraciones en la interacción entre las fibrillas y el mineral; estas modificaciones pueden reducir la capacidad de la matriz para deformarse y redistribuir las cargas antes de la fractura.\n\nTambién se modifica la interfaz entre el colágeno y el mineral, alterando la contribución conjunta de ambos componentes al comportamiento mecánico del tejido. Por tanto, una matriz ósea envejecida no se caracteriza simplemente por contener menos colágeno, sino por presentar modificaciones acumuladas y una organización colágeno–mineral que puede resultar menos favorable para la disipación de energía, lo que contribuye a la fragilidad."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_17",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_09.webp",
+          "alt": "Ilustración de la docente: Cambios en el colágeno tipo I y la matriz orgánica",
+          "pie": "Cambios en el colágeno tipo I y la matriz orgánica",
+          "ancho": 1600,
+          "alto": 800
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_18",
+          "tipo": "texto",
+          "titulo": "Enlaces cruzados, glicación y acumulación de AGEs (productos finales de glicació",
+          "markdown": "Las propiedades del colágeno dependen, en parte, de los enlaces cruzados que estabilizan sus moléculas dentro de las fibrillas. Los enlaces enzimáticos se forman durante la maduración normal y contribuyen a organizar la matriz, mientras que la glicación genera modificaciones no enzimáticas mediante reacciones espontáneas entre azúcares y proteínas de larga permanencia, como el colágeno. Entre sus productos se encuentran los AGEs: algunos, como la pentosidina, forman enlaces cruzados, mientras que otros, como la carboximetil-lisina (CML), son aductos no entrecruzantes; por ello, sus efectos sobre la matriz no son equivalentes.\n\nLa acumulación de AGEs puede modificar las interacciones entre las moléculas de colágeno y alterar su capacidad para deformarse y disipar energía durante la carga. En particular, los AGEs que forman enlaces cruzados pueden aumentar la rigidez de las fibrillas y reducir su capacidad para absorber energía, cambios asociados con una mayor fragilidad; en hueso humano, los niveles elevados de pentosidina se han relacionado con un deterioro de la resistencia a la fractura. El cambio relevante con la edad no es, por tanto, un aumento general de los enlaces cruzados, sino la acumulación de modificaciones no enzimáticas con mecanismos y efectos diferentes sobre la matriz."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_19",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_10.webp",
+          "alt": "Ilustración de la docente: Enlaces cruzados, glicación y acumulación de AGEs (productos finales de glicación avanzada)",
+          "pie": "Enlaces cruzados, glicación y acumulación de AGEs (productos finales de glicación avanzada)",
+          "ancho": 1600,
+          "alto": 785
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_20",
+          "tipo": "texto",
+          "titulo": "Cambios en la mineralización y distribución del mineral",
+          "subcapitulo": "Mineralización y calidad ósea",
+          "markdown": "Con el envejecimiento, el mineral óseo continúa madurando y experimenta cambios en su composición y estructura. En el tejido de mayor edad aumenta la cantidad de mineral en relación con la matriz orgánica, se incorporan más carbonatos a los cristales de hidroxiapatita y estos tienden a aumentar de tamaño y organización; al mismo tiempo, disminuye la sustitución por fosfato ácido, característica del mineral menos maduro. En conjunto, estos cambios reflejan una mayor maduración mineral y modifican las propiedades mecánicas del tejido.\n\nLa distribución del mineral no es uniforme en todo el hueso, donde coexisten regiones de tejido más nuevo y otras de mayor edad. Por ello, pueden existir diferencias locales en la cantidad, composición y madurez mineral, que modifican la interacción entre los cristales y el colágeno y pueden favorecer una mayor rigidez y una menor capacidad para absorber energía."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_21",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_11.webp",
+          "alt": "Ilustración de la docente: Cambios en la mineralización y distribución del mineral",
+          "pie": "Cambios en la mineralización y distribución del mineral",
+          "ancho": 1600,
+          "alto": 800
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_22",
+          "tipo": "texto",
+          "titulo": "Cambios en las propiedades mecánicas de la matriz",
+          "markdown": "Las modificaciones acumuladas en el colágeno, sus enlaces cruzados, el mineral y el agua asociada a la matriz alteran las propiedades mecánicas del hueso. La rigidez describe la oposición a la deformación elástica; la resistencia corresponde a la carga o el esfuerzo que el tejido soporta hasta un criterio de fallo, y la tenacidad expresa su capacidad para absorber energía antes de la fractura. En este contexto, el envejecimiento se ha relacionado con una menor absorción de energía y una menor resistencia a la propagación de grietas, en asociación con cambios de la matriz orgánica.\n\nLas modificaciones del colágeno y la acumulación de AGEs pueden reducir la deformación y la disipación de energía; también intervienen los cambios en el mineral y la hidratación. El agua asociada a la matriz, distinta de la contenida en los poros, participa en el comportamiento mecánico, aunque sus variaciones con la edad no son uniformes. En conjunto, los cambios en la composición, la microarquitectura, la porosidad y la hidratación pueden alterar la respuesta mecánica del hueso y aumentar su susceptibilidad a la fractura."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_23",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_12.webp",
+          "alt": "Ilustración de la docente: Cambios en las propiedades mecánicas de la matriz",
+          "pie": "Cambios en las propiedades mecánicas de la matriz",
+          "ancho": 1600,
+          "alto": 817
+        },
+        {
+          "id": "t_m6_1_cambios_estructurales_24",
+          "tipo": "texto",
+          "titulo": "Vascularización y microambiente óseo",
+          "subcapitulo": "Vascularización y microambiente óseo",
+          "markdown": "Durante el envejecimiento, la microvasculatura ósea puede presentar alteraciones de la permeabilidad, la integridad endotelial y el flujo sanguíneo, cuya magnitud depende del tipo de vaso y del contexto estudiado; estos cambios pueden acompañarse de un aumento del estrés oxidativo endotelial y una disminución de la proliferación de algunas poblaciones endoteliales relacionadas con el mantenimiento del tejido osteogénico. Como resultado, puede alterarse el aporte de oxígeno, nutrientes y señales vasculares al microambiente óseo, afectando el mantenimiento de los progenitores osteogénicos y la formación de hueso. En cuanto a los vasos tipo H y su relación con estas células, la evidencia fundacional procede principalmente de modelos murinos.\n\nEn paralelo, la adiposidad de la médula ósea puede aumentar con la edad, aunque su distribución y magnitud varían según la región y el contexto. Los adipocitos pueden liberar ácidos grasos y otros mediadores capaces de modificar la función y diferenciación de las células osteoblásticas. Así, las alteraciones vasculares y los cambios en la composición celular de la médula pueden generar un microambiente menos favorable para la osteogénesis y la reparación del tejido. Estas condiciones también pueden favorecer alteraciones del estrés oxidativo y de la señalización celular, que contribuyen a modificar la dinámica del remodelado óseo."
+        },
+        {
+          "id": "img_m6_1_cambios_estructurales_25",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_1_imagen_13.webp",
+          "alt": "Ilustración de la docente: Vascularización y microambiente óseo",
+          "pie": "Vascularización y microambiente óseo",
+          "ancho": 1600,
+          "alto": 767
         },
         {
           "tipo": "actividad",
           "actividad": {
-            "id": "m6_1_video_curva",
-            "tipo": "video-texto",
-            "titulo": "La vida de tu masa ósea",
-            "instrucciones": "Avanza paso a paso con el botón Siguiente (o con la flecha derecha del teclado; en pantalla táctil también puedes deslizar el dedo hacia la izquierda). En cada paso, lee el texto y observa qué parte de la curva se resalta. Para completar la actividad debes llegar al último paso.",
+            "id": "m6_1_cortical_trabecular",
+            "tipo": "clasificacion",
+            "titulo": "¿Cortical o trabecular?",
+            "instrucciones": "Clasifica cada cambio según el compartimento óseo en el que se presenta principalmente. Arrastra cada uno a su compartimento (o tócalo y luego toca la caja).",
             "obligatoria": true,
-            "puntaje_max": 10,
-            "retroalimentacion": {
-              "correcta": "Bien. Ya sabes que la masa ósea se construye hasta un pico, se mantiene y luego se pierde, y que la menopausia acelera esa pérdida en las mujeres.",
-              "incorrecta": "Te faltan pasos por ver. Llega hasta el último para completar la actividad."
-            },
-            "concepto": "Curva de la masa ósea: pico y declive",
-            "config": {
-              "medio": "animacion",
-              "svg": "/images/m6/m6_curva_masa_osea.svg",
-              "viewBox": "0 0 800 600",
-              "alt": "Gráfico esquemático de la masa ósea frente a la edad, con la curva de mujeres y la de hombres, sus tres tramos y la menopausia.",
-              "pasos": [
-                {
-                  "id": "paso_1",
-                  "titulo": "Construir el esqueleto",
-                  "texto": "Desde la infancia hasta el final de la adolescencia, el hueso se forma más rápido de lo que se reabsorbe. El ritmo máximo de acumulación de mineral ocurre en la pubertad. Alrededor del 90 % del pico se ha acumulado a los 18 años en las niñas y a los 20 en los niños.",
-                  "visibles": ["eje_edad_masa", "curva_mujer", "curva_hombre", "fase_crecimiento"],
-                  "resaltadas": []
-                },
-                {
-                  "id": "paso_2",
-                  "titulo": "El pico de masa ósea",
-                  "texto": "El pico es la mayor cantidad de hueso que tendrás en la vida. Se alcanza entre la segunda y la tercera década, según el sitio del esqueleto. La genética explica aproximadamente entre el 60 y el 80 % de su variación; el resto depende de la nutrición, la actividad física, las hormonas y la salud.",
-                  "visibles": [
-                    "eje_edad_masa",
-                    "curva_mujer",
-                    "curva_hombre",
-                    "zona_pico_masa_osea"
-                  ],
-                  "resaltadas": []
-                },
-                {
-                  "id": "paso_3",
-                  "titulo": "Una meseta que engaña",
-                  "texto": "Entre los 20 y los 50 años, aproximadamente, la masa ósea cambia poco porque el remodelado está casi en equilibrio. Aun así, cada ciclo puede dejar un pequeño saldo negativo, sobre todo en el hueso trabecular.",
-                  "visibles": ["eje_edad_masa", "curva_mujer", "curva_hombre", "fase_meseta"],
-                  "resaltadas": []
-                },
-                {
-                  "id": "paso_4",
-                  "titulo": "La curva se quiebra en las mujeres",
-                  "texto": "Alrededor de la menopausia, que ocurre en promedio hacia los 51 años, la pérdida se acelera durante unos tres años. En un estudio longitudinal se midió aproximadamente 2,5 % al año en la columna lumbar y 1,8 % al año en el cuello femoral, desde cerca de un año antes hasta cerca de dos años después de la última menstruación. En la columna eso suma cerca del 7 % en ese lapso.",
-                  "visibles": [
-                    "eje_edad_masa",
-                    "curva_mujer",
-                    "marca_menopausia",
-                    "fase_perdida_acelerada"
-                  ],
-                  "resaltadas": []
-                },
-                {
-                  "id": "paso_5",
-                  "titulo": "Pérdida lenta y sostenida",
-                  "texto": "Después del tramo acelerado, la pérdida continúa a un ritmo menor en las mujeres. Los hombres no tienen un salto equivalente a la menopausia, pero también pierden hueso con la edad. A lo largo de la vida, una mujer puede perder hasta cerca de la mitad de su hueso trabecular y del 30 % del cortical.",
-                  "visibles": [
-                    "eje_edad_masa",
-                    "curva_mujer",
-                    "curva_hombre",
-                    "fase_perdida_lenta"
-                  ],
-                  "resaltadas": []
-                },
-                {
-                  "id": "paso_6",
-                  "titulo": "Subir el techo y frenar el ritmo",
-                  "texto": "Un pico más alto desplaza toda la curva hacia arriba y retrasa el momento en que se cruza el umbral de fragilidad. Por eso la prevención empieza en la infancia. En la adultez, el objetivo cambia: frenar el ritmo de pérdida.",
-                  "visibles": [
-                    "eje_edad_masa",
-                    "curva_mujer",
-                    "umbral_fragilidad",
-                    "curva_pico_mayor"
-                  ],
-                  "resaltadas": []
-                }
-              ]
-            }
-          }
-        },
-        {
-          "id": "t_m6_1_arrastre_estrogenos_contexto",
-          "tipo": "texto",
-          "markdown": "El RANKL de la bandeja es el que la célula osteoblástica presenta al precursor; el RANKL fijo en su membrana es el sitio donde se une la OPG."
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_1_arrastre_estrogenos",
-            "tipo": "arrastre-molecular",
-            "titulo": "Estrógeno, RANKL y OPG: el control de los osteoclastos",
-            "instrucciones": "Arrastra cada molécula hasta el receptor o el sitio de unión que la reconoce y observa qué ocurre en el hueso. Ojo: no todas las moléculas encajan en algún receptor de esta escena. Cuando acoples el estrógeno con su receptor, verás además qué pasa cuando el estrógeno desaparece.",
-            "obligatoria": true,
-            "puntaje_max": 40,
-            "retroalimentacion": {
-              "correcta": "Muy bien. El estrógeno mantiene baja la relación RANKL/OPG y así limita cuántos osteoclastos se forman. Cuando falta, RANKL y las citocinas ganan terreno y el remodelado se inclina hacia la reabsorción.",
-              "incorrecta": "Esa molécula no se une a ese receptor. Recuerda quién señala a quién: RANKL se une a RANK, y la OPG se une a RANKL, no a RANK. Piensa qué célula produce cada molécula y en qué célula está su receptor; cada intento fallido resta puntos."
-            },
-            "concepto": "Estrógenos, RANKL y OPG",
-            "config": {
-              "escena": {
-                "viewBox": "0 0 800 600",
-                "fondo_svg": "/images/m6/m6_escena_estrogeno_rankl.svg",
-                "alt": "Arriba a la izquierda, una célula osteoblástica con un receptor de estrógeno dentro y moléculas de RANKL ancladas en su membrana (sitio de unión de la OPG; el RANKL que se arrastra hacia RANK es el mismo ligando, presentado al precursor).",
-                "fondo": "/images/m6/m6_escena_estrogeno_rankl_figura.webp"
-              },
-              "moleculas": [
-                {
-                  "id": "mol_estrogeno",
-                  "etiqueta": "Estrógeno (17β-estradiol)",
-                  "descripcion": "Hormona sexual que cae de forma marcada en la menopausia.",
-                  "forma": "circulo"
-                },
-                {
-                  "id": "mol_rankl",
-                  "etiqueta": "RANKL",
-                  "descripcion": "Ligando de la familia del TNF que producen las células del linaje osteoblástico y los linfocitos T. Aquí representa el RANKL que se presenta al precursor de osteoclasto.",
-                  "forma": "hexagono"
-                },
-                {
-                  "id": "mol_opg",
-                  "etiqueta": "Osteoprotegerina (OPG)",
-                  "descripcion": "Proteína soluble que producen las células del linaje osteoblástico.",
-                  "forma": "triangulo"
-                },
-                {
-                  "id": "mol_mcsf",
-                  "etiqueta": "M-CSF",
-                  "descripcion": "Factor estimulante de colonias de macrófagos, producido por células del linaje osteoblástico y del estroma.",
-                  "forma": "rombo"
-                },
-                {
-                  "id": "mol_tnf_alfa",
-                  "etiqueta": "TNF-α",
-                  "descripcion": "Citocina inflamatoria que producen los linfocitos T activados y otras células inmunitarias.",
-                  "forma": "cuadrado"
-                },
-                {
-                  "id": "mol_esclerostina",
-                  "etiqueta": "Esclerostina",
-                  "descripcion": "Proteína producida por los osteocitos.",
-                  "forma": "circulo",
-                  "rechazo": "La producen los osteocitos y actúa sobre la vía Wnt: se une a LRP5 y LRP6 en osteoblastos y osteocitos y frena la formación de hueso y, de forma indirecta, puede favorecer la reabsorción. Pero ningún receptor de esta escena es LRP5 o LRP6, y no es ligando de ERα, RANK, c-Fms ni del receptor de TNF."
-                },
-                {
-                  "id": "mol_osteocalcina",
-                  "etiqueta": "Osteocalcina",
-                  "descripcion": "Proteína no colágena de la matriz que secretan los osteoblastos.",
-                  "forma": "hexagono",
-                  "rechazo": "Es una proteína de la matriz que secretan los osteoblastos y se une a la hidroxiapatita; se usa como marcador de formación ósea. No es un ligando de ERα, RANK, c-Fms ni del receptor de TNF."
-                }
-              ],
-              "receptores": [
-                {
-                  "id": "rec_receptor_er_alfa",
-                  "etiqueta": "Receptor de estrógeno ERα",
-                  "descripcion": "Receptor de estrógeno ERα de la célula osteoblástica. Receptor intracelular de la célula del linaje osteoblástico.",
-                  "posicion": {
-                    "x": 16.7,
-                    "y": 25.0
-                  }
-                },
-                {
-                  "id": "rec_rankl_membrana",
-                  "etiqueta": "RANKL anclado en la membrana",
-                  "descripcion": "RANKL anclado en la membrana de la célula osteoblástica. Sitio de unión al que llega el señuelo soluble.",
-                  "posicion": {
-                    "x": 55.6,
-                    "y": 25.0
-                  }
-                },
-                {
-                  "id": "rec_receptor_rank",
-                  "etiqueta": "RANK del precursor de osteoclasto",
-                  "descripcion": "Receptor de superficie del precursor, de la línea monocito-macrófago.",
-                  "posicion": {
-                    "x": 83.1,
-                    "y": 19.0
-                  }
-                },
-                {
-                  "id": "rec_receptor_cfms",
-                  "etiqueta": "c-Fms del precursor de osteoclasto",
-                  "descripcion": "Receptor de superficie del precursor para el factor de colonias de macrófagos.",
-                  "posicion": {
-                    "x": 24.6,
-                    "y": 68.7
-                  }
-                },
-                {
-                  "id": "rec_receptor_tnf",
-                  "etiqueta": "Receptor de TNF (TNFR1) del precursor",
-                  "descripcion": "Receptor de superficie del precursor para la citocina TNF-α.",
-                  "posicion": {
-                    "x": 74.8,
-                    "y": 68.7
-                  }
-                }
-              ],
-              "pares": [
-                {
-                  "id": "par_estrogeno_receptor_er_alfa",
-                  "molecula": "mol_estrogeno",
-                  "receptor": "rec_receptor_er_alfa",
-                  "efecto": {
-                    "titulo": "El estrógeno frena la formación de osteoclastos",
-                    "descripcion": "Al unirse a su receptor, el estrógeno reduce la expresión de RANKL y de citocinas como IL-1, IL-6, TNF-α y M-CSF; en modelos celulares favorece además a la OPG. La relación RANKL/OPG baja. También favorece la apoptosis de los osteoclastos y protege de la apoptosis a osteoblastos y osteocitos. Resultado: menos osteoclastos y remodelado en equilibrio. Sin estrógeno ocurre lo contrario.",
-                    "animacion": "inhibicion"
-                  }
-                },
-                {
-                  "id": "par_opg_rankl_membrana",
-                  "molecula": "mol_opg",
-                  "receptor": "rec_rankl_membrana",
-                  "efecto": {
-                    "titulo": "La OPG atrapa a RANKL",
-                    "descripcion": "La osteoprotegerina es un receptor señuelo soluble: se une a RANKL y lo bloquea antes de que llegue a RANK. Sin la unión RANKL-RANK, el precursor no se diferencia en osteoclasto. Lo que importa es la relación RANKL/OPG: en el déficit de estrógenos esa relación sube.",
-                    "animacion": "union"
-                  }
-                },
-                {
-                  "id": "par_rankl_receptor_rank",
-                  "molecula": "mol_rankl",
-                  "receptor": "rec_receptor_rank",
-                  "efecto": {
-                    "titulo": "RANKL-RANK: la orden de formar un osteoclasto",
-                    "descripcion": "RANKL se une a RANK en el precursor y, junto con M-CSF, activa su diferenciación y su fusión hacia un osteoclasto multinucleado capaz de reabsorber. Cuando hay más RANKL que OPG, este paso se favorece.",
-                    "animacion": "reabsorcion"
-                  }
-                },
-                {
-                  "id": "par_mcsf_receptor_cfms",
-                  "molecula": "mol_mcsf",
-                  "receptor": "rec_receptor_cfms",
-                  "efecto": {
-                    "titulo": "M-CSF: supervivencia y proliferación de los precursores",
-                    "descripcion": "El factor de colonias de macrófagos se une a c-Fms y mantiene vivos y en división a los precursores de la línea monocito-macrófago. Sin M-CSF no hay suficientes precursores para formar osteoclastos, aunque haya RANKL.",
-                    "animacion": "crecimiento"
-                  }
-                },
-                {
-                  "id": "par_tnf_alfa_receptor_tnf",
-                  "molecula": "mol_tnf_alfa",
-                  "receptor": "rec_receptor_tnf",
-                  "efecto": {
-                    "titulo": "TNF-α: un amplificador de la reabsorción",
-                    "descripcion": "En el déficit de estrógenos, los linfocitos T producen más TNF-α. Actúa sobre los precursores y sobre las células del linaje osteoblástico: potencia la respuesta a RANKL y a M-CSF, estimula la producción de más RANKL, IL-1 e IL-6, e inhibe la formación de osteoblastos.",
-                    "animacion": "reabsorcion"
-                  }
-                }
-              ],
-              "distractores": ["mol_esclerostina", "mol_osteocalcina"]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_1_quiz_curva",
-            "tipo": "quiz",
-            "titulo": "Comprueba la curva de la masa ósea",
-            "instrucciones": "Responde las tres preguntas. Al elegir tu respuesta verás enseguida si es correcta y por qué. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Esta actividad es opcional.",
-            "obligatoria": false,
             "puntaje_max": 20,
             "retroalimentacion": {
-              "correcta": "Correcto. La masa ósea se construye hasta un pico en la juventud, y la menopausia acelera la pérdida por el déficit de estrógenos.",
-              "incorrecta": "Revisa la sección: el pico se alcanza entre la segunda y la tercera década, un pico alto retrasa la osteoporosis y la menopausia acelera la pérdida por la caída de los estrógenos."
+              "correcta": "Correcto. En el cortical, la resorción endóstica amplía la cavidad medular y reduce el espesor, y el relleno incompleto aumenta la porosidad; en el trabecular, la pérdida de tejido adelgaza, perfora y hace desaparecer trabéculas, comprometiendo la conectividad.",
+              "incorrecta": "Revisa la explicación y vuelve a leer la sección."
             },
-            "concepto": "Pico de masa ósea y menopausia",
+            "concepto": "Cambios del hueso cortical y trabecular con la edad",
             "config": {
-              "preguntas": [
+              "disposicion": "cajas",
+              "barajar": true,
+              "categorias": [
                 {
-                  "id": "m6_1_q1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Cuándo se alcanza, aproximadamente, el pico de masa ósea?",
-                  "opciones": [
-                    {
-                      "id": "m6_1_q1_a",
-                      "texto": "Al nacer; a partir de ahí solo se pierde hueso durante toda la vida."
-                    },
-                    {
-                      "id": "m6_1_q1_b",
-                      "texto": "Alrededor de los 50 años, justo antes de que empiece la menopausia."
-                    },
-                    {
-                      "id": "m6_1_q1_c",
-                      "texto": "Entre la segunda y la tercera década, según el sitio del esqueleto."
-                    },
-                    {
-                      "id": "m6_1_q1_d",
-                      "texto": "Hacia los 65 años, cuando el remodelado se estabiliza por completo."
-                    }
-                  ],
-                  "correctas": ["m6_1_q1_c"],
-                  "explicacion": "El pico se alcanza al terminar la maduración del esqueleto, entre la segunda y la tercera década. Antes de eso la formación supera a la reabsorción; después, el balance se inclina poco a poco hacia la pérdida.",
-                  "concepto": "Pico de masa ósea",
-                  "dificultad": 1
+                  "id": "cortical",
+                  "etiqueta": "Hueso cortical"
                 },
                 {
-                  "id": "m6_1_q2",
-                  "formato": "verdadero_falso",
-                  "enunciado": "Un pico de masa ósea mayor en la juventud retrasa el momento en que la pérdida asociada a la edad cruza el umbral de fragilidad.",
-                  "correcta": true,
-                  "explicacion": "Es verdadero. Toda la curva se desplaza hacia arriba: hay más hueso de partida, así que la misma pérdida tarda más en llegar al umbral en el que aumenta el riesgo de fractura.",
-                  "concepto": "Determinantes del pico de masa ósea",
-                  "dificultad": 1
-                },
-                {
-                  "id": "m6_1_q3",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué ocurre con la velocidad de pérdida de hueso alrededor de la menopausia?",
-                  "opciones": [
-                    {
-                      "id": "m6_1_q3_a",
-                      "texto": "Se acelera durante unos años, sobre todo en el hueso trabecular."
-                    },
-                    {
-                      "id": "m6_1_q3_b",
-                      "texto": "Se detiene porque la formación aumenta para compensar."
-                    },
-                    {
-                      "id": "m6_1_q3_c",
-                      "texto": "No cambia respecto de los 30 años, porque solo depende de la edad."
-                    },
-                    {
-                      "id": "m6_1_q3_d",
-                      "texto": "Disminuye porque los estrógenos suben durante el climaterio."
-                    }
-                  ],
-                  "correctas": ["m6_1_q3_a"],
-                  "explicacion": "La caída de los estrógenos aumenta el remodelado con saldo negativo. El ritmo de pérdida sube durante unos años, más en el hueso trabecular, y luego se hace más lento.",
-                  "concepto": "Menopausia y pérdida ósea",
-                  "dificultad": 2
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "m6_2_celulas_y_matriz",
-      "titulo": "Células y matriz que envejecen",
-      "bloques": [
-        {
-          "id": "t_celulas_y_matriz",
-          "tipo": "texto",
-          "markdown": "La menopausia no lo explica todo. En mujeres y en hombres, con los años cambian las células que forman y mantienen el hueso y cambia la matriz que ellas producen. El resultado es un hueso con menos cantidad y, además, con peor calidad."
-        },
-        {
-          "id": "i_tejido_oseo_envejecido",
-          "tipo": "imagen",
-          "src": "/images/m6/m6_tejido_oseo_envejecido.svg",
-          "figura": "/images/m6/m6_tejido_oseo_envejecido_figura.webp",
-          "alt": "Corte esquemático de hueso cortical envejecido con osteocitos senescentes, una microfisura, un poro ampliado y una médula con más grasa",
-          "pie": "Figura 6.2. Hueso cortical envejecido (esquema, sin escala). En la actividad puedes explorarlo en 3D."
-        },
-        {
-          "id": "tb_que_cambia",
-          "tipo": "tabla",
-          "titulo": "Qué cambia",
-          "encabezado_criterio": "Cambio",
-          "columnas": ["Qué ocurre", "Consecuencia"],
-          "filas": [
-            {
-              "criterio": "Osteoblastos: menos y menos activos",
-              "celdas": [
-                "Las células madre mesenquimales de la médula se desvían más hacia adipocitos que hacia osteoblastos.",
-                "Menos formación y más grasa en la médula (adipogénesis medular)."
-              ]
-            },
-            {
-              "criterio": "Osteocitos: senescencia y muerte",
-              "celdas": [
-                "Aumentan los osteocitos senescentes y la apoptosis; la densidad de lagunas baja, muchas se rellenan de mineral (micropetrosis) y la red de canalículos se empobrece.",
-                "El hueso percibe peor la carga y el daño. La esclerostina circulante aumenta con la edad y frena la formación."
-              ]
-            },
-            {
-              "criterio": "Células senescentes",
-              "celdas": [
-                "Acumulan un secretoma inflamatorio (SASP) que favorece la reabsorción y frena la formación.",
-                "En ratones, eliminarlas reduce la pérdida de hueso; en humanos la evidencia es más limitada."
-              ]
-            },
-            {
-              "criterio": "Microfisuras",
-              "celdas": [
-                "El microdaño es normal, pero se acumula si el osteocito lo detecta peor y el remodelado que lo repara se retrasa.",
-                "Una matriz más frágil, que se rompe con menos energía."
-              ]
-            },
-            {
-              "criterio": "Glicación (AGE)",
-              "celdas": [
-                "Azúcares se unen al colágeno sin enzimas y forman enlaces y aductos anormales. Aumentan con la edad, la diabetes y la enfermedad renal.",
-                "El colágeno pierde flexibilidad y el hueso, tenacidad. Falta aclarar si los AGE causan fracturas o solo marcan el envejecimiento."
-              ]
-            },
-            {
-              "criterio": "Calidad de la matriz",
-              "celdas": [
-                "Cambian la mineralización, los cristales y los enlaces del colágeno. Con recambio alto la matriz es más joven y menos mineralizada; con recambio bajo, más vieja y más mineralizada.",
-                "Hueso más frágil aunque su densidad parezca aceptable."
-              ]
-            }
-          ]
-        },
-        {
-          "id": "t_celulas_y_matriz_3",
-          "tipo": "texto",
-          "markdown": "En la estructura, la cortical se vuelve más porosa y las trabéculas se adelgazan y se desconectan; lo verás en la sección siguiente."
-        },
-        {
-          "id": "c_dato_los_enlaces_enzimaticos",
-          "tipo": "callout",
-          "variante": "dato",
-          "markdown": "Los enlaces enzimáticos, hechos por la lisil oxidasa, maduran el colágeno de forma ordenada y son normales. Los [AGE](glosario:productos_de_glicacion_avanzada_age) se forman sin enzimas (reacción de Maillard) y de forma menos ordenada; un ejemplo es la pentosidina. No son lo mismo."
-        },
-        {
-          "id": "c_dato_el_destino_de_la_celula",
-          "tipo": "callout",
-          "variante": "dato",
-          "titulo": "Para quien quiera profundizar",
-          "markdown": "El destino de la célula madre mesenquimal depende de dos factores de transcripción que se antagonizan: RUNX2 impulsa la vía del osteoblasto y PPARγ la del adipocito. El secretoma de las células senescentes se llama [SASP](glosario:sasp_fenotipo_secretor_asociado_a_la_senescencia).",
-          "nivel": "posgrado"
-        },
-        {
-          "id": "c_recuerda_el_osteocito_es_el_sensor",
-          "tipo": "callout",
-          "variante": "recuerda",
-          "markdown": "El osteocito es el sensor de carga y el coordinador del remodelado (módulos 3 y 5). Cuando envejece, se deterioran tanto la detección del daño como su reparación."
-        },
-        {
-          "id": "c_clinico_en_la_mandibula_el",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "En la mandíbula, el osteocito del hueso alveolar percibe la carga de la masticación que le llega por el ligamento periodontal. Cuando el diente se pierde, esa señal desaparece (sección 6.4)."
-        },
-        {
-          "id": "t_celulas_y_matriz_4",
-          "tipo": "texto",
-          "markdown": "Explora ahora el corte de hueso envejecido y comprueba lo aprendido."
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_2_multicapa_tejido_envejecido",
-            "tipo": "exploracion-3d",
-            "titulo": "Explora un hueso que envejece",
-            "instrucciones": "Gira el bloque de hueso con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): es un corte de hueso cortical envejecido visto al microscopio. Toca cada estructura para leer qué le ocurre al envejecer. Con teclado, Tab y Enter, o elige en la lista bajo el modelo (sirve también sin 3D). Visita al menos las cinco estructuras requeridas.",
-            "obligatoria": true,
-            "puntaje_max": 30,
-            "retroalimentacion": {
-              "correcta": "Muy bien. Ya reconoces los cambios celulares y de la matriz que reducen la calidad del hueso, incluso cuando la densidad todavía parece aceptable.",
-              "incorrecta": "Todavía quedan estructuras por visitar. Revisa las que no han cambiado de color: cada una explica un cambio distinto del hueso envejecido."
-            },
-            "concepto": "Envejecimiento celular y de la matriz",
-            "config": {
-              "modelo": "tejido_oseo_envejecido",
-              "alt": "Modelo tridimensional de un bloque de hueso cortical envejecido en corte transversal: osteona con laminillas concéntricas, osteocitos senescentes, lagunas vacías y mineralizadas, una microfisura, un poro ampliado, endostio con pocos osteoblastos, médula grasa y una lupa del colágeno con AGE.",
-              "nodos": [
-                {
-                  "id": "osteocito_senescente",
-                  "etiqueta": "Osteocito senescente",
-                  "descripcion": "Osteocito que dejó de funcionar bien y secreta un cóctel inflamatorio (SASP) que favorece la reabsorción y frena la formación. Con la edad aumentan los osteocitos senescentes y también su muerte por apoptosis."
-                },
-                {
-                  "id": "red_canalicular_reducida",
-                  "etiqueta": "Red canalicular empobrecida",
-                  "descripcion": "Los canalículos que conectan a los osteocitos se pierden o se obstruyen. Se reduce el flujo de líquido que el osteocito usa para percibir la carga y el daño."
-                },
-                {
-                  "id": "laguna_mineralizada",
-                  "etiqueta": "Laguna mineralizada (micropetrosis)",
-                  "descripcion": "Laguna de un osteocito muerto rellena de mineral. Es más frecuente con la edad. Marca una zona sin célula que vigile la matriz, y la vuelve más quebradiza."
-                },
-                {
-                  "id": "microfisura",
-                  "etiqueta": "Microfisura",
-                  "descripcion": "Grieta microscópica producida por la carga cotidiana. En el hueso joven se detecta y se repara con un remodelado dirigido; en el hueso envejecido se acumula porque la detección y la reparación fallan."
-                },
-                {
-                  "id": "poro_cortical",
-                  "etiqueta": "Poro cortical ampliado",
-                  "descripcion": "Conducto vascular (de Havers) ensanchado por reabsorción dentro de la cortical y desde su cara interna. La cortical se vuelve más porosa y más delgada."
-                },
-                {
-                  "id": "medula_adiposa",
-                  "etiqueta": "Médula con más grasa",
-                  "descripcion": "Aumentan los adipocitos de la médula a costa de los osteoblastos: las células madre mesenquimales se desvían hacia la vía de PPARγ en vez de la de RUNX2. Los adipocitos secretan señales que pueden frenar aún más la formación."
-                },
-                {
-                  "id": "matriz_colageno_age",
-                  "etiqueta": "Colágeno con productos de glicación (AGE)",
-                  "descripcion": "Fibras de colágeno con enlaces y aductos de glicación, como la pentosidina. Rigidizan el colágeno y disminuyen la energía que el hueso puede absorber antes de romperse."
-                },
-                {
-                  "id": "superficie_osteoblastos_escasos",
-                  "etiqueta": "Superficie con pocos osteoblastos",
-                  "descripcion": "En el hueso envejecido hay menos osteoblastos activos sobre la superficie ósea. Cada ciclo de remodelado repone menos hueso del que se reabsorbió."
+                  "id": "trabecular",
+                  "etiqueta": "Hueso trabecular"
                 }
               ],
-              "requeridos": [
-                "osteocito_senescente",
-                "laguna_mineralizada",
-                "microfisura",
-                "medula_adiposa",
-                "matriz_colageno_age"
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_2_quiz_envejecimiento",
-            "tipo": "quiz",
-            "titulo": "Comprueba el envejecimiento del hueso",
-            "instrucciones": "Responde las cuatro preguntas. Tras cada respuesta verás la explicación. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Esta actividad es opcional.",
-            "obligatoria": false,
-            "puntaje_max": 20,
-            "retroalimentacion": {
-              "correcta": "Correcto. Menos osteoblastos, osteocitos que envejecen, microdaño acumulado y matriz glicada explican la pérdida de calidad del hueso.",
-              "incorrecta": "Revisa la tabla de cambios: cada fila combina una alteración celular o de la matriz con su consecuencia para la resistencia del hueso."
-            },
-            "concepto": "Envejecimiento celular y de la matriz",
-            "config": {
-              "preguntas": [
+              "elementos": [
                 {
-                  "id": "m6_2_q1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué cambio celular de la médula envejecida contribuye a formar menos hueso?",
-                  "opciones": [
-                    {
-                      "id": "m6_2_q1_a",
-                      "texto": "Las células madre mesenquimales se desvían más hacia adipocitos que hacia osteoblastos."
-                    },
-                    {
-                      "id": "m6_2_q1_b",
-                      "texto": "Los osteoblastos maduros se transforman en osteoclastos y reabsorben la matriz."
-                    },
-                    {
-                      "id": "m6_2_q1_c",
-                      "texto": "Los adipocitos medulares producen más colágeno tipo I para reparar la matriz dañada."
-                    },
-                    {
-                      "id": "m6_2_q1_d",
-                      "texto": "Los osteocitos se convierten en células madre para compensar la pérdida de osteoblastos."
-                    }
-                  ],
-                  "correctas": ["m6_2_q1_a"],
-                  "explicacion": "RUNX2 impulsa la vía del osteoblasto y PPARγ la del adipocito, y se antagonizan. Con la edad la balanza se inclina hacia el adipocito: hay más grasa en la médula y menos osteoblastos disponibles.",
-                  "concepto": "Adipogénesis medular",
-                  "dificultad": 2
+                  "id": "cavidad_medular",
+                  "texto": "Ampliación de la cavidad medular por resorción endóstica.",
+                  "categoria": "cortical"
                 },
                 {
-                  "id": "m6_2_q2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué son los productos de glicación avanzada (AGE) en el hueso?",
-                  "opciones": [
-                    {
-                      "id": "m6_2_q2_a",
-                      "texto": "Enlaces enzimáticos de la lisil oxidasa que maduran el colágeno de forma ordenada y controlada."
-                    },
-                    {
-                      "id": "m6_2_q2_b",
-                      "texto": "Cristales de hidroxiapatita que se depositan de manera desordenada en la matriz mineralizada."
-                    },
-                    {
-                      "id": "m6_2_q2_c",
-                      "texto": "Enlaces y aductos formados sin enzimas entre azúcares y colágeno, que se acumulan con la edad."
-                    },
-                    {
-                      "id": "m6_2_q2_d",
-                      "texto": "Proteínas que el osteocito libera para inhibir la vía Wnt y frenar la formación de hueso."
-                    }
-                  ],
-                  "correctas": ["m6_2_q2_c"],
-                  "explicacion": "Los AGE, como la pentosidina, se forman por reacciones no enzimáticas (reacción de Maillard). Aumentan con la edad, la diabetes y la enfermedad renal, y se asocian con menor tenacidad de la matriz. Los enlaces enzimáticos son un proceso normal y distinto.",
-                  "concepto": "Glicación de la matriz",
-                  "dificultad": 2
+                  "id": "porosidad",
+                  "texto": "Aumento de la porosidad intracortical.",
+                  "categoria": "cortical"
                 },
                 {
-                  "id": "m6_2_q3",
-                  "formato": "verdadero_falso",
-                  "enunciado": "En el hueso envejecido se acumulan más microfisuras, en parte porque el osteocito detecta peor el daño y el remodelado que lo repara se retrasa.",
-                  "correcta": true,
-                  "explicacion": "Es verdadero. El microdaño es normal, pero el hueso joven lo repara con un remodelado dirigido que el osteocito coordina. Con la edad, el osteocito envejece y se pierde la red canalicular, así que el daño se detecta y repara peor.",
-                  "concepto": "Microdaño acumulado",
-                  "dificultad": 2
+                  "id": "adelgazamiento",
+                  "texto": "Adelgazamiento de las trabéculas.",
+                  "categoria": "trabecular"
                 },
                 {
-                  "id": "m6_2_q4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué es la micropetrosis?",
-                  "opciones": [
-                    {
-                      "id": "m6_2_q4_a",
-                      "texto": "La formación de una osteona nueva alrededor de una microfisura."
-                    },
-                    {
-                      "id": "m6_2_q4_b",
-                      "texto": "El relleno con mineral de la laguna de un osteocito que murió."
-                    },
-                    {
-                      "id": "m6_2_q4_c",
-                      "texto": "La ruptura de una trabécula por una carga excesiva."
-                    },
-                    {
-                      "id": "m6_2_q4_d",
-                      "texto": "El aumento de la cavidad medular por reabsorción desde su cara interna."
-                    }
-                  ],
-                  "correctas": ["m6_2_q4_b"],
-                  "explicacion": "En la micropetrosis, la laguna de un osteocito muerto se llena de mineral. Aumenta con la edad y deja zonas de matriz sin una célula que las vigile, más frágiles.",
-                  "concepto": "Micropetrosis",
-                  "dificultad": 2
+                  "id": "perforacion",
+                  "texto": "Perforación y pérdida de conectividad trabecular.",
+                  "categoria": "trabecular"
+                },
+                {
+                  "id": "espesor_cortical",
+                  "texto": "Disminución del espesor cortical.",
+                  "categoria": "cortical"
+                },
+                {
+                  "id": "continuidad",
+                  "texto": "Pérdida de continuidad de la red trabecular.",
+                  "categoria": "trabecular"
                 }
               ]
             }
           }
-        }
-      ]
-    },
-    {
-      "id": "m6_3_osteoporosis",
-      "titulo": "Osteoporosis: calidad, cantidad y riesgo",
-      "bloques": [
-        {
-          "id": "t_osteoporosis",
-          "tipo": "texto",
-          "markdown": "Con menos hueso y peor calidad, la resistencia cae hasta que una caída leve, o un esfuerzo cotidiano, produce una fractura. Eso es la osteoporosis."
-        },
-        {
-          "id": "c_dato_el_consenso_del_nih",
-          "tipo": "callout",
-          "variante": "dato",
-          "markdown": "El consenso del NIH (conferencia de 2000, publicada en JAMA en 2001) la define como un trastorno de la resistencia ósea que predispone a un mayor riesgo de fractura. La resistencia integra la densidad y la calidad del hueso."
-        },
-        {
-          "id": "i_hueso_normal_osteoporotico",
-          "tipo": "imagen",
-          "src": "/images/m6/m6_hueso_normal_osteoporotico.svg",
-          "figura": "/images/m6/m6_hueso_normal_osteoporotico_figura.webp",
-          "alt": "Comparación esquemática de un cuerpo vertebral y de una cortical, normales y osteoporóticos",
-          "pie": "Figura 6.3. Hueso normal (izquierda) y osteoporótico (derecha), en esquema. En la actividad puedes explorarlos en 3D."
-        },
-        {
-          "id": "tb_cantidad_frente_a_calidad",
-          "tipo": "tabla",
-          "titulo": "Cantidad frente a calidad",
-          "columnas": ["Cantidad", "Calidad"],
-          "filas": [
-            {
-              "criterio": "Qué es",
-              "celdas": [
-                "Cuánto mineral hay por unidad de área",
-                "Cómo está construido y cómo se mantiene el hueso"
-              ]
-            },
-            {
-              "criterio": "Ejemplos",
-              "celdas": [
-                "Densidad mineral ósea (DMO)",
-                "Microarquitectura y geometría, recambio, microdaño, mineralización, colágeno y sus enlaces"
-              ]
-            },
-            {
-              "criterio": "Cómo se evalúa",
-              "celdas": [
-                "Con DXA",
-                "Se infiere con factores clínicos y técnicas complementarias; la DXA la mide mal"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "t_osteoporosis_3",
-          "tipo": "texto",
-          "markdown": "La [DMO](glosario:densidad_mineral_osea_dmo) explica aproximadamente el 70 % de la resistencia ósea; el resto depende de la calidad. Por eso hay personas con densidad casi normal que se fracturan, por ejemplo en la diabetes tipo 2 de larga evolución. En la osteoporosis las trabéculas se adelgazan y se desconectan (primero las horizontales), la cortical se adelgaza y se vuelve porosa, y la cavidad medular crece. Puede ser primaria (posmenopáusica y del envejecimiento) o secundaria a enfermedades y fármacos; el déficit de estrógenos contribuye a ambas formas primarias (modelo unitario de Riggs).\n\n#### Diagnóstico por DXA\n\nLa absorciometría de rayos X de doble energía ([DXA](glosario:dxa)) mide la densidad mineral ósea por área (g/cm²) en la columna lumbar y la cadera, y en el antebrazo si esos sitios no se pueden medir. Se compara con dos referencias:\n\n- **[T-score](glosario:t_score):** desviaciones estándar respecto de la media de adultos jóvenes sanos, de 20 a 29 años.\n- **[Z-score](glosario:z_score):** desviaciones estándar respecto de personas de la misma edad y sexo.\n\n**Categoría de la OMS (mujeres posmenopáusicas y hombres de 50 años o más)** y **T-score**:\n\n- **Normal:** −1,0 o más\n- **[Baja masa ósea](glosario:baja_masa_osea_osteopenia) (osteopenia):** Entre −1,0 y −2,5\n- **Osteoporosis:** −2,5 o menos\n- **Osteoporosis grave (establecida):** −2,5 o menos y una o más [fracturas por fragilidad](glosario:fractura_por_fragilidad)\n\nEn mujeres premenopáusicas, hombres menores de 50 años y niños se prefiere el Z-score. Un valor de −2,0 o menor se describe como «por debajo del rango esperado para la edad»; no se diagnostica osteoporosis solo por la densidad."
-        },
-        {
-          "id": "c_atencion_la_dxa_es_una_proyeccion",
-          "tipo": "callout",
-          "variante": "atencion",
-          "markdown": "La DXA es una proyección en dos dimensiones. Los osteofitos, las calcificaciones de la aorta y los cambios degenerativos pueden elevar de forma falsa la densidad de la columna en personas mayores, y no mide la calidad del hueso. Una parte considerable de las fracturas por fragilidad ocurre con un T-score por encima de −2,5."
-        },
-        {
-          "id": "c_clinico_una_fractura_por",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "Una fractura por fragilidad de cadera o de vértebra (por una caída desde la altura de pie o menos) permite diagnosticar osteoporosis, sea cual sea el T-score."
-        },
-        {
-          "id": "t_frax_y_factores_de_riesgo",
-          "tipo": "texto",
-          "titulo": "FRAX y factores de riesgo",
-          "markdown": "[FRAX](glosario:frax) estima la probabilidad a 10 años de una fractura osteoporótica mayor (columna clínica, cadera, antebrazo o húmero) y de una fractura de cadera, en personas de 40 a 90 años. Combina edad, sexo, índice de masa corporal y estos factores: fractura previa por fragilidad, fractura de cadera en los padres, tabaquismo actual, glucocorticoides sistémicos, artritis reumatoide, otras causas de osteoporosis secundaria y alcohol (tres o más unidades al día). El T-score del cuello femoral es opcional. Cada país fija sus umbrales de intervención.\n\n**Grupo** y **Ejemplos**:\n\n- **No modificables:** Edad, sexo femenino, menopausia, fractura de cadera en los padres, fractura previa por fragilidad\n- **Modificables:** Tabaquismo, alcohol elevado, sedentarismo o inmovilización, bajo peso, poco calcio, déficit de vitamina D, caídas\n- **Enfermedades:** Hipertiroidismo, hiperparatiroidismo, hipogonadismo, artritis reumatoide, diabetes, enfermedad celíaca, enfermedad renal crónica\n- **Fármacos:** Glucocorticoides sistémicos prolongados, inhibidores de la aromatasa, deprivación de andrógenos"
-        },
-        {
-          "id": "c_dato_segun_la_international",
-          "tipo": "callout",
-          "variante": "dato",
-          "markdown": "Según la International Osteoporosis Foundation, aproximadamente 1 de cada 3 mujeres y 1 de cada 5 hombres mayores de 50 años sufrirá una fractura osteoporótica a lo largo de la vida."
-        },
-        {
-          "id": "c_clinico_el_odontologo_no_pide_una",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "El odontólogo no pide una DXA, pero puede ver una pista. En la radiografía panorámica, una cortical inferior de la mandíbula delgada o erosionada puede sugerir baja densidad ósea y ser motivo para remitir al paciente a su médico. No diagnostica osteoporosis (sección 6.4)."
-        },
-        {
-          "id": "t_osteoporosis_6",
-          "tipo": "texto",
-          "markdown": "Explora ahora la comparación entre hueso normal y osteoporótico, relaciona los factores de riesgo con su mecanismo y, si quieres, practica el diagnóstico."
         },
         {
           "tipo": "actividad",
           "actividad": {
-            "id": "m6_3_multicapa_normal_osteoporotico",
-            "tipo": "exploracion-3d",
-            "titulo": "Hueso normal frente a hueso osteoporótico",
-            "instrucciones": "Gira el modelo con un dedo y acércalo con dos (en escritorio, arrastra con el ratón y usa la rueda): a la izquierda, hueso normal; a la derecha, osteoporótico, a la misma escala. Arriba, un cuerpo vertebral serrado; abajo, la diáfisis de un hueso largo cortada. Toca cada estructura para leer qué muestra. Con teclado, Tab y Enter, o usa la lista bajo el modelo. Visita las cinco requeridas.",
-            "obligatoria": true,
-            "puntaje_max": 30,
-            "retroalimentacion": {
-              "correcta": "Muy bien. Ya ves que la osteoporosis no es solo menos mineral: cambian la arquitectura de las trabéculas, el grosor y la porosidad de la cortical, y el riesgo de fractura.",
-              "incorrecta": "Todavía quedan capas por visitar. Compara siempre el panel normal con el osteoporótico: fíjate en la conectividad de las trabéculas y en el grosor de la cortical."
-            },
-            "concepto": "Osteoporosis: calidad frente a cantidad",
-            "config": {
-              "modelo": "hueso_osteoporotico",
-              "alt": "Modelo tridimensional con dos pares a la misma escala, normal a la izquierda y osteoporótico a la derecha: cuerpo vertebral en corte sagital (red trabecular densa frente a trabéculas finas y rotas, con aplastamiento en cuña) y diáfisis en corte transversal (cortical gruesa o delgada y porosa).",
-              "nodos": [
-                {
-                  "id": "trabeculas_normales",
-                  "etiqueta": "Trabéculas conectadas (hueso normal)",
-                  "descripcion": "En el hueso normal, las trabéculas verticales y horizontales forman una red interconectada que reparte la carga y se apoya entre sí."
-                },
-                {
-                  "id": "trabeculas_osteoporoticas",
-                  "etiqueta": "Trabéculas adelgazadas (hueso osteoporótico)",
-                  "descripcion": "Las trabéculas se adelgazan y se pierden primero las horizontales. Las verticales quedan largas y sin apoyo, y resisten peor el pandeo."
-                },
-                {
-                  "id": "perforacion_trabecular",
-                  "etiqueta": "Trabécula perforada o desconectada",
-                  "descripcion": "Cuando una trabécula se perfora o se rompe, se pierde conectividad. Es un daño de la arquitectura que la DXA no mide directamente y que reduce la resistencia más de lo que sugiere la pérdida de masa."
-                },
-                {
-                  "id": "cortical_normal",
-                  "etiqueta": "Cortical gruesa (hueso normal)",
-                  "descripcion": "Cortical continua y gruesa, con pocos poros. Resiste bien la flexión y la torsión."
-                },
-                {
-                  "id": "cortical_adelgazada",
-                  "etiqueta": "Cortical adelgazada",
-                  "descripcion": "La reabsorción desde la cara interna adelgaza la cortical. Baja la resistencia, sobre todo a la flexión."
-                },
-                {
-                  "id": "porosidad_cortical",
-                  "etiqueta": "Porosidad cortical aumentada",
-                  "descripcion": "El remodelado aumentado dentro de la cortical ensancha los conductos y deja poros. La cortical pierde masa y resistencia."
-                },
-                {
-                  "id": "cavidad_medular_ampliada",
-                  "etiqueta": "Cavidad medular ampliada",
-                  "descripcion": "Con la edad la cavidad crece por reabsorción desde su cara interna. El hueso que se forma en la superficie externa (periostio) compensa en parte, pero no basta."
-                },
-                {
-                  "id": "colapso_vertebral",
-                  "etiqueta": "Aplastamiento vertebral (fractura por fragilidad)",
-                  "descripcion": "Fractura típica de la osteoporosis: el cuerpo vertebral se comprime con cargas cotidianas. Puede pasar inadvertida y sumarse hasta causar una joroba (cifosis) y pérdida de estatura."
-                }
-              ],
-              "requeridos": [
-                "trabeculas_normales",
-                "trabeculas_osteoporoticas",
-                "perforacion_trabecular",
-                "cortical_adelgazada",
-                "colapso_vertebral"
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_3_trabecular_3d",
-            "tipo": "exploracion-3d",
-            "titulo": "Un cubo de hueso trabecular que envejece, en 3D",
-            "instrucciones": "Mueve el deslizador o pulsa Reproducir para ver envejecer un cubo de hueso trabecular de los 30 a los 80 años; al final, una carga lo comprime junto al cubo joven. Gira la escena con un dedo y acércala con dos. Visita los siete pasos: detén el deslizador en ellos o pasa por ellos.",
-            "obligatoria": false,
-            "puntaje_max": 30,
-            "retroalimentacion": {
-              "correcta": "Recorriste el envejecimiento del hueso trabecular: recambio equilibrado, balance negativo que adelgaza las trabéculas, perforación de las placas, pérdida de las barras horizontales y, al final, un cubo que se aplasta donde el joven apenas cede. Recuerda: la DMO mide la cantidad; la conectividad de la red, la calidad."
-            },
-            "concepto": "Osteoporosis en 3D: adelgazamiento, perforación y desconexión trabecular; calidad frente a cantidad",
-            "config": {
-              "modelo": "procedural",
-              "escena": "hueso_trabecular_tiempo",
-              "alt": "Escena 3D esquemática: un cubo de hueso trabecular con una cortical fina envejece de los 30 a los 80 años; las trabéculas se adelgazan, se perforan y se desconectan. Al final, junto al cubo joven, una flecha comprime ambos y el osteoporótico se aplasta. Se gira, se acerca y se recorre.",
-              "linea_de_tiempo": {
-                "pasos": [
-                  {
-                    "id": "paso_joven",
-                    "t": 0,
-                    "titulo": "A los 30: pico de masa ósea",
-                    "vista": "general",
-                    "texto": "Un cubo de hueso trabecular, como una biopsia de cresta ilíaca o de cuerpo vertebral, con su fina **cortical** encima. Las **placas** verticales siguen la carga y las **barras** horizontales las arriostran: una red densa y conectada. Hacia los 30 años se alcanza el [pico de masa ósea](glosario:masa_osea_maxima_pico_de_masa_osea). En la cara frontal trabajan tres BMU: osteoclastos en un hoyo y osteoblastos rellenando otros dos."
-                  },
-                  {
-                    "id": "paso_equilibrio",
-                    "t": 0.17,
-                    "titulo": "Recambio equilibrado",
-                    "vista": "detalle",
-                    "texto": "Acércate a las BMU. Cada hoyo que excavan los **osteoclastos** lo rellenan después los **osteoblastos** con osteoide, que se mineraliza. Mientras lo que se quita y lo que se pone coinciden, la red no cambia: es el recambio **equilibrado** del adulto joven, que renueva el hueso trabecular más deprisa que el cortical porque tiene mucha más superficie en contacto con la médula."
-                  },
-                  {
-                    "id": "paso_adelgazamiento",
-                    "t": 0.34,
-                    "titulo": "Balance negativo: trabéculas más finas",
-                    "vista": "detalle",
-                    "texto": "Con la edad, y de forma más brusca con el déficit de estrógenos de la menopausia, cada ciclo repone **menos hueso del que quita**: los hoyos quedan a medio rellenar. Sumados miles de ciclos, todas las trabéculas se **adelgazan**. La [DMO](glosario:densidad_mineral_osea_dmo) empieza a bajar, pero la red todavía está conectada."
-                  },
-                  {
-                    "id": "paso_perforacion",
-                    "t": 0.5,
-                    "titulo": "Placas perforadas, barras cortadas",
-                    "vista": "corte",
-                    "texto": "Cuando un hoyo profundo alcanza una placa ya fina, la **perfora**: la placa se convierte en un marco de barras y deja de repartir la carga como superficie. Algunas **barras horizontales** se cortan por el mismo mecanismo. Cada perforación es un daño de arquitectura que la [DXA](glosario:dxa) no distingue de una simple pérdida de masa."
-                  },
-                  {
-                    "id": "paso_desconexion",
-                    "t": 0.66,
-                    "titulo": "Desconexión: la calidad antes que la cantidad",
-                    "vista": "general",
-                    "texto": "Se pierden **barras horizontales enteras**, primero las que ya eran finas. Las placas verticales quedan largas y sin arriostrar, y una columna sin apoyos laterales pandea con mucho menos esfuerzo. Perder **conectividad** quita más resistencia que perder la misma masa repartida por toda la red: es la diferencia entre **calidad** y **cantidad**."
-                  },
-                  {
-                    "id": "paso_osteoporosis",
-                    "t": 0.83,
-                    "titulo": "Osteoporosis: compara con el cubo joven",
-                    "vista": "comparacion",
-                    "texto": "A la izquierda, el cubo de los 30 años como fantasma. El envejecido tiene trabéculas finas, muchas desconectadas, una **cortical** más delgada y porosa y una médula más grasa ([adipogénesis medular](glosario:adipogenesis_medular)). Ese es el hueso de la [osteoporosis](glosario:osteoporosis): menos masa (DMO y [T-score](glosario:t_score) bajos) y peor microarquitectura."
-                  },
-                  {
-                    "id": "paso_carga",
-                    "t": 1,
-                    "titulo": "Carga: el cubo frágil se aplasta",
-                    "vista": "comparacion",
-                    "texto": "Una misma fuerza comprime los dos cubos. El joven apenas se deforma; el osteoporótico se **aplasta** y algunas trabéculas se rompen (en rojo: [microfracturas](glosario:microdano_microfisura)). Así ocurre la [fractura por fragilidad](glosario:fractura_por_fragilidad): el aplastamiento vertebral, la cadera, la muñeca. La DMO mide la cantidad; la microarquitectura, la calidad."
-                  }
-                ]
-              },
-              "requeridos": [
-                "paso_joven",
-                "paso_equilibrio",
-                "paso_adelgazamiento",
-                "paso_perforacion",
-                "paso_desconexion",
-                "paso_osteoporosis",
-                "paso_carga"
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_3_relacion_factores",
+            "id": "m6_1_capacidad_formar",
             "tipo": "relacion-columnas",
-            "titulo": "Une cada factor de riesgo con su mecanismo",
-            "instrucciones": "Toca un factor de riesgo de la columna izquierda y luego el mecanismo que le corresponde en la derecha (también puedes arrastrar el factor sobre su mecanismo; con teclado, elige con Enter y desplázate con las flechas). Cada factor tiene un mecanismo dominante: elige el que mejor lo describe. Hay dos mecanismos de más que no corresponden a ningún factor.",
+            "titulo": "¿Quién está perdiendo capacidad de formar hueso?",
+            "instrucciones": "Relaciona cada cambio celular con su posible consecuencia.",
             "obligatoria": true,
-            "puntaje_max": 40,
+            "puntaje_max": 20,
             "retroalimentacion": {
-              "correcta": "Correcto. Cada factor de riesgo actúa sobre un mecanismo que ya conoces: el eje RANKL/OPG, los osteoblastos y osteocitos, la carga mecánica, el calcio, el recambio o la calidad de la matriz.",
-              "incorrecta": "Alguna unión no es correcta. Pregúntate cuál es el mecanismo dominante de cada factor: los estrógenos sobre RANKL/OPG, los glucocorticoides sobre la formación, la carga sobre el osteocito y la esclerostina, la tiroides sobre el ritmo del ciclo y el azúcar sobre el colágeno."
+              "correcta": "Correcto: El envejecimiento puede modificar la disponibilidad, proliferación y diferenciación de los progenitores osteogénicos, favorecer la diferenciación adipocítica y reducir la actividad de los osteoblastos; esto limita el relleno de las superficies resorbidas y favorece un balance negativo.",
+              "incorrecta": "Revisa la explicación y vuelve a leer la sección."
             },
-            "concepto": "Factores de riesgo y mecanismo",
+            "concepto": "Envejecimiento de las células formadoras",
             "config": {
               "columna_a": {
-                "titulo": "Factor de riesgo",
+                "titulo": "Cambio celular",
                 "elementos": [
                   {
-                    "id": "f_estrogenos",
-                    "texto": "Déficit de estrógenos tras la menopausia"
+                    "id": "m6_1_capacidad_formar_a1",
+                    "texto": "Menor disponibilidad de progenitores osteogénicos."
                   },
                   {
-                    "id": "f_glucocorticoides",
-                    "texto": "Glucocorticoides sistémicos prolongados"
+                    "id": "m6_1_capacidad_formar_a2",
+                    "texto": "Menor capacidad de diferenciación osteogénica."
                   },
                   {
-                    "id": "f_inmovilizacion",
-                    "texto": "Inmovilización prolongada (reposo en cama)"
+                    "id": "m6_1_capacidad_formar_a3",
+                    "texto": "Mayor tendencia adipocítica en determinados contextos."
                   },
                   {
-                    "id": "f_vitamina_d",
-                    "texto": "Deficiencia de vitamina D"
-                  },
-                  {
-                    "id": "f_hipertiroidismo",
-                    "texto": "Hipertiroidismo no tratado"
-                  },
-                  {
-                    "id": "f_diabetes",
-                    "texto": "Diabetes tipo 2 de larga evolución"
+                    "id": "m6_1_capacidad_formar_a4",
+                    "texto": "Menor actividad de osteoblastos."
                   }
                 ]
               },
               "columna_b": {
-                "titulo": "Mecanismo",
+                "titulo": "Consecuencia",
                 "elementos": [
                   {
-                    "id": "m_rankl_opg",
-                    "texto": "Se retira un freno hormonal sobre RANKL y las citocinas: sube la relación RANKL/OPG y se forman más osteoclastos."
+                    "id": "m6_1_capacidad_formar_b1",
+                    "texto": "Menor número de células disponibles para formar hueso."
                   },
                   {
-                    "id": "m_osteoblastos",
-                    "texto": "Predomina la supresión de la formación: menos osteoblastos y más apoptosis de osteoblastos y osteocitos, con recambio bajo."
+                    "id": "m6_1_capacidad_formar_b2",
+                    "texto": "Menor generación de osteoblastos funcionales."
                   },
                   {
-                    "id": "m_esclerostina",
-                    "texto": "Sin carga, el osteocito aumenta la esclerostina y baja la formación."
+                    "id": "m6_1_capacidad_formar_b3",
+                    "texto": "Modificación del equilibrio entre los linajes celulares de la médula."
                   },
                   {
-                    "id": "m_calcio_pth",
-                    "texto": "Menos absorción de calcio, hiperparatiroidismo secundario y más reabsorción."
-                  },
-                  {
-                    "id": "m_recambio",
-                    "texto": "Acorta y acelera cada ciclo de remodelado por un efecto directo de la hormona, sin que el eje RANKL/OPG sea la causa principal."
-                  },
-                  {
-                    "id": "m_age",
-                    "texto": "Más AGE en el colágeno: hueso más frágil aunque la densidad sea normal o alta."
-                  },
-                  {
-                    "id": "d_distractor_opg",
-                    "texto": "Aumenta la OPG, que frena a los osteoclastos y protege el hueso."
-                  },
-                  {
-                    "id": "d_distractor_carga",
-                    "texto": "Mayor carga mecánica: baja la esclerostina y aumenta la formación."
+                    "id": "m6_1_capacidad_formar_b4",
+                    "texto": "Menor cantidad de matriz depositada durante cada ciclo."
                   }
                 ]
               },
               "pares": [
                 {
-                  "id": "par_f_estrogenos",
-                  "a": "f_estrogenos",
-                  "b": "m_rankl_opg",
-                  "explicacion": "Los estrógenos son un freno hormonal sobre RANKL y las citocinas. Sin ellos, RANKL y el TNF-α aumentan y la relación RANKL/OPG sube: más osteoclastos y remodelado acelerado. También hay más apoptosis de osteoblastos y osteocitos, pero lo que define este factor es el desbalance RANKL/OPG."
+                  "id": "m6_1_capacidad_formar_p1",
+                  "a": "m6_1_capacidad_formar_a1",
+                  "b": "m6_1_capacidad_formar_b1",
+                  "explicacion": "El envejecimiento puede modificar la disponibilidad, proliferación y diferenciación de los progenitores osteogénicos, favorecer la diferenciación adipocítica y reducir la actividad de los osteoblastos; esto limita el relleno de las superficies resorbidas y favorece un balance negativo."
                 },
                 {
-                  "id": "par_f_glucocorticoides",
-                  "a": "f_glucocorticoides",
-                  "b": "m_osteoblastos",
-                  "explicacion": "Los glucocorticoides en exceso reducen la formación de osteoblastos y favorecen la apoptosis de osteoblastos y osteocitos, con recambio bajo. Al inicio también aumentan RANKL y bajan la OPG, pero su rasgo dominante es la supresión de la formación."
+                  "id": "m6_1_capacidad_formar_p2",
+                  "a": "m6_1_capacidad_formar_a2",
+                  "b": "m6_1_capacidad_formar_b2",
+                  "explicacion": "El envejecimiento puede modificar la disponibilidad, proliferación y diferenciación de los progenitores osteogénicos, favorecer la diferenciación adipocítica y reducir la actividad de los osteoblastos; esto limita el relleno de las superficies resorbidas y favorece un balance negativo."
                 },
                 {
-                  "id": "par_f_inmovilizacion",
-                  "a": "f_inmovilizacion",
-                  "b": "m_esclerostina",
-                  "explicacion": "Sin carga, el osteocito aumenta la esclerostina, que frena la vía Wnt y la formación. Es el camino inverso al del ejercicio."
+                  "id": "m6_1_capacidad_formar_p3",
+                  "a": "m6_1_capacidad_formar_a3",
+                  "b": "m6_1_capacidad_formar_b3",
+                  "explicacion": "El envejecimiento puede modificar la disponibilidad, proliferación y diferenciación de los progenitores osteogénicos, favorecer la diferenciación adipocítica y reducir la actividad de los osteoblastos; esto limita el relleno de las superficies resorbidas y favorece un balance negativo."
                 },
                 {
-                  "id": "par_f_vitamina_d",
-                  "a": "f_vitamina_d",
-                  "b": "m_calcio_pth",
-                  "explicacion": "Sin vitamina D se absorbe menos calcio en el intestino; la PTH sube para compensar (hiperparatiroidismo secundario) y moviliza calcio del hueso."
-                },
-                {
-                  "id": "par_f_hipertiroidismo",
-                  "a": "f_hipertiroidismo",
-                  "b": "m_recambio",
-                  "explicacion": "El exceso de hormona tiroidea actúa de forma directa sobre las células óseas: acorta y acelera el ciclo de remodelado, la reabsorción supera a la formación y se pierde hueso. Su mecanismo no pasa por un cambio primario del eje RANKL/OPG."
-                },
-                {
-                  "id": "par_f_diabetes",
-                  "a": "f_diabetes",
-                  "b": "m_age",
-                  "explicacion": "En la diabetes se acumulan AGE en el colágeno. Se propone que reducen la tenacidad de la matriz, lo que explicaría el mayor riesgo de fractura con una densidad normal o alta."
+                  "id": "m6_1_capacidad_formar_p4",
+                  "a": "m6_1_capacidad_formar_a4",
+                  "b": "m6_1_capacidad_formar_b4",
+                  "explicacion": "El envejecimiento puede modificar la disponibilidad, proliferación y diferenciación de los progenitores osteogénicos, favorecer la diferenciación adipocítica y reducir la actividad de los osteoblastos; esto limita el relleno de las superficies resorbidas y favorece un balance negativo."
                 }
               ],
               "barajar": true
@@ -1564,742 +528,242 @@
         {
           "tipo": "actividad",
           "actividad": {
-            "id": "m6_3_quiz_diagnostico",
+            "id": "m6_1_evaluacion",
             "tipo": "quiz",
-            "titulo": "Practica el diagnóstico y el riesgo",
-            "instrucciones": "Responde las cuatro preguntas. Tras cada respuesta verás la explicación. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Esta actividad es opcional.",
-            "obligatoria": false,
-            "puntaje_max": 30,
-            "retroalimentacion": {
-              "correcta": "Correcto. Distingues el T-score del Z-score, sabes que la DXA mide cantidad y no calidad, y entiendes qué aporta FRAX.",
-              "incorrecta": "Revisa la tabla de categorías de la OMS y la diferencia entre T-score y Z-score. Recuerda que la densidad no agota la calidad del hueso."
-            },
-            "concepto": "Criterios densitométricos y riesgo de fractura",
-            "config": {
-              "preguntas": [
-                {
-                  "id": "m6_3_q1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Una mujer de 62 años tiene un T-score de −2,7 en el cuello femoral y ninguna fractura previa. ¿Qué categoría de la OMS corresponde?",
-                  "opciones": [
-                    {
-                      "id": "m6_3_q1_a",
-                      "texto": "Normal"
-                    },
-                    {
-                      "id": "m6_3_q1_b",
-                      "texto": "Baja masa ósea (osteopenia)"
-                    },
-                    {
-                      "id": "m6_3_q1_c",
-                      "texto": "Osteoporosis"
-                    },
-                    {
-                      "id": "m6_3_q1_d",
-                      "texto": "Osteoporosis grave"
-                    }
-                  ],
-                  "correctas": ["m6_3_q1_c"],
-                  "explicacion": "Un T-score de −2,5 o menos indica osteoporosis. La osteoporosis grave (establecida) exige además una o más fracturas por fragilidad, que aquí no hay.",
-                  "concepto": "Criterios densitométricos (T-score)",
-                  "dificultad": 1
-                },
-                {
-                  "id": "m6_3_q2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿En qué grupo se prefiere el Z-score en lugar del T-score?",
-                  "opciones": [
-                    {
-                      "id": "m6_3_q2_a",
-                      "texto": "Mujeres posmenopáusicas mayores de 70 años, con o sin fracturas"
-                    },
-                    {
-                      "id": "m6_3_q2_b",
-                      "texto": "Hombres de 50 años o más con factores de riesgo de fractura"
-                    },
-                    {
-                      "id": "m6_3_q2_c",
-                      "texto": "Mujeres posmenopáusicas con una fractura previa de cadera por fragilidad"
-                    },
-                    {
-                      "id": "m6_3_q2_d",
-                      "texto": "Mujeres premenopáusicas, hombres menores de 50 años y niños"
-                    }
-                  ],
-                  "correctas": ["m6_3_q2_d"],
-                  "explicacion": "Los criterios de la OMS con T-score se aplican a mujeres posmenopáusicas y hombres de 50 años o más. En los demás grupos se compara con personas de la misma edad y sexo (Z-score).",
-                  "concepto": "Z-score",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_3_q3",
-                  "formato": "verdadero_falso",
-                  "enunciado": "Una DXA normal descarta que el hueso tenga alteraciones de calidad que aumenten el riesgo de fractura.",
-                  "correcta": false,
-                  "explicacion": "Es falso. La DXA mide la densidad (cantidad), no la microarquitectura, el microdaño ni la calidad de la matriz. Hay fracturas por fragilidad con un T-score normal o en el rango de baja masa ósea.",
-                  "concepto": "Calidad ósea y DXA",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_3_q4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué estima la herramienta FRAX?",
-                  "opciones": [
-                    {
-                      "id": "m6_3_q4_a",
-                      "texto": "La probabilidad a 10 años de una fractura osteoporótica mayor y de una de cadera."
-                    },
-                    {
-                      "id": "m6_3_q4_b",
-                      "texto": "El valor del T-score que tendrá la persona dentro de diez años, según su edad y sexo."
-                    },
-                    {
-                      "id": "m6_3_q4_c",
-                      "texto": "La velocidad anual de pérdida de masa ósea medida en dos DXA sucesivas."
-                    },
-                    {
-                      "id": "m6_3_q4_d",
-                      "texto": "El grosor de la cortical mandibular medido en una radiografía panorámica."
-                    }
-                  ],
-                  "correctas": ["m6_3_q4_a"],
-                  "explicacion": "FRAX combina la edad, el sexo, el índice de masa corporal y factores clínicos de riesgo, con o sin el T-score del cuello femoral, para estimar la probabilidad de fractura a 10 años.",
-                  "concepto": "FRAX",
-                  "dificultad": 2
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "m6_4_mandibula_y_tiempo",
-      "titulo": "La mandíbula con los años",
-      "bloques": [
-        {
-          "id": "t_mandibula_y_tiempo",
-          "tipo": "texto",
-          "markdown": "En la mandíbula, el paso del tiempo depende mucho de lo que ocurra con los dientes. El hueso alveolar existe para sostenerlos y, cuando se pierden, cambia.\n\n#### El hueso alveolar depende del diente\n\nDiente, ligamento periodontal y hueso alveolar forman una unidad funcional. Las fibras del ligamento se insertan en la pared del alvéolo, el [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) (también llamado hueso fasciculado o *bundle bone*), y le transmiten las cargas de la masticación. Sin diente, esa carga desaparece y el hueso se adapta a la baja: se reabsorbe. Es el principio de adaptación a la carga (mecanostato, módulo 3) aplicado a la mandíbula."
-        },
-        {
-          "id": "c_recuerda_el_hueso_alveolar_propio",
-          "tipo": "callout",
-          "variante": "recuerda",
-          "markdown": "El hueso alveolar propio depende del diente; el hueso basal de la mandíbula, no."
-        },
-        {
-          "id": "i_reborde_alveolar_cascada",
-          "tipo": "imagen",
-          "src": "/images/m6/m6_reborde_alveolar_cascada.svg",
-          "figura": "/images/m6/m6_reborde_alveolar_cascada_figura.webp",
-          "alt": "Cortes transversales de la región posterior de la mandíbula en seis etapas, desde el diente presente hasta el reborde deprimido",
-          "pie": "Figura 6.4. Etapas del reborde alveolar (esquema). Equivalen a las clases I a VI de Cawood y Howell."
-        },
-        {
-          "id": "t_la_cascada_tras_la_perdida_de_un_diente",
-          "tipo": "texto",
-          "titulo": "La cascada tras la pérdida de un diente",
-          "markdown": "Tras la extracción, el alvéolo se llena de coágulo y el ligamento desaparece. El hueso alveolar propio se reabsorbe en las primeras semanas y se reemplaza por hueso nuevo inmaduro. En sitios anteriores y premolares, la pared más delgada, a menudo la vestibular, pierde más, y la reabsorción sigue desde las superficies externas. El reborde se estrecha y desciende, sobre todo en los primeros 3 a 6 meses: en una revisión sistemática (con sitios mixtos, en su mayoría no molares), a los 6 meses la pérdida fue de 29 a 63 % del ancho y de 11 a 22 % de la altura, con medias de aproximadamente 3,8 mm y 1,2 mm. Después sigue despacio durante años, más si una prótesis mucosoportada carga el reborde de forma no fisiológica. En la región anterior, la mandíbula se reabsorbe unas cuatro veces más que el maxilar."
-        },
-        {
-          "id": "t_mandibula_y_tiempo_2",
-          "tipo": "texto",
-          "markdown": "Clases de [**Cawood y Howell**](glosario:clasificacion_de_cawood_y_howell) y forma del reborde en cada una:\n\n- **I:** Con dientes\n- **II:** Inmediatamente después de la extracción\n- **III:** Redondeado, con altura y ancho adecuados\n- **IV:** En filo de cuchillo\n- **V:** Plano\n- **VI:** Deprimido, con pérdida de hueso basal\n\nEn la [atrofia severa](glosario:atrofia_mandibular) hay prótesis inestables, foramen mentoniano cerca de la cresta (dolor o parestesia del labio bajo la prótesis), línea milohioidea prominente bajo una mucosa delgada y un hueso basal delgado que se fractura con poca fuerza."
-        },
-        {
-          "id": "c_clinico_preservar_el_alveolo_tras",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "Preservar el alvéolo tras la extracción reduce la pérdida del reborde, sin eliminarla. Los implantes, al transmitir carga al hueso, tienden a conservarlo mejor que una prótesis mucosoportada."
-        },
-        {
-          "id": "t_osteoporosis_y_perdida_de_dientes",
-          "tipo": "texto",
-          "titulo": "Osteoporosis y pérdida de dientes",
-          "markdown": "Las personas con menor densidad ósea suelen tener más pérdida de soporte periodontal y de dientes, y las revisiones en mujeres posmenopáusicas encuentran asociación entre baja densidad ósea y periodontitis. Pero no está demostrado que la osteoporosis cause la pérdida dentaria: la edad, el tabaco, la nutrición y la vitamina D son factores compartidos, y los factores locales (placa, periodontitis, caries, prótesis) pesan mucho. En la radiografía panorámica, la cortical inferior a la altura del foramen mentoniano y por detrás de él (su ancho y el índice de [Klemetti](glosario:indice_de_klemetti_indice_cortical_mandibular): C1 normal, C2 erosión leve o moderada, C3 erosión severa) puede llevar al odontólogo a sospechar baja densidad ósea y remitir al paciente. No diagnostica osteoporosis y su rendimiento es moderado."
-        },
-        {
-          "id": "t_la_articulacion_temporomandibular",
-          "tipo": "texto",
-          "titulo": "La articulación temporomandibular",
-          "markdown": "Las superficies de la [articulación temporomandibular](glosario:articulacion_temporomandibular_atm) (ATM) están cubiertas por fibrocartílago, no por cartílago hialino, y entre ellas hay un disco articular."
-        },
-        {
-          "id": "i_atm_cambios_degenerativos",
-          "tipo": "imagen",
-          "src": "/images/m6/m6_atm_cambios_degenerativos.svg",
-          "figura": "/images/m6/m6_atm_cambios_degenerativos_figura.webp",
-          "alt": "Corte sagital de la articulación temporomandibular, normal y con cambios degenerativos",
-          "pie": "Figura 6.5. ATM normal y con cambios degenerativos (esquema)."
-        },
-        {
-          "id": "t_mandibula_y_tiempo_3",
-          "tipo": "texto",
-          "markdown": "Con los años se remodela: el cóndilo puede mostrar aplanamiento, esclerosis subcondral, osteofitos o erosiones, y el disco puede adelgazarse, perforarse o desplazarse. La [osteoartrosis](glosario:osteoartrosis_de_la_atm) es más frecuente con la edad, y en muchas personas mayores los hallazgos de imagen no producen síntomas. Si duele, el manejo inicial es conservador. El papel de la pérdida de dientes posteriores y de las hormonas está en discusión."
-        },
-        {
-          "id": "c_atencion_un_cambio_visto_en_una",
-          "tipo": "callout",
-          "variante": "atencion",
-          "markdown": "Un cambio visto en una imagen no siempre es una enfermedad, porque el remodelado adaptativo es frecuente. Se trata al paciente y sus síntomas, no la imagen."
-        },
-        {
-          "id": "t_mandibula_y_tiempo_4",
-          "tipo": "texto",
-          "markdown": "Ordena ahora la cascada del reborde, explora la mandíbula en 3D y, si quieres, comprueba lo aprendido."
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_4_ordenar_reborde",
-            "tipo": "quiz",
-            "titulo": "Ordena la cascada del reborde alveolar",
-            "instrucciones": "Ordena los seis pasos que siguen a la pérdida de un diente, desde el primer hecho hasta la atrofia severa. Cada paso indica en qué momento ocurre: úsalo para ordenarlos. Toca los pasos en el orden correcto (o muévelos con el teclado: Enter para tomar un paso, flechas para subirlo o bajarlo, Enter para soltarlo). Al terminar verás el orden correcto y la ilustración de las etapas.",
+            "titulo": "Evaluación",
+            "instrucciones": "Responde cada pregunta. Al elegir tu respuesta verás si es correcta y por qué.",
             "obligatoria": true,
             "puntaje_max": 30,
             "retroalimentacion": {
-              "correcta": "Muy bien. Primero se pierde la carga que transmitía el diente, después se reabsorbe el hueso que dependía de ella y, con los meses y los años, cambia la forma del reborde.",
-              "incorrecta": "El orden no es correcto. Fíjate en el momento que indica cada paso: el día de la extracción, las primeras semanas, los primeros 3 a 6 meses, los años siguientes y, al final, la atrofia severa."
+              "correcta": "Muy bien: respondiste correctamente.",
+              "incorrecta": "Revisa la explicación y vuelve a leer la sección."
             },
-            "concepto": "Cascada de reabsorción del reborde alveolar",
+            "concepto": "Envejecimiento óseo",
             "config": {
               "preguntas": [
                 {
-                  "id": "m6_4_q_orden",
-                  "formato": "ordenar",
-                  "enunciado": "Ordena la cascada que sigue a la pérdida de un diente, desde el primer hecho hasta la atrofia severa del reborde.",
-                  "pasos": [
+                  "id": "m6_1_e1",
+                  "formato": "opcion_multiple",
+                  "enunciado": "Un estudiante afirma: «El envejecimiento siempre aumenta el número de osteoclastos y, por eso, la pérdida ósea se debe exclusivamente a una mayor resorción». ¿Cuál es la mejor evaluación de esta afirmación?",
+                  "opciones": [
                     {
-                      "id": "m6_4_q_orden_p1",
-                      "texto": "El día de la extracción, el alvéolo se llena de coágulo y el ligamento periodontal desaparece."
+                      "id": "m6_1_e1_a",
+                      "texto": "Es correcta, porque el envejecimiento aumenta universalmente la actividad osteoclástica."
                     },
                     {
-                      "id": "m6_4_q_orden_p2",
-                      "texto": "Desde ese momento, el hueso del alvéolo ya no recibe la carga que le transmitía el diente."
+                      "id": "m6_1_e1_b",
+                      "texto": "Es incorrecta, porque el comportamiento del linaje osteoclástico varía entre compartimentos y contextos; la pérdida ósea también puede relacionarse con una formación insuficiente y alteraciones del acoplamiento."
                     },
                     {
-                      "id": "m6_4_q_orden_p3",
-                      "texto": "En las primeras semanas, el hueso alveolar propio, que depende del diente, se reabsorbe y se reemplaza por hueso nuevo inmaduro."
+                      "id": "m6_1_e1_c",
+                      "texto": "Es correcta, porque los osteoblastos dejan de funcionar completamente durante el envejecimiento."
                     },
                     {
-                      "id": "m6_4_q_orden_p4",
-                      "texto": "En los primeros 3 a 6 meses, la reabsorción continúa desde las superficies externas, y el reborde se estrecha y desciende."
-                    },
-                    {
-                      "id": "m6_4_q_orden_p5",
-                      "texto": "Durante años, sin carga fisiológica, la reabsorción continúa despacio y el reborde se aplana."
-                    },
-                    {
-                      "id": "m6_4_q_orden_p6",
-                      "texto": "En la atrofia severa queda solo hueso basal delgado, con el foramen mentoniano cerca de la cresta y más riesgo de fractura."
+                      "id": "m6_1_e1_d",
+                      "texto": "Es incorrecta, porque los osteoclastos no participan en la pérdida ósea asociada a la edad."
                     }
                   ],
-                  "explicacion": "La secuencia sigue el tiempo: (1) el día de la extracción se pierde el diente y el ligamento; (2) desde entonces falta la carga que llegaba por el ligamento; (3) en las primeras semanas se reabsorbe el hueso alveolar propio, que depende del diente; (4) en los primeros 3 a 6 meses el reborde se estrecha y desciende; (5) durante años la reabsorción sigue despacio y el reborde se aplana; (6) en la atrofia severa solo queda el hueso basal. Los procesos se solapan en el tiempo y varían entre personas. Las etapas equivalen a las clases I a VI de Cawood y Howell.",
-                  "concepto": "Cascada de reabsorción del reborde alveolar",
-                  "dificultad": 2
-                }
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_4_mandibula_3d",
-            "tipo": "exploracion-3d",
-            "titulo": "La mandíbula con los años en 3D",
-            "instrucciones": "Gira la mandíbula arrastrando con un dedo y acércala o aléjala con dos dedos. Toca cada punto luminoso para leer qué le ocurre a esa zona con el paso del tiempo. El modelo es una mandíbula adulta sin dientes; no muestra la atrofia, que se describe en el texto de cada punto. Visita los cuatro puntos requeridos.",
-            "obligatoria": true,
-            "puntaje_max": 20,
-            "retroalimentacion": {
-              "correcta": "Muy bien. Ya sabes en qué zonas de la mandíbula se notan la atrofia del reborde, la vecindad del nervio, la fragilidad del hueso basal y los cambios de la articulación.",
-              "incorrecta": "Todavía quedan puntos por visitar. Gira el modelo: algunas estructuras, como la línea milohioidea, están en la cara interna y otras, como el foramen mentoniano, en la externa."
-            },
-            "concepto": "Anatomía mandibular y envejecimiento",
-            "config": {
-              "modelo": "mandibula",
-              "alt": "Modelo tridimensional de la mandíbula que se puede girar y acercar; sus zonas se tocan para leer su ficha.",
-              "nodos": [
-                {
-                  "id": "apofisis_alveolar",
-                  "etiqueta": "Apófisis alveolar (reborde)",
-                  "descripcion": "Borde superior del cuerpo, donde se alojaban las raíces. Depende de los dientes: al perderse, el reborde se estrecha y desciende en la cascada que ordenaste. La mayor parte del cambio ocurre en los primeros 3 a 6 meses.",
-                  "ancla": {
-                    "x": 0.796,
-                    "y": 0.282,
-                    "z": 0.665
-                  }
+                  "correctas": ["m6_1_e1_b"],
+                  "explicacion": "El envejecimiento no implica un aumento universal y constante del número de osteoclastos; además, la pérdida ósea puede deberse a una alteración de la coordinación entre resorción y formación."
                 },
                 {
-                  "id": "foramen_mentoniano",
-                  "etiqueta": "Foramen mentoniano",
-                  "descripcion": "Abertura por la que sale el nervio mentoniano, a la altura de los premolares. Con la atrofia queda cerca de la cresta del reborde: la presión de una prótesis puede causar dolor o parestesia del labio y del mentón. También es el punto de referencia para medir la cortical inferior en la radiografía panorámica.",
-                  "ancla": {
-                    "x": 0.292,
-                    "y": 0.176,
-                    "z": 0.768
-                  }
-                },
-                {
-                  "id": "cuerpo",
-                  "etiqueta": "Cuerpo y borde inferior (hueso basal)",
-                  "descripcion": "El hueso basal se conserva mucho mejor que el alveolar, pero en la atrofia severa es casi lo único que queda. Su cortical inferior se estudia en la radiografía panorámica (ancho cortical, índice de Klemetti) para sospechar baja densidad ósea. Una mandíbula muy atrófica se puede fracturar con poca fuerza.",
-                  "ancla": {
-                    "x": 0.159,
-                    "y": 0.242,
-                    "z": 0.576
-                  }
-                },
-                {
-                  "id": "angulo",
-                  "etiqueta": "Ángulo",
-                  "descripcion": "Ahí se insertan el masetero por fuera y el pterigoideo medial por dentro. La masticación con dientes o implantes genera cargas que mantienen el hueso; en el edentulismo, la fuerza de mordida suele disminuir.",
-                  "ancla": {
-                    "x": 0.135,
-                    "y": 0.334,
-                    "z": 0.138
-                  }
-                },
-                {
-                  "id": "condilo",
-                  "etiqueta": "Cóndilo (proceso condilar)",
-                  "descripcion": "Cabeza articular de la ATM, recubierta de fibrocartílago. Con la edad puede remodelarse y mostrar aplanamiento, esclerosis subcondral, osteofitos o erosiones, sobre todo en la osteoartrosis. Muchos de estos hallazgos no producen síntomas.",
-                  "ancla": {
-                    "x": 0.915,
-                    "y": 1,
-                    "z": 0.052
-                  }
-                },
-                {
-                  "id": "linea_milohioidea",
-                  "etiqueta": "Línea milohioidea",
-                  "descripcion": "Cresta de la cara interna del cuerpo donde se inserta el músculo milohioideo. Cuando el reborde se reabsorbe queda prominente bajo una mucosa delgada: puede doler bajo una prótesis y es un sitio frecuente de exposición ósea en la osteonecrosis asociada a medicamentos.",
-                  "ancla": {
-                    "x": 0.628,
-                    "y": 0.21,
-                    "z": 0.677
-                  }
+                  "id": "m6_1_e2",
+                  "formato": "opcion_multiple",
+                  "enunciado": "Se estudian dos células óseas envejecidas. Célula A: progenitor osteogénico con arresto persistente del ciclo celular, daño celular y cambios en la secreción de mediadores. Célula B: osteocito que no se divide, pero conserva algunas de sus funciones. ¿Cuál afirmación es correcta?",
+                  "opciones": [
+                    {
+                      "id": "m6_1_e2_a",
+                      "texto": "Ambas células son necesariamente senescentes porque no se dividen."
+                    },
+                    {
+                      "id": "m6_1_e2_b",
+                      "texto": "La célula A presenta características compatibles con senescencia; la ausencia de división de la célula B no demuestra por sí sola este fenotipo."
+                    },
+                    {
+                      "id": "m6_1_e2_c",
+                      "texto": "La célula B es senescente porque los osteocitos nunca se dividen."
+                    },
+                    {
+                      "id": "m6_1_e2_d",
+                      "texto": "Ninguna puede presentar cambios asociados a senescencia porque pertenecen al tejido óseo."
+                    }
+                  ],
+                  "correctas": ["m6_1_e2_b"],
+                  "explicacion": "Los osteocitos son células posmitóticas, por lo que su ausencia de división no constituye evidencia suficiente de senescencia. Su identificación requiere considerar otros rasgos, como daño persistente, alteraciones funcionales y cambios del secretoma."
                 }
               ],
-              "requeridos": ["apofisis_alveolar", "foramen_mentoniano", "cuerpo", "condilo"]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_4_alveolo_3d",
-            "tipo": "exploracion-3d",
-            "titulo": "El alvéolo en 3D: de la extracción al reborde de años después",
-            "instrucciones": "Mueve el deslizador o pulsa Reproducir para ver qué pasa en el alvéolo de un premolar inferior desde la extracción hasta años después. Gira la escena con un dedo y acércala con dos; la vista «Corte» mira la sección vestibulolingual. El tiempo no es proporcional: cada paso dice si son horas, días, semanas, meses o años. Visita los ocho pasos.",
-            "obligatoria": false,
-            "puntaje_max": 30,
-            "retroalimentacion": {
-              "correcta": "Recorriste la cicatrización del alvéolo y la pérdida del reborde: coágulo en horas, granulación en días, hueso entretejido en semanas, hueso laminar en meses y, después, un reborde más bajo y estrecho con el conducto y el foramen mentoniano cerca de la superficie."
-            },
-            "concepto": "Cicatrización del alvéolo postextracción y reabsorción del reborde alveolar",
-            "config": {
-              "modelo": "procedural",
-              "escena": "alveolo_postextraccion",
-              "alt": "Escena 3D esquemática: un segmento del cuerpo mandibular cortado por un premolar. El diente sale, el alvéolo se llena de coágulo, granulación y hueso nuevo, y con los años el reborde baja y se estrecha hasta quedar cerca del conducto mandibular. Se gira, se acerca y se recorre con el deslizador.",
-              "linea_de_tiempo": {
-                "pasos": [
-                  {
-                    "id": "paso_diente",
-                    "t": 0,
-                    "titulo": "Diente en su alvéolo",
-                    "vista": "general",
-                    "texto": "Un premolar inferior en su alvéolo, en un corte vestibulolingual del cuerpo de la mandíbula. El ligamento periodontal (rosado) une la raíz al [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) (banda blanca y densa), rodeado de hueso trabecular y de las tablas corticales: la vestibular, más delgada. Abajo, el conducto mandibular con el nervio y los vasos; en la cara vestibular, el foramen mentoniano. Las formas son esquemáticas y no están a escala."
-                  },
-                  {
-                    "id": "paso_extraccion",
-                    "t": 0.14,
-                    "titulo": "Extracción: el alvéolo vacío",
-                    "vista": "alveolo",
-                    "texto": "El diente sale y el alvéolo queda vacío: quedan restos de ligamento en las paredes y sangran los vasos rotos del hueso alveolar propio. Desde este momento el hueso del alvéolo ya no recibe la carga que le llegaba por el ligamento, y eso decide lo que sigue."
-                  },
-                  {
-                    "id": "paso_coagulo",
-                    "t": 0.28,
-                    "titulo": "Horas: el coágulo",
-                    "vista": "alveolo",
-                    "texto": "En las primeras horas el alvéolo se llena de un **coágulo** de fibrina y células sanguíneas. Es el andamio de todo lo demás: protege el hueso expuesto y guía a las células que llegarán. Si se pierde (alveolitis), la cicatrización se retrasa y duele."
-                  },
-                  {
-                    "id": "paso_granulacion",
-                    "t": 0.42,
-                    "titulo": "Días: tejido de granulación",
-                    "vista": "alveolo",
-                    "texto": "En los primeros días, desde las paredes y el fondo, el **tejido de granulación** (rosado, lleno de vasos nuevos) sustituye al coágulo: vasos, fibroblastos y células inflamatorias que limpian los restos. Por arriba, el epitelio de la encía empieza a cerrar la herida."
-                  },
-                  {
-                    "id": "paso_hueso_entretejido",
-                    "t": 0.56,
-                    "titulo": "Semanas: hueso entretejido",
-                    "vista": "alveolo",
-                    "texto": "En las primeras semanas crece **hueso entretejido**, inmaduro y rosa pálido (muy vascular), desde el fondo y las paredes. Al mismo tiempo los osteoclastos (lila) reabsorben el [hueso alveolar propio](glosario:hueso_alveolar_propio_hueso_fasciculado_bundle) que sostenía al diente, sobre todo en la tabla vestibular, más delgada: es la primera pérdida del reborde."
-                  },
-                  {
-                    "id": "paso_maduracion",
-                    "t": 0.7,
-                    "titulo": "Meses: hueso laminar bajo la cortical",
-                    "vista": "corte",
-                    "texto": "Hacia los 3 a 6 meses el relleno se remodela a **hueso laminar**, con trabéculas y médula, cerrado por una cortical fina y por la encía: el alvéolo ya no se distingue del resto del hueso. Pero sin diente no hay carga funcional, y la reabsorción sigue desde las superficies externas."
-                  },
-                  {
-                    "id": "paso_reabsorcion_reborde",
-                    "t": 0.85,
-                    "titulo": "Primer año: el reborde baja y se estrecha",
-                    "vista": "reborde",
-                    "texto": "Durante el primer año el [reborde alveolar](glosario:reborde_alveolar) pierde altura y grosor, sobre todo en los primeros 3 a 6 meses. La tabla vestibular se pierde más, así que la cresta se estrecha (a los 6 meses queda un 40 a 60 % del ancho), baja y se desplaza hacia lingual. El conducto mandibular queda más cerca de la superficie."
-                  },
-                  {
-                    "id": "paso_reborde_final",
-                    "t": 1,
-                    "titulo": "Años después: reborde bajo",
-                    "vista": "reborde",
-                    "texto": "Años después queda un reborde bajo, plano (tras pasar por el filo de cuchillo) (clases IV y V de [Cawood y Howell](glosario:clasificacion_de_cawood_y_howell)), con el conducto casi en la cresta y el foramen mentoniano cerca de la superficie: prótesis inestables, dolor bajo ellas y poco hueso para implantes. Frenan la pérdida la preservación alveolar tras la extracción, un implante que transmita carga al hueso y evitar la carga no fisiológica de una prótesis mucosoportada."
-                  }
-                ]
-              },
-              "requeridos": [
-                "paso_diente",
-                "paso_extraccion",
-                "paso_coagulo",
-                "paso_granulacion",
-                "paso_hueso_entretejido",
-                "paso_maduracion",
-                "paso_reabsorcion_reborde",
-                "paso_reborde_final"
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_4_quiz_mandibula",
-            "tipo": "quiz",
-            "titulo": "Comprueba lo que aprendiste de la mandíbula",
-            "instrucciones": "Responde las cuatro preguntas. Tras cada respuesta verás la explicación. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Esta actividad es opcional.",
-            "obligatoria": false,
-            "puntaje_max": 20,
-            "retroalimentacion": {
-              "correcta": "Correcto. El hueso alveolar depende del diente, la relación entre osteoporosis y pérdida dentaria es una asociación, y la ATM se remodela con los años.",
-              "incorrecta": "Revisa la sección: el hueso alveolar propio depende del diente, la osteoporosis no es una causa demostrada de pérdida dentaria y no todo cambio de la ATM en una imagen es una enfermedad."
-            },
-            "concepto": "Cambios de la mandíbula con la edad",
-            "config": {
-              "preguntas": [
-                {
-                  "id": "m6_4_q1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Por qué se reabsorbe el hueso alveolar propio tras una extracción?",
-                  "opciones": [
-                    {
-                      "id": "m6_4_q1_a",
-                      "texto": "Porque el coágulo del alvéolo disuelve la pared ósea por acción química."
-                    },
-                    {
-                      "id": "m6_4_q1_b",
-                      "texto": "Porque depende del diente y del ligamento periodontal, y deja de recibir carga funcional."
-                    },
-                    {
-                      "id": "m6_4_q1_c",
-                      "texto": "Porque los osteocitos del hueso basal migran hacia el alvéolo vacío."
-                    },
-                    {
-                      "id": "m6_4_q1_d",
-                      "texto": "Porque la extracción bloquea la formación de osteoclastos en toda la mandíbula."
-                    }
-                  ],
-                  "correctas": ["m6_4_q1_b"],
-                  "explicacion": "El hueso alveolar propio existe por y para el diente: recibe sus cargas por las fibras del ligamento. Sin diente, esa carga desaparece y el hueso se adapta a la baja, como predice el mecanostato.",
-                  "concepto": "Hueso alveolar propio",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_4_q2",
-                  "formato": "verdadero_falso",
-                  "enunciado": "Está demostrado que la osteoporosis causa la pérdida de los dientes.",
-                  "correcta": false,
-                  "explicacion": "Es falso. Hay una asociación entre baja densidad ósea y pérdida de soporte periodontal o de dientes, pero comparten factores como la edad, el tabaco y la nutrición, y los factores locales pesan mucho. No se ha demostrado una relación causal.",
-                  "concepto": "Osteoporosis y pérdida dentaria",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_4_q3",
-                  "formato": "opcion_multiple",
-                  "enunciado": "En una radiografía panorámica, ¿qué hallazgo puede hacer sospechar baja densidad ósea sistémica?",
-                  "opciones": [
-                    {
-                      "id": "m6_4_q3_a",
-                      "texto": "Un torus mandibular grande en la cara lingual del cuerpo mandibular."
-                    },
-                    {
-                      "id": "m6_4_q3_b",
-                      "texto": "Una corona con caries extensa en el segundo molar inferior del paciente."
-                    },
-                    {
-                      "id": "m6_4_q3_c",
-                      "texto": "Una cortical inferior delgada o erosionada a la altura del foramen mentoniano y por detrás de él."
-                    },
-                    {
-                      "id": "m6_4_q3_d",
-                      "texto": "Un foramen mentoniano ubicado más alto de lo habitual en el cuerpo."
-                    }
-                  ],
-                  "correctas": ["m6_4_q3_c"],
-                  "explicacion": "El ancho de la cortical inferior y el índice de Klemetti (C2 y C3 indican erosión) pueden sugerir baja densidad ósea y motivar una remisión. No diagnostican osteoporosis.",
-                  "concepto": "Índices panorámicos",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_4_q4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Cuál de estos hallazgos es típico de la osteoartrosis de la ATM?",
-                  "opciones": [
-                    {
-                      "id": "m6_4_q4_a",
-                      "texto": "Engrosamiento del cartílago hialino que recubre el cóndilo."
-                    },
-                    {
-                      "id": "m6_4_q4_b",
-                      "texto": "Aumento de la altura del reborde alveolar de la mandíbula."
-                    },
-                    {
-                      "id": "m6_4_q4_c",
-                      "texto": "Ensanchamiento de la cortical del borde inferior de la mandíbula."
-                    },
-                    {
-                      "id": "m6_4_q4_d",
-                      "texto": "Aplanamiento del cóndilo con osteofitos y esclerosis subcondral."
-                    }
-                  ],
-                  "correctas": ["m6_4_q4_d"],
-                  "explicacion": "En la osteoartrosis de la ATM se ven aplanamiento del cóndilo, osteofitos, erosiones y esclerosis subcondral. Además, las superficies de la ATM tienen fibrocartílago, no cartílago hialino.",
-                  "concepto": "ATM degenerativa",
-                  "dificultad": 2
-                }
-              ]
+              "barajar_preguntas": false,
+              "barajar_opciones": true
             }
           }
         }
       ]
     },
     {
-      "id": "m6_5_prevenir_e_intervenir",
-      "titulo": "Prevenir e intervenir",
+      "id": "m6_2_dinamica_remodelado",
+      "titulo": "Cambios en la dinámica del remodelado",
+      "fondo": "/images/m6/m6_2_imagen_01.webp",
       "bloques": [
         {
-          "id": "t_prevenir_e_intervenir",
+          "id": "t_m6_2_dinamica_remodelado_00",
           "tipo": "texto",
-          "markdown": "Cada medida que protege el hueso actúa sobre un mecanismo que ya conoces. Entender el mecanismo permite entender también los riesgos del tratamiento."
+          "titulo": "Origen y producción de especies reactivas de oxígeno",
+          "subcapitulo": "Alteraciones del metabolismo y la señalización celular",
+          "markdown": "Las especies reactivas de oxígeno (ROS) se generan durante el metabolismo celular y participan en la señalización fisiológica. Sus principales fuentes incluyen las mitocondrias, donde la fuga de electrones de la cadena respiratoria puede producir anión superóxido (O₂•⁻), una especie radicalaria, y las enzimas NADPH oxidasas (NOX), que transfieren electrones desde NADPH al oxígeno y generan ROS de forma regulada. El superóxido es convertido por las superóxido dismutasas en peróxido de hidrógeno (H₂O₂), una especie no radicalaria que requiere eliminación posterior.\n\nEn condiciones normales, sistemas antioxidantes como la superóxido dismutasa, la catalasa y las glutatión peroxidasas controlan su acumulación. La catalasa convierte H₂O₂ en agua y oxígeno, mientras que las glutatión peroxidasas reducen H₂O₂ utilizando glutatión reducido (GSH) y generan glutatión oxidado (GSSG) y agua. En el tejido envejecido, las alteraciones mitocondriales y el desequilibrio entre la producción de ROS y su eliminación pueden favorecer el estrés oxidativo, capaz de dañar proteínas, lípidos y ADN y comprometer el metabolismo y la función celular."
         },
         {
-          "id": "i_prevencion_mapa",
+          "id": "img_m6_2_dinamica_remodelado_01",
           "tipo": "imagen",
-          "src": "/images/m6/m6_prevencion_mapa.svg",
-          "figura": "/images/m6/m6_prevencion_mapa_figura.webp",
-          "alt": "Mapa de medidas de prevención y de fármacos conectadas con el mecanismo óseo sobre el que actúan",
-          "pie": "Figura 6.6. Cada medida apunta a un mecanismo de los módulos anteriores."
+          "src": "/images/m6/m6_2_imagen_01.webp",
+          "alt": "Ilustración de la docente: Origen y producción de especies reactivas de oxígeno",
+          "pie": "Origen y producción de especies reactivas de oxígeno",
+          "ancho": 1600,
+          "alto": 772
         },
         {
-          "id": "t_prevencion",
+          "id": "t_m6_2_dinamica_remodelado_02",
           "tipo": "texto",
-          "titulo": "Prevención",
-          "markdown": "**Medida: Carga mecánica: ejercicio de impacto moderado y de resistencia**\n\n- **Cómo actúa:** El osteocito percibe la deformación, baja la [esclerostina](glosario:esclerostina) y aumenta la formación (módulo 3). También mejora la fuerza y el equilibrio, y reduce las caídas.\n- **Referencia general:** Ejercicio regular, adaptado a cada persona\n\n**Medida: Calcio**\n\n- **Cómo actúa:** Aporta el mineral de la matriz (módulo 4) y evita que la PTH suba para compensar.\n- **Referencia general:** Según el IOM: 1000 mg al día de los 19 a los 50 años, y 1200 mg en mujeres desde los 51 y en hombres desde los 71\n\n**Medida: Vitamina D**\n\n- **Cómo actúa:** Favorece la absorción de calcio; su déficit causa hiperparatiroidismo secundario.\n- **Referencia general:** Según el IOM: 600 UI al día hasta los 70 años y 800 UI desde los 71; las guías varían\n\n**Medida: Hábitos**\n\n- **Cómo actúa:** No fumar, moderar el alcohol, mantener un peso adecuado, comer suficiente proteína y prevenir caídas\n- **Referencia general:** El tabaco y el alcohol elevado son factores de riesgo de FRAX"
+          "titulo": "Estrés oxidativo y alteraciones de la función de las células óseas",
+          "markdown": "Las ROS pueden dañar las proteínas, los lípidos de las membranas y el ADN mediante reacciones de oxidación que alteran su estructura y funcionamiento. Cuando se acumulan de forma persistente, pueden deteriorar las mitocondrias, reducir la producción de energía y activar mecanismos celulares que limitan la supervivencia y la función de las células óseas. En los osteoblastos y sus progenitores, esto puede reducir la formación de hueso, mientras que en los osteoclastos las ROS participan en la señalización inducida por RANKL y pueden favorecer la diferenciación y la resorción ósea.\n\nPara contrarrestar estos efectos, las células cuentan con sistemas antioxidantes regulados, entre otros mecanismos, por la vía Nrf2/ARE, que activa la expresión de proteínas protectoras. Cuando estas defensas son insuficientes frente a la acumulación de ROS, el daño celular puede alterar el equilibrio entre formación y resorción y favorecer la pérdida de tejido óseo"
         },
         {
-          "id": "c_clinico_mas_calcio_o_mas_vitamina",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "Más calcio o más vitamina D no siempre es mejor. Los suplementos se individualizan y la dieta es la primera fuente."
+          "id": "img_m6_2_dinamica_remodelado_03",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_2_imagen_02.webp",
+          "alt": "Ilustración de la docente: Estrés oxidativo y alteraciones de la función de las células óseas",
+          "pie": "Estrés oxidativo y alteraciones de la función de las células óseas",
+          "ancho": 1536,
+          "alto": 1024
         },
         {
-          "id": "tb_tratamiento_actuar_sobre_el_mecanismo",
-          "tipo": "tabla",
-          "titulo": "Tratamiento: actuar sobre el mecanismo",
-          "encabezado_criterio": "Fármaco (ejemplo)",
-          "columnas": ["Blanco", "Efecto"],
-          "filas": [
-            {
-              "criterio": "Bisfosfonatos (alendronato, zoledronato)",
-              "celdas": [
-                "Hidroxiapatita; los osteoclastos los captan",
-                "Osteoclastos con menos actividad: menos reabsorción"
-              ]
-            },
-            {
-              "criterio": "Denosumab",
-              "celdas": [
-                "Anticuerpo contra RANKL",
-                "Actúa como una OPG artificial: menos osteoclastos"
-              ]
-            },
-            {
-              "criterio": "Teriparatida",
-              "celdas": [
-                "Receptor de PTH, con dosis diarias intermitentes",
-                "Anabólico: más formación"
-              ]
-            },
-            {
-              "criterio": "Romosozumab",
-              "celdas": [
-                "Anticuerpo contra la esclerostina",
-                "Libera la vía Wnt: más formación y menos reabsorción"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "c_atencion_este_modulo_explica",
-          "tipo": "callout",
-          "variante": "atencion",
-          "markdown": "Este módulo explica mecanismos; no recomienda tratamientos. La indicación, la dosis y la duración las decide el equipo médico."
-        },
-        {
-          "id": "t_osteonecrosis_de_los_maxilares_asociada",
+          "id": "t_m6_2_dinamica_remodelado_04",
           "tipo": "texto",
-          "titulo": "Osteonecrosis de los maxilares asociada a medicamentos (ONM)",
-          "markdown": "Frenar el remodelado protege contra las fracturas, pero explica una complicación rara e importante en la consulta odontológica. La definición de la AAOMS (2022) exige los tres criterios:\n\n1. Tratamiento actual o previo con un [antirreabsortivo](glosario:antirreabsortivo), solo o con inmunomoduladores o antiangiogénicos.\n2. Hueso expuesto, o que se sondea a través de una fístula, en la región maxilofacial durante más de 8 semanas.\n3. Sin antecedente de radioterapia de los maxilares ni de metástasis en ellos.\n\n- **Fármacos:** bisfosfonatos y denosumab; en oncología, también antiangiogénicos. Se han descrito casos con romosozumab.\n- **Frecuencia:** baja en osteoporosis (aproximadamente 0,02 a 0,05 % según la AAOMS; otras fuentes dan entre 0,001 y 0,1 %) y mayor en oncología, con dosis más altas (de 1 a varios por ciento en las series).\n- **Factores de riesgo:** extracción u otra cirugía dentoalveolar, infección periodontal o periapical, mala higiene, prótesis que lesionan la mucosa, mayor tiempo de tratamiento, glucocorticoides, diabetes, tabaquismo y edad.\n- **Mecanismo:** no se conoce por completo. Se proponen la supresión del remodelado, la infección, la inhibición de la angiogénesis, la alteración inmunitaria y la toxicidad sobre los tejidos blandos. Por qué afecta a los maxilares no está resuelto: se han propuesto la exposición a bacterias desde los dientes, una mucosa delgada y el alto recambio del hueso alveolar."
+          "titulo": "Alteración de la señalización Wnt/β-catenina",
+          "markdown": "La vía Wnt/β-catenina constituye una de las principales señales que favorecen la diferenciación y actividad de las células osteogénicas. Cuando Wnt se une a sus receptores Frizzled y LRP5/6, se evita la degradación de β-catenina, permitiendo que esta se acumule y llegue al núcleo, donde actúa como coactivador de factores de transcripción como TCF/LEF y favorece la expresión de genes relacionados con el programa osteogénico. Con el envejecimiento, la actividad de esta vía puede disminuir, reduciendo la respuesta de los progenitores mesenquimales a las señales que favorecen su diferenciación hacia osteoblastos.\n\nUna parte de esta alteración se relaciona con el estrés oxidativo: cuando aumentan las ROS, en modelos experimentales de células osteoblásticas, β-catenina puede redistribuirse y asociarse preferentemente con factores FOXO, favoreciendo la activación de genes relacionados con la respuesta antioxidante y reduciendo su disponibilidad para la señalización β-catenina–TCF/LEF que favorece la diferenciación osteoblástica. Además, una mayor señal inhibitoria sobre la vía Wnt, mediada por moléculas como esclerostina y DKK1 en determinados contextos, puede reducir aún más la señal osteogénica. Así, las alteraciones de esta vía pueden limitar la diferenciación osteoblástica y la respuesta a las señales que favorecen la formación ósea"
         },
         {
-          "id": "c_clinico_antes_de_iniciar_un",
-          "tipo": "callout",
-          "variante": "clinico",
-          "markdown": "Antes de iniciar un antirreabsortivo conviene revisar la boca y tratar los focos infecciosos, sin retrasar el tratamiento necesario. Con el tratamiento en curso: buena higiene, técnica quirúrgica conservadora con cierre primario cuando sea posible y coordinación entre odontólogo y médico. No hay evidencia suficiente para recomendar una pausa rutinaria del fármaco."
+          "id": "img_m6_2_dinamica_remodelado_05",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_2_imagen_03.webp",
+          "alt": "Ilustración de la docente: Alteración de la señalización Wnt/β-catenina",
+          "pie": "Alteración de la señalización Wnt/β-catenina",
+          "ancho": 1600,
+          "alto": 786
         },
         {
-          "id": "c_atencion_el_paciente_no_debe",
-          "tipo": "callout",
-          "variante": "atencion",
-          "markdown": "El paciente no debe suspender su tratamiento por su cuenta. En osteoporosis, el beneficio de evitar fracturas suele superar el riesgo de [ONM](glosario:onm). Cualquier cambio lo decide el médico prescriptor junto con el equipo dental. En el caso del denosumab, suspenderlo sin un plan de transición puede causar un rebote del recambio óseo, con pérdida rápida de densidad y fracturas vertebrales múltiples."
-        },
-        {
-          "id": "t_prevenir_e_intervenir_3",
+          "id": "t_m6_2_dinamica_remodelado_06",
           "tipo": "texto",
-          "markdown": "Relaciona ahora cada intervención con su mecanismo y cierra el módulo con la evaluación final. Si quieres, repasa antes la ONM en la actividad opcional."
+          "titulo": "Alteración de la comunicación entre las células óseas",
+          "markdown": "El remodelado requiere un intercambio continuo de señales entre osteocitos, osteoblastos, osteoclastos y progenitores osteogénicos; las alteraciones en los receptores, las vías de señalización intracelular y el microambiente pueden modificar sus respuestas, reduciendo la actividad osteogénica, favoreciendo señales proresortivas o limitando la adaptación a las cargas mecánica\n\nEsta alteración de la comunicación afecta especialmente la capacidad del tejido para integrar señales mecánicas, metabólicas y locales y convertirlas en una respuesta coordinada de remodelado. Así, aunque las señales necesarias para iniciar o regular el proceso continúen presentes, los cambios descritos en el estrés oxidativo, la señalización Wnt/β-catenina y la función de los osteocitos pueden alterar la coordinación entre formación y resorción, contribuyendo progresivamente a la pérdida de eficiencia del remodelado."
+        },
+        {
+          "id": "img_m6_2_dinamica_remodelado_07",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_2_imagen_04.webp",
+          "alt": "Ilustración de la docente: Alteración de la comunicación entre las células óseas",
+          "pie": "Alteración de la comunicación entre las células óseas",
+          "ancho": 1555,
+          "alto": 1012
+        },
+        {
+          "id": "t_m6_2_dinamica_remodelado_08",
+          "tipo": "texto",
+          "titulo": "Alteraciones del acoplamiento entre resorción y formación",
+          "subcapitulo": "Alteraciones del acoplamiento entre resorción y formación",
+          "markdown": "El remodelado óseo requiere una coordinación precisa entre la resorción realizada por los osteoclastos y la formación de nueva matriz por los osteoblastos. Durante la resorción, los osteoclastos liberan señales que favorecen el reclutamiento y la diferenciación de células del linaje osteoblástico; además, la degradación de la matriz moviliza factores como TGF-β e IGF-1, que pueden regular la respuesta osteogénica. Entre ambas fases ocurre la fase de reversión, durante la cual las células de reversión participan en la preparación de la superficie resorbida y en la transición hacia la formación de tejido nuevo.\n\nCon el envejecimiento, la menor disponibilidad de progenitores osteogénicos y las alteraciones en las señales de comunicación celular pueden dificultar el reclutamiento y la diferenciación de osteoblastos en las superficies resorbidas. Como consecuencia, aunque la resorción y la formación mantengan una secuencia coordinada, la cantidad de tejido formado puede ser insuficiente para reemplazar el resorbido, generando un balance negativo en cada ciclo. Este desequilibrio puede producir una pérdida acumulada de masa ósea"
+        },
+        {
+          "id": "img_m6_2_dinamica_remodelado_09",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_2_imagen_05.webp",
+          "alt": "Ilustración de la docente: Alteraciones del acoplamiento entre resorción y formación",
+          "pie": "Alteraciones del acoplamiento entre resorción y formación",
+          "ancho": 1600,
+          "alto": 815
+        },
+        {
+          "id": "t_m6_2_dinamica_remodelado_10",
+          "tipo": "texto",
+          "titulo": "Balance negativo del remodelado y pérdida ósea",
+          "subcapitulo": "Balance negativo del remodelado y pérdida ósea",
+          "markdown": "Cuando la cantidad de hueso formada al finalizar un ciclo es menor que la cantidad resorbida, se establece un balance negativo del remodelado, que puede coexistir con un recambio aumentado, como ocurre con el déficit estrogénico asociado con la transición menopáusica, que puede aumentar el recambio óseo, con un predominio de la resorción aunque también aumenten los marcadores de formación; en los hombres, los cambios hormonales y otros factores asociados al envejecimiento suelen contribuir a una pérdida más gradual, con variaciones individuales.\n\nA este desequilibrio se suma el entorno inflamatorio de bajo grado asociado al envejecimiento, que puede favorecer señales proresortivas y modificar la actividad osteogénica; la pérdida acumulada depende tanto del déficit de tejido en cada ciclo como de la cantidad de ciclos activados y su distribución, mientras que los cambios en la detección y reparación del daño pueden favorecer la persistencia de microdaño y reducir la resistencia ósea"
+        },
+        {
+          "id": "img_m6_2_dinamica_remodelado_11",
+          "tipo": "imagen",
+          "src": "/images/m6/m6_2_imagen_06.webp",
+          "alt": "Ilustración de la docente: Balance negativo del remodelado y pérdida ósea",
+          "pie": "Balance negativo del remodelado y pérdida ósea",
+          "ancho": 1600,
+          "alto": 534
         },
         {
           "tipo": "actividad",
           "actividad": {
-            "id": "m6_5_relacion_intervenciones",
+            "id": "m6_2_sistemas_antioxidantes",
             "tipo": "relacion-columnas",
-            "titulo": "Une cada intervención con su mecanismo",
-            "instrucciones": "Toca una intervención de la columna izquierda y luego el mecanismo que le corresponde en la derecha (también puedes arrastrar la intervención sobre su mecanismo; con teclado, elige con Enter y desplázate con las flechas). Hay dos mecanismos de más que no corresponden a ninguna intervención.",
+            "titulo": "¿Qué sistema antioxidante está trabajando?",
+            "instrucciones": "Relaciona cada enzima con su función.",
             "obligatoria": true,
-            "puntaje_max": 30,
+            "puntaje_max": 20,
             "retroalimentacion": {
-              "correcta": "Correcto. Cada intervención actúa sobre un mecanismo que estudiaste: el osteocito y la carga, el osteoclasto, RANKL, la esclerostina, la PTH y el mineral.",
-              "incorrecta": "Alguna unión no es correcta. Pregúntate sobre qué célula o qué molécula actúa cada intervención: el osteoclasto, RANKL, la esclerostina, la PTH o el aporte de mineral."
+              "correcta": "Correcto: La SOD transforma el anión superóxido en peróxido de hidrógeno. La catalasa convierte dos moléculas de H₂O₂ en agua y oxígeno. La GPx utiliza glutatión reducido para reducir el H₂O₂ y genera glutatión oxidado (GSSG).",
+              "incorrecta": "Revisa la explicación y vuelve a leer la sección."
             },
-            "concepto": "Intervenciones y mecanismo",
+            "concepto": "Sistemas antioxidantes",
             "config": {
               "columna_a": {
-                "titulo": "Intervención",
+                "titulo": "Enzima",
                 "elementos": [
                   {
-                    "id": "i_ejercicio",
-                    "texto": "Ejercicio con carga y de resistencia"
+                    "id": "m6_2_sistemas_antioxidantes_a1",
+                    "texto": "Superóxido dismutasa (SOD)"
                   },
                   {
-                    "id": "i_bisfosfonatos",
-                    "texto": "Bisfosfonatos (por ejemplo, alendronato)"
+                    "id": "m6_2_sistemas_antioxidantes_a2",
+                    "texto": "Catalasa"
                   },
                   {
-                    "id": "i_denosumab",
-                    "texto": "Denosumab"
-                  },
-                  {
-                    "id": "i_romosozumab",
-                    "texto": "Romosozumab"
-                  },
-                  {
-                    "id": "i_teriparatida",
-                    "texto": "Teriparatida (fragmento de PTH, dosis diarias)"
-                  },
-                  {
-                    "id": "i_calcio_vitd",
-                    "texto": "Calcio y vitamina D suficientes"
+                    "id": "m6_2_sistemas_antioxidantes_a3",
+                    "texto": "Glutatión peroxidasa (GPx)"
                   }
                 ]
               },
               "columna_b": {
-                "titulo": "Mecanismo",
+                "titulo": "Función",
                 "elementos": [
                   {
-                    "id": "m_osteocito_carga",
-                    "texto": "El osteocito percibe la deformación del hueso: baja la esclerostina y aumenta la formación."
+                    "id": "m6_2_sistemas_antioxidantes_b1",
+                    "texto": "Convierte el superóxido en H₂O₂."
                   },
                   {
-                    "id": "m_osteoclasto",
-                    "texto": "Se adhieren a la hidroxiapatita y los osteoclastos los captan: pierden actividad."
+                    "id": "m6_2_sistemas_antioxidantes_b2",
+                    "texto": "Convierte el H₂O₂ en agua y oxígeno."
                   },
                   {
-                    "id": "m_anti_rankl",
-                    "texto": "Anticuerpo que neutraliza a RANKL: funciona como una OPG artificial."
-                  },
-                  {
-                    "id": "m_anti_esclerostina",
-                    "texto": "Anticuerpo que neutraliza la esclerostina y libera la vía Wnt."
-                  },
-                  {
-                    "id": "m_pth",
-                    "texto": "Activa de forma intermitente el receptor de PTH y estimula la formación de hueso."
-                  },
-                  {
-                    "id": "m_mineral",
-                    "texto": "Aportan mineral y evitan el hiperparatiroidismo secundario que aumenta la reabsorción."
-                  },
-                  {
-                    "id": "d_distractor_er",
-                    "texto": "Bloquea el receptor de estrógeno de los osteoblastos."
-                  },
-                  {
-                    "id": "d_distractor_rankl",
-                    "texto": "Aumenta RANKL para acelerar la renovación del hueso."
+                    "id": "m6_2_sistemas_antioxidantes_b3",
+                    "texto": "Reduce el H₂O₂ utilizando glutatión reducido (GSH)."
                   }
                 ]
               },
               "pares": [
                 {
-                  "id": "par_i_ejercicio",
-                  "a": "i_ejercicio",
-                  "b": "m_osteocito_carga",
-                  "explicacion": "La carga mecánica se detecta por el osteocito (mecanotransducción, módulo 3). Baja la esclerostina, se activa la vía Wnt y aumenta la formación."
+                  "id": "m6_2_sistemas_antioxidantes_p1",
+                  "a": "m6_2_sistemas_antioxidantes_a1",
+                  "b": "m6_2_sistemas_antioxidantes_b1",
+                  "explicacion": "La SOD transforma el anión superóxido en peróxido de hidrógeno. La catalasa convierte dos moléculas de H₂O₂ en agua y oxígeno. La GPx utiliza glutatión reducido para reducir el H₂O₂ y genera glutatión oxidado (GSSG)."
                 },
                 {
-                  "id": "par_i_bisfosfonatos",
-                  "a": "i_bisfosfonatos",
-                  "b": "m_osteoclasto",
-                  "explicacion": "Los bisfosfonatos se fijan a la hidroxiapatita y los osteoclastos los captan al reabsorber. Así pierden actividad y baja la reabsorción."
+                  "id": "m6_2_sistemas_antioxidantes_p2",
+                  "a": "m6_2_sistemas_antioxidantes_a2",
+                  "b": "m6_2_sistemas_antioxidantes_b2",
+                  "explicacion": "La SOD transforma el anión superóxido en peróxido de hidrógeno. La catalasa convierte dos moléculas de H₂O₂ en agua y oxígeno. La GPx utiliza glutatión reducido para reducir el H₂O₂ y genera glutatión oxidado (GSSG)."
                 },
                 {
-                  "id": "par_i_denosumab",
-                  "a": "i_denosumab",
-                  "b": "m_anti_rankl",
-                  "explicacion": "Denosumab es un anticuerpo contra RANKL. Hace lo mismo que la OPG: impide la unión RANKL-RANK y frena la formación de osteoclastos."
-                },
-                {
-                  "id": "par_i_romosozumab",
-                  "a": "i_romosozumab",
-                  "b": "m_anti_esclerostina",
-                  "explicacion": "Romosozumab es un anticuerpo contra la esclerostina. Libera la vía Wnt y aumenta la formación ósea; además reduce algo la reabsorción."
-                },
-                {
-                  "id": "par_i_teriparatida",
-                  "a": "i_teriparatida",
-                  "b": "m_pth",
-                  "explicacion": "La PTH en dosis diarias intermitentes tiene un efecto anabólico, al contrario de la exposición continua, que favorece la reabsorción."
-                },
-                {
-                  "id": "par_i_calcio_vitd",
-                  "a": "i_calcio_vitd",
-                  "b": "m_mineral",
-                  "explicacion": "El calcio aporta la materia prima de la mineralización y la vitamina D favorece su absorción. Sin ellos sube la PTH y aumenta la reabsorción."
+                  "id": "m6_2_sistemas_antioxidantes_p3",
+                  "a": "m6_2_sistemas_antioxidantes_a3",
+                  "b": "m6_2_sistemas_antioxidantes_b3",
+                  "explicacion": "La SOD transforma el anión superóxido en peróxido de hidrógeno. La catalasa convierte dos moléculas de H₂O₂ en agua y oxígeno. La GPx utiliza glutatión reducido para reducir el H₂O₂ y genera glutatión oxidado (GSSG)."
                 }
               ],
               "barajar": true
@@ -2309,329 +773,47 @@
         {
           "tipo": "actividad",
           "actividad": {
-            "id": "m6_5_quiz_onm",
+            "id": "m6_2_evaluacion",
             "tipo": "quiz",
-            "titulo": "Osteonecrosis de los maxilares: definición y prudencia",
-            "instrucciones": "Responde las cuatro preguntas. Tras cada respuesta verás la explicación. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Esta actividad es opcional.",
-            "obligatoria": false,
+            "titulo": "Evaluación",
+            "instrucciones": "Responde la pregunta. Al elegir tu respuesta verás si es correcta y por qué.",
+            "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
-              "correcta": "Correcto. La ONM es rara en osteoporosis, tiene una definición precisa y se maneja con prevención dental y coordinación entre odontólogo y médico, sin suspender el fármaco por cuenta propia.",
-              "incorrecta": "Revisa la sección: la definición exige tres criterios, el riesgo en osteoporosis es bajo y ninguna decisión sobre el fármaco debe tomarla el paciente por su cuenta."
+              "correcta": "Muy bien: respondiste correctamente.",
+              "incorrecta": "Revisa la explicación y vuelve a leer la sección."
             },
-            "concepto": "Osteonecrosis de los maxilares asociada a medicamentos",
+            "concepto": "Comunicación celular y remodelado",
             "config": {
               "preguntas": [
                 {
-                  "id": "m6_5_q1",
+                  "id": "m6_2_e1",
                   "formato": "opcion_multiple",
-                  "enunciado": "¿Cuál de estos casos cumple la definición de ONM asociada a medicamentos de la AAOMS (2022)?",
+                  "enunciado": "En un tejido óseo envejecido se identifican alteraciones en receptores celulares, señalización intracelular y respuesta a estímulos mecánicos. Aunque las señales del remodelado continúan presentes, las células no responden de manera coordinada. ¿Cuál es la interpretación más adecuada?",
                   "opciones": [
                     {
-                      "id": "m6_5_q1_a",
-                      "texto": "Hueso expuesto durante más de 8 semanas en un paciente tratado con un antirreabsortivo, sin radioterapia de los maxilares ni metástasis."
+                      "id": "m6_2_e1_a",
+                      "texto": "La presencia de señales garantiza que las células mantengan una respuesta normal."
                     },
                     {
-                      "id": "m6_5_q1_b",
-                      "texto": "Dolor dental agudo de 3 días tras una extracción, con la mucosa cicatrizada, en un paciente tratado con un antirreabsortivo."
+                      "id": "m6_2_e1_b",
+                      "texto": "Las alteraciones en receptores y vías intracelulares pueden modificar la respuesta celular y comprometer la coordinación entre resorción y formación."
                     },
                     {
-                      "id": "m6_5_q1_c",
-                      "texto": "Hueso expuesto durante 3 semanas en un paciente con radioterapia previa de los maxilares y sin antirreabsortivos ni antiangiogénicos."
+                      "id": "m6_2_e1_c",
+                      "texto": "La comunicación celular solo es necesaria durante la formación ósea."
                     },
                     {
-                      "id": "m6_5_q1_d",
-                      "texto": "Pérdida del reborde alveolar sin hueso expuesto en un paciente que toma un bisfosfonato para la osteoporosis desde hace años."
+                      "id": "m6_2_e1_d",
+                      "texto": "Las alteraciones de señalización afectan únicamente a los osteoclastos."
                     }
                   ],
-                  "correctas": ["m6_5_q1_a"],
-                  "explicacion": "La definición exige los tres criterios: tratamiento antirreabsortivo actual o previo, hueso expuesto (o sondeable por una fístula) durante más de 8 semanas y ausencia de radioterapia de los maxilares o de metástasis en ellos.",
-                  "concepto": "Definición de ONM",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_5_q2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Una paciente con osteoporosis toma alendronato desde hace 3 años y necesita una extracción. ¿Qué conducta es la más prudente?",
-                  "opciones": [
-                    {
-                      "id": "m6_5_q2_a",
-                      "texto": "Suspender el bisfosfonato por su cuenta un mes antes de la extracción para reducir el riesgo."
-                    },
-                    {
-                      "id": "m6_5_q2_b",
-                      "texto": "Negar la extracción, porque está contraindicada de forma absoluta en quien toma bisfosfonatos."
-                    },
-                    {
-                      "id": "m6_5_q2_c",
-                      "texto": "Extraer sin ninguna consideración especial, porque el riesgo de osteonecrosis en osteoporosis es nulo."
-                    },
-                    {
-                      "id": "m6_5_q2_d",
-                      "texto": "Coordinar con su médico, usar técnica quirúrgica conservadora con cierre primario si es posible y dar pautas de higiene."
-                    }
-                  ],
-                  "correctas": ["m6_5_q2_d"],
-                  "explicacion": "En osteoporosis el riesgo de ONM es bajo, pero no nulo. Lo prudente es coordinar al odontólogo con el médico, usar una técnica conservadora con cierre primario cuando se pueda y cuidar la higiene. No hay evidencia suficiente para recomendar una pausa rutinaria del fármaco, y el paciente no debe suspenderlo por su cuenta.",
-                  "concepto": "Prudencia clínica en ONM",
-                  "dificultad": 3
-                },
-                {
-                  "id": "m6_5_q3",
-                  "formato": "verdadero_falso",
-                  "enunciado": "En pacientes con osteoporosis, el riesgo de ONM es mucho menor que en pacientes oncológicos que reciben dosis altas de antirreabsortivos.",
-                  "correcta": true,
-                  "explicacion": "Es verdadero. En osteoporosis se estima en centésimas de porcentaje, y en oncología, con dosis más altas y más frecuentes, llega a varios por ciento en las series.",
-                  "concepto": "Frecuencia de ONM",
-                  "dificultad": 1
-                },
-                {
-                  "id": "m6_5_q4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Cuál de estos fármacos actúa neutralizando a RANKL?",
-                  "opciones": [
-                    {
-                      "id": "m6_5_q4_a",
-                      "texto": "Alendronato"
-                    },
-                    {
-                      "id": "m6_5_q4_b",
-                      "texto": "Denosumab"
-                    },
-                    {
-                      "id": "m6_5_q4_c",
-                      "texto": "Teriparatida"
-                    },
-                    {
-                      "id": "m6_5_q4_d",
-                      "texto": "Romosozumab"
-                    }
-                  ],
-                  "correctas": ["m6_5_q4_b"],
-                  "explicacion": "Denosumab es un anticuerpo contra RANKL y actúa como una OPG artificial. El alendronato es un bisfosfonato, la teriparatida es un fragmento de PTH y el romosozumab neutraliza la esclerostina.",
-                  "concepto": "Fármacos y blanco molecular",
-                  "dificultad": 1
+                  "correctas": ["m6_2_e1_b"],
+                  "explicacion": "La comunicación celular requiere receptores funcionales, vías intracelulares capaces de transmitir la información y células que puedan responder adecuadamente. El envejecimiento puede alterar estos componentes y reducir la eficiencia de la coordinación del remodelado."
                 }
-              ]
-            }
-          }
-        },
-        {
-          "tipo": "actividad",
-          "actividad": {
-            "id": "m6_5_evaluacion_final",
-            "tipo": "quiz",
-            "titulo": "Evaluación final: El paso del tiempo",
-            "instrucciones": "Responde las ocho preguntas del módulo. Tras cada respuesta verás la explicación. Puedes responder tocando la opción o moviéndote con Tab y pulsando Enter. Al terminar esta evaluación y las demás actividades obligatorias, recibirás el logro Cronista.",
-            "obligatoria": true,
-            "aprobacion_min": 0.7,
-            "puntaje_max": 100,
-            "retroalimentacion": {
-              "correcta": "Excelente. Comprendes cómo cambian la cantidad y la calidad del hueso con los años, cómo se manifiesta en la mandíbula y cómo se puede prevenir e intervenir con prudencia clínica. Has cerrado el recorrido: eres Cronista.",
-              "incorrecta": "Revisa las secciones donde fallaste. La pista de cada pregunta es su concepto: estrógenos y RANKL/OPG, calidad de la matriz, criterios de la DXA, FRAX, reborde alveolar, ATM, prevención y ONM."
-            },
-            "concepto": "Envejecimiento y cambios degenerativos del tejido óseo",
-            "config": {
-              "preguntas": [
-                {
-                  "id": "m6_f_q1",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Tras la menopausia, ¿qué cambio explica mejor el aumento de osteoclastos?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q1_a",
-                      "texto": "Sube la relación RANKL/OPG y hay más TNF-α e IL-6."
-                    },
-                    {
-                      "id": "m6_f_q1_b",
-                      "texto": "Sube la OPG, que estimula la fusión de los precursores."
-                    },
-                    {
-                      "id": "m6_f_q1_c",
-                      "texto": "Los osteoblastos desaparecen y ya no pueden secretar señales."
-                    },
-                    {
-                      "id": "m6_f_q1_d",
-                      "texto": "El calcio sérico aumenta y activa a los osteoclastos por retroalimentación."
-                    }
-                  ],
-                  "correctas": ["m6_f_q1_a"],
-                  "explicacion": "Sin estrógenos aumentan RANKL y las citocinas como el TNF-α y la IL-6, y la relación RANKL/OPG sube. Así se forman más osteoclastos y viven más tiempo.",
-                  "concepto": "Déficit de estrógenos y RANKL/OPG",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q2",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Una persona con diabetes tipo 2 de larga evolución puede tener una densidad ósea normal y aun así un mayor riesgo de fractura. ¿Qué mecanismo se propone?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q2_a",
-                      "texto": "Un exceso de osteoclastos que la DXA no puede detectar."
-                    },
-                    {
-                      "id": "m6_f_q2_b",
-                      "texto": "Una hipermineralización que vuelve blanda la matriz."
-                    },
-                    {
-                      "id": "m6_f_q2_c",
-                      "texto": "Una producción excesiva de PTH que aumenta la densidad y la fragilidad a la vez."
-                    },
-                    {
-                      "id": "m6_f_q2_d",
-                      "texto": "La acumulación de AGE en el colágeno, que reduce la tenacidad de la matriz."
-                    }
-                  ],
-                  "correctas": ["m6_f_q2_d"],
-                  "explicacion": "En la diabetes se acumulan AGE en el colágeno, lo que se propone como causa de menor tenacidad y mayor fragilidad con densidad normal. Ilustra que calidad y cantidad no son lo mismo.",
-                  "concepto": "Glicación y calidad ósea",
-                  "dificultad": 3
-                },
-                {
-                  "id": "m6_f_q3",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Un hombre de 55 años tiene un T-score de −1,8 en la cadera total. ¿Qué categoría de la OMS corresponde?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q3_a",
-                      "texto": "Normal"
-                    },
-                    {
-                      "id": "m6_f_q3_b",
-                      "texto": "Baja masa ósea (osteopenia)"
-                    },
-                    {
-                      "id": "m6_f_q3_c",
-                      "texto": "Osteoporosis"
-                    },
-                    {
-                      "id": "m6_f_q3_d",
-                      "texto": "Osteoporosis establecida (grave)"
-                    }
-                  ],
-                  "correctas": ["m6_f_q3_b"],
-                  "explicacion": "Entre −1,0 y −2,5 corresponde a baja masa ósea (osteopenia). Los criterios de la OMS con T-score se aplican a hombres de 50 años o más.",
-                  "concepto": "Criterios densitométricos (T-score)",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q4",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué aporta FRAX frente a un T-score aislado?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q4_a",
-                      "texto": "Mide directamente la microarquitectura trabecular de la columna y de la cadera."
-                    },
-                    {
-                      "id": "m6_f_q4_b",
-                      "texto": "Diagnostica osteoporosis en menores de 40 años sin necesidad de una DXA."
-                    },
-                    {
-                      "id": "m6_f_q4_c",
-                      "texto": "Combina la edad y factores clínicos para estimar el riesgo de fractura a 10 años."
-                    },
-                    {
-                      "id": "m6_f_q4_d",
-                      "texto": "Sustituye la necesidad de evaluar las caídas y los fármacos del paciente."
-                    }
-                  ],
-                  "correctas": ["m6_f_q4_c"],
-                  "explicacion": "FRAX combina la edad, el sexo, el índice de masa corporal y factores clínicos de riesgo, con o sin T-score, para estimar la probabilidad de fractura a 10 años. No mide la microarquitectura.",
-                  "concepto": "FRAX",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q5",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué estructura del alvéolo depende directamente del diente y se reabsorbe primero tras una extracción?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q5_a",
-                      "texto": "El hueso alveolar propio (hueso fasciculado)"
-                    },
-                    {
-                      "id": "m6_f_q5_b",
-                      "texto": "El hueso basal de la mandíbula"
-                    },
-                    {
-                      "id": "m6_f_q5_c",
-                      "texto": "La cortical del borde inferior del cuerpo mandibular"
-                    },
-                    {
-                      "id": "m6_f_q5_d",
-                      "texto": "La cabeza del cóndilo mandibular"
-                    }
-                  ],
-                  "correctas": ["m6_f_q5_a"],
-                  "explicacion": "El hueso alveolar propio recibe las fibras del ligamento periodontal. Al perder el diente, pierde su carga y se reabsorbe primero; el hueso basal no depende del diente.",
-                  "concepto": "Hueso alveolar propio",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q6",
-                  "formato": "verdadero_falso",
-                  "enunciado": "Los osteofitos y el aplanamiento del cóndilo en la ATM de una persona mayor siempre indican una enfermedad que requiere tratamiento.",
-                  "correcta": false,
-                  "explicacion": "Es falso. Muchos de estos cambios son remodelado adaptativo y no producen síntomas. Se trata al paciente sintomático, no la imagen.",
-                  "concepto": "ATM degenerativa",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q7",
-                  "formato": "opcion_multiple",
-                  "enunciado": "¿Qué mecanismo explica mejor por qué caminar y levantar pesas ayuda al hueso?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q7_a",
-                      "texto": "El ejercicio eleva el RANKL para renovar el hueso viejo y aumentar el recambio."
-                    },
-                    {
-                      "id": "m6_f_q7_b",
-                      "texto": "El ejercicio sustituye la necesidad de calcio y de vitamina D en la dieta."
-                    },
-                    {
-                      "id": "m6_f_q7_c",
-                      "texto": "El ejercicio convierte la grasa medular en hueso nuevo por acción mecánica directa."
-                    },
-                    {
-                      "id": "m6_f_q7_d",
-                      "texto": "La deformación activa a los osteocitos: baja la esclerostina y sube la formación."
-                    }
-                  ],
-                  "correctas": ["m6_f_q7_d"],
-                  "explicacion": "La carga mecánica se detecta por el osteocito. Al bajar la esclerostina se activa la vía Wnt y aumenta la formación de hueso. No sustituye al calcio ni a la vitamina D.",
-                  "concepto": "Carga mecánica y prevención",
-                  "dificultad": 2
-                },
-                {
-                  "id": "m6_f_q8",
-                  "formato": "opcion_multiple",
-                  "enunciado": "Una paciente con osteoporosis en tratamiento con antirreabsortivos dice que dejará de tomarlos porque teme la osteonecrosis de los maxilares. ¿Qué respuesta es más adecuada?",
-                  "opciones": [
-                    {
-                      "id": "m6_f_q8_a",
-                      "texto": "Apoyar su decisión, porque la osteonecrosis es una complicación frecuente en las personas con osteoporosis."
-                    },
-                    {
-                      "id": "m6_f_q8_b",
-                      "texto": "Explicarle que en osteoporosis el riesgo es bajo, que el beneficio suele superarlo y que su médico decide cualquier cambio."
-                    },
-                    {
-                      "id": "m6_f_q8_c",
-                      "texto": "Indicarle que suspender el fármaco por su cuenta, sin consultar, elimina siempre el riesgo de osteonecrosis."
-                    },
-                    {
-                      "id": "m6_f_q8_d",
-                      "texto": "Decirle que la higiene oral y el estado de sus dientes no tienen ninguna influencia en ese riesgo."
-                    }
-                  ],
-                  "correctas": ["m6_f_q8_b"],
-                  "explicacion": "En osteoporosis la ONM es rara y el beneficio de evitar fracturas suele ser mayor. Ninguna decisión sobre el fármaco debe tomarla el paciente por su cuenta, y la salud dental y la higiene sí influyen en el riesgo. En el caso del denosumab, suspenderlo sin un plan de transición puede causar un rebote con fracturas vertebrales múltiples.",
-                  "concepto": "Prudencia clínica en ONM",
-                  "dificultad": 3
-                }
-              ]
+              ],
+              "barajar_preguntas": false,
+              "barajar_opciones": true
             }
           }
         }

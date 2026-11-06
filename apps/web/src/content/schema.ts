@@ -688,7 +688,7 @@ export const ActividadRelacionColumnasSchema = z
 
 export const OpcionQuizSchema = z.strictObject({
   id: IdSchema,
-  texto: markdownLinea(1, 200),
+  texto: markdownLinea(1, 300),
   /** Por qué esta opción es incorrecta (o por qué es correcta). Opcional. */
   explicacion: markdownLinea(10, 300).optional(),
 });
@@ -1568,7 +1568,7 @@ const ModuloBaseSchema = z.strictObject({
   titulo: textoPlano(3, 100),
   subtitulo: textoPlano(5, 160),
   resumen: markdownLinea(30, 600),
-  objetivos: z.array(markdownLinea(10, 220)).min(2).max(8),
+  objetivos: z.array(markdownLinea(10, 400)).min(2).max(8),
   duracion_estimada_min: z.number().int().min(5).max(240),
   glosario: z.array(TerminoGlosarioSchema).min(3).max(60),
   referencias: z.array(ReferenciaSchema).min(1).max(30),
