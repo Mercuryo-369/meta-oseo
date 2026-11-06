@@ -45,7 +45,6 @@ import GlosarioHoja from '@/components/modulo/GlosarioHoja.vue';
 // import GlosarioYReferencias from '@/components/modulo/GlosarioYReferencias.vue';
 import ModuloBloqueado from '@/components/modulo/ModuloBloqueado.vue';
 import ModuloCompletado from '@/components/modulo/ModuloCompletado.vue';
-import BarraModulo from '@/components/modulo/BarraModulo.vue';
 import NavegacionPartes from '@/components/modulo/NavegacionPartes.vue';
 import NavegacionSecciones from '@/components/modulo/NavegacionSecciones.vue';
 import TextoRico from '@/components/modulo/TextoRico.vue';
@@ -1104,22 +1103,13 @@ onBeforeUnmount(() => {
                navegación con las partes de la sección (1.1.1, 1.1.2…); en medio la parte visible, que se ajusta al
                alto disponible; abajo el paso a la parte anterior o siguiente, que cruza de una sección a otra. -->
           <div v-else class="pantalla-seccion flex flex-col gap-3" data-testid="pantalla-seccion">
-            <BarraModulo
-              :numero="n"
-              :titulo="modulo.titulo"
-              :secciones="secciones"
-              :estados="estados"
-              :indice="indice"
-              @ir="irA"
-              @bloqueada="alIntentarSeccionBloqueada"
-            />
             <!-- Fila de la sección: a la izquierda los desplegables (objetivos y referencias), en el centro el
                  indicador de partes «· · · 3.3.1 · · ·» y a la derecha el avance. En móvil el indicador va arriba. -->
             <div
-              class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+              class="grid grid-cols-1 items-center gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
             >
               <NavegacionPartes
-                class="col-span-2 flex justify-center md:order-2 md:col-span-1"
+                class="flex justify-center md:order-2"
                 solo-partes
                 :numero-modulo="n"
                 :secciones="secciones"
@@ -1130,7 +1120,18 @@ onBeforeUnmount(() => {
                 :parte="vista"
                 @ir-parte="irAVista"
               />
-              <div class="flex items-center gap-x-4 md:order-1">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 whitespace-nowrap md:order-1">
+                <!-- La barra del módulo con las secciones solo va en la portada (indicación de la usuaria,
+                     2026-11-06): desde aquí se vuelve a ella. -->
+                <RouterLink
+                  :to="{ name: 'modulo', params: { n } }"
+                  class="text-primary focus-visible:ring-ring inline-flex min-h-8 items-center gap-1 rounded-md text-sm font-semibold outline-none hover:underline focus-visible:ring-2"
+                  :title="`Portada del módulo ${n}: ${modulo.titulo}`"
+                  data-testid="enlace-portada"
+                >
+                  <ChevronLeft class="size-4" aria-hidden="true" />
+                  Módulo {{ n }}
+                </RouterLink>
                 <details class="relative text-sm" data-testid="objetivos-desplegable">
                   <summary
                     class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
@@ -1173,7 +1174,7 @@ onBeforeUnmount(() => {
                 </details>
               </div>
               <span
-                class="text-muted-foreground justify-self-end text-right text-sm tabular-nums md:order-3"
+                class="text-muted-foreground text-sm whitespace-nowrap tabular-nums md:order-3 md:justify-self-end md:text-right"
                 data-testid="avance-obligatorias"
               >
                 {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} obligatorias

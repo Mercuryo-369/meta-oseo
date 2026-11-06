@@ -20,7 +20,7 @@ const props = defineProps<{
   partes: readonly string[];
   /** Parte visible. */
   parte: number;
-  /** Solo las partes de la sección abierta (las secciones van en `BarraModulo`, con flechas). */
+  /** Solo las partes de la sección abierta (las secciones van en la portada del módulo, con flechas). */
   soloPartes?: boolean;
   /** Subcapítulo de cada parte: entre un subcapítulo y el siguiente va una separación con su nombre. */
   subcapitulos?: readonly (string | null)[];
