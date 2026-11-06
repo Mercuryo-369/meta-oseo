@@ -1,12 +1,14 @@
-"""Esquemas de las funciones del mentor: sugerencias de refuerzo y quiz de práctica (F3-07 y F4-03).
+"""Esquemas de las funciones del mentor: sugerencias de refuerzo, quiz de práctica (F3-07 y F4-03)
+y retroalimentación de las preguntas abiertas.
 
-Ambos endpoints viven en `app/routers/mentor.py` (docs/api-contract.md, "Mentor de IA").
+Los endpoints viven en `app/routers/mentor.py` (docs/api-contract.md, "Mentor de IA").
 """
 
 from typing import Annotated, Literal, Self
 
-from pydantic import AfterValidator, BaseModel, Field, model_validator
+from pydantic import AfterValidator, BaseModel, Field, StringConstraints, model_validator
 
+from app.core.constants import ACTIVITY_ID_PATTERN
 from app.core.text import ensure_storable
 from app.schemas.chat import Cita
 from app.schemas.contexto import MAX_CONTEXT_STRING_LENGTH, ContextoPedagogico, ModuleNumber
@@ -102,3 +104,35 @@ class QuizResponse(BaseModel):
     fuentes: list[Cita]
     # Siempre `false`: el quiz de práctica no otorga puntos ni logros.
     otorga_puntos: bool = False
+
+
+# --- Retroalimentación de preguntas abiertas -----------------------------------------------------
+
+RESPUESTA_ESTUDIANTE_MIN_CHARS = 10
+RESPUESTA_ESTUDIANTE_MAX_CHARS = 2000
+
+Valoracion = Literal["acertada", "parcial", "incorrecta"]
+VALORACIONES: tuple[str, ...] = ("acertada", "parcial", "incorrecta")
+
+
+class RetroalimentacionRequest(BaseModel):
+    """Respuesta del estudiante a un bloque `pregunta`. El enunciado y la respuesta del docente
+    los pone el servidor a partir del id: el cliente no los envía."""
+
+    pregunta_id: Annotated[str, Field(pattern=ACTIVITY_ID_PATTERN), AfterValidator(ensure_storable)]
+    respuesta: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=RESPUESTA_ESTUDIANTE_MIN_CHARS,
+            max_length=RESPUESTA_ESTUDIANTE_MAX_CHARS,
+        ),
+        AfterValidator(ensure_storable),
+    ]
+    contexto: ContextoPedagogico | None = None
+
+
+class RetroalimentacionResponse(BaseModel):
+    pregunta_id: str
+    valoracion: Valoracion
+    retroalimentacion: str

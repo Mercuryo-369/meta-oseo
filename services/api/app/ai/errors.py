@@ -162,6 +162,21 @@ def quiz_failed(status_code: int, code: str, message: str) -> HTTPException:
     return api_error(status_code, code, message)
 
 
+def question_not_found() -> HTTPException:
+    """404 `pregunta_no_encontrada`: el servidor no conoce ese bloque `pregunta`."""
+    return api_error(
+        status.HTTP_404_NOT_FOUND,
+        "pregunta_no_encontrada",
+        "No se encontró esa pregunta.",
+    )
+
+
+def feedback_failed(code: str, message: str) -> HTTPException:
+    """502 `retroalimentacion_invalida` o `ia_error`: el modelo no entregó una retroalimentación
+    utilizable."""
+    return api_error(status.HTTP_502_BAD_GATEWAY, code, message)
+
+
 def session_not_found() -> HTTPException:
     """404 `sesion_no_encontrada`: no existe o no es del usuario (no se distingue a propósito)."""
     return api_error(

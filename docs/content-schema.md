@@ -415,12 +415,17 @@ El motor tiene **seis tipos**, exactamente los del contrato con la API y con el 
 `quiz`, `video-texto` y `exploracion-3d`, más `clasificacion` y `curva-esfuerzo` (2026-10-27, pedidas en el documento
 de la docente: tabla o cajas para arrastrar y marcador sobre la curva esfuerzo-deformación). Bloques no puntuables
 nuevos: `escenarios` (elegir un escenario y ver su contenido) y `pregunta` (respuesta abierta comparada con la del
-docente). Desde el 2026-11-05 (documento de la docente con los módulos 4 a 6): bloque `video` (mini video del
+docente; el estudiante puede pedir además una retroalimentación de la IA, que compara su respuesta con la `respuesta`
+del docente y le explica qué está bien, qué falta y por qué, sin puntaje: `POST /api/mentor/retroalimentacion`. Al
+cambiar un bloque `pregunta` hay que regenerar `services/api/app/data/preguntas_abiertas.json` con
+`uv run python -m app.scripts.build_preguntas`). Desde el 2026-11-05 (documento de la docente con los módulos 4 a 6): bloque `video` (mini video del
 diseñador; sin `src` muestra su espacio reservado con la `descripcion`) y campo `subcapitulo` en los textos (el
 «título grande» que abarca varias partes; se muestra encima del título de la parte y separa grupos en la navegación). El
 texto que sigue a un `video` va a su lado («Texto lateral que debe ir allí»). Cada escenario de un bloque `escenarios`
 admite `prediccion` (`pregunta`, 2 a 4 `opciones`, `correcta` y `retroalimentacion`): se responde antes de ver las rutas
-y no puntúa.
+y no puntúa. La `clasificacion` admite `disposicion: "esquema"` (4.1, cristales dentro y fuera de la
+fibrilla): `esquema` (`imagen`, `alt`, `ancho`, `alto`) y, en cada categoría, `zonas` (recuadros en % del dibujo, uno por
+elemento) y un `rotulo` que aparece sobre ellas al completarlas (en `rotulo_zona`); los elementos pueden llevar `imagen`.
 No se inventan más tipos sin acordarlo.
 
 ### Campos comunes

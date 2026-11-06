@@ -32,6 +32,8 @@ backend, frontend y este documento a la vez. Ver también PLAN.md §3 (`Contexto
 | 429 | `limite_diario` | `POST /api/chat`: el estudiante agotó `MENTOR_MAX_MENSAJES_DIA` mensajes hoy. Trae `Retry-After` |
 | 404 | `sesion_no_encontrada` | `POST /api/chat` con `session_id`, `GET /api/chat/history` o `DELETE /api/chat/session` de una conversación inexistente o ajena |
 | 404 | `mensaje_no_encontrado` | `POST /api/chat/feedback` con un mensaje inexistente, ajeno o que no es del mentor |
+| 404 | `pregunta_no_encontrada` | `POST /api/mentor/retroalimentacion` con un id que no es un bloque `pregunta` conocido por el servidor |
+| 502 | `retroalimentacion_invalida` | `POST /api/mentor/retroalimentacion`: el modelo no devolvió una retroalimentación válida tras un reintento |
 | 503 | `ia_no_configurada` | `/api/chat` sin `ANTHROPIC_API_KEY` |
 
 ## Identificación
@@ -483,6 +485,49 @@ schema; sin streaming). Es **práctica libre: no otorga puntos ni logros, no se 
   vez, con retroalimentación inmediata (explicación y fuentes al elegir), resumen con lo que conviene
   repasar y una nota fija: «Es práctica libre: no suma puntos ni logros». Componente propio
   (`components/mentor/MentorQuiz.vue`); no reutiliza `ActividadQuiz`.
+
+#### Retroalimentación de preguntas abiertas: `POST /api/mentor/retroalimentacion`
+
+Requiere auth. Pedido de la docente para las preguntas de «detecta y corrige el error» de 4.1, extendido a
+todos los bloques `pregunta`: Claude compara la respuesta del estudiante con la **respuesta de referencia
+del docente** y le explica qué está bien, qué falta o está mal y por qué. **Solo retroalimentación: no
+otorga puntos ni logros, no toca `activity_results` y el servidor no guarda la respuesta del estudiante.**
+
+```json
+{ "pregunta_id": "preg_m4_1_ppi", "respuesta": "El error está en suponer que…", "contexto": { } }
+```
+- `pregunta_id`: id del bloque `pregunta` (`^[a-z0-9_-]{1,64}$`). El enunciado y la respuesta del docente
+  los pone el servidor desde `app/data/preguntas_abiertas.json` (lo genera
+  `python -m app.scripts.build_preguntas` a partir de los `content.json`); el cliente no los envía. Si el
+  servidor no conoce ese id (o el archivo falta): `404 pregunta_no_encontrada`.
+- `respuesta`: texto del estudiante, de 10 a 2000 caracteres **después de quitar los espacios de los
+  bordes** (si no, `422` de validación).
+- `contexto` (opcional): `ContextoPedagogico`; solo ajusta el lenguaje al nivel del estudiante.
+
+```json
+{ "pregunta_id": "preg_m4_1_ppi", "valoracion": "parcial",
+  "retroalimentacion": "Identificaste bien que… Te faltó… porque…" }
+```
+- `valoracion` ∈ `acertada`, `parcial`, `incorrecta`. `retroalimentacion`: texto plano en español, de
+  «tú», uno o dos párrafos (separados por una línea en blanco).
+- **Prompt** `app/ai/prompts/retroalimentacion_v1.md`: compara solo con la respuesta del docente y el
+  enunciado, sin inventar contenido; 80–180 palabras; no habla de notas ni puntajes. La respuesta del
+  estudiante viaja dentro del bloque de datos (`datos_de_la_pregunta`), escapada y marcada como datos, no
+  instrucciones. Salida estructurada (`output_config.format`), mismos parámetros del modelo que el quiz.
+- **Validación** (`app/ai/retroalimentacion.py`): JSON válido, `valoracion` del enum y texto de 50 a 240
+  palabras y como mucho 1800 caracteres. Si no pasa (o se corta por `max_tokens`) se reintenta **una
+  vez**; si vuelve a fallar, `502 retroalimentacion_invalida`.
+- **Cuotas y límites**, en este orden: sin `ANTHROPIC_API_KEY` → `503 ia_no_configurada`; id desconocido →
+  `404 pregunta_no_encontrada`; **comparte la cuota diaria del quiz** (`MENTOR_MAX_QUIZ_DIA`) →
+  `429 limite_diario_quiz`; y el límite por minuto compartido con el chat → `429 demasiados_intentos`. El
+  consumo se registra en `usage_events` con `kind = "quiz"` (una fila por petición).
+- Errores: `401 token_invalido`; `404 pregunta_no_encontrada`; `422` de validación; `429`; `502 ia_error`
+  (el modelo rechazó la consulta o el servicio falló) y `502 retroalimentacion_invalida`;
+  `503 ia_no_configurada`.
+- *Interfaz:* botón «Pedir retroalimentación» en cada bloque `pregunta` (activo con 10 o más caracteres
+  que no sean espacios), resultado en una región `aria-live` con la valoración como etiqueta con icono y
+  texto (Acertada / Parcialmente acertada / Incorrecta) y la explicación. «Ver la respuesta del docente»
+  sigue disponible.
 
 ## `ContextoPedagogico` (congelado en F1-09)
 

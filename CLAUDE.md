@@ -68,6 +68,7 @@ Contenido, datos derivados y documentación (verificados el 2026-09-25):
 # Desde services/api (con uv en el PATH). Regenerar y versionar cada vez que cambie un content.json o un guion:
 uv run python -m app.scripts.build_manifest [--comprobar]   # actividades_manifest.json (validación del servidor)
 uv run python -m app.scripts.build_corpus [--comprobar]     # corpus.jsonl del mentor (sustituye a "ingest": BM25, sin embeddings)
+uv run python -m app.scripts.build_preguntas [--comprobar]  # preguntas_abiertas.json (bloques `pregunta` para la retroalimentación con IA)
 uv run python -m app.scripts.promote_docente CC 1023456789  # asigna el rol docente a un usuario ya registrado
 
 # Desde la raíz del repo:

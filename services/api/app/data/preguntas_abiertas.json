@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "preguntas": {
+    "preg_aplicacion_intramembranosa": {
+      "modulo": 2,
+      "seccion": "m2_1_origen_celulas_oseas",
+      "titulo": "Pregunta de aplicación",
+      "enunciado": "¿Por qué la osificación intramembranosa es especialmente relevante en el desarrollo craneofacial? Menciona dos estructuras anatómicas que se formen mediante este proceso.",
+      "respuesta": "Permite la formación directa de hueso a partir de células mesenquimales y participa en el desarrollo de gran parte del esqueleto craneofacial, como la mayor parte del maxilar y del cuerpo mandibular."
+    },
+    "preg_m4_1_ppi": {
+      "modulo": 4,
+      "seccion": "m4_1_mineralizacion_primaria",
+      "titulo": "Evaluación: detecta y corrige el error (1 de 3)",
+      "enunciado": "Lee la afirmación, identifica el error científico y escribe una versión corregida.\n\n**El PPi favorece la mineralización.** Una estudiante propone aumentar la concentración de pirofosfato inorgánico (PPi) para acelerar la formación de cristales, porque este compuesto contiene grupos fosfato.",
+      "respuesta": "El PPi actúa como inhibidor de la nucleación y del crecimiento de los cristales minerales. Su aumento puede restringir la mineralización, mientras que su hidrólisis por TNAP reduce esta inhibición y libera Pi.\n\n**Justificación:** el efecto del PPi no puede deducirse simplemente de su composición química. Su función reguladora es distinta de la del Pi, que participa en la formación del fosfato de calcio."
+    },
+    "preg_m4_1_osteoide": {
+      "modulo": 4,
+      "seccion": "m4_1_mineralizacion_primaria",
+      "titulo": "Evaluación: detecta y corrige el error (2 de 3)",
+      "enunciado": "Lee la afirmación, identifica el error científico y escribe una versión corregida.\n\nUn estudiante afirma: «Tan pronto como el osteoblasto secreta el osteoide, los cristales de fosfato de calcio comienzan a depositarse espontáneamente, porque la matriz ya contiene colágeno, calcio y fosfato».",
+      "respuesta": "La presencia de osteoide, calcio y fosfato no garantiza por sí sola el inicio de la mineralización. El osteoide requiere maduración extracelular y condiciones fisicoquímicas favorables, determinadas por la disponibilidad local de iones, el pH, el grado de saturación y la regulación de los inhibidores de la mineralización.\n\n**Justificación:** la organización de la matriz y el equilibrio del microambiente son necesarios para favorecer la nucleación mineral. La presencia de los componentes por separado no asegura que se formen los primeros núcleos de fosfato de calcio."
+    },
+    "preg_m4_1_intrafibrilar": {
+      "modulo": 4,
+      "seccion": "m4_1_mineralizacion_primaria",
+      "titulo": "Evaluación: detecta y corrige el error (3 de 3)",
+      "enunciado": "Lee la afirmación, identifica el error científico y escribe una versión corregida.\n\nUn estudiante sostiene que toda la fase mineral del hueso se deposita exclusivamente dentro de las fibrillas de colágeno.",
+      "respuesta": "La mineralización puede ser intrafibrilar y extrafibrilar. Los depósitos intrafibrilares se localizan preferentemente en las zonas de separación de las fibrillas, mientras que también puede ocurrir depósito mineral sobre sus superficies y entre ellas.\n\n**Justificación:** ambos patrones contribuyen a integrar la fase mineral con la matriz orgánica y a establecer la estructura compuesta característica del tejido óseo."
+    }
+  }
+}

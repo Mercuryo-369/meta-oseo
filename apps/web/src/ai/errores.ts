@@ -151,6 +151,47 @@ export function falloDeQuiz(err: ApiError): FalloMentor {
   };
 }
 
+/** Errores de POST /api/mentor/retroalimentacion (comparte la cuota diaria del quiz). */
+export function falloDeRetroalimentacion(err: ApiError): FalloMentor {
+  if (err.status === 0 || err.code === 'red') {
+    return { mensaje: MENSAJE_SIN_CONEXION, reintentable: true };
+  }
+  if (err.status === 401) return { mensaje: MENSAJE_SESION_EXPIRADA, reintentable: false };
+  if (err.status === 503) {
+    return { mensaje: 'El mentor no está disponible ahora.', reintentable: false };
+  }
+  if (err.status === 429 && err.code === 'limite_diario_quiz') {
+    return {
+      mensaje:
+        'Hoy ya usaste todas tus consultas de práctica con el mentor. Vuelve mañana; mientras tanto puedes comparar tu respuesta con la del docente.',
+      reintentable: false,
+    };
+  }
+  if (err.status === 429) {
+    return {
+      mensaje: 'Estás pidiendo muchas cosas seguidas. Espera un momento e inténtalo de nuevo.',
+      reintentable: true,
+    };
+  }
+  if (err.status === 404) {
+    return {
+      mensaje:
+        'El mentor todavía no puede revisar esta pregunta. Compara tu respuesta con la del docente.',
+      reintentable: false,
+    };
+  }
+  if (err.status === 422) {
+    return {
+      mensaje: 'Revisa tu respuesta: debe tener entre 10 y 2000 caracteres.',
+      reintentable: false,
+    };
+  }
+  return {
+    mensaje: 'No se pudo revisar tu respuesta esta vez. Inténtalo de nuevo en un momento.',
+    reintentable: true,
+  };
+}
+
 /** Errores de GET /api/chat/history al recuperar la conversación anterior. */
 export function falloDeHistorial(err: ApiError): FalloMentor {
   if (err.status === 401) return { mensaje: MENSAJE_SESION_EXPIRADA, reintentable: false };

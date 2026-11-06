@@ -6,6 +6,7 @@
 - `POST /api/chat/feedback`: valoración (pulgar arriba o abajo) de una respuesta (F3-11).
 - `GET /api/mentor/refuerzo`: conceptos a repasar según el progreso, sin llamar al modelo (F3-07).
 - `POST /api/mentor/quiz`: quiz de práctica de 3 preguntas con salida estructurada (F4-03).
+- `POST /api/mentor/retroalimentacion`: retroalimentación (sin puntaje) de una respuesta abierta.
 """
 
 import asyncio
@@ -22,8 +23,10 @@ from app.ai import sse, store
 from app.ai.client import build_request, get_client
 from app.ai.errors import (
     daily_limit_reached,
+    feedback_failed,
     ia_not_configured,
     message_not_found,
+    question_not_found,
     quiz_daily_limit_reached,
     quiz_failed,
     quiz_without_material,
@@ -38,6 +41,11 @@ from app.ai.quiz import (
     generar_quiz,
     mezclar_opciones,
     seleccionar_material,
+)
+from app.ai.retroalimentacion import (
+    RetroalimentacionFallida,
+    build_retro_request,
+    generar_retroalimentacion,
 )
 from app.ai.usage import USAGE_KIND_QUIZ, Usage, record_usage
 from app.core.clock import utcnow
@@ -63,10 +71,17 @@ from app.schemas.chat import (
     HistoryMessage,
     HistoryResponse,
 )
-from app.schemas.mentor import QuizRequest, QuizResponse, RefuerzoResponse
+from app.schemas.mentor import (
+    QuizRequest,
+    QuizResponse,
+    RefuerzoResponse,
+    RetroalimentacionRequest,
+    RetroalimentacionResponse,
+)
 from app.services import progress as progress_service
 from app.services import refuerzo
 from app.services.manifest import ManifestDep
+from app.services.preguntas_abiertas import obtener_pregunta
 
 logger = logging.getLogger("ova.mentor")
 
@@ -413,4 +428,64 @@ async def mentor_quiz(
         tema=material.tema,
         preguntas=mezclar_opciones(generado.preguntas),
         fuentes=[Cita.model_validate(c) for c in citas],
+    )
+
+
+# --- Retroalimentación de preguntas abiertas -----------------------------------------------------
+
+_RETRO_RESPONSES = {
+    401: {"model": ErrorResponse, "description": "`token_invalido`"},
+    404: {"model": ErrorResponse, "description": "`pregunta_no_encontrada`"},
+    422: {"model": ErrorResponse, "description": "Validación (formato de FastAPI)."},
+    429: {"model": ErrorResponse, "description": "`demasiados_intentos` o `limite_diario_quiz`"},
+    502: {"model": ErrorResponse, "description": "`retroalimentacion_invalida` o `ia_error`"},
+    503: {"model": ErrorResponse, "description": "`ia_no_configurada`"},
+}
+
+
+@router.post(
+    "/mentor/retroalimentacion",
+    response_model=RetroalimentacionResponse,
+    responses=_RETRO_RESPONSES,
+    summary="Retroalimentación (sin puntaje) de la respuesta a una pregunta abierta",
+)
+async def mentor_retroalimentacion(
+    body: RetroalimentacionRequest,
+    request: Request,
+    user: CurrentUser,
+    session: SessionDep,
+    settings: SettingsDep,
+) -> RetroalimentacionResponse:
+    """Compara la respuesta del estudiante con la del docente. No guarda la respuesta ni puntúa;
+    solo registra el consumo, que comparte la cuota diaria del quiz de práctica."""
+    assert user.id is not None
+    user_id = user.id
+    engine = request.app.state.engine
+
+    # Antes de gastar nada: 503 sin clave, 404 si la pregunta no existe, cuota diaria (la del quiz)
+    # y límite por minuto (el del chat).
+    if not settings.anthropic_configured:
+        raise ia_not_configured()
+    pregunta = obtener_pregunta(body.pregunta_id)
+    if pregunta is None:
+        raise question_not_found()
+    await _enforce_quiz_daily_limit(engine, settings, user_id)
+    enforce_limit(request.app.state.chat_limiter, f"user:{user_id}")
+
+    retro_request = build_retro_request(settings, pregunta, body.respuesta, body.contexto)
+    # `get_current_user` dejó una transacción abierta: se cierra antes de la espera larga.
+    await asyncio.to_thread(session.close)
+
+    try:
+        generada = await generar_retroalimentacion(get_client(request), retro_request)
+    except RetroalimentacionFallida as fallo:
+        if fallo.model is not None:
+            await _record_quiz_usage(engine, user_id, fallo.model, fallo.usage)
+        raise feedback_failed(fallo.code, fallo.message) from fallo
+    await _record_quiz_usage(engine, user_id, generada.model, generada.usage)
+
+    return RetroalimentacionResponse(
+        pregunta_id=body.pregunta_id,
+        valoracion=generada.valoracion,
+        retroalimentacion=generada.retroalimentacion,
     )

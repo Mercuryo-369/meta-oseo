@@ -1,6 +1,7 @@
 /**
  * Llamadas JSON del mentor que no son el chat en streaming (docs/api-contract.md, "Mentor de IA"):
- * historial, borrado de la conversación, valoración, sugerencias de refuerzo y quiz de práctica.
+ * historial, borrado de la conversación, valoración, sugerencias de refuerzo, quiz de práctica y
+ * retroalimentación de las preguntas abiertas.
  * El chat en sí (POST /api/chat, SSE) vive en `useMentor.ts`.
  *
  * Todas usan `apiFetch`: agregan el token, traducen los fallos de red y lanzan `ApiError`. Los
@@ -126,4 +127,32 @@ export function obtenerRefuerzo(modulo?: number): Promise<RespuestaRefuerzo> {
 
 export function pedirQuiz(cuerpo: CuerpoQuiz, signal?: AbortSignal): Promise<RespuestaQuiz> {
   return apiFetch<RespuestaQuiz>('/mentor/quiz', { method: 'POST', body: cuerpo, signal });
+}
+
+export type ValoracionRespuesta = 'acertada' | 'parcial' | 'incorrecta';
+
+/** Cuerpo de POST /api/mentor/retroalimentacion: el servidor pone el enunciado y la respuesta del docente. */
+export interface CuerpoRetroalimentacion {
+  pregunta_id: string;
+  /** De 10 a 2000 caracteres, sin contar los espacios de los bordes. */
+  respuesta: string;
+  contexto?: ContextoPedagogico;
+}
+
+/** Retroalimentación de una respuesta abierta. No puntúa ni se guarda. */
+export interface RespuestaRetroalimentacion {
+  pregunta_id: string;
+  valoracion: ValoracionRespuesta;
+  retroalimentacion: string;
+}
+
+export function pedirRetroalimentacion(
+  cuerpo: CuerpoRetroalimentacion,
+  signal?: AbortSignal,
+): Promise<RespuestaRetroalimentacion> {
+  return apiFetch<RespuestaRetroalimentacion>('/mentor/retroalimentacion', {
+    method: 'POST',
+    body: cuerpo,
+    signal,
+  });
 }

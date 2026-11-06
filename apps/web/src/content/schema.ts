@@ -1155,6 +1155,14 @@ export const ActividadExploracion3dSchema = z
  * Categoría (caja) a la que se arrastran elementos. En disposición `tabla`, cada categoría es una celda: `fila` y
  * `columna` la ubican (la tabla se arma con los valores distintos, en el orden en que aparecen).
  */
+/** Recuadro sobre el esquema (disposición `esquema`), en porcentaje del ancho (x, ancho) y del alto (y, alto). */
+export const ZonaEsquemaSchema = z.strictObject({
+  x: z.number().min(0).max(100),
+  y: z.number().min(0).max(100),
+  ancho: z.number().min(1).max(100),
+  alto: z.number().min(1).max(100),
+});
+
 export const CategoriaClasificacionSchema = z.strictObject({
   id: IdSchema,
   etiqueta: textoPlano(2, 80),
@@ -1163,6 +1171,12 @@ export const CategoriaClasificacionSchema = z.strictObject({
   imagen: rutaImagen.optional(),
   fila: textoPlano(1, 80).optional(),
   columna: textoPlano(1, 80).optional(),
+  /** Disposición `esquema`: los espacios del dibujo donde se colocan sus elementos (uno por espacio). */
+  zonas: z.array(ZonaEsquemaSchema).min(1).max(12).optional(),
+  /** Disposición `esquema`: rótulo corto que aparece sobre sus espacios al completarlos. */
+  rotulo: textoPlano(2, 40).optional(),
+  /** Espacio (índice en `zonas`) que lleva el rótulo; va encima, o debajo si está en la mitad inferior. */
+  rotulo_zona: z.number().int().min(0).max(11).optional(),
 });
 
 export const ElementoClasificacionSchema = z.strictObject({
@@ -1172,11 +1186,26 @@ export const ElementoClasificacionSchema = z.strictObject({
   categoria: IdSchema,
   /** Explicación al acertar o al fallar (si falta, se usa la retroalimentación general). */
   explicacion: markdownLinea(5, 400).optional(),
+  /** Dibujo de la pieza (por ejemplo, un cristal): se ve en la bandeja y, en el esquema, en su espacio. */
+  imagen: rutaImagen.optional(),
 });
 
 export const ConfigClasificacionSchema = z
   .strictObject({
-    disposicion: z.enum(['cajas', 'tabla']).default('cajas'),
+    /**
+     * `cajas`, `tabla` o `esquema` (4.1 del documento de la docente: «usar este esquema para que el estudiante
+     * pueda poner los cristales en los espacios… y que cuando los completen salgan los títulos»): las categorías
+     * son espacios sobre un dibujo (`esquema`) y su nombre aparece al completarlas.
+     */
+    disposicion: z.enum(['cajas', 'tabla', 'esquema']).default('cajas'),
+    esquema: z
+      .strictObject({
+        imagen: rutaImagen,
+        alt: textoPlano(10, 400),
+        ancho: z.number().int().min(1).max(4000),
+        alto: z.number().int().min(1).max(4000),
+      })
+      .optional(),
     categorias: z.array(CategoriaClasificacionSchema).min(2).max(16),
     elementos: z.array(ElementoClasificacionSchema).min(2).max(30),
     /** Encabezado de la primera columna de la tabla (el de las filas). */
@@ -1194,6 +1223,22 @@ export const ConfigClasificacionSchema = z
       config.categorias.forEach((c, i) => {
         if (!c.fila || !c.columna) {
           agregar(ctx, ['categorias', i], 'En una tabla, cada categoría lleva "fila" y "columna".');
+        }
+      });
+    }
+    if (config.disposicion === 'esquema') {
+      if (!config.esquema)
+        agregar(ctx, ['esquema'], 'La disposición "esquema" necesita "esquema".');
+      config.categorias.forEach((c, i) => {
+        const n = config.elementos.filter((e) => e.categoria === c.id).length;
+        if (!c.zonas) {
+          agregar(ctx, ['categorias', i], 'En un esquema, cada categoría lleva sus "zonas".');
+        } else if (c.zonas.length < n) {
+          agregar(
+            ctx,
+            ['categorias', i, 'zonas'],
+            `La categoría tiene ${n} elementos y solo ${c.zonas.length} espacios en el esquema.`,
+          );
         }
       });
     }

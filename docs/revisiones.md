@@ -183,8 +183,8 @@ la parte a la que siguen.
 | 6 | 2.2 | «Identifica el destino del osteoblasto» dinámica, arrastrando | hecho: relación de columnas | 2026-11-05 |
 | 7 | 3.1 y 3.3 | Espacio para los mini videos del diseñador con su texto lateral | hecho: 2 en 3.1 y 6 en 3.3, «Video en preparación» | 2026-11-05 |
 | 8 | 3.2 | Pregunta de predicción y retroalimentación en cada escenario | redactadas a partir de los textos de cada escenario; **pendiente de su aprobación** | 2026-11-05 |
-| 9 | 4.1 | «¿Dentro o fuera de la fibrilla?» arrastrando los cristales sobre el esquema | provisional como clasificación por cajas | pendiente |
-| 10 | 4.1 | Corrección con IA de las evaluaciones de detección y corrección de errores | provisional como pregunta abierta; la IA solo dará retroalimentación | pendiente |
+| 9 | 4.1 | «¿Dentro o fuera de la fibrilla?» arrastrando los cristales sobre el esquema | hecho: su esquema sin cristales; los cristales en placa caben en las zonas gap y los agregados entre las fibrillas; al completar cada tipo sale su título | 2026-11-05 |
+| 10 | 4.1 | Corrección con IA de las evaluaciones de detección y corrección de errores | hecho: botón «Pedir retroalimentación» en cada pregunta abierta; el mentor compara con su respuesta y explica, sin puntaje | 2026-11-05 |
 | 11 | 6.2 | Actividad 2 «Completa la secuencia» | hecho: formato `completar` del quiz (texto con huecos y banco de términos), 20 puntos | 2026-11-05 |
 | 12 | 4.2 | Bingo | al final, por decisión de la docente | pendiente |
 | 13 | 4.2 | Evaluación (el documento repite la de la 4.1 por error) | esperando la evaluación correcta | pendiente |
