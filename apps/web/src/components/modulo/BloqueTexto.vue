@@ -13,8 +13,13 @@ withDefaults(
     columnas?: boolean;
     /** Dentro del recuadro junto a una imagen: sin columnas. */
     incrustado?: boolean;
+    /**
+     * El fondo es una figura que la sección muestra completa más adelante (módulos 5 y 6 usan su primera imagen):
+     * se vela para que el panel no tape a medias sus rótulos y se lea como fondo (revisión del módulo 5, 2026-11-06).
+     */
+    velado?: boolean;
   }>(),
-  { columnas: false, incrustado: false },
+  { columnas: false, incrustado: false, velado: false },
 );
 </script>
 
@@ -23,6 +28,7 @@ withDefaults(
     v-if="bloque.fondo"
     :id="`bloque-${bloque.id}`"
     class="relative isolate flex items-center overflow-hidden rounded-2xl border p-4 sm:p-8 lg:min-h-[var(--alto-vista,28rem)]"
+    :class="velado ? 'justify-center' : ''"
     data-testid="bloque-texto"
     data-fondo="true"
   >
@@ -33,6 +39,8 @@ withDefaults(
       loading="lazy"
       decoding="async"
       class="absolute inset-0 -z-10 size-full object-cover"
+      :class="velado ? 'scale-105 opacity-25 blur-[3px]' : ''"
+      :data-velado="velado ? 'true' : undefined"
     />
     <div
       class="cristal-portada border-l-acento max-w-3xl space-y-2 rounded-2xl border-l-4 p-5 sm:p-7"

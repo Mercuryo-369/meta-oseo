@@ -34,6 +34,7 @@ import AvisosLogro from '@/components/modulo/AvisosLogro.vue';
 import BloqueActividad from '@/components/modulo/BloqueActividad.vue';
 import BloqueCallout from '@/components/modulo/BloqueCallout.vue';
 import BloqueImagen from '@/components/modulo/BloqueImagen.vue';
+import { fuentesDeImagenes } from '@/components/modulo/fuentes';
 import BloqueEscenarios from '@/components/modulo/BloqueEscenarios.vue';
 import BloquePregunta from '@/components/modulo/BloquePregunta.vue';
 import BloqueVideo from '@/components/modulo/BloqueVideo.vue';
@@ -213,6 +214,7 @@ const completoLocal = computed(() =>
   modulo.value ? moduloCompletado(modulo.value, superadas.value) : false,
 );
 const secciones = computed(() => modulo.value?.secciones ?? []);
+const fuentesImagenes = computed(() => (modulo.value ? fuentesDeImagenes(modulo.value) : []));
 
 const indiceSolicitado = computed(() => {
   const q = route.query.s;
@@ -247,6 +249,15 @@ const idSeccionMostrada = computed(() => (mostrando.value ? (seccion.value?.id ?
 
 const bloquesVisibles = computed(() =>
   (seccion.value?.bloques ?? []).filter((b) => visibleParaNivel(b, contexto.nivel)),
+);
+/** Imágenes que la sección muestra como figura (para velar un fondo que es una de ellas). */
+const imagenesSeccion = computed(
+  () =>
+    new Set(
+      bloquesVisibles.value.flatMap((b) =>
+        b.tipo === 'imagen' ? [b.src, ...(b.figura ? [b.figura] : [])] : [],
+      ),
+    ),
 );
 
 /**
@@ -1139,7 +1150,7 @@ onBeforeUnmount(() => {
                     Objetivos
                   </summary>
                   <ul
-                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
+                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc whitespace-normal space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
                   >
                     <li v-for="objetivo in modulo.objetivos" :key="objetivo">
                       <TextoRico :texto="objetivo" modo="linea" />
@@ -1152,25 +1163,56 @@ onBeforeUnmount(() => {
                   <summary
                     class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
                   >
-                    Referencias ({{ modulo.referencias.length }})
+                    Referencias ({{ modulo.referencias.length + fuentesImagenes.length }})
                   </summary>
-                  <ol
-                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] list-decimal space-y-3 overflow-y-auto overscroll-contain rounded-xl border p-4 pl-9 leading-relaxed shadow-lg"
+                  <div
+                    class="bg-card absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] space-y-4 whitespace-normal overflow-y-auto overscroll-contain rounded-xl border p-4 leading-relaxed shadow-lg"
                   >
-                    <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
-                      {{ r.cita }}
-                      <a
-                        v-if="r.url"
-                        :href="r.url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-primary block break-all underline underline-offset-2"
-                      >
-                        {{ r.url }}
-                        <span class="sr-only">(se abre en otra pestaña)</span>
-                      </a>
-                    </li>
-                  </ol>
+                    <ol class="marker:text-primary list-decimal space-y-3 pl-5">
+                      <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
+                        {{ r.cita }}
+                        <a
+                          v-if="r.url"
+                          :href="r.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-primary block break-all underline underline-offset-2"
+                        >
+                          {{ r.url }}
+                          <span class="sr-only">(se abre en otra pestaña)</span>
+                        </a>
+                      </li>
+                    </ol>
+                    <!-- Fuentes de las figuras: aquí y no bajo cada imagen, para que las imágenes ganen alto. -->
+                    <section
+                      v-if="fuentesImagenes.length"
+                      aria-labelledby="titulo-fuentes-imagenes"
+                      data-testid="fuentes-imagenes"
+                    >
+                      <h3 id="titulo-fuentes-imagenes" class="text-foreground mb-2 font-semibold">
+                        Fuentes de las imágenes
+                      </h3>
+                      <ul class="marker:text-primary list-disc space-y-2 pl-5">
+                        <li
+                          v-for="f in fuentesImagenes"
+                          :key="f.texto + (f.url ?? '')"
+                          class="text-left"
+                        >
+                          {{ f.texto }}
+                          <a
+                            v-if="f.url"
+                            :href="f.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-primary block break-all underline underline-offset-2"
+                          >
+                            {{ f.url }}
+                            <span class="sr-only">(se abre en otra pestaña)</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </section>
+                  </div>
                 </details>
               </div>
               <span
@@ -1300,6 +1342,8 @@ onBeforeUnmount(() => {
                         />
                         <BloqueImagen
                           :bloque="fila.imagen"
+                          :titulo-parte="nombresPartes[vista]"
+                          fuente-aparte
                           :largo-lateral="fila.texto.markdown.length"
                           :lateral-cristal="Boolean(fila.texto.fondo)"
                         >
@@ -1344,6 +1388,7 @@ onBeforeUnmount(() => {
                               v-if="b.tipo === 'texto'"
                               :bloque="sinTituloRepetido(b)"
                               :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
+                              :velado="Boolean(b.fondo && imagenesSeccion.has(b.fondo))"
                             />
                             <BloqueTabla v-else :bloque="b" />
                           </template>
@@ -1371,6 +1416,9 @@ onBeforeUnmount(() => {
                         v-else-if="fila.bloque.tipo === 'texto'"
                         :bloque="sinTituloRepetido(fila.bloque)"
                         :columnas="fila.bloque.markdown.length > 1200"
+                        :velado="
+                          Boolean(fila.bloque.fondo && imagenesSeccion.has(fila.bloque.fondo))
+                        "
                       />
                       <BloqueCallout
                         v-else-if="fila.bloque.tipo === 'callout'"
@@ -1379,6 +1427,8 @@ onBeforeUnmount(() => {
                       <BloqueImagen
                         v-else-if="fila.bloque.tipo === 'imagen'"
                         :bloque="fila.bloque"
+                        :titulo-parte="nombresPartes[vista]"
+                        fuente-aparte
                         :largo-lateral="fila.notas.reduce((t, n) => t + n.markdown.length, 0)"
                       >
                         <!-- Las notas de una imagen sola van a su derecha (2.1.3: «la nota de atención se ve mejor en la

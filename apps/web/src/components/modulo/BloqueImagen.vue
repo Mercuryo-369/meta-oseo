@@ -21,6 +21,7 @@ import { Check, ChevronLeft, ChevronRight, ImageOff, Lock } from '@lucide/vue';
 import type { BloqueImagen } from '@/content/schema';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
 import BotonAmpliar from './BotonAmpliar.vue';
+import { separarFuente } from './fuentes';
 import TextoRico from './TextoRico.vue';
 
 const props = withDefaults(
@@ -30,8 +31,12 @@ const props = withDefaults(
     largoLateral?: number;
     /** El texto lateral se lee sobre un fondo ilustrado: recuadro de cristal. */
     lateralCristal?: boolean;
+    /** Título de la parte que muestra la imagen: si el pie lo repite, no se muestra y la imagen gana alto. */
+    tituloParte?: string;
+    /** La fuente va en el desplegable de Referencias de la página, no bajo la imagen. */
+    fuenteAparte?: boolean;
   }>(),
-  { largoLateral: 0, lateralCristal: false },
+  { largoLateral: 0, lateralCristal: false, tituloParte: undefined, fuenteAparte: false },
 );
 const slots = useSlots();
 
@@ -69,10 +74,19 @@ const aspecto = computed(() => {
   return a.ancho && a.alto ? a.ancho / a.alto : 1.4;
 });
 /**
- * Texto debajo de la imagen solo si es muy panorámica (2,4:1 o más). Con la parte limitada al alto de la pantalla, una
- * imagen apaisada con el texto al lado se ve más grande que con el texto debajo (revisión visual, 2026-10-29).
+ * Texto debajo de la imagen solo si es extremadamente panorámica (3,2:1 o más). Con la parte limitada al alto de la
+ * pantalla, una imagen apaisada con el texto al lado se ve más grande que con el texto debajo (revisión visual,
+ * 2026-10-29). En el módulo 5 (revisión del 2026-11-06), las figuras de 2,4:1 a 2,7:1 apiladas quedaban a menos de
+ * la mitad del ancho y el texto, apretado debajo, con barra: al lado se ven un 25 % más grandes.
  */
-const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.value >= 2.4);
+const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.value >= 3.2);
+/**
+ * Imagen apaisada (1,8:1 o más) con texto al lado: la imagen gana ancho y el texto va en una columna más estrecha
+ * con su barra. A media pantalla, una figura así quedaba de unos 650 × 325 px y sus rótulos no se leían.
+ */
+const ancha = computed(
+  () => hayLateral.value && !hayPuntos.value && !haySecuencia.value && aspecto.value >= 1.8,
+);
 /**
  * Texto corto al lado de la imagen (menos de 1000 caracteres; revisión de la 1.2.2 y la 1.2.8, 2026-10-29): imagen y texto se centran como un conjunto, el
  * texto en una columna más estrecha, centrado en vertical y con letra más grande, en vez de unas pocas líneas
@@ -81,6 +95,7 @@ const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.v
 const lateralCorto = computed(
   () =>
     !apilado.value &&
+    !ancha.value &&
     // Con letreros y texto a la vez (Ley de Wolff, 1.4) la columna lleva también la ficha: letra normal.
     // Las secuencias tampoco: la imagen es la protagonista («que se vean grandes», 2.1 del documento).
     ((hayLateral.value && !hayPuntos.value && !haySecuencia.value && props.largoLateral < 1000) ||
@@ -94,21 +109,28 @@ const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPun
  */
 const anchoImagenMax = computed(() => {
   if (hayPuntos.value || haySecuencia.value) return '72%';
+  if (ancha.value) return '66%';
   const n = props.largoLateral;
   return n < 500 ? '74%' : n < 1200 ? '66%' : '60%';
 });
 /** La fuente sin su URL y la URL aparte, para enlazarla. */
-const fuente = computed(() => {
-  const credito = props.bloque.credito ?? '';
-  const url = /https:\/\/\S+/.exec(credito)?.[0]?.replace(/[.,;)»”"]+$/, '');
-  const texto = url
-    ? credito
-        .replace(url, '')
-        .replace(/[\s,;“”"«»]+$/, '')
-        .trim()
-    : credito;
-  return { url, texto };
-});
+const fuente = computed(() => separarFuente(props.bloque.credito ?? ''));
+function normalizar(t: string): string {
+  return t
+    .toLocaleLowerCase('es')
+    .replace(/[\s.:;,]+/g, ' ')
+    .trim();
+}
+/** El pie repite el título de la parte (que ya se lee encima): sobra bajo la imagen. */
+const pieRepetido = computed(
+  () =>
+    Boolean(props.tituloParte) &&
+    normalizar(textoPlanoDeMarkdown(props.bloque.pie)) === normalizar(props.tituloParte ?? ''),
+);
+const mostrarPie = computed(() => !props.bloque.pareja && !pieRepetido.value);
+const mostrarFuente = computed(() => Boolean(props.bloque.credito) && !props.fuenteAparte);
+/** Sin pie ni fuente visibles, la imagen ocupa también el alto que ellos reservaban. */
+const conPie = computed(() => mostrarPie.value || mostrarFuente.value);
 const claseRecuadro = computed(() =>
   // Barra de acento a la izquierda del texto, como en la referencia «Títulos y subtítulos» de la docente.
   props.lateralCristal
@@ -118,7 +140,12 @@ const claseRecuadro = computed(() =>
 </script>
 
 <template>
-  <figure :id="`bloque-${bloque.id}`" data-testid="bloque-imagen" :data-apilado="apilado">
+  <figure
+    :id="`bloque-${bloque.id}`"
+    :class="{ 'sin-pie': !conPie }"
+    data-testid="bloque-imagen"
+    :data-apilado="apilado"
+  >
     <div
       v-if="!fallo"
       class="grid items-start gap-5"
@@ -325,11 +352,14 @@ const claseRecuadro = computed(() =>
         </div>
 
         <!-- `contain: inline-size`: el pie (y su fuente, a veces larga) no ensancha la columna más que la imagen. -->
-        <figcaption class="text-muted-foreground text-center text-sm [contain:inline-size]">
-          <TextoRico v-if="!bloque.pareja" :texto="bloque.pie" modo="linea" />
+        <figcaption v-if="!conPie" class="sr-only">
+          <TextoRico :texto="bloque.pie" modo="linea" />
+        </figcaption>
+        <figcaption v-else class="text-muted-foreground text-center text-sm [contain:inline-size]">
+          <TextoRico v-if="mostrarPie" :texto="bloque.pie" modo="linea" />
           <!-- Si la fuente trae su enlace, toda la línea lleva al artículo (pedido de la docente, 2026-11-05). -->
           <a
-            v-if="bloque.credito && fuente.url"
+            v-if="mostrarFuente && fuente.url"
             :href="fuente.url"
             target="_blank"
             rel="noopener noreferrer"
@@ -339,7 +369,7 @@ const claseRecuadro = computed(() =>
             >Fuente: {{ fuente.texto }}</a
           >
           <span
-            v-else-if="bloque.credito"
+            v-else-if="mostrarFuente"
             class="block truncate text-xs"
             :title="`Fuente: ${bloque.credito}`"
             >Fuente: {{ bloque.credito }}</span
@@ -446,5 +476,8 @@ const claseRecuadro = computed(() =>
   height: auto;
   max-width: 100%;
   max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 3.75rem));
+}
+.sin-pie .imagen-ajustada {
+  max-height: var(--alto-max, calc(var(--alto-vista, 100dvh - 6.5rem) - 0.5rem));
 }
 </style>

@@ -876,10 +876,22 @@ function dom(sufijo: string): string {
 
 <style scoped>
 .relacion-columnas {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
   color: var(--card-foreground);
+}
+/* En escritorio el título ya es el encabezado de la parte: queda para el lector de pantalla. */
+@media (min-width: 1024px) {
+  .titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 .titulo {
   font-size: 1.125rem;
@@ -914,8 +926,18 @@ function dom(sufijo: string): string {
   background: var(--muted);
   font-size: 0.9375rem;
 }
+/* Sin mensaje, la región sigue en el DOM para el lector de pantalla pero no ocupa sitio: dejaba un hueco vacío entre
+   la instrucción y las columnas (revisión del módulo 5, 2026-11-06). */
 .aviso[data-tipo='vacio'] {
-  visibility: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .aviso[data-tipo='ok'] {
   border-color: var(--success);
