@@ -139,3 +139,32 @@ real de Anthropic; nada se ha probado en un teléfono real; Docker nunca se ha c
   el manifiesto, el corpus del mentor y la lista de revisión, y pasar el estado de los módulos aprobados.
 - Cuando se apruebe un módulo hay que actualizar la prueba `contenido.test.ts` de ese módulo, que hoy exige el estado
   `borrador`.
+
+### Observaciones de la docente: 2026-11-05 (navegación por partes, módulos 1 a 3)
+
+**Cambios pedidos y estado** (numeración de partes de antes del cambio):
+
+| # | Referencia | Cambio pedido | Estado | Aplicado (fecha y versión) |
+|---|---|---|---|---|
+| 1 | 1.1 y 1.2 (recuadro lateral) | Mostrar el «Texto lateral» de cada sección sobre su imagen de fondo | hecho: apertura de 1.1, 1.2, 1.4 y 2.1 | 2026-11-05 |
+| 2 | 1.4 (inicio) | Falta «El hueso frente a las cargas mecánicas» con su texto | hecho (1.4.1) | 2026-11-05 |
+| 3 | 1.2.6, 1.2.7 | Imágenes más grandes y mejor distribuidas | hecho: imagen y texto centrados, columna de texto más estrecha | 2026-11-05 |
+| 4 | 1.2.17 | La nota es de 1.2.16: ponerla abajo | hecho | 2026-11-05 |
+| 5 | 1.2.17 | La imagen es de 1.2.18 | hecho | 2026-11-05 |
+| 6 | 1.2.19 | Las opciones de la actividad, a la derecha | hecho | 2026-11-05 |
+| 7 | 1.3.3 | Usar la imagen de 1.3.2, más grande | hecho | 2026-11-05 |
+| 8 | 1.4.1 | Faltan sus imágenes (estaban en 1.4.2), texto a la derecha | hecho | 2026-11-05 |
+| 9 | 1.4.7 | El texto de Wolff es de la imagen siguiente; imágenes corridas | hecho | 2026-11-05 |
+| 10 | 1.4.17 | Quitar «No.» de «No. Quedará una deformación permanente» | hecho | 2026-11-05 |
+| 11 | 2.1.1 | Texto correcto de la imagen #1; «Las células madre y progenitoras…» con la imagen de fondo | hecho (2.1.1 y 2.1.2) | 2026-11-05 |
+| 12 | 2.1.4 | La nota de atención, abajo a la derecha de 2.1.3 | hecho | 2026-11-05 |
+| 13 | 2.1.5, 2.1.7 | La imagen va sin texto; el texto y la nota son de la imagen siguiente | hecho | 2026-11-05 |
+| 14 | 2.2.3 | Las notas, debajo del texto al que pertenecen | hecho | 2026-11-05 |
+| 15 | 2.2.13 | Dos apartados fusionados: separarlos | hecho | 2026-11-05 |
+| 16 | 3.1.3 | El texto no es de esa imagen | hecho | 2026-11-05 |
+| 17 | 3.2.6 | Falta el botón de ampliar la imagen | hecho | 2026-11-05 |
+| 18 | 3.3.3 | La imagen va sola | hecho | 2026-11-05 |
+
+Causa común de 4, 5, 8, 9, 13, 15, 16 y 18: el emparejamiento texto-imagen era por posición. Ahora cada texto va con la
+imagen de su mismo tema y, si no hay tema común, con la que lo sigue (el orden del documento); las notas van debajo de
+la parte a la que siguen.

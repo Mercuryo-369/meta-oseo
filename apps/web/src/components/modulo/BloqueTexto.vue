@@ -22,7 +22,7 @@ withDefaults(
   <div
     v-if="bloque.fondo"
     :id="`bloque-${bloque.id}`"
-    class="relative isolate overflow-hidden rounded-2xl border p-4 sm:p-8"
+    class="relative isolate flex items-center overflow-hidden rounded-2xl border p-4 sm:p-8 lg:min-h-[var(--alto-vista,28rem)]"
     data-testid="bloque-texto"
     data-fondo="true"
   >

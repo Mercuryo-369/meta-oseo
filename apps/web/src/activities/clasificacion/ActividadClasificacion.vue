@@ -264,7 +264,11 @@ const textoFinal = computed(() =>
 </script>
 
 <template>
-  <div class="space-y-4" :data-actividad="actividad.id" data-testid="actividad-clasificacion">
+  <div
+    class="actividad-clasificacion space-y-4"
+    :data-actividad="actividad.id"
+    data-testid="actividad-clasificacion"
+  >
     <header class="space-y-1">
       <h3 class="font-serif text-xl font-semibold">{{ actividad.titulo }}</h3>
       <!-- eslint-disable-next-line vue/no-v-html -- Markdown saneado (renderizarLinea, regla R10) -->
@@ -278,7 +282,7 @@ const textoFinal = computed(() =>
     </header>
 
     <!-- Tabla: cada celda es una categoría -->
-    <div v-if="tabla" class="overflow-x-auto rounded-xl border">
+    <div v-if="tabla" class="zonas-clasificacion overflow-x-auto rounded-xl border">
       <table class="w-full min-w-[36rem] border-collapse text-sm">
         <thead>
           <tr class="bg-muted/60">
@@ -334,7 +338,7 @@ const textoFinal = computed(() =>
     <!-- Cajas: una por categoría, con su dibujo si lo trae -->
     <div
       v-else
-      class="grid gap-3"
+      class="zonas-clasificacion grid gap-3"
       :class="config.categorias.length <= 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 xl:grid-cols-3'"
     >
       <button
@@ -409,7 +413,11 @@ const textoFinal = computed(() =>
     </p>
 
     <!-- Bandeja -->
-    <section v-if="jugando && !completada" :aria-labelledby="`${uid}-bandeja`" class="space-y-2">
+    <section
+      v-if="jugando && !completada"
+      :aria-labelledby="`${uid}-bandeja`"
+      class="bandeja-clasificacion space-y-2"
+    >
       <h4 :id="`${uid}-bandeja`" class="text-sm font-semibold">
         {{ tabla ? 'Características para acomodar' : 'Elementos para clasificar' }}
       </h4>
@@ -479,6 +487,40 @@ const textoFinal = computed(() =>
 </template>
 
 <style scoped>
+/* En escritorio, la bandeja de elementos va a la derecha de las casillas (observación de la docente, 2026-11-05: «como
+   las opciones aparecen abajo, al seleccionarlas para ubicarlas no me deja subir»): elegir y soltar sin desplazarse. */
+@media (min-width: 1024px) {
+  .actividad-clasificacion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 1.5rem;
+    row-gap: 1rem;
+    align-items: start;
+  }
+  .actividad-clasificacion > * {
+    margin-top: 0 !important;
+  }
+  .actividad-clasificacion > header,
+  .actividad-clasificacion > [data-testid='resultado-clasificacion'] {
+    grid-column: 1 / -1;
+  }
+  .actividad-clasificacion > .zonas-clasificacion {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+  }
+  .actividad-clasificacion > [data-testid='mensaje-clasificacion'] {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .actividad-clasificacion > .bandeja-clasificacion {
+    grid-column: 2;
+    grid-row: 3;
+    position: sticky;
+    top: 0;
+  }
+}
+
 /* Solo la pieza que se arrastra bloquea el desplazamiento táctil (regla R8). */
 .pieza {
   touch-action: none;

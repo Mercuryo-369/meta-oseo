@@ -8,6 +8,7 @@
  */
 import { computed, ref } from 'vue';
 import type { BloqueEscenarios } from '@/content/schema';
+import BotonAmpliar from './BotonAmpliar.vue';
 import TextoRico from './TextoRico.vue';
 
 const props = defineProps<{ bloque: BloqueEscenarios }>();
@@ -65,15 +66,21 @@ const escenario = computed(() =>
         :class="escenario.imagen ? 'lg:grid-cols-[fit-content(60%)_minmax(18rem,1fr)]' : ''"
         data-testid="escenario-elegido"
       >
-        <img
-          v-if="escenario.imagen"
-          :src="escenario.imagen"
-          :alt="escenario.alt ?? escenario.etiqueta"
-          :width="escenario.ancho"
-          :height="escenario.alto"
-          decoding="async"
-          class="bg-background mx-auto block h-auto max-h-[calc(var(--alto-vista,100dvh-3rem)-9rem)] w-auto max-w-full rounded-lg border"
-        />
+        <div v-if="escenario.imagen" class="relative mx-auto w-fit max-w-full">
+          <img
+            :src="escenario.imagen"
+            :alt="escenario.alt ?? escenario.etiqueta"
+            :width="escenario.ancho"
+            :height="escenario.alto"
+            decoding="async"
+            class="bg-background mx-auto block h-auto max-h-[calc(var(--alto-vista,100dvh-3rem)-9rem)] w-auto max-w-full rounded-lg border"
+          />
+          <BotonAmpliar
+            :src="escenario.imagen"
+            :alt="escenario.alt ?? escenario.etiqueta"
+            :pie="escenario.etiqueta"
+          />
+        </div>
         <div
           class="min-w-0 rounded-xl border p-4 lg:max-h-[calc(var(--alto-vista,100dvh-3rem)-9rem)] lg:overflow-y-auto lg:overscroll-contain"
         >

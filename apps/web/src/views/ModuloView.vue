@@ -249,12 +249,14 @@ const bloquesVisibles = computed(() =>
 );
 
 /**
- * Filas de la sección: una vista por pantalla (observaciones de la docente, 2026-10-27). Un texto junto a una
- * imagen (antes o después de ella) forman una fila: la imagen a la izquierda y el texto a la derecha, o debajo si la
- * imagen es muy apaisada (lo decide `BloqueImagen`). Un texto con `fondo` seguido de su imagen se lee sobre esa
- * ilustración, en un recuadro de cristal junto a la imagen. El resto ocupa la fila entera.
+ * Filas de la sección: una vista por pantalla (observaciones de la docente, 2026-10-27). Un texto y la imagen de su
+ * mismo tema forman una fila: la imagen a la izquierda y el texto a la derecha, o debajo si la imagen es muy
+ * apaisada (lo decide `BloqueImagen`). Un texto con `fondo` se lee sobre esa ilustración, en un recuadro de cristal.
+ * Las notas («Atención», «Nota:»…) van debajo del texto o la imagen a los que pertenecen. El resto ocupa la fila.
  */
 type BloqueLectura = TipoBloqueTexto | TipoBloqueTabla;
+/** Lo que va debajo de una imagen o de su texto: recuadros y textos «Nota:» sin título. */
+type NotaParte = TipoBloqueCallout | TipoBloqueTexto;
 type FilaSeccion =
   | {
       tipo: 'par';
@@ -262,15 +264,83 @@ type FilaSeccion =
       texto: TipoBloqueTexto;
       imagen: TipoBloqueImagen;
       previo?: TipoBloqueTexto;
+      notas: NotaParte[];
     }
   | { tipo: 'grupo'; clave: string; lectura: BloqueLectura[]; notas: TipoBloqueCallout[] }
-  | { tipo: 'solo'; clave: string; bloque: Bloque; previo?: TipoBloqueTexto }
+  | { tipo: 'solo'; clave: string; bloque: Bloque; previo?: TipoBloqueTexto; notas: NotaParte[] }
   | { tipo: 'cierre'; clave: string };
 function imagenEmparejable(b: Bloque | undefined): b is TipoBloqueImagen {
-  return b?.tipo === 'imagen' && !b.pareja;
+  return b?.tipo === 'imagen';
+}
+/** Texto sin título que empieza por «Nota:»: es un añadido del texto anterior, no un apartado. */
+function esNotaSuelta(b: Bloque | undefined): b is TipoBloqueTexto {
+  return b?.tipo === 'texto' && !b.titulo && /^\s*\*{0,3}\s*Nota\s*:/.test(b.markdown);
 }
 function textoEmparejable(b: Bloque | undefined): b is TipoBloqueTexto {
-  return b?.tipo === 'texto';
+  return b?.tipo === 'texto' && !esNotaSuelta(b);
+}
+
+/*
+ * Emparejamiento texto-imagen (observaciones de la docente, 2026-11-05: «este texto es de la imagen siguiente»,
+ * «quedaron corridas todas las imágenes»). Por posición fallaba: una imagen sin texto propio se quedaba con el del
+ * apartado siguiente y desde ahí todo se corría. Ahora cada texto va con la imagen vecina de su mismo tema (palabras
+ * del título o de la frase inicial en negrita frente al pie de la imagen) y, a falta de tema común, con la imagen que
+ * lo sigue, que es el orden del documento de la docente. Una imagen antes de su texto solo se empareja si comparten
+ * tema, salvo las figuras numeradas («Figura 6.4…») de los módulos 4 a 6, que preceden a su texto.
+ */
+const PALABRAS_VACIAS = new Set(
+  (
+    'para como cada toca letrero letreros punto puntos orden leer descripcion botones recorre secuencia imagen ' +
+    'sobre entre desde hasta este esta estos estas otras otros donde cual cuales segun nota antes continuar'
+  ).split(' '),
+);
+function palabrasClave(texto: string): Set<string> {
+  const plano = texto
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  return new Set(
+    (plano.match(/[a-z0-9]+/g) ?? []).filter((w) => w.length >= 4 && !PALABRAS_VACIAS.has(w)),
+  );
+}
+function similitudTema(texto: TipoBloqueTexto, imagen: TipoBloqueImagen): number {
+  const pie = palabrasClave(imagen.pie);
+  if (pie.size === 0) return 0;
+  const negrita = /^\s*\*{2,3}(.+?)\*{2,3}/.exec(texto.markdown)?.[1] ?? '';
+  let mejor = 0;
+  for (const claves of [palabrasClave(texto.titulo ?? ''), palabrasClave(negrita)]) {
+    if (claves.size === 0) continue;
+    const comunes = [...claves].filter((w) => pie.has(w)).length;
+    mejor = Math.max(mejor, comunes / Math.min(claves.size, pie.size));
+  }
+  return mejor;
+}
+const TEMA_MINIMO = 0.15;
+/** Índice del primer bloque de cada par -> índice del segundo. */
+function emparejar(bloques: readonly Bloque[]): Map<number, number> {
+  const candidatos: { puntaje: number; i: number }[] = [];
+  for (let i = 0; i < bloques.length - 1; i++) {
+    const a = bloques[i];
+    const b = bloques[i + 1];
+    if (textoEmparejable(a) && imagenEmparejable(b)) {
+      const tema = similitudTema(a, b);
+      // Un texto sobre fondo ilustrado (apertura o apartado) solo va con la imagen de su mismo tema.
+      if (!a.fondo || tema >= TEMA_MINIMO) candidatos.push({ puntaje: 0.05 + tema, i });
+    } else if (imagenEmparejable(a) && textoEmparejable(b) && !b.fondo) {
+      const tema = similitudTema(b, a);
+      if (tema >= TEMA_MINIMO) candidatos.push({ puntaje: tema, i });
+      else if (/^\s*Figura\s/i.test(a.pie)) candidatos.push({ puntaje: 0.01, i });
+    }
+  }
+  candidatos.sort((x, y) => y.puntaje - x.puntaje);
+  const usados = new Set<number>();
+  const pares = new Map<number, number>();
+  for (const { i } of candidatos) {
+    if (usados.has(i) || usados.has(i + 1)) continue;
+    usados.add(i).add(i + 1);
+    pares.set(i, i + 1);
+  }
+  return pares;
 }
 /*
  * Textos, tablas y recuadros seguidos se reúnen en una misma vista hasta llenar la pantalla (revisión de los
@@ -284,7 +354,7 @@ const CABIDA_NOTAS = 700;
 const CABIDA_NOTAS_SOLAS = 2000;
 /** Con más lectura que esta, los recuadros no van al lado (estrecharían el texto hasta desbordar). */
 const LECTURA_CON_NOTAS = 1700;
-function pesoDeBloque(b: BloqueLectura | TipoBloqueCallout): number {
+function pesoDeBloque(b: BloqueLectura | NotaParte): number {
   if (b.tipo === 'tabla') {
     return 300 + b.filas.reduce((t, f) => t + Math.max(250, f.celdas.join('').length), 0);
   }
@@ -300,18 +370,27 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
   let grupo: Extract<FilaSeccion, { tipo: 'grupo' }> | null = null;
   let pesoLectura = 0;
   let pesoNotas = 0;
+  const pares = emparejar(bloques);
   for (let i = 0; i < bloques.length; i++) {
     const b = bloques[i] as Bloque;
-    const sig = bloques[i + 1];
-    if (textoEmparejable(b) && imagenEmparejable(sig)) {
-      filas.push({ tipo: 'par', clave: idDeBloque(b), texto: b, imagen: sig });
+    const j = pares.get(i);
+    const previa = filas.at(-1);
+    if (j !== undefined) {
+      const otro = bloques[j] as Bloque;
+      const [texto, imagen] = textoEmparejable(b) ? [b, otro] : [otro, b];
+      if (textoEmparejable(texto) && imagenEmparejable(imagen)) {
+        filas.push({ tipo: 'par', clave: idDeBloque(b), texto, imagen, notas: [] });
+      }
       grupo = null;
-      i++;
-    } else if (imagenEmparejable(b) && textoEmparejable(sig) && !sig.fondo) {
-      filas.push({ tipo: 'par', clave: idDeBloque(b), texto: sig, imagen: b });
-      grupo = null;
-      i++;
-    } else if (b.tipo === 'texto' || b.tipo === 'tabla' || b.tipo === 'callout') {
+      i = j;
+    } else if (
+      (b.tipo === 'callout' || esNotaSuelta(b)) &&
+      (previa?.tipo === 'par' || (previa?.tipo === 'solo' && previa.bloque.tipo === 'imagen')) &&
+      previa.notas.reduce((t, n) => t + pesoDeBloque(n), 0) + pesoDeBloque(b) <= CABIDA_NOTAS
+    ) {
+      // La nota va debajo del texto (o de la imagen) al que pertenece, no en una pantalla aparte.
+      previa.notas.push(b);
+    } else if ((b.tipo === 'texto' && !b.fondo) || b.tipo === 'tabla' || b.tipo === 'callout') {
       const peso = pesoDeBloque(b);
       const forzado = grupo !== null && anunciaElSiguiente(grupo.lectura.at(-1));
       const cabe =
@@ -337,7 +416,7 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
         pesoLectura += peso;
       }
     } else {
-      filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b });
+      filas.push({ tipo: 'solo', clave: idDeBloque(b), bloque: b, notas: [] });
       grupo = null;
     }
   }
@@ -348,7 +427,8 @@ const filasSeccion = computed<FilaSeccion[]>(() => {
 /*
  * Un texto corto suelto (una o dos líneas: «Las enfermedades de este apartado muestran…», «Recorre la curva paso a
  * paso…») no ocupa una pantalla vacía: acompaña a la parte siguiente si es una imagen, una imagen con su texto o una
- * actividad (revisión visual, 2026-10-29).
+ * actividad (revisión visual, 2026-10-29). Solo si no tiene título ni fondo: un texto titulado es un apartado propio
+ * del documento de la docente (2026-11-05: «aquí están fusionadas dos secciones»).
  */
 const LARGO_INTRODUCCION = 450;
 /*
@@ -402,6 +482,8 @@ function unirIntroducciones(filas: FilaSeccion[]): FilaSeccion[] {
       f.notas.length === 0 &&
       f.lectura.length === 1 &&
       f.lectura[0]?.tipo === 'texto' &&
+      !f.lectura[0].titulo &&
+      !f.lectura[0].fondo &&
       f.lectura[0].markdown.length < LARGO_INTRODUCCION
         ? f.lectura[0]
         : null;
@@ -409,7 +491,13 @@ function unirIntroducciones(filas: FilaSeccion[]): FilaSeccion[] {
       salida.push({ ...sig, clave: f.clave, previo: intro });
       i++;
     } else if (intro && sig?.tipo === 'solo' && !sig.previo && imagenEmparejable(sig.bloque)) {
-      salida.push({ tipo: 'par', clave: f.clave, texto: intro, imagen: sig.bloque });
+      salida.push({
+        tipo: 'par',
+        clave: f.clave,
+        texto: intro,
+        imagen: sig.bloque,
+        notas: sig.notas,
+      });
       i++;
     } else if (intro && sig?.tipo === 'solo' && !sig.previo && sig.bloque.tipo === 'actividad') {
       salida.push({ ...sig, clave: f.clave, previo: intro });
@@ -1157,6 +1245,17 @@ onBeforeUnmount(() => {
                               :bloque="sinTituloRepetido(sinFondo(fila.texto))"
                               incrustado
                             />
+                            <div v-if="fila.notas.length" class="mt-4 space-y-3">
+                              <template v-for="nota in fila.notas" :key="nota.id">
+                                <BloqueCallout v-if="nota.tipo === 'callout'" :bloque="nota" />
+                                <BloqueTexto
+                                  v-else
+                                  :bloque="nota"
+                                  incrustado
+                                  class="text-muted-foreground text-sm"
+                                />
+                              </template>
+                            </div>
                           </template>
                         </BloqueImagen>
                       </div>
@@ -1211,7 +1310,19 @@ onBeforeUnmount(() => {
                       <BloqueImagen
                         v-else-if="fila.bloque.tipo === 'imagen'"
                         :bloque="fila.bloque"
-                      />
+                        :largo-lateral="fila.notas.reduce((t, n) => t + n.markdown.length, 0)"
+                      >
+                        <!-- Las notas de una imagen sola van a su derecha (2.1.3: «la nota de atención se ve mejor en la
+                             parte inferior derecha»). -->
+                        <template v-if="fila.notas.length" #lateral>
+                          <div class="space-y-3">
+                            <template v-for="nota in fila.notas" :key="nota.id">
+                              <BloqueCallout v-if="nota.tipo === 'callout'" :bloque="nota" />
+                              <BloqueTexto v-else :bloque="nota" incrustado />
+                            </template>
+                          </div>
+                        </template>
+                      </BloqueImagen>
                       <BloqueTabla v-else-if="fila.bloque.tipo === 'tabla'" :bloque="fila.bloque" />
                       <BloqueEscenarios
                         v-else-if="fila.bloque.tipo === 'escenarios'"

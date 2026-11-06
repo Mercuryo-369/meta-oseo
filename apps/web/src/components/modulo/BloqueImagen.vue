@@ -78,7 +78,9 @@ const apilado = computed(() => hayLateral.value && !hayPuntos.value && aspecto.v
  * perdidas en un recuadro ancho.
  */
 const lateralCorto = computed(
-  () => hayLateral.value && !hayPuntos.value && !apilado.value && props.largoLateral < 1000,
+  () =>
+    !apilado.value &&
+    ((hayLateral.value && props.largoLateral < 1000) || (hayPuntos.value && !hayLateral.value)),
 );
 /** Hay columna derecha: texto al lado o letreros de la imagen. */
 const conColumna = computed(() => (hayLateral.value && !apilado.value) || hayPuntos.value);
@@ -287,7 +289,7 @@ const claseRecuadro = computed(() =>
             class="imagen-ajustada bg-card mx-auto block rounded-lg border"
             :style="
               apilado
-                ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 12.5rem)' }
+                ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 15.5rem)' }
                 : undefined
             "
             @error="fallo = true"
@@ -326,7 +328,7 @@ const claseRecuadro = computed(() =>
           class="rounded-2xl p-5"
           :class="[
             claseRecuadro,
-            apilado ? 'lg:max-h-[9rem] lg:overflow-y-auto' : '',
+            apilado ? 'lg:max-h-[12rem] lg:overflow-y-auto' : '',
             lateralCorto
               ? props.largoLateral < 700
                 ? 'lg:p-7 lg:[&_.text-base]:text-xl lg:[&_h3]:text-2xl'

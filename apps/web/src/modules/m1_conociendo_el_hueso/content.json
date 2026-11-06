@@ -267,6 +267,12 @@
       "titulo": "El hueso: mucho más que un soporte",
       "bloques": [
         {
+          "id": "t_apertura_m1_1_mas_que_soporte",
+          "tipo": "texto",
+          "markdown": "El tejido óseo es un tejido conjuntivo especializado de origen mesenquimático, caracterizado por una matriz extracelular organizada que combina una fase orgánica y una fase mineralizada. Esta composición le proporciona resistencia mecánica y, al mismo tiempo, le permite mantener un estado dinámico de adaptación, reparación y renovación mediante el continuo proceso de remodelado óseo.",
+          "fondo": "/images/m1/m1_1_imagen_01.webp"
+        },
+        {
           "id": "img_m1_1_i02",
           "tipo": "imagen",
           "src": "/images/m1/m1_1_imagen_02.webp",
@@ -951,6 +957,12 @@
       "id": "m1_2_arquitectura",
       "titulo": "La arquitectura del hueso",
       "bloques": [
+        {
+          "id": "t_apertura_m1_2_arquitectura",
+          "tipo": "texto",
+          "markdown": "La arquitectura ósea describe cómo se organiza el tejido a distintas escalas, desde la distribución del hueso compacto y trabecular hasta la disposición microscópica de sus laminillas, osteonas y espacios medulares. Esta organización determina propiedades como la resistencia mecánica, la distribución de cargas y la relación entre el tejido óseo, su vascularización y la médula ósea. Realizaremos un recorrido desde la estructura macroscópica a la microscópica.",
+          "fondo": "/images/m1/m1_2_imagen_01.webp"
+        },
         {
           "id": "t_clasificacion_de_los_huesos",
           "tipo": "texto",
@@ -1915,6 +1927,15 @@
           "markdown": "El colágeno tipo I constituye cerca del 90 % de la matriz orgánica ósea y es el principal componente fibrilar responsable de su resistencia a la tensión y tenacidad. Está formado por dos cadenas α1(I) y una α2(I), codificadas por COL1A1 y COL1A2, cuya organización en una triple hélice y posterior ensamblaje fibrilar genera una red estructural altamente organizada; esta red actúa como andamiaje para la incorporación del mineral y proporciona soporte a las proteínas no colágenas y a las interacciones célula–matriz."
         },
         {
+          "id": "img_m1_3_i02_colageno",
+          "tipo": "imagen",
+          "src": "/images/m1/m1_3_imagen_02.webp",
+          "alt": "Fibrillas de colágeno tipo I con proteínas no colágenas (osteopontina, sialoproteína ósea, osteocalcina, DMP1) y proteoglucanos (decorina, biglicano).",
+          "pie": "Fase orgánica de la matriz ósea",
+          "ancho": 1536,
+          "alto": 1024
+        },
+        {
           "id": "t_2_proteinas_no_colagenas",
           "tipo": "texto",
           "titulo": "2. Proteínas no colágenas",
@@ -2174,6 +2195,13 @@
       "id": "m1_4_biomecanica",
       "titulo": "Biomecánica del hueso",
       "bloques": [
+        {
+          "id": "t_apertura_m1_4_biomecanica",
+          "tipo": "texto",
+          "titulo": "El hueso frente a las cargas mecánicas",
+          "markdown": "El hueso está sometido continuamente a cargas derivadas del peso corporal, la gravedad, la contracción muscular y las fuerzas externas; su magnitud, dirección, punto de aplicación y duración determinan cómo se distribuyen las cargas en el tejido y la respuesta mecánica que generan, por lo que durante actividades como caminar, correr o masticar estas fuerzas suelen actuar de manera simultánea y combinada, más que de forma aislada.",
+          "fondo": "/images/m1/m1_2_imagen_01.webp"
+        },
         {
           "id": "t_cargas_solitarias_compresion_y_traccion",
           "tipo": "texto",
@@ -2661,7 +2689,7 @@
                     },
                     {
                       "id": "o_e3",
-                      "texto": "No. Quedará una deformación permanente."
+                      "texto": "Quedará una deformación permanente."
                     },
                     {
                       "id": "o_e4",
@@ -2692,7 +2720,7 @@
                     },
                     {
                       "id": "o_e3",
-                      "texto": "No. Quedará una deformación permanente."
+                      "texto": "Quedará una deformación permanente."
                     },
                     {
                       "id": "o_e4",
@@ -2724,7 +2752,7 @@
                     },
                     {
                       "id": "o_e3",
-                      "texto": "No. Quedará una deformación permanente."
+                      "texto": "Quedará una deformación permanente."
                     },
                     {
                       "id": "o_e4",
@@ -2755,7 +2783,7 @@
                     },
                     {
                       "id": "o_e3",
-                      "texto": "No. Quedará una deformación permanente."
+                      "texto": "Quedará una deformación permanente."
                     },
                     {
                       "id": "o_e4",
@@ -2786,7 +2814,7 @@
                     },
                     {
                       "id": "o_e3",
-                      "texto": "No. Quedará una deformación permanente."
+                      "texto": "Quedará una deformación permanente."
                     },
                     {
                       "id": "o_e4",

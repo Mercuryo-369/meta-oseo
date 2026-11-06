@@ -216,6 +216,11 @@
       "titulo": "El origen de las células óseas",
       "bloques": [
         {
+          "id": "t_apertura_m2_1_origen_celulas_oseas",
+          "tipo": "texto",
+          "markdown": "El tejido óseo alberga poblaciones celulares con distintos orígenes y capacidades de diferenciación; algunas proceden del linaje mesenquimal y dan lugar a las células encargadas de producir y mantener la matriz ósea, mientras que otras derivan del sistema hematopoyético y pueden originar las células especializadas en su resorción. Esta diversidad de origen permite comprender cómo el hueso dispone de poblaciones celulares capaces de participar en su formación, mantenimiento y renovación a lo largo de la vida; sin embargo, ambos linajes no funcionan de manera aislada, sino que interactúan mediante señales moleculares y relaciones con el microambiente, coordinando de forma dinámica los procesos que permiten mantener la homeostasis esquelética."
+        },
+        {
           "id": "img_m2_1_i01",
           "tipo": "imagen",
           "src": "/images/m2/m2_1_imagen_01.webp",
@@ -228,7 +233,8 @@
           "id": "t_el_linaje_mesenquimal_origen_de_los",
           "tipo": "texto",
           "titulo": "El linaje mesenquimal: origen de los progenitores esqueléticos",
-          "markdown": "**Células madre y progenitoras esqueléticas.** Las células madre y progenitoras esqueléticas constituyen un conjunto heterogéneo de poblaciones celulares con capacidad para mantener y regenerar distintos componentes del esqueleto; se encuentran en microambientes especializados del periostio, el endostio, las regiones asociadas al cartílago de crecimiento y el estroma de la médula ósea, donde participan de manera diferente en el crecimiento, mantenimiento y reparación del tejido. Estas poblaciones difieren en su capacidad de autorrenovación y potencial de diferenciación, por lo que no deben interpretarse como una población única y uniforme, sino como un conjunto de progenitores cuya identidad y función dependen, en parte, de su localización y del contexto biológico."
+          "markdown": "**Células madre y progenitoras esqueléticas.** Las células madre y progenitoras esqueléticas constituyen un conjunto heterogéneo de poblaciones celulares con capacidad para mantener y regenerar distintos componentes del esqueleto; se encuentran en microambientes especializados del periostio, el endostio, las regiones asociadas al cartílago de crecimiento y el estroma de la médula ósea, donde participan de manera diferente en el crecimiento, mantenimiento y reparación del tejido. Estas poblaciones difieren en su capacidad de autorrenovación y potencial de diferenciación, por lo que no deben interpretarse como una población única y uniforme, sino como un conjunto de progenitores cuya identidad y función dependen, en parte, de su localización y del contexto biológico.",
+          "fondo": "/images/m2/m2_fondo.webp"
         },
         {
           "id": "img_m2_1_i03",
