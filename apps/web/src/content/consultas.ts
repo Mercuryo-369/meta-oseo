@@ -196,6 +196,11 @@ export function recolectarIds(modulo: ConSecciones): EntradaId[] {
               );
             } else if (p.formato === 'ordenar') {
               p.pasos.forEach((o, j) => agregar(o.id, 'paso', [...rutaPregunta, 'pasos', j]));
+            } else if (p.formato === 'completar') {
+              p.huecos.forEach((o, j) => agregar(o.id, 'paso', [...rutaPregunta, 'huecos', j]));
+              p.distractores?.forEach((o, j) =>
+                agregar(o.id, 'paso', [...rutaPregunta, 'distractores', j]),
+              );
             }
           });
           break;

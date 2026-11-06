@@ -756,6 +756,7 @@ breve tras cada respuesta"). Formatos (`formato`):
 | `opcion_multiple` | `opciones` (3 a 6; `id`, `texto` línea 1 a 200, `explicacion` opcional), `correctas` (1 a 5 ids). **Al menos una opción debe ser incorrecta y, con varias correctas, tantas incorrectas como correctas** (2 correctas exigen 2 incorrectas): así marcar todo no da puntos | Con una sola correcta, botones de radio; con varias, casillas ("marca todas las correctas"). Precisión `max(0, (correctas marcadas − incorrectas marcadas) ÷ total de correctas)` |
 | `verdadero_falso` | `correcta` (`true` o `false`) | 1 si acierta, 0 si no |
 | `ordenar` | `pasos` (3 a 7; `id` y `texto`), **en el orden correcto** | La app los baraja; precisión = pasos en su posición ÷ total |
+| `completar` | `texto` con huecos `{{1}}`, `{{2}}`… en orden; `huecos` (2 a 8; `id` y `texto`, el término de cada hueco en su orden); `distractores` opcionales (hasta 3) | La app baraja el banco; se toca un término y luego el hueco, o se arrastra; precisión = huecos con su término ÷ total |
 
 Todas llevan `id`, `enunciado` (línea, 10 a 400), `explicacion` (línea, 10 a **600**, obligatoria),
 `concepto` opcional (plano, si evalúan algo distinto del de la actividad) y `dificultad` opcional (1 básica,

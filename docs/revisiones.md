@@ -185,7 +185,7 @@ la parte a la que siguen.
 | 8 | 3.2 | Pregunta de predicción y retroalimentación en cada escenario | redactadas a partir de los textos de cada escenario; **pendiente de su aprobación** | 2026-11-05 |
 | 9 | 4.1 | «¿Dentro o fuera de la fibrilla?» arrastrando los cristales sobre el esquema | provisional como clasificación por cajas | pendiente |
 | 10 | 4.1 | Corrección con IA de las evaluaciones de detección y corrección de errores | provisional como pregunta abierta; la IA solo dará retroalimentación | pendiente |
-| 11 | 6.2 | Actividad 2 «Completa la secuencia» | sin crear (falta el componente de huecos) | pendiente |
+| 11 | 6.2 | Actividad 2 «Completa la secuencia» | hecho: formato `completar` del quiz (texto con huecos y banco de términos), 20 puntos | 2026-11-05 |
 | 12 | 4.2 | Bingo | al final, por decisión de la docente | pendiente |
 | 13 | 4.2 | Evaluación (el documento repite la de la 4.1 por error) | esperando la evaluación correcta | pendiente |
 | 14 | 3.1 | Imagen #2 con botones en orden «que voy a señalar» | ya tiene seis botones en orden; ajustar cuando lleguen sus marcas | pendiente de sus marcas |

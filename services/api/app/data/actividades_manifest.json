@@ -397,6 +397,15 @@
       "seccion_titulo": "Cambios en la dinámica del remodelado",
       "concepto": "Sistemas antioxidantes"
     },
+    "m6_2_efecto_domino": {
+      "modulo": 6,
+      "tipo": "quiz",
+      "puntaje_max": 20,
+      "obligatoria": true,
+      "seccion": "m6_2_dinamica_remodelado",
+      "seccion_titulo": "Cambios en la dinámica del remodelado",
+      "concepto": "Estrés oxidativo"
+    },
     "m6_2_evaluacion": {
       "modulo": 6,
       "tipo": "quiz",
@@ -445,16 +454,16 @@
     },
     "6": {
       "slug": "el_paso_del_tiempo",
-      "actividades": 5,
-      "obligatorias": 5,
-      "puntaje_max": 110,
-      "puntaje_max_obligatorias": 110
+      "actividades": 6,
+      "obligatorias": 6,
+      "puntaje_max": 130,
+      "puntaje_max_obligatorias": 130
     }
   },
   "totales": {
-    "actividades": 45,
-    "obligatorias": 45,
-    "puntaje_max": 1255,
-    "puntaje_max_obligatorias": 1255
+    "actividades": 46,
+    "obligatorias": 46,
+    "puntaje_max": 1275,
+    "puntaje_max_obligatorias": 1275
   }
 }

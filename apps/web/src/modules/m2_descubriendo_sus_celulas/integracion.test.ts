@@ -204,7 +204,7 @@ async function completarQuiz(a: ActividadQuiz): Promise<void> {
       for (const o of p.opciones.filter((x) => p.correctas.includes(x.id))) {
         await entrada(a.id, textoPlanoDeMarkdown(o.texto)).setValue(true);
       }
-    } else {
+    } else if (p.formato === 'ordenar') {
       for (const [k, paso] of p.pasos.entries()) {
         await moverPaso(a.id, textoPlanoDeMarkdown(paso.texto), k);
       }

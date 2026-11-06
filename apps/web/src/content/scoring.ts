@@ -157,7 +157,9 @@ export function textoRetroalimentacion(
 export type RespuestaPregunta =
   | { formato: 'opcion_multiple'; seleccion: readonly string[] }
   | { formato: 'verdadero_falso'; valor: boolean }
-  | { formato: 'ordenar'; orden: readonly string[] };
+  | { formato: 'ordenar'; orden: readonly string[] }
+  /** Id del término puesto en cada hueco, en orden; `null` si el hueco quedó vacío. */
+  | { formato: 'completar'; relleno: readonly (string | null)[] };
 
 /**
  * Precisión (0 a 1) de una pregunta. Sin respuesta, o con una del formato equivocado, vale 0.
@@ -165,6 +167,7 @@ export type RespuestaPregunta =
  *    Los ids que no son opciones de la pregunta se ignoran.
  *  - verdadero_falso: 1 si acierta, 0 si no.
  *  - ordenar: fracción de pasos que quedaron en su posición correcta.
+ *  - completar: fracción de huecos con su término.
  */
 export function precisionPregunta(
   pregunta: Pregunta,
@@ -195,6 +198,12 @@ export function precisionPregunta(
       if (respuesta.orden[i] === paso.id) enSuLugar++;
     });
     return enSuLugar / total;
+  }
+  if (pregunta.formato === 'completar' && respuesta.formato === 'completar') {
+    const total = pregunta.huecos.length;
+    if (total === 0) return 0;
+    const bien = pregunta.huecos.filter((h, i) => respuesta.relleno[i] === h.id).length;
+    return bien / total;
   }
   return 0;
 }

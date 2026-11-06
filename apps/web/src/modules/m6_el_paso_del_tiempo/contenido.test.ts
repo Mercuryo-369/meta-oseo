@@ -417,7 +417,7 @@ describe('módulo 6: cobertura del guion', () => {
             p.opciones.map((o) => o.id),
             `${pg.id} opciones`,
           ).toEqual(pg.hijos.map((h) => `${pg.id}_${h}`));
-        } else {
+        } else if (p.formato === 'ordenar') {
           // El JSON guarda los pasos ya en el orden correcto (el componente los baraja).
           const orden = pg.correcta.replace(/[[\]\s]/g, '').split(',');
           expect(

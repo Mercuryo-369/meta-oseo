@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * Una pregunta del quiz, en sus tres formatos: `opcion_multiple` (una correcta = botones de radio,
- * varias = casillas), `verdadero_falso` (dos radios) y `ordenar` (lista reordenable, ver
- * `OrdenarPasos.vue`).
+ * Una pregunta del quiz, en sus cuatro formatos: `opcion_multiple` (una correcta = botones de radio,
+ * varias = casillas), `verdadero_falso` (dos radios), `ordenar` (lista reordenable, ver
+ * `OrdenarPasos.vue`) y `completar` (texto con huecos y banco de términos, ver `CompletarHuecos.vue`).
  *
  * Tres estados:
  *  - responder: el estudiante elige y pulsa "Comprobar respuesta". Hasta entonces NADA de la
@@ -23,8 +23,10 @@ import { Check, CircleAlert, CircleCheck, CircleX, X } from '@lucide/vue';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
 import { precisionPregunta } from '@/content/scoring';
 import type { RespuestaPregunta } from '@/content/scoring';
-import { respuestaCorrecta, veredictoDe } from './logica';
+import { MARCA_HUECO } from '@/content/schema';
+import { respuestaCorrecta, terminosDe, veredictoDe } from './logica';
 import type { PreguntaPresentada, Veredicto } from './logica';
+import CompletarHuecos from './CompletarHuecos.vue';
 import OrdenarPasos from './OrdenarPasos.vue';
 import TextoLinea from './TextoLinea.vue';
 
@@ -90,9 +92,25 @@ function ordenInicial(): number[] {
   return [...props.presentada.ordenPasos];
 }
 
+function rellenoInicial(): (number | null)[] {
+  const p = pregunta.value;
+  if (p.formato !== 'completar') return [];
+  const terminos = terminosDe(p);
+  const r = respuestaVista.value;
+  if (r?.formato === 'completar' && r.relleno.length === p.huecos.length) {
+    return r.relleno.map((id) => {
+      const i = id === null ? -1 : terminos.findIndex((t) => t.id === id);
+      return i >= 0 ? i : null;
+    });
+  }
+  return p.huecos.map(() => null);
+}
+
 const seleccion = ref<number[]>(seleccionInicial());
 const valorVF = ref<boolean | null>(valorInicial());
 const orden = ref<number[]>(ordenInicial());
+const relleno = ref<(number | null)[]>(rellenoInicial());
+const terminos = computed(() => terminosDe(pregunta.value));
 
 const multiple = computed(() => {
   const p = pregunta.value;
@@ -150,6 +168,16 @@ function respuestaBorrador(): RespuestaPregunta | null {
   if (p.formato === 'verdadero_falso') {
     return valorVF.value === null ? null : { formato: 'verdadero_falso', valor: valorVF.value };
   }
+  if (p.formato === 'completar') {
+    // Se comprueba con todos los huecos llenos.
+    if (relleno.value.length !== p.huecos.length || relleno.value.some((v) => v === null)) {
+      return null;
+    }
+    return {
+      formato: 'completar',
+      relleno: relleno.value.map((i) => (i === null ? null : (terminos.value[i]?.id ?? null))),
+    };
+  }
   return {
     formato: 'ordenar',
     orden: orden.value.flatMap((i) => (p.pasos[i] ? [p.pasos[i].id] : [])),
@@ -204,6 +232,9 @@ function retroDe(r: RespuestaPregunta): Retro {
   } else if (p.formato === 'ordenar' && r.formato === 'ordenar') {
     const enSuLugar = p.pasos.filter((paso, i) => r.orden[i] === paso.id).length;
     detalle = `${enSuLugar} de ${p.pasos.length} pasos en su lugar.`;
+  } else if (p.formato === 'completar' && r.formato === 'completar') {
+    const bien = p.huecos.filter((h, i) => r.relleno[i] === h.id).length;
+    detalle = `${bien} de ${p.huecos.length} huecos con su término.`;
   }
   return { veredicto, titulo: TITULOS[veredicto], detalle };
 }
@@ -216,6 +247,22 @@ const marcasOrden = computed<boolean[] | null>(() => {
   const p = pregunta.value;
   if (p.formato !== 'ordenar' || !props.comprobada || props.revision) return null;
   return orden.value.map((clave, k) => clave === k);
+});
+
+/** Tras comprobar, si cada hueco quedó con su término (el término `i` es el del hueco `i`). */
+const marcasHuecos = computed<boolean[] | null>(() => {
+  const p = pregunta.value;
+  if (p.formato !== 'completar' || !props.comprobada || props.revision) return null;
+  return relleno.value.map((t, i) => t === i);
+});
+/** El texto completo con los términos correctos, en negrita (retroalimentación de `completar`). */
+const textoCorrecto = computed(() => {
+  const p = pregunta.value;
+  if (p.formato !== 'completar') return '';
+  return p.texto.replace(
+    new RegExp(MARCA_HUECO.source, 'g'),
+    (_, n: string) => `**${p.huecos[Number(n) - 1]?.texto ?? ''}**`,
+  );
 });
 
 const pasosEnOrden = computed(() => {
@@ -258,6 +305,9 @@ const ayuda = computed(() => {
   if (p.formato === 'verdadero_falso') return 'Elige verdadero o falso.';
   if (p.formato === 'ordenar') {
     return 'Ordena los pasos con los botones Subir y Bajar de cada uno, o arrástralos por el asa de la izquierda.';
+  }
+  if (p.formato === 'completar') {
+    return 'Toca un término y luego el hueco donde va, o arrástralo hasta el hueco. Toca un hueco lleno para vaciarlo.';
   }
   return multiple.value ? 'Marca todas las opciones correctas.' : 'Elige una opción.';
 });
@@ -323,6 +373,26 @@ defineExpose({ enfocar });
         :marcas="marcasOrden"
         :movimiento-reducido="movimientoReducido"
         @update:model-value="orden = $event"
+        @anuncio="emit('anuncio', $event)"
+        @editando="emit('editando')"
+      />
+    </div>
+
+    <div
+      v-else-if="pregunta.formato === 'completar'"
+      role="group"
+      :aria-labelledby="idEncabezado"
+      :aria-describedby="idAyuda"
+    >
+      <CompletarHuecos
+        :model-value="relleno"
+        :texto="pregunta.texto"
+        :terminos="terminos"
+        :orden-terminos="presentada.ordenTerminos"
+        :deshabilitado="bloqueada"
+        :marcas="marcasHuecos"
+        :id-base="idBase"
+        @update:model-value="relleno = $event"
         @anuncio="emit('anuncio', $event)"
         @editando="emit('editando')"
       />
@@ -409,6 +479,10 @@ defineExpose({ enfocar });
         <span class="font-semibold">Explicación: </span>
         <TextoLinea :texto="pregunta.explicacion" />
       </p>
+      <div v-if="pregunta.formato === 'completar' && comprobada && !revision" class="text-sm">
+        <p class="text-foreground font-semibold">Texto correcto:</p>
+        <p class="text-foreground text-justify"><TextoLinea :texto="textoCorrecto" /></p>
+      </div>
       <div v-if="pregunta.formato === 'ordenar' && comprobada && !revision" class="text-sm">
         <p class="text-foreground font-semibold">Orden correcto:</p>
         <ol class="text-foreground m-0 list-decimal pl-6">
@@ -421,7 +495,11 @@ defineExpose({ enfocar });
 
     <template v-if="!revision">
       <p v-if="!comprobada && !puedeComprobar" :id="idPista" class="text-muted-foreground text-sm">
-        Elige una respuesta para poder comprobarla.
+        {{
+          pregunta.formato === 'completar'
+            ? 'Completa todos los huecos para poder comprobar.'
+            : 'Elige una respuesta para poder comprobarla.'
+        }}
       </p>
       <button
         type="button"

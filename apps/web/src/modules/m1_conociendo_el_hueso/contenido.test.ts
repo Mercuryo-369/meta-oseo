@@ -423,7 +423,7 @@ describe('módulo 1: cobertura respecto al guion', () => {
           if (JSON.stringify(textosCorrectos) !== JSON.stringify(esperados)) {
             problemas.push(`${g.id}: opción correcta distinta`);
           }
-        } else {
+        } else if (p.formato === 'ordenar') {
           const orden = g.correcta
             .replace(/[[\]]/g, '')
             .split(',')

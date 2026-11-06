@@ -357,7 +357,7 @@ async function completarQuizCorrecto(c: VueWrapper, a: DatosQuiz): Promise<void>
       for (const o of p.opciones.filter((x) => p.correctas.includes(x.id))) {
         await marcarOpcion(c, textoPlanoDeMarkdown(o.texto));
       }
-    } else {
+    } else if (p.formato === 'ordenar') {
       for (const [k, paso] of p.pasos.entries()) {
         await moverPaso(c, textoPlanoDeMarkdown(paso.texto), k);
       }

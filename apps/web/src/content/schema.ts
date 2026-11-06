@@ -763,10 +763,43 @@ export const PreguntaOrdenarSchema = z.strictObject({
   pasos: z.array(PasoOrdenSchema).min(3).max(7),
 });
 
+/** Marca de un hueco en el texto de `completar`: «{{1}}», «{{2}}»… */
+export const MARCA_HUECO = /\{\{(\d+)\}\}/g;
+
+/**
+ * Texto con huecos que se completan con términos de un banco (6.2 del documento de la docente: «Completa la
+ * secuencia utilizando los términos…»). `huecos[i]` es el término correcto del hueco `{{i+1}}`; el banco muestra los
+ * huecos y los `distractores` barajados. Precisión: fracción de huecos con su término.
+ */
+export const PreguntaCompletarSchema = z
+  .strictObject({
+    ...camposPregunta,
+    formato: z.literal('completar'),
+    texto: markdownLinea(20, 1500),
+    huecos: z.array(PasoOrdenSchema).min(2).max(8),
+    distractores: z.array(PasoOrdenSchema).max(3).optional(),
+  })
+  .superRefine((pregunta, ctx) => {
+    const numeros = [...pregunta.texto.matchAll(MARCA_HUECO)].map((m) => Number(m[1]));
+    const esperados = pregunta.huecos.map((_, i) => i + 1);
+    if (numeros.join(',') !== esperados.join(',')) {
+      agregar(
+        ctx,
+        ['texto'],
+        `El texto debe tener los huecos {{1}} a {{${pregunta.huecos.length}}}, una vez cada uno y en orden (tiene: ${numeros.join(', ') || 'ninguno'}).`,
+      );
+    }
+    const terminos = [...pregunta.huecos, ...(pregunta.distractores ?? [])];
+    for (const repetido of duplicados(terminos.map((t) => t.id))) {
+      agregar(ctx, ['huecos'], `El término "${repetido}" está repetido.`);
+    }
+  });
+
 export const PreguntaSchema = z.discriminatedUnion('formato', [
   PreguntaOpcionMultipleSchema,
   PreguntaVerdaderoFalsoSchema,
   PreguntaOrdenarSchema,
+  PreguntaCompletarSchema,
 ]);
 
 export const ConfigQuizSchema = z.strictObject({

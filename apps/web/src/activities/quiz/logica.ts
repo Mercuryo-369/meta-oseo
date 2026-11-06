@@ -14,7 +14,8 @@
  * se ve igual tras recargar. `r[i]` es la respuesta CONFIRMADA de la pregunta `i` de la lista del
  * contenido (no del orden barajado), o `null` si aún no se responde: una lista de índices de las
  * opciones marcadas (`opcion_multiple`), un booleano (`verdadero_falso`) o el orden elegido como
- * índices de los pasos (`ordenar`). Son índices y no ids: ocupan poco y una instantánea de otra
+ * índices de los pasos (`ordenar`) o, por hueco, el índice del término puesto o `null` (`completar`; los términos
+ * son `huecos` seguidos de `distractores`). Son índices y no ids: ocupan poco y una instantánea de otra
  * versión del contenido se detecta sola (longitud o índices fuera de rango) y se descarta entera.
  */
 import type { EstadoPrevioActividad, JsonObjeto, JsonValor } from '@/activities/types';
@@ -119,6 +120,12 @@ export function esPreguntaUtilizable(bruta: unknown): bruta is Pregunta {
       return typeof bruta.correcta === 'boolean';
     case 'ordenar':
       return Array.isArray(bruta.pasos) && bruta.pasos.length >= 1 && idsDistintos(bruta.pasos);
+    case 'completar': {
+      if (typeof bruta.texto !== 'string' || !Array.isArray(bruta.huecos)) return false;
+      const distractores = bruta.distractores ?? [];
+      if (!Array.isArray(distractores)) return false;
+      return bruta.huecos.length >= 1 && idsDistintos([...bruta.huecos, ...distractores]);
+    }
     case 'opcion_multiple': {
       if (!Array.isArray(bruta.opciones) || bruta.opciones.length < 1) return false;
       if (!idsDistintos(bruta.opciones)) return false;
@@ -159,6 +166,15 @@ export interface PreguntaPresentada {
   ordenOpciones: number[];
   /** `ordenPasos[k]` = índice en `pregunta.pasos` del paso que se muestra en el lugar k (al empezar). */
   ordenPasos: number[];
+  /** `ordenTerminos[k]` = índice en `terminosDe(pregunta)` del término que se muestra en el lugar k del banco. */
+  ordenTerminos: number[];
+}
+
+/** Términos de una pregunta `completar`: los de los huecos (en su orden) y luego los distractores. */
+export function terminosDe(pregunta: Pregunta): { id: string; texto: string }[] {
+  return pregunta.formato === 'completar'
+    ? [...pregunta.huecos, ...(pregunta.distractores ?? [])]
+    : [];
 }
 
 export interface OpcionesPresentacion {
@@ -175,6 +191,7 @@ export function presentarPregunta(
 ): PreguntaPresentada {
   let ordenOpciones: number[] = [];
   let ordenPasos: number[] = [];
+  let ordenTerminos: number[] = [];
   if (pregunta.formato === 'opcion_multiple') {
     ordenOpciones = rango(pregunta.opciones.length);
     if (barajarOpciones) {
@@ -186,8 +203,14 @@ export function presentarPregunta(
       pregunta.pasos.length,
       crearAzar(derivarSemilla(semilla, 2 + indice * 2)),
     );
+  } else if (pregunta.formato === 'completar') {
+    // El banco SIEMPRE se baraja: en el orden del contenido, los términos irían en el orden de los huecos.
+    ordenTerminos = ordenNoCorrecto(
+      terminosDe(pregunta).length,
+      crearAzar(derivarSemilla(semilla, 2 + indice * 2)),
+    );
   }
-  return { indice, pregunta, ordenOpciones, ordenPasos };
+  return { indice, pregunta, ordenOpciones, ordenPasos, ordenTerminos };
 }
 
 /**
@@ -291,6 +314,14 @@ export function codificarRespuesta(
     const indices = respuesta.orden.map((id) => pregunta.pasos.findIndex((p) => p.id === id));
     return indices.every((i) => i >= 0) ? indices : null;
   }
+  if (pregunta.formato === 'completar' && respuesta.formato === 'completar') {
+    const terminos = terminosDe(pregunta);
+    if (respuesta.relleno.length !== pregunta.huecos.length) return null;
+    const indices = respuesta.relleno.map((id) =>
+      id === null ? null : terminos.findIndex((t) => t.id === id),
+    );
+    return indices.every((i) => i === null || i >= 0) ? indices : null;
+  }
   return null;
 }
 
@@ -309,6 +340,22 @@ export function decodificarRespuesta(
       formato: 'opcion_multiple',
       seleccion: indices.map((i) => (pregunta.opciones[i] as { id: string }).id),
     };
+  }
+  if (pregunta.formato === 'completar') {
+    const terminos = terminosDe(pregunta);
+    if (!Array.isArray(valor) || valor.length !== pregunta.huecos.length) return undefined;
+    const usados = new Set<number>();
+    const relleno: (string | null)[] = [];
+    for (const v of valor) {
+      if (v === null) {
+        relleno.push(null);
+        continue;
+      }
+      if (!esEntero(v, terminos.length) || usados.has(v)) return undefined;
+      usados.add(v);
+      relleno.push((terminos[v] as { id: string }).id);
+    }
+    return { formato: 'completar', relleno };
   }
   const indices = indicesValidos(valor, pregunta.pasos.length, true);
   if (!indices) return undefined;
@@ -407,6 +454,9 @@ export function respuestaCorrecta(pregunta: Pregunta): RespuestaPregunta {
   }
   if (pregunta.formato === 'opcion_multiple') {
     return { formato: 'opcion_multiple', seleccion: [...pregunta.correctas] };
+  }
+  if (pregunta.formato === 'completar') {
+    return { formato: 'completar', relleno: pregunta.huecos.map((h) => h.id) };
   }
   return { formato: 'ordenar', orden: pregunta.pasos.map((p) => p.id) };
 }

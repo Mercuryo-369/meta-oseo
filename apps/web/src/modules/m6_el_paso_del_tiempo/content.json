@@ -563,7 +563,9 @@
                       "texto": "Es incorrecta, porque los osteoclastos no participan en la pérdida ósea asociada a la edad."
                     }
                   ],
-                  "correctas": ["m6_1_e1_b"],
+                  "correctas": [
+                    "m6_1_e1_b"
+                  ],
                   "explicacion": "El envejecimiento no implica un aumento universal y constante del número de osteoclastos; además, la pérdida ósea puede deberse a una alteración de la coordinación entre resorción y formación."
                 },
                 {
@@ -588,7 +590,9 @@
                       "texto": "Ninguna puede presentar cambios asociados a senescencia porque pertenecen al tejido óseo."
                     }
                   ],
-                  "correctas": ["m6_1_e2_b"],
+                  "correctas": [
+                    "m6_1_e2_b"
+                  ],
                   "explicacion": "Los osteocitos son células posmitóticas, por lo que su ausencia de división no constituye evidencia suficiente de senescencia. Su identificación requiere considerar otros rasgos, como daño persistente, alteraciones funcionales y cambios del secretoma."
                 }
               ],
@@ -773,6 +777,58 @@
         {
           "tipo": "actividad",
           "actividad": {
+            "id": "m6_2_efecto_domino",
+            "tipo": "quiz",
+            "titulo": "El efecto dominó del estrés oxidativo",
+            "instrucciones": "Completa la secuencia utilizando los términos: daño celular, ROS, menor formación ósea, desequilibrio del remodelado y sistemas antioxidantes.",
+            "obligatoria": true,
+            "puntaje_max": 20,
+            "retroalimentacion": {
+              "correcta": "Correcto. El estrés oxidativo puede afectar la integridad de proteínas, lípidos y ADN, comprometer la función mitocondrial y modificar la supervivencia y actividad de las células óseas. En los osteoblastos y sus progenitores puede reducir la formación, mientras que en el linaje osteoclástico las ROS también participan en señales relacionadas con RANKL.",
+              "parcial": "Algún término no está en su lugar. El estrés oxidativo puede afectar la integridad de proteínas, lípidos y ADN, comprometer la función mitocondrial y modificar la supervivencia y actividad de las células óseas. En los osteoblastos y sus progenitores puede reducir la formación, mientras que en el linaje osteoclástico las ROS también participan en señales relacionadas con RANKL.",
+              "incorrecta": "Revisa el texto correcto y vuelve a leer «Estrés oxidativo y alteraciones de la función de las células óseas»."
+            },
+            "concepto": "Estrés oxidativo",
+            "config": {
+              "preguntas": [
+                {
+                  "id": "m6_2_domino_secuencia",
+                  "formato": "completar",
+                  "enunciado": "Completa la secuencia del estrés oxidativo en el tejido óseo.",
+                  "texto": "Cuando la producción de {{1}} supera la capacidad de los {{2}}, puede aparecer estrés oxidativo. La acumulación persistente de estas especies favorece el {{3}} y puede producir {{4}}. En los progenitores osteogénicos y osteoblastos esto puede contribuir a una {{5}}.",
+                  "huecos": [
+                    {
+                      "id": "t_ros",
+                      "texto": "ROS"
+                    },
+                    {
+                      "id": "t_antioxidantes",
+                      "texto": "sistemas antioxidantes"
+                    },
+                    {
+                      "id": "t_dano",
+                      "texto": "daño celular"
+                    },
+                    {
+                      "id": "t_desequilibrio",
+                      "texto": "desequilibrio del remodelado"
+                    },
+                    {
+                      "id": "t_menor_formacion",
+                      "texto": "menor formación ósea"
+                    }
+                  ],
+                  "explicacion": "El estrés oxidativo puede afectar la integridad de proteínas, lípidos y ADN, comprometer la función mitocondrial y modificar la supervivencia y actividad de las células óseas. En los osteoblastos y sus progenitores puede reducir la formación, mientras que en el linaje osteoclástico las ROS también participan en señales relacionadas con RANKL."
+                }
+              ],
+              "barajar_preguntas": false,
+              "barajar_opciones": true
+            }
+          }
+        },
+        {
+          "tipo": "actividad",
+          "actividad": {
             "id": "m6_2_evaluacion",
             "tipo": "quiz",
             "titulo": "Evaluación",
@@ -808,7 +864,9 @@
                       "texto": "Las alteraciones de señalización afectan únicamente a los osteoclastos."
                     }
                   ],
-                  "correctas": ["m6_2_e1_b"],
+                  "correctas": [
+                    "m6_2_e1_b"
+                  ],
                   "explicacion": "La comunicación celular requiere receptores funcionales, vías intracelulares capaces de transmitir la información y células que puedan responder adecuadamente. El envejecimiento puede alterar estos componentes y reducir la eficiencia de la coordinación del remodelado."
                 }
               ],

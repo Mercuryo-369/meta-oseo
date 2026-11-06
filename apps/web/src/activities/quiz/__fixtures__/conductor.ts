@@ -68,7 +68,7 @@ export async function responder(
       ? pregunta.opciones.filter((o) => pregunta.correctas.includes(o.id))
       : pregunta.opciones.filter((o) => !pregunta.correctas.includes(o.id)).slice(0, 1);
     for (const o of elegidas) await marcar(wrapper, textoPlanoDeMarkdown(o.texto));
-  } else {
+  } else if (pregunta.formato === 'ordenar') {
     const orden = correcta ? pregunta.pasos : [...pregunta.pasos].reverse();
     for (const [i, paso] of orden.entries()) {
       await moverPaso(wrapper, textoPlanoDeMarkdown(paso.texto), i);
