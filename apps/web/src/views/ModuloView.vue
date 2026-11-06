@@ -984,6 +984,32 @@ onBeforeUnmount(() => {
                   </li>
                 </ul>
               </details>
+              <!-- Referencias del módulo (bibliografía de la docente, 2026-11-05): desplegable como los objetivos, para
+                   no ocupar la pantalla de la sección. El glosario sigue oculto. -->
+              <details class="relative text-sm" data-testid="referencias-desplegable">
+                <summary
+                  class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
+                >
+                  Referencias ({{ modulo.referencias.length }})
+                </summary>
+                <ol
+                  class="bg-card marker:text-primary absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] list-decimal space-y-3 overflow-y-auto overscroll-contain rounded-xl border p-4 pl-9 leading-relaxed shadow-lg"
+                >
+                  <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
+                    {{ r.cita }}
+                    <a
+                      v-if="r.url"
+                      :href="r.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-primary block break-all underline underline-offset-2"
+                    >
+                      {{ r.url }}
+                      <span class="sr-only">(se abre en otra pestaña)</span>
+                    </a>
+                  </li>
+                </ol>
+              </details>
               <span
                 class="text-muted-foreground ml-auto text-sm tabular-nums"
                 data-testid="avance-obligatorias"
