@@ -129,64 +129,75 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "Ross MH, Pawlina W. Histología: Texto y Atlas (Histology: A Text and Atlas). Capítulos de tejido óseo, tejido cartilaginoso y de tejido conectivo.",
-      "verificada": false
+      "cita": "Bertels JC, He G, Long F. Metabolic reprogramming in skeletal cell differentiation. Bone Res. 2024;12(1):57. doi: 10.1038/s41413-024-00374-0.",
+      "url": "https://doi.org/10.1038/s41413-024-00374-0",
+      "verificada": true
     },
     {
       "id": "ref_2",
-      "cita": "Mescher AL. Junqueira. Histología básica: Texto y Atlas (Junqueira's Basic Histology: Text and Atlas). Capítulo de tejido óseo.",
-      "verificada": false
+      "cita": "Florencio-Silva R, Sasso GR, Sasso-Cerri E, Simões MJ, Cerri PS. Biology of bone tissue: structure, function, and factors that influence bone cells. Biomed Res Int. 2015;2015:421746.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4515490/",
+      "verificada": true
     },
     {
       "id": "ref_3",
-      "cita": "Nanci A. Ten Cate's Oral Histology: Development, Structure, and Function, 9.ª edición. Capítulos de desarrollo de la cara, ligamento periodontal, hueso alveolar y cemento.",
-      "verificada": false
+      "cita": "Liu Y, Xiong W, Li J, Feng H, Jing S, Liu Y, et al. Application of dental pulp stem cells for bone regeneration. Front Med (Lausanne). 2024 Feb 29;11:1339573. doi: 10.3389/fmed.2024.1339573.",
+      "url": "https://doi.org/10.3389/fmed.2024.1339573",
+      "verificada": true
     },
     {
       "id": "ref_4",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. Capítulos de osteoblastos, osteocitos y osteoclastos.",
-      "verificada": false
+      "cita": "McDonald MM, Khoo WH, Ng PY, Xiao Y, Zamerli J, Thatcher P, et al. Osteoclasts recycle via osteomorphs during RANKL-stimulated bone resorption. Cell. 2021 Mar 4;184(5):1330-47.e13. doi: 10.1016/j.cell.2021.02.002.",
+      "url": "https://doi.org/10.1016/j.cell.2021.02.002",
+      "verificada": true
     },
     {
       "id": "ref_5",
-      "cita": "Hall JE, Hall ME. Guyton y Hall: Tratado de fisiología médica. Capítulo de fisiología del hueso, el calcio y el fosfato.",
-      "verificada": false
+      "cita": "Qin L, Liu W, Cao H, Xiao G. Molecular mechanosensors in osteocytes. Bone Res. 2020 Jun 8;8:23. doi: 10.1038/s41413-020-0099-y.",
+      "url": "https://doi.org/10.1038/s41413-020-0099-y",
+      "verificada": true
     },
     {
       "id": "ref_6",
-      "cita": "Florencio-Silva R, Sasso GRS, Sasso-Cerri E, Simões MJ, Cerri PS. Biology of Bone Tissue: Structure, Function, and Factors That Influence Bone Cells. BioMed Research International, 2015.",
-      "verificada": false
+      "cita": "Rusu MC, Stănescu AG, Tudose RC. Ossification of the mandible: A regional composite model of intramembranous, parachondral, and endochondral mechanisms. Arch Oral Biol. 2026;189:106664.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42320182/",
+      "verificada": true
     },
     {
       "id": "ref_7",
-      "cita": "Komori T, et al. Targeted disruption of Cbfa1 results in a complete lack of bone formation owing to maturation arrest of osteoblasts. Cell, 1997.",
-      "verificada": false
+      "cita": "Salhotra A, Shah HN, Levi B, Longaker MT. Mechanisms of bone development and repair. Nat Rev Mol Cell Biol. 2020 Nov;21(11):696-711. doi: 10.1038/s41580-020-00279-w.",
+      "url": "https://doi.org/10.1038/s41580-020-00279-w",
+      "verificada": true
     },
     {
       "id": "ref_8",
-      "cita": "Nakashima K, et al. The novel zinc finger-containing transcription factor osterix is required for osteoblast differentiation and bone formation. Cell, 2002.",
-      "verificada": false
+      "cita": "Shen Z, Zhang R, Chen X, Yang G, Si Y, Yan T, et al. An atlas of early human mandibular endochondral and osteogenic paracrine signaling regions of Meckel's cartilage. Proc Natl Acad Sci U S A. 2025;122(12):e2420466122.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40096606/",
+      "verificada": true
     },
     {
       "id": "ref_9",
-      "cita": "Jilka RL, et al. Osteoblast programmed cell death (apoptosis): modulation by growth factors and cytokines. Journal of Bone and Mineral Research, 1998.",
-      "verificada": false
+      "cita": "Šromová V, Sobola D, Kaspar P. A brief review of bone cell function and importance. Cells. 2023 Nov 5;12(21):2576. doi: 10.3390/cells12212576.",
+      "url": "https://doi.org/10.3390/cells12212576",
+      "verificada": true
     },
     {
       "id": "ref_10",
-      "cita": "Teitelbaum SL. Bone resorption by osteoclasts. Science, 2000.",
-      "verificada": false
+      "cita": "Wang H, Qi LL, Shema C, Jiang KY, Ren P, Wang H, et al. Advances in the role and mechanism of fibroblasts in fracture healing. Front Endocrinol (Lausanne). 2024 Feb 26;15:1350958. doi: 10.3389/fendo.2024.1350958.",
+      "url": "https://doi.org/10.3389/fendo.2024.1350958",
+      "verificada": true
     },
     {
       "id": "ref_11",
-      "cita": "Bonewald LF. The amazing osteocyte. Journal of Bone and Mineral Research, 2011.",
-      "verificada": false
+      "cita": "Wang K, Ren Y, Lin S, Jing Y, Ma C, Wang J, et al. Osteocytes but not osteoblasts directly build mineralized bone structures. Int J Biol Sci. 2021 Jun 11;17(10):2430-48.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8315029/",
+      "verificada": true
     },
     {
       "id": "ref_12",
-      "cita": "Qin et al. (2020). Fuente de las figuras «Morfología y organización celular del osteocito» y «Osteocito en el sistema lacuno-canalicular» (adaptadas, licencia CC BY 4.0). https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/",
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/",
-      "verificada": false
+      "cita": "Zhu S, Chen W, Masson A, Li YP. Cell signaling and transcriptional regulation of osteoblast lineage commitment, differentiation, bone formation, and homeostasis. Cell Discov. 2024 Jul 2;10(1):71. doi: 10.1038/s41421-024-00689-6.",
+      "url": "https://doi.org/10.1038/s41421-024-00689-6",
+      "verificada": true
     }
   ],
   "estado_revision": {

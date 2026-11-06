@@ -16,6 +16,10 @@ Tipos:
 - `banco`, `gancho`: material del docente PARA el mentor (preguntas de refuerzo con su respuesta,
   conceptos clave, errores frecuentes). Informan la respuesta, pero el estudiante no las ve: no se
   citan. Ninguna pregunta ni respuesta de las actividades calificadas entra al corpus.
+- `bibliografia`: el resumen y las conclusiones, literales y en inglés, de los artículos de acceso
+  abierto de la bibliografía de la docente (`app/data/bibliografia_mentor.json`; las claves «Ref a»…
+  en `docs/bibliografia.md`). Informan la respuesta y el mentor puede nombrar el artículo por su
+  autor y año, pero no llevan etiqueta de cita: su `url` es el DOI, no una página del OVA.
 """
 
 import json
@@ -31,7 +35,15 @@ TIPO_GLOSARIO = "glosario"
 TIPO_OBJETIVOS = "objetivos"
 TIPO_BANCO = "banco"
 TIPO_GANCHO = "gancho"
-TIPOS = (TIPO_CONTENIDO, TIPO_GLOSARIO, TIPO_OBJETIVOS, TIPO_BANCO, TIPO_GANCHO)
+TIPO_BIBLIOGRAFIA = "bibliografia"
+TIPOS = (
+    TIPO_CONTENIDO,
+    TIPO_GLOSARIO,
+    TIPO_OBJETIVOS,
+    TIPO_BANCO,
+    TIPO_GANCHO,
+    TIPO_BIBLIOGRAFIA,
+)
 # Lo que el estudiante puede leer en el OVA (y por lo tanto se cita con un enlace).
 TIPOS_CITABLES = frozenset({TIPO_CONTENIDO, TIPO_GLOSARIO, TIPO_OBJETIVOS})
 

@@ -229,87 +229,72 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "Mescher AL. Junqueira's Basic Histology: Text and Atlas. McGraw-Hill.",
-      "verificada": false
+      "cita": "Biswas S, Gangadaran P, Dhara C, Ghosh S, Phadikar SD, Chakraborty A, et al. Extracellular vesicles in osteogenesis: a comprehensive review of mechanisms and therapeutic potential for bone regeneration. Curr Issues Mol Biol. 2025 Aug 21;47(8):675. doi: 10.3390/cimb47080675. Erratum in: Curr Issues Mol Biol. 2026 Jan 30;48(2):154. doi: 10.3390/cimb48020154.",
+      "url": "https://doi.org/10.3390/cimb48020154",
+      "verificada": true
     },
     {
       "id": "ref_2",
-      "cita": "Ross MH, Pawlina W. Histology: A Text and Atlas, with Correlated Cell and Molecular Biology. Wolters Kluwer.",
-      "verificada": false
-    },
-    {
-      "id": "ref_3",
-      "cita": "Gartner LP. Color Atlas and Text of Histology. Wolters Kluwer.",
-      "verificada": false
-    },
-    {
-      "id": "ref_4",
-      "cita": "Nanci A. Ten Cate's Oral Histology: Development, Structure, and Function. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_5",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. Academic Press.",
-      "verificada": false
-    },
-    {
-      "id": "ref_6",
-      "cita": "Rosen CJ (ed.). Primer on the Metabolic Bone Diseases and Disorders of Mineral Metabolism. American Society for Bone and Mineral Research y Wiley.",
-      "verificada": false
-    },
-    {
-      "id": "ref_7",
-      "cita": "Hall JE, Hall ME. Guyton and Hall Textbook of Medical Physiology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_8",
-      "cita": "Boron WF, Boulpaep EL. Medical Physiology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_9",
-      "cita": "Kumar V, Abbas AK, Aster JC. Robbins and Cotran Pathologic Basis of Disease. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_10",
-      "cita": "Murshed M. Mechanism of bone mineralization. Cold Spring Harbor Perspectives in Medicine, 2018.",
-      "verificada": false
-    },
-    {
-      "id": "ref_11",
-      "cita": "Millán JL. The role of phosphatases in the initiation of skeletal mineralization. Calcified Tissue International, 2013.",
-      "verificada": false
-    },
-    {
-      "id": "ref_12",
-      "cita": "Yadav MC y col. Loss of skeletal mineralization by the simultaneous ablation of PHOSPHO1 and alkaline phosphatase function: a unified model of the mechanisms of initiation of skeletal calcification. Journal of Bone and Mineral Research, 2011.",
-      "verificada": false
-    },
-    {
-      "id": "ref_13",
-      "cita": "Orriss IR, Arnett TR, Russell RGG. Pyrophosphate: a key inhibitor of mineralisation. Current Opinion in Pharmacology, 2016.",
-      "verificada": false
-    },
-    {
-      "id": "ref_14",
-      "cita": "Weiner S, Traub W. Organization of hydroxyapatite crystals within collagen fibrils. FEBS Letters, 1986.",
-      "verificada": false
-    },
-    {
-      "id": "ref_15",
       "cita": "Boivin G, Meunier PJ. Changes in bone remodeling rate influence the degree of mineralization of bone. Connective Tissue Research, 2002.",
       "verificada": false
     },
     {
-      "id": "ref_16",
+      "id": "ref_3",
+      "cita": "Emam AN. Collagen and collagen-derived materials: synthesis, structure, classification, fundamental properties and biomedical applications. Discov Appl Sci. 2025;7:1114. doi: 10.1007/s42452-025-07780-x.",
+      "url": "https://doi.org/10.1007/s42452-025-07780-x",
+      "verificada": true
+    },
+    {
+      "id": "ref_4",
+      "cita": "Hasegawa T, Hongo H, Yamamoto T, Abe M, Yoshino H, Haraguchi-Kitakamae M, et al. Matrix vesicle-mediated mineralization and osteocytic regulation of bone mineralization. Int J Mol Sci. 2022 Sep 1;23(17):9941. doi: 10.3390/ijms23179941.",
+      "url": "https://doi.org/10.3390/ijms23179941",
+      "verificada": true
+    },
+    {
+      "id": "ref_5",
+      "cita": "Millán JL. The role of phosphatases in the initiation of skeletal mineralization. Calcified Tissue International, 2013.",
+      "verificada": false
+    },
+    {
+      "id": "ref_6",
+      "cita": "Murshed M. Mechanism of bone mineralization. Cold Spring Harbor Perspectives in Medicine, 2018.",
+      "verificada": false
+    },
+    {
+      "id": "ref_7",
+      "cita": "Orriss IR, Arnett TR, Russell RGG. Pyrophosphate: a key inhibitor of mineralisation. Current Opinion in Pharmacology, 2016.",
+      "verificada": false
+    },
+    {
+      "id": "ref_8",
       "cita": "Parfitt AM y col. (ASBMR Histomorphometry Nomenclature Committee). Bone histomorphometry: standardization of nomenclature, symbols, and units. Journal of Bone and Mineral Research, 1987.",
       "verificada": false
     },
     {
-      "id": "ref_17",
+      "id": "ref_9",
+      "cita": "Selvaraj V, Sekaran S, Dhanasekaran A, Warrier S. Type 1 collagen: Synthesis, structure and key functions in bone mineralization. Differentiation. 2024;136:100757.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0301468124000136",
+      "verificada": true
+    },
+    {
+      "id": "ref_10",
+      "cita": "Shapiro IM, Risbud MV, Tang T, Landis WJ. Skeletal and dental tissue mineralization: The potential role of the endoplasmic reticulum/Golgi complex and the endolysosomal and autophagic transport systems. Bone. 2025;193:117390.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S875632822500002X",
+      "verificada": true
+    },
+    {
+      "id": "ref_11",
       "cita": "Vasikaran S y col. Markers of bone turnover for the prediction of fracture risk and monitoring of osteoporosis treatment: a need for international reference standards. Osteoporosis International, 2011.",
+      "verificada": false
+    },
+    {
+      "id": "ref_12",
+      "cita": "Weiner S, Traub W. Organization of hydroxyapatite crystals within collagen fibrils. FEBS Letters, 1986.",
+      "verificada": false
+    },
+    {
+      "id": "ref_13",
+      "cita": "Yadav MC y col. Loss of skeletal mineralization by the simultaneous ablation of PHOSPHO1 and alkaline phosphatase function: a unified model of the mechanisms of initiation of skeletal calcification. Journal of Bone and Mineral Research, 2011.",
       "verificada": false
     }
   ],

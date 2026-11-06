@@ -229,113 +229,107 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "Ross MH, Pawlina W. Histología: texto y atlas color con biología celular y molecular (Histology: A Text and Atlas). Wolters Kluwer.",
+      "cita": "American Association of Oral and Maxillofacial Surgeons. Position paper on medication-related osteonecrosis of the jaws, 2022 update. Journal of Oral and Maxillofacial Surgery, 2022.",
       "verificada": false
     },
     {
       "id": "ref_2",
-      "cita": "Junqueira LC, Carneiro J. Histología básica: texto y atlas (Basic Histology).",
-      "verificada": false
-    },
-    {
-      "id": "ref_3",
-      "cita": "Gartner LP, Hiatt JL. Color Textbook of Histology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_4",
-      "cita": "Kierszenbaum AL, Tres LL. Histology and Cell Biology: An Introduction to Pathology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_5",
-      "cita": "Nanci A. Ten Cate's Oral Histology: Development, Structure, and Function. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_6",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. Academic Press.",
-      "verificada": false
-    },
-    {
-      "id": "ref_7",
-      "cita": "Hall JE, Hall ME. Guyton y Hall: Tratado de fisiología médica. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_8",
-      "cita": "Kumar V, Abbas AK, Aster JC. Robbins y Cotran: Patología estructural y funcional (Robbins and Cotran Pathologic Basis of Disease). Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_9",
-      "cita": "Standring S (ed.). Gray's Anatomy: The Anatomical Basis of Clinical Practice. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_10",
-      "cita": "Lindhe J, Lang NP, Karring T (eds.). Clinical Periodontology and Implant Dentistry. Wiley-Blackwell.",
-      "verificada": false
-    },
-    {
-      "id": "ref_11",
-      "cita": "Proffit WR, Fields HW, Larson BE, Sarver DM. Contemporary Orthodontics. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_12",
-      "cita": "Hupp JR, Ellis E, Tucker MR. Contemporary Oral and Maxillofacial Surgery. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_13",
-      "cita": "Frost HM. Bone Remodeling Dynamics. Charles C Thomas, 1963.",
-      "verificada": false
-    },
-    {
-      "id": "ref_14",
-      "cita": "Eriksen EF. Cellular mechanisms of bone remodeling. Reviews in Endocrine and Metabolic Disorders, 2010;11:219-227.",
-      "verificada": false
-    },
-    {
-      "id": "ref_15",
-      "cita": "Sims NA, Martin TJ. Coupling the activities of bone formation and resorption: a multitude of signals within the basic multicellular unit. BoneKEy Reports, 2014.",
-      "verificada": false
-    },
-    {
-      "id": "ref_16",
-      "cita": "Parfitt AM. Misconceptions (2): turnover is always higher in cancellous than in cortical bone. Bone, 2002.",
-      "verificada": false
-    },
-    {
-      "id": "ref_17",
-      "cita": "Huja SS, Fernandez SA, Hill KJ, Li Y. Remodeling dynamics in the alveolar process in skeletally mature dogs. The Anatomical Record Part A, 2006.",
-      "verificada": false
-    },
-    {
-      "id": "ref_18",
       "cita": "Amler MH. The time sequence of tissue regeneration in human extraction wounds. Oral Surgery, Oral Medicine, Oral Pathology, 1969;27:309-318.",
       "verificada": false
     },
     {
-      "id": "ref_19",
-      "cita": "Schropp L, Wenzel A, Kostopoulos L, Karring T. Bone healing and soft tissue contour changes following single-tooth extraction: a clinical and radiographic 12-month prospective study. International Journal of Periodontics and Restorative Dentistry, 2003;23:313-323.",
+      "id": "ref_3",
+      "cita": "Bolamperti S, Villa I, Rubinacci A. Bone remodeling: an operational process ensuring survival and bone mechanical competence. Bone Res. 2022;10(1):48.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9293977/",
+      "verificada": true
+    },
+    {
+      "id": "ref_4",
+      "cita": "Duda GN, Geissler S, Checa S, Tsitsilonis S, Petersen A, Schmidt-Bleek K. The decisive early phase of bone regeneration. Nat Rev Rheumatol. 2023 Feb;19(2):78-95. doi: 10.1038/s41584-022-00887-0.",
+      "url": "https://doi.org/10.1038/s41584-022-00887-0",
+      "verificada": true
+    },
+    {
+      "id": "ref_5",
+      "cita": "Eriksen EF. Cellular mechanisms of bone remodeling. Reviews in Endocrine and Metabolic Disorders, 2010;11:219-227.",
       "verificada": false
     },
     {
-      "id": "ref_20",
-      "cita": "Trombelli L, Farina R, Marzola A, Bozzi L, Liljenberg B, Lindhe J. Modeling and remodeling of human extraction sockets. Journal of Clinical Periodontology, 2008;35:630-639.",
+      "id": "ref_6",
+      "cita": "Frost HM. Bone Remodeling Dynamics. Charles C Thomas, 1963.",
       "verificada": false
     },
     {
-      "id": "ref_21",
+      "id": "ref_7",
       "cita": "Garlet TP, Coelho U, Silva JS, Garlet GP. Cytokine expression pattern in compression and tension sides of the periodontal ligament during orthodontic tooth movement in humans. European Journal of Oral Sciences, 2007;115:355-362.",
       "verificada": false
     },
     {
-      "id": "ref_22",
-      "cita": "American Association of Oral and Maxillofacial Surgeons. Position paper on medication-related osteonecrosis of the jaws, 2022 update. Journal of Oral and Maxillofacial Surgery, 2022.",
+      "id": "ref_8",
+      "cita": "Geißler S. The bone-immune interface shapes skeletal regeneration. Ann Anat. 2026 Apr;265:152779. doi: 10.1016/j.aanat.2025.152779.",
+      "url": "https://doi.org/10.1016/j.aanat.2025.152779",
+      "verificada": true
+    },
+    {
+      "id": "ref_9",
+      "cita": "Huja SS, Fernandez SA, Hill KJ, Li Y. Remodeling dynamics in the alveolar process in skeletally mature dogs. The Anatomical Record Part A, 2006.",
       "verificada": false
+    },
+    {
+      "id": "ref_10",
+      "cita": "McDonald MM, Khoo WH, Ng PY, Xiao Y, Zamerli J, Thatcher P, et al. Osteoclasts recycle via osteomorphs during RANKL-stimulated bone resorption. Cell. 2021 Mar 4;184(5):1330-47.e13. doi: 10.1016/j.cell.2021.02.002.",
+      "url": "https://doi.org/10.1016/j.cell.2021.02.002",
+      "verificada": true
+    },
+    {
+      "id": "ref_11",
+      "cita": "Munaò S, Armeli A, Bonfiglio D, Iaconis A, Calabrese G. Immune-guided bone healing: the role of osteoimmunity in tissue engineering approaches. Int J Mol Sci. 2025;26(23):11642. doi: 10.3390/ijms262311642.",
+      "url": "https://doi.org/10.3390/ijms262311642",
+      "verificada": true
+    },
+    {
+      "id": "ref_12",
+      "cita": "Parfitt AM. Misconceptions (2): turnover is always higher in cancellous than in cortical bone. Bone, 2002.",
+      "verificada": false
+    },
+    {
+      "id": "ref_13",
+      "cita": "Schropp L, Wenzel A, Kostopoulos L, Karring T. Bone healing and soft tissue contour changes following single-tooth extraction: a clinical and radiographic 12-month prospective study. International Journal of Periodontics and Restorative Dentistry, 2003;23:313-323.",
+      "verificada": false
+    },
+    {
+      "id": "ref_14",
+      "cita": "Sims NA, Martin TJ. Coupling the activities of bone formation and resorption: a multitude of signals within the basic multicellular unit. BoneKEy Reports, 2014.",
+      "verificada": false
+    },
+    {
+      "id": "ref_15",
+      "cita": "Trombelli L, Farina R, Marzola A, Bozzi L, Liljenberg B, Lindhe J. Modeling and remodeling of human extraction sockets. Journal of Clinical Periodontology, 2008;35:630-639.",
+      "verificada": false
+    },
+    {
+      "id": "ref_16",
+      "cita": "Wang H, Qi LL, Shema C, Jiang KY, Ren P, Wang H, et al. Advances in the role and mechanism of fibroblasts in fracture healing. Front Endocrinol (Lausanne). 2024 Feb 26;15:1350958. doi: 10.3389/fendo.2024.1350958.",
+      "url": "https://doi.org/10.3389/fendo.2024.1350958",
+      "verificada": true
+    },
+    {
+      "id": "ref_17",
+      "cita": "Wilson SR, Peters C, Saftig P, Brömme D. Cathepsin K activity-dependent regulation of osteoclast actin ring formation and bone resorption. J Biol Chem. 2009;284(4):2584-92.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2629117/",
+      "verificada": true
+    },
+    {
+      "id": "ref_18",
+      "cita": "Yang N, Liu Y. The role of the immune microenvironment in bone regeneration. Int J Med Sci. 2021 Sep 21;18(16):3697-707. doi: 10.7150/ijms.61080.",
+      "url": "https://doi.org/10.7150/ijms.61080",
+      "verificada": true
+    },
+    {
+      "id": "ref_19",
+      "cita": "Zhu L, Tang Y, Li XY, Keller ET, Yang J, Cho JS, et al. Osteoclast-mediated bone resorption is controlled by a compensatory network of secreted and membrane-tethered metalloproteinases. Sci Transl Med. 2020;12(529):eaaw6143.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32024800/",
+      "verificada": true
     }
   ],
   "estado_revision": {

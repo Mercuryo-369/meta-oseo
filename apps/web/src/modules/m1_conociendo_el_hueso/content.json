@@ -177,58 +177,83 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "OpenStax College (2018). 603 Anatomy of Long Bone esp.jpg. Wikimedia Commons, licencia CC BY-SA 4.0.",
-      "verificada": false
+      "cita": "Chen Z, Luo Z, Greenblatt MB, Wu Z, Xu R. Neural regulation of bone: from central neural circuits to peripheral innervation of the skeletal stem cell niche. Bone Res. 2026 Apr 21;14(1):44. doi: 10.1038/s41413-026-00534-4.",
+      "url": "https://doi.org/10.1038/s41413-026-00534-4",
+      "verificada": true
     },
     {
       "id": "ref_2",
-      "cita": "Tortora GJ, Derrickson BH (2006). Principles of Anatomy and Physiology. 11.ª ed., figura 6.4. John Wiley & Sons.",
-      "verificada": false
+      "cita": "Choi IA, Umemoto A, Mizuno M, Park-Min KH. Bone metabolism – an underappreciated player. npj Metab Health Dis. 2024 Jul 1;2(1):12. doi: 10.1038/s44324-024-00010-9.",
+      "url": "https://doi.org/10.1038/s44324-024-00010-9",
+      "verificada": true
     },
     {
       "id": "ref_3",
-      "cita": "Watanabe et al. (2023). International Journal of Molecular Sciences, 24(13), 10912, figura 3. Licencia CC BY 4.0.",
-      "verificada": false
+      "cita": "Florencio-Silva R, Sasso GR, Sasso-Cerri E, Simões MJ, Cerri PS. Biology of bone tissue: structure, function, and factors that influence bone cells. Biomed Res Int. 2015;2015:421746.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4515490/",
+      "verificada": true
     },
     {
       "id": "ref_4",
-      "cita": "Chen et al. (2026). Regulación simpático-sensorial del nicho de células madre esqueléticas, figura 3. Licencia CC BY 4.0.",
-      "verificada": false
+      "cita": "Forriol F, Jedrzejczak A. Bone structure and metabolism. In: Longo UG, Denaro V, editors. Textbook of musculoskeletal disorders. Cham: Springer; 2023. p. 3-13. doi: 10.1007/978-3-031-20987-1_1.",
+      "url": "https://doi.org/10.1007/978-3-031-20987-1_1",
+      "verificada": true
     },
     {
       "id": "ref_5",
-      "cita": "Lin y Kang (2021), figura 1, adaptada de Çehreli (2012).",
-      "verificada": false
+      "cita": "Lin CY, Kang JH. Mechanical properties of compact bone defined by the stress-strain curve measured using uniaxial tensile test: a concise review and practical guide. Materials (Basel). 2021;14(15):4224. doi: 10.3390/ma14154224.",
+      "url": "https://doi.org/10.3390/ma14154224",
+      "verificada": true
     },
     {
       "id": "ref_6",
-      "cita": "Ross MH, Pawlina W. Ross. Histología: Texto y Atlas. Wolters Kluwer.",
-      "verificada": false
+      "cita": "Liu M, Liu Y, Yu J, Gong J, Zhao C, Liu Z. Molecular mechanisms and therapeutic implications of the sympathetic nervous system in bone-related disorders: a brain-bone axis perspective. Bone Res. 2025 Dec 2;13(1):98. doi: 10.1038/s41413-025-00494-1.",
+      "url": "https://doi.org/10.1038/s41413-025-00494-1",
+      "verificada": true
     },
     {
       "id": "ref_7",
-      "cita": "Mescher AL. Junqueira. Histología básica: texto y atlas. McGraw-Hill.",
-      "verificada": false
+      "cita": "OpenStax College (2018). 603 Anatomy of Long Bone esp.jpg. Wikimedia Commons, licencia CC BY-SA 4.0.",
+      "verificada": true
     },
     {
       "id": "ref_8",
-      "cita": "Hall JE, Hall ME. Guyton y Hall. Tratado de fisiología médica. Elsevier.",
-      "verificada": false
+      "cita": "Šromová V, Sobola D, Kaspar P. A brief review of bone cell function and importance. Cells. 2023 Nov 5;12(21):2576. doi: 10.3390/cells12212576.",
+      "url": "https://doi.org/10.3390/cells12212576",
+      "verificada": true
     },
     {
       "id": "ref_9",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. Academic Press.",
-      "verificada": false
+      "cita": "Tortora GJ, Derrickson BH (2006). Principles of Anatomy and Physiology. 11.ª ed., figura 6.4. John Wiley & Sons.",
+      "verificada": true
     },
     {
       "id": "ref_10",
-      "cita": "Nanci A. Ten Cate. Histología oral: desarrollo, estructura y función. Elsevier.",
-      "verificada": false
+      "cita": "Watanabe et al. (2023). International Journal of Molecular Sciences, 24(13), 10912, figura 3. Licencia CC BY 4.0.",
+      "verificada": true
     },
     {
       "id": "ref_11",
+      "cita": "Wawrzyniak A, Balawender K. Structural and metabolic changes in bone. Animals (Basel). 2022 Jul 31;12(15):1946. doi: 10.3390/ani12151946.",
+      "url": "https://doi.org/10.3390/ani12151946",
+      "verificada": true
+    },
+    {
+      "id": "ref_12",
       "cita": "Wolff J. Das Gesetz der Transformation der Knochen. Berlin: A. Hirschwald, 1892.",
       "verificada": false
+    },
+    {
+      "id": "ref_13",
+      "cita": "Xiao Y, Han C, Wang Y, Zhang X, Bao R, Li Y, et al. Interoceptive regulation of skeletal tissue homeostasis and repair. Bone Res. 2023 Sep 5;11(1):48.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10480189/",
+      "verificada": true
+    },
+    {
+      "id": "ref_14",
+      "cita": "Zhou R, Guo Q, Xiao Y, Guo Q, Huang Y, Li C, et al. Endocrine role of bone in the regulation of energy metabolism. Bone Res. 2021 May 20;9(1):25. doi: 10.1038/s41413-021-00142-4.",
+      "url": "https://doi.org/10.1038/s41413-021-00142-4",
+      "verificada": true
     }
   ],
   "estado_revision": {

@@ -7,10 +7,11 @@ Uso (desde services/api):
 
 Lee `apps/web/src/modules/m{n}_{slug}/content.json` (objetivos, glosario y el texto visible de los
 bloques `texto`, `callout` y `tabla`, más los pasos de las actividades `video-texto`, que son
-explicaciones) y, de `docs/guion-por-modulo/m{n}_*.md`, las secciones «Banco de preguntas para el
-mentor» y «Ganchos para el mentor». Escribe `services/api/app/data/corpus.jsonl` (formato en
-`app/rag/corpus.py`). Hay que volver a ejecutarlo, y versionar el resultado, cada vez que cambie el
-contenido o el guion.
+explicaciones), de `docs/guion-por-modulo/m{n}_*.md`, las secciones «Banco de preguntas para el
+mentor» y «Ganchos para el mentor», y de `app/data/bibliografia_mentor.json` los pasajes literales
+(resumen y conclusiones) de los artículos de acceso abierto de la bibliografía de la docente.
+Escribe `services/api/app/data/corpus.jsonl` (formato en `app/rag/corpus.py`). Hay que volver a
+ejecutarlo, y versionar el resultado, cada vez que cambie el contenido, el guion o la bibliografía.
 
 Lo que NO entra, a propósito: los enunciados, opciones, explicaciones y respuestas de las
 actividades calificadas (quiz, relación de columnas, arrastre, capas, exploración 3D). El mentor
@@ -34,6 +35,7 @@ from app.rag.corpus import (
     NIVEL_POSGRADO,
     NIVEL_TODOS,
     TIPO_BANCO,
+    TIPO_BIBLIOGRAFIA,
     TIPO_CONTENIDO,
     TIPO_GANCHO,
     TIPO_GLOSARIO,
@@ -45,6 +47,7 @@ from app.rag.texto import contar_palabras
 from app.scripts.build_manifest import MODULES_DIR, discover_content_files
 
 GUION_DIR = REPO_ROOT / "docs" / "guion-por-modulo"
+BIBLIOGRAFIA_PATH = Path(__file__).resolve().parents[1] / "data" / "bibliografia_mentor.json"
 
 EXIT_OK = 0
 EXIT_OUTDATED = 1
@@ -548,7 +551,42 @@ def descubrir_guiones(guion_dir: Path | None = None) -> dict[int, Path]:
     return encontrados
 
 
-def construir(contenidos: Iterable[dict], guiones: dict[int, Path]) -> list[Fragmento]:
+def fragmentos_de_bibliografia(articulos: Sequence[dict]) -> list[Fragmento]:
+    """Un fragmento por pasaje (resumen, conclusiones) de cada artículo, en su primer módulo."""
+    fragmentos: list[Fragmento] = []
+    for articulo in articulos:
+        clave = str(articulo["clave"]).replace("Ref ", "").strip()
+        modulos = [int(n) for n in articulo["modulos"]]
+        if not modulos or not all(1 <= n <= MODULE_COUNT for n in modulos):
+            raise CorpusBuildError(f"La referencia {articulo['clave']} no tiene módulos válidos.")
+        for pasaje in articulo["pasajes"]:
+            titulo = str(pasaje["titulo"])
+            fragmentos.append(
+                Fragmento(
+                    id=f"bib:{clave}:{titulo.lower().replace(' ', '_')}",
+                    modulo=modulos[0],
+                    seccion_id=None,
+                    seccion_titulo=f"Bibliografía: {articulo['titulo']}",
+                    tipo=TIPO_BIBLIOGRAFIA,
+                    # Los temas en español (traducción de los términos del propio resumen) dejan
+                    # encontrar el pasaje, que es literal y en inglés, con preguntas en español.
+                    texto=(
+                        f"{articulo['cita']}\nTemas: {articulo['temas']}.\n"
+                        f"{titulo} del artículo (en inglés): {pasaje['texto']}"
+                    ),
+                    url=str(articulo["url"]),
+                    subtitulo=titulo,
+                    refs=(f"bib:{clave}",),
+                )
+            )
+    return fragmentos
+
+
+def construir(
+    contenidos: Iterable[dict],
+    guiones: dict[int, Path],
+    bibliografia: Sequence[dict] = (),
+) -> list[Fragmento]:
     fragmentos: list[Fragmento] = []
     for contenido in sorted(contenidos, key=lambda c: int(c["numero"])):
         numero = int(contenido["numero"])
@@ -557,6 +595,7 @@ def construir(contenidos: Iterable[dict], guiones: dict[int, Path]) -> list[Frag
         if ruta is None:
             raise CorpusBuildError(f"No hay guion para el módulo {numero} en {GUION_DIR}.")
         fragmentos += fragmentos_del_guion(numero, ruta.read_text(encoding="utf-8"))
+    fragmentos += fragmentos_de_bibliografia(bibliografia)
     ids = [f.id for f in fragmentos]
     repetidos = sorted({i for i in ids if ids.count(i) > 1})
     if repetidos:
@@ -620,7 +659,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         return EXIT_INVALID
     try:
         contenidos = [json.loads(ruta.read_text(encoding="utf-8")) for ruta in rutas]
-        fragmentos = construir(contenidos, descubrir_guiones(args.guion_dir))
+        bibliografia = (
+            json.loads(BIBLIOGRAFIA_PATH.read_text(encoding="utf-8"))
+            if BIBLIOGRAFIA_PATH.is_file()
+            else []
+        )
+        fragmentos = construir(contenidos, descubrir_guiones(args.guion_dir), bibliografia)
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(
             f"Error: {error!r}" if isinstance(error, KeyError) else f"Error: {error}",

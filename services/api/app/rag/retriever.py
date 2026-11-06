@@ -23,6 +23,7 @@ from typing import Protocol
 
 from app.rag.corpus import (
     TIPO_BANCO,
+    TIPO_BIBLIOGRAFIA,
     TIPO_CONTENIDO,
     TIPO_GANCHO,
     TIPO_GLOSARIO,
@@ -44,11 +45,18 @@ REFUERZO_SECCION = 0.20
 # Las definiciones del glosario son muy cortas y por eso puntúan alto con solo nombrar el término;
 # el material del docente para el mentor es un apoyo, no la fuente primaria. Ambos se prefieren un
 # poco menos que el texto del curso a igualdad de coincidencias.
-FACTOR_POR_TIPO = {TIPO_GLOSARIO: 0.7, TIPO_BANCO: 0.9, TIPO_GANCHO: 0.85}
+# La bibliografía (resúmenes de artículos en inglés) completa el curso, no lo sustituye.
+FACTOR_POR_TIPO = {
+    TIPO_GLOSARIO: 0.7,
+    TIPO_BANCO: 0.9,
+    TIPO_GANCHO: 0.85,
+    TIPO_BIBLIOGRAFIA: 0.8,
+}
 # Tope por resultado: el mismo término aparece en el glosario de varios módulos (se deja uno) y no
 # se quiere llenar la lista con definiciones ni con material de apoyo.
 MAX_GLOSARIO = 2
 MAX_APOYO = 2
+MAX_BIBLIOGRAFIA = 1
 # Umbrales para poder decir «el material no cubre esto»: puntaje mínimo del mejor resultado,
 # cobertura mínima (fracción del peso informativo de la consulta que el mejor fragmento contiene;
 # una palabra que no existe en todo el corpus cuenta como no cubierta) y fracción del mejor puntaje
@@ -231,7 +239,7 @@ class BM25Retriever:
         """
         elegidos: list[Resultado] = []
         terminos: dict[str, int] = {}  # clave del término -> posición en `elegidos`
-        glosario = apoyo = 0
+        glosario = apoyo = bibliografia = 0
         for resultado in candidatos:
             fragmento = resultado.fragmento
             if fragmento.tipo == TIPO_GLOSARIO:
@@ -252,6 +260,10 @@ class BM25Retriever:
                 if apoyo >= MAX_APOYO:
                     continue
                 apoyo += 1
+            elif fragmento.tipo == TIPO_BIBLIOGRAFIA:
+                if bibliografia >= MAX_BIBLIOGRAFIA:
+                    continue
+                bibliografia += 1
             elegidos.append(resultado)
             if len(elegidos) >= k:
                 break

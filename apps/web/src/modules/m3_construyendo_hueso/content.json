@@ -105,49 +105,51 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "Qin L, et al. (2020). Fuente de las figuras «El hueso percibe las cargas - Osteocito» y «Acoplamiento bioquímico: Otras vías en acción» (adaptadas; licencia CC BY 4.0). https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/",
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7280204/",
-      "verificada": false
+      "cita": "Emam AN. Collagen and collagen-derived materials: synthesis, structure, classification, fundamental properties and biomedical applications. Discov Appl Sci. 2025;7:1114. doi: 10.1007/s42452-025-07780-x.",
+      "url": "https://doi.org/10.1007/s42452-025-07780-x",
+      "verificada": true
     },
     {
       "id": "ref_2",
-      "cita": "Ross MH, Pawlina W. Histology: A Text and Atlas, with Correlated Cell and Molecular Biology. 8.ª edición.",
-      "verificada": false
+      "cita": "Li R, Xu S, Guo Y, Cao C, Xu J, Hao L, et al. Application of collagen in bone regeneration. J Orthop Translat. 2025 Jan 9;50:129-43. doi: 10.1016/j.jot.2024.10.002.",
+      "url": "https://doi.org/10.1016/j.jot.2024.10.002",
+      "verificada": true
     },
     {
       "id": "ref_3",
-      "cita": "Mescher AL. Junqueira's Basic Histology: Text and Atlas.",
-      "verificada": false
+      "cita": "Liao J, Wu T, Zhang Q, Shen P, Huang Z, Wang J, et al. TGF-β/BMP signaling in skeletal biology: molecular mechanisms, regulatory networks, and therapeutic implications in development, regeneration, and disease. Bone Res. 2026 Jan 13;14(1):6. doi: 10.1038/s41413-025-00497-y.",
+      "url": "https://doi.org/10.1038/s41413-025-00497-y",
+      "verificada": true
     },
     {
       "id": "ref_4",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. 4.ª edición.",
-      "verificada": false
+      "cita": "Qin L, Liu W, Cao H, Xiao G. Molecular mechanosensors in osteocytes. Bone Res. 2020 Jun 8;8:23. doi: 10.1038/s41413-020-0099-y.",
+      "url": "https://doi.org/10.1038/s41413-020-0099-y",
+      "verificada": true
     },
     {
       "id": "ref_5",
-      "cita": "Weinbaum S, Cowin SC, Zeng Y. «A model for the excitation of osteocytes by mechanical loading-induced bone fluid shear stresses». Journal of Biomechanics, 1994.",
-      "verificada": false
+      "cita": "Selvaraj V, Sekaran S, Dhanasekaran A, Warrier S. Type 1 collagen: Synthesis, structure and key functions in bone mineralization. Differentiation. 2024;136:100757.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0301468124000136",
+      "verificada": true
     },
     {
       "id": "ref_6",
-      "cita": "Cherian PP, Siller-Jackson AJ, Gu S, Wang X, Bonewald LF, Sprague E, Jiang JX. «Mechanical strain opens connexin 43 hemichannels in osteocytes: a novel mechanism for the release of prostaglandin». Molecular Biology of the Cell, 2005.",
-      "verificada": false
+      "cita": "Stewart S, Darwood A, Masouros S, Higgins C, Ramasamy A. Mechanotransduction in osteogenesis. Bone Joint Res. 2020 May 16;9(1):1-14. doi: 10.1302/2046-3758.91.BJR-2019-0043.R2.",
+      "url": "https://doi.org/10.1302/2046-3758.91.BJR-2019-0043.R2",
+      "verificada": true
     },
     {
       "id": "ref_7",
-      "cita": "Dallas SL, Prideaux M, Bonewald LF. «The osteocyte: an endocrine cell ... and more». Endocrine Reviews, 2013.",
-      "verificada": false
+      "cita": "Vlashi R, Zhang X, Wu M, Chen G. Wnt signaling: Essential roles in osteoblast differentiation, bone metabolism and therapeutic implications for bone and skeletal disorders. Genes Dis. 2022 Aug 6;10(4):1291-317. doi: 10.1016/j.gendis.2022.07.011.",
+      "url": "https://doi.org/10.1016/j.gendis.2022.07.011",
+      "verificada": true
     },
     {
       "id": "ref_8",
-      "cita": "Robling AG, Niziolek PJ, Baldridge LA, et al. «Mechanical stimulation of bone in vivo reduces osteocyte expression of Sost/sclerostin». Journal of Biological Chemistry, 2008.",
-      "verificada": false
-    },
-    {
-      "id": "ref_9",
-      "cita": "Li X, Han L, Nookaew I, et al. «Stimulation of Piezo1 by mechanical signals promotes bone anabolism». eLife, 2019.",
-      "verificada": false
+      "cita": "Zhu S, Chen W, Masson A, Li YP. Cell signaling and transcriptional regulation of osteoblast lineage commitment, differentiation, bone formation, and homeostasis. Cell Discov. 2024 Jul 2;10(1):71. doi: 10.1038/s41421-024-00689-6.",
+      "url": "https://doi.org/10.1038/s41421-024-00689-6",
+      "verificada": true
     }
   ],
   "estado_revision": {

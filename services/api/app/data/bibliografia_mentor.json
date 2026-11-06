@@ -1,0 +1,110 @@
+[
+  {
+    "clave": "Ref d",
+    "titulo": "Molecular mechanisms and therapeutic implications of the sympathetic nervous system in bone-related disorders: a brain-bone axis perspective",
+    "cita": "Liu M, Liu Y, Yu J, Gong J, Zhao C, Liu Z. Molecular mechanisms and therapeutic implications of the sympathetic nervous system in bone-related disorders: a brain-bone axis perspective. Bone Res. 2025 Dec 2;13(1):98. doi: 10.1038/s41413-025-00494-1.",
+    "url": "https://doi.org/10.1038/s41413-025-00494-1",
+    "licencia": "CC BY 4.0",
+    "modulos": [
+      1,
+      6
+    ],
+    "temas": "sistema nervioso simpático, eje cerebro-hueso, inervación del hueso, noradrenalina, dopamina, neuropéptido Y, leptina, metabolismo y remodelado óseo, osteoporosis, artrosis, envejecimiento",
+    "pasajes": [
+      {
+        "titulo": "Resumen",
+        "texto": "The global aging crisis has increased the prevalence of skeletal disorders, necessitating innovative therapeutic strategies. This review employs the brain-bone axis (BBA) framework to examine the role of the sympathetic nervous system (SNS) in bone metabolism. The research systematically elucidates the molecular mechanisms by which the SNS mediates signaling pathways through neurofibers and neurotransmitters, such as norepinephrine, dopamine, neuropeptide Y, and leptin, regulating interactions between bone-related cells to maintain skeletal homeostasis. It also identifies the pathological associations between the dysregulation of these pathways and the progression of bone-related conditions, such as osteoporosis, osteoarthritis, and intervertebral disc degeneration. By integrating current evidence, we identify novel therapeutic targets within the BBA and propose neuro-centric intervention strategies to mitigate skeletal diseases. This review deepens the understanding of neuro-skeletal interactions and lays a foundation for innovative treatments for bone-related pathologies."
+      },
+      {
+        "titulo": "Conclusión",
+        "texto": "This review has elucidated the emerging concept of the BBA, revealing the intricate bidirectional interplay between the SNS and skeletal system and its profound implications for orthopedic pathologies. Research demonstrates how sympathetic signaling dynamically regulates bone metabolism, inflammatory cascades, osteogenic differentiation, and remodeling processes through neurotransmitter-mediated skeletal homeostasis modulation, which contributes to the pathogenesis of osteoporosis, arthritis, and IVDD. By establishing mechanistic links between sympathetic dysregulation and bone pathophysiology, we propose that the therapeutic targeting of sympathetic pathways and neuroregulatory technologies may pioneer novel paradigms for treating bonerelated disorders. However, the full realization of the translational potential of this approach requires further integration of clinical data using advanced technologies. These advances will bridge neurobiology and orthopedics, enabling precision interventions to address the increasing prevalence of skeletal diseases in aging populations."
+      }
+    ]
+  },
+  {
+    "clave": "Ref f",
+    "titulo": "Collagen and collagen-derived materials: synthesis, structure, classification, fundamental properties and biomedical applications",
+    "cita": "Emam AN. Collagen and collagen-derived materials: synthesis, structure, classification, fundamental properties and biomedical applications. Discov Appl Sci. 2025;7:1114. doi: 10.1007/s42452-025-07780-x.",
+    "url": "https://doi.org/10.1007/s42452-025-07780-x",
+    "licencia": "CC BY-NC-ND 4.0",
+    "modulos": [
+      3,
+      4
+    ],
+    "temas": "colágeno, colágeno tipo I, síntesis, estructura y clasificación del colágeno, tropocolágeno, fibrillas y fibras de colágeno, biomateriales, andamios, hidrogeles, ingeniería de tejidos, medicina regenerativa",
+    "pasajes": [
+      {
+        "titulo": "Resumen",
+        "texto": "Objectives: This review was conducted to provide a comprehensive examination of collagen as a biomaterial, analyzing its fundamental properties, structural characteristics, and extensive applications in biomedical fields. The data was collected to synthesize current knowledge on collagen's synthesis, structure, classification, and therapeutic potential, with the purpose of identifying research gaps and future opportunities in collagen-based biomedical technologies. This comprehensive analysis serves to inform researchers and clinicians about the current state and potential of collagen applications in tissue engineering, wound healing, and regenerative medicine. Data description: This review presents a systematic compilation of research data on collagen's molecular structure, hierarchical organization, and biomedical applications. The data encompasses collagen's tropocollagen assembly, fibril and fiber formation, mechanical properties, and tissue-specific distribution patterns. Additionally, the dataset includes comprehensive information on collagen-based biomaterials such as scaffolds, hydrogels, and matrices, along with advanced collagen composites incorporating ceramics, polymers, and growth factors. This data is valuable to researchers as it provides a combined resource for understanding collagen's multifaceted role in biomedical applications, current technological advances, existing challenges in quality control and mechanical optimization, and emerging opportunities for innovation in healthcare and biomedical technologies. The comprehensive nature of this data makes it particularly useful for guiding future research directions and development of next-generation collagen-based therapeutic solutions."
+      },
+      {
+        "titulo": "Conclusión",
+        "texto": "Collagen, widely known as the structural and abundant protein in the body, has turned into a tailor-made and versatile biomaterial with many implications in a biomedical sector. The present review article gives a comprehensive breakdown of collagen along with how it is synthesized, its hierarchical structure, its classification, and its diverse biomedical applications. Also, Collagen synthesis, in form of its hierarchical structure from tropocollagen molecules to fibrils, fibers, and high-organized structure, contributes to its superior mechanical properties and tissue-specific functions. Collagens were classified into various types according to their structure and their distribution in tissue and displayed a tremendous property in biomedical practices. Collagen and its composites have been used in many biomedical applications such as tissue engineering, wound healing, and regenerative medicine. Scaffolds made of collagen, hydrogels, and matrices have shown their abilities of supporting cell growth, angiogenesis and promoting tissue regeneration in vitro and as well in vivo. Moreover, collagen is biocompatible, biodegradable, and non-immunogenic which in turn gives it a prominent place in the field of drug delivery systems, wound dressings, and surgical implants. In addition, the present review article surveyed the recent developments of collagen composites, which consists of a blend from collagen with other materials such as ceramics, polymers, and growth factors to enhance their properties and functionalities. These composites have shown promising results in areas like bone and cartilage regeneration, vascular grafts, and nerve repair. Although a lot of research has been devoted to the development of collagen-based biomaterials, some challenges are still to be solved, such as obtaining materials of adequate quality, perfecting the mechanical properties and the correct degradation rate. The future research direction includes the overcoming of these challenges, the exploration of new sources of collagen, and the development of novel collagen-based products for various biomedical applications. Finally, collagen and its composites showed versatile and reusability in a wide range of potential biomedical applications. Moreover, this article sheds light not only on the structure but also on the classification and potential uses of collagen in modern health care of humans. As well as highlighting the importance of this most amazing protein."
+      }
+    ]
+  },
+  {
+    "clave": "Ref h",
+    "titulo": "Application of collagen in bone regeneration",
+    "cita": "Li R, Xu S, Guo Y, Cao C, Xu J, Hao L, et al. Application of collagen in bone regeneration. J Orthop Translat. 2025 Jan 9;50:129-43. doi: 10.1016/j.jot.2024.10.002.",
+    "url": "https://doi.org/10.1016/j.jot.2024.10.002",
+    "licencia": "CC BY-NC-ND 4.0",
+    "modulos": [
+      3
+    ],
+    "temas": "colágeno, regeneración ósea, defectos óseos, injerto óseo, autoinjerto, triple hélice, andamios, membranas, hidrogeles, biomateriales, reparación ósea",
+    "pasajes": [
+      {
+        "titulo": "Resumen",
+        "texto": "At present, there is a significant population of individuals experiencing bone deficiencies caused by injuries, ailments affecting the bones, congenital abnormalities, and cancer. The management of substantial bone defects a significant global orthopedic challenge due to the intricacies involved in promoting and restoring the growth of fresh osseous tissue. Autografts are widely regarded as the “gold standard” for repairing bone defects because of their superior tissue acceptance and ability to control osteogenesis. However, patients undergoing autografts may encounter various challenges, including but not limited to hernia, bleeding, nerve impairment, tissue death. Therefore, researchers in regenerative medicine are striving to find alternatives. Collagen is the most abundant protein in the human body, and its triple helix structure gives it unique characteristics that contribute to its strength and functionality in various tissues. Collagen is commonly processed into various forms such as scaffolds, sponges, membranes, hydrogels, and composite materials, due to its unique compatibility with the human body, affinity for water, minimal potential for immune reactions, adaptability, and ability to transport nutrients or drugs. As an alternative material in the field of bone regeneration, collagen is becoming increasingly important. The objective of this review is to provide a comprehensive analysis of the primary types and sources of collagen, their processes of synthesis and degradation, as well as the advancements made in bone regeneration research and its potential applications. A comprehensive investigation into the role of collagen in bone regeneration is undertaken, providing valuable points of reference for a more profound comprehension of collagen applications in this field. The concluding section provides a comprehensive overview of the prospective avenues for collagen research, underscoring their promising future and highlighting their significant potential in the field of bone regeneration."
+      },
+      {
+        "titulo": "Conclusión",
+        "texto": "In the process of promoting bone regeneration, materials have been widely studied and applied in bone tissue construction. The incorporation of collagen into polymers, metals and so on, promotes bone regeneration. By simulating the structural or functional characteristics of natural collagen, we can understand the physicochemical factors responsible for functional ECM assembly, and overcome the biological defects such as the risk of infection, inflammatory response, and insufficient biological activity of collagen. However, at present, only a limited number of composites have received approval from the FDA for clinical use. These composites still encounter obstacles in terms of their mechanical properties, biological stability and activity, immune response, regional vascularization, and other safety concerns related to bone regeneration in humans. As a result, researchers are shifting their focus towards collagen-based materials that can be tailored to individual patients. By combining functional material manufacturing with the innate regenerative potential of patients instead of solely relying on materials themselves, new possibilities for clinical translation may emerge in the coming decade."
+      }
+    ]
+  },
+  {
+    "clave": "Ref z12",
+    "titulo": "Mechanotransduction in osteogenesis",
+    "cita": "Stewart S, Darwood A, Masouros S, Higgins C, Ramasamy A. Mechanotransduction in osteogenesis. Bone Joint Res. 2020 May 16;9(1):1-14. doi: 10.1302/2046-3758.91.BJR-2019-0043.R2.",
+    "url": "https://doi.org/10.1302/2046-3758.91.BJR-2019-0043.R2",
+    "licencia": "CC BY-NC-ND 4.0",
+    "modulos": [
+      3
+    ],
+    "temas": "mecanotransducción, osteogénesis, carga mecánica, fuerzas físicas sobre las células óseas, formación de hueso nuevo, consolidación de fracturas, pseudoartrosis, ultrasonido pulsado de baja intensidad",
+    "pasajes": [
+      {
+        "titulo": "Mensajes clave",
+        "texto": "  Mechanotransduction underpins the biomechanisms in which bone cells adapt their function and behaviour based on their physical environment and forces exerted on the cell.   This represents an exciting area of research in orthopaedics, which has the potential to allow us to modulate the function of bone cells in vivo to create new bone."
+      },
+      {
+        "titulo": "Conclusión",
+        "texto": "It is evident from this review of the literature that the application of molecular-level mechanical forces has a clear osteogenic effect on both in vitro and in vivo cells. Macroscopically, the clinical evidence is less convincing. Current mechanotransductive technologies have failed to prove their utility despite tantalizing in vitro evidence and plausible biochemical mechanisms, leaving patients with the deleterious effects of fracture nonunion. A global consensus regarding the optimal way to treat nonunion remains undecided, but stimulating de novo bone formation is likely to be pivotal in the development of an effective therapy. Given how far the understanding of the physiological mechanisms underpinning mechanotransduction has progressed, together with the osteogenic properties that numerous in vitro and in vivo mechanotransduction studies have demonstrated, it is hopeful that future research will identify effective novel targets for de novo bone formation utilizing mechanotransduction."
+      }
+    ]
+  },
+  {
+    "clave": "Ref z6",
+    "titulo": "Biology of Bone Tissue: Structure, Function, and Factors That Influence Bone Cells",
+    "cita": "Florencio-Silva R, Sasso GR, Sasso-Cerri E, Simões MJ, Cerri PS. Biology of bone tissue: structure, function, and factors that influence bone cells. Biomed Res Int. 2015;2015:421746.",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4515490/",
+    "licencia": "CC BY",
+    "modulos": [
+      1,
+      2
+    ],
+    "temas": "biología del tejido óseo, osteoblastos, osteocitos, osteoclastos, células de revestimiento óseo, remodelado óseo, resorción y formación ósea, acoplamiento, mecanosensores, factores locales y sistémicos, calcitonina, estrógenos, osteoporosis",
+    "pasajes": [
+      {
+        "titulo": "Resumen",
+        "texto": "Bone tissue is continuously remodeled through the concerted actions of bone cells, which include bone resorption by osteoclasts and bone formation by osteoblasts, whereas osteocytes act as mechanosensors and orchestrators of the bone remodeling process. This process is under the control of local (e.g., growth factors and cytokines) and systemic (e.g., calcitonin and estrogens) factors that all together contribute for bone homeostasis. An imbalance between bone resorption and formation can result in bone diseases including osteoporosis. Recently, it has been recognized that, during bone remodeling, there are an intricate communication among bone cells. For instance, the coupling from bone resorption to bone formation is achieved by interaction between osteoclasts and osteoblasts. Moreover, osteocytes produce factors that influence osteoblast and osteoclast activities, whereas osteocyte apoptosis is followed by osteoclastic bone resorption. The increasing knowledge about the structure and functions of bone cells contributed to a better understanding of bone biology. It has been suggested that there is a complex communication between bone cells and other organs, indicating the dynamic nature of bone tissue. In this review, we discuss the current data about the structure and functions of bone cells and the factors that influence bone remodeling."
+      },
+      {
+        "titulo": "Conclusión",
+        "texto": "The knowledge of the structural, molecular, and functional biology of bone is essential for the better comprehension of this tissue as a multicellular unit and a dynamic structure that can also act as an endocrine tissue, a function still poorly understood. In vitro and in vivo studies have demonstrated that bone cells respond to different factors and molecules, contributing to the better understanding of bone cells plasticity. Additionally, bone matrix integrins-dependent bone cells interactions are essential for bone formation and resorption. Studies have addressed the importance of the lacunocanalicular system and the pericellular fluid, by which osteocytes act as mechanosensors, for the adaptation of bone to mechanical forces. Hormones, cytokines, and factors that regulate bone cells activity, such as sclerostin, ephrinB2, and semaphoring, have played a significant role in the bone histophysiology under normal and pathological conditions. Thus, such deeper understanding of the dynamic nature of bone tissue will certainly help to manage new therapeutic approaches to bone diseases."
+      }
+    ]
+  }
+]

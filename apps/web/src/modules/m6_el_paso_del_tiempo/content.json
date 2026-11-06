@@ -154,152 +154,126 @@
   "referencias": [
     {
       "id": "ref_1",
-      "cita": "Ross MH, Pawlina W. Histology: A Text and Atlas, with Correlated Cell and Molecular Biology. Wolters Kluwer.",
-      "verificada": false
-    },
-    {
-      "id": "ref_2",
-      "cita": "Mescher AL. Junqueira's Basic Histology: Text and Atlas. McGraw-Hill.",
-      "verificada": false
-    },
-    {
-      "id": "ref_3",
-      "cita": "Kierszenbaum AL, Tres LL. Histology and Cell Biology: An Introduction to Pathology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_4",
-      "cita": "Nanci A (ed.). Ten Cate's Oral Histology: Development, Structure, and Function. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_5",
-      "cita": "Bilezikian JP, Martin TJ, Clemens TL, Rosen CJ (eds.). Principles of Bone Biology. Academic Press.",
-      "verificada": false
-    },
-    {
-      "id": "ref_6",
-      "cita": "Burr DB, Allen MR (eds.). Basic and Applied Bone Biology. Academic Press.",
-      "verificada": false
-    },
-    {
-      "id": "ref_7",
-      "cita": "Rosen CJ (ed.). Primer on the Metabolic Bone Diseases and Disorders of Mineral Metabolism. American Society for Bone and Mineral Research.",
-      "verificada": false
-    },
-    {
-      "id": "ref_8",
-      "cita": "Hall JE, Hall ME. Guyton and Hall Textbook of Medical Physiology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_9",
-      "cita": "Boron WF, Boulpaep EL. Medical Physiology. Elsevier.",
-      "verificada": false
-    },
-    {
-      "id": "ref_10",
-      "cita": "Lang NP, Lindhe J (eds.). Clinical Periodontology and Implant Dentistry. Wiley-Blackwell.",
-      "verificada": false
-    },
-    {
-      "id": "ref_11",
-      "cita": "NIH Consensus Development Panel on Osteoporosis Prevention, Diagnosis, and Therapy. Osteoporosis prevention, diagnosis, and therapy. JAMA, 2001.",
-      "verificada": false
-    },
-    {
-      "id": "ref_12",
-      "cita": "Seeman E, Delmas PD. Bone quality: the material and structural basis of bone strength and fragility. N Engl J Med, 2006.",
-      "verificada": false
-    },
-    {
-      "id": "ref_13",
-      "cita": "Riggs BL, Melton LJ III. Involutional osteoporosis. N Engl J Med, 1986.",
-      "verificada": false
-    },
-    {
-      "id": "ref_14",
-      "cita": "Riggs BL, Khosla S, Melton LJ III. A unitary model for involutional osteoporosis: estrogen deficiency causes both type I and type II osteoporosis in postmenopausal women and contributes to bone loss in aging men. J Bone Miner Res, 1998.",
-      "verificada": false
-    },
-    {
-      "id": "ref_15",
-      "cita": "Greendale GA, et al. Bone mineral density loss in relation to the final menstrual period in a multiethnic cohort: results from the Study of Women's Health Across the Nation (SWAN). J Bone Miner Res, 2012.",
-      "verificada": false
-    },
-    {
-      "id": "ref_16",
-      "cita": "Baxter-Jones ADG, et al. Bone mineral accrual from 8 to 30 years of age: an estimation of peak bone mass. J Bone Miner Res, 2011.",
-      "verificada": false
-    },
-    {
-      "id": "ref_17",
-      "cita": "Weaver CM, et al. The National Osteoporosis Foundation's position statement on peak bone mass development and lifestyle factors: a systematic review and implementation recommendations. Osteoporos Int, 2016.",
-      "verificada": false
-    },
-    {
-      "id": "ref_18",
-      "cita": "Farr JN, Khosla S, et al. Targeting cellular senescence prevents age-related bone loss in mice. Nat Med, 2017.",
-      "verificada": false
-    },
-    {
-      "id": "ref_19",
-      "cita": "Busse B, et al. Decrease in the osteocyte lacunar density accompanied by hypermineralized lacunar occlusion reveals failure and delay of remodeling in aged human bone. Aging Cell, 2010.",
-      "verificada": false
-    },
-    {
-      "id": "ref_20",
-      "cita": "Modder UI, et al. Relation of age, gender, and bone mass to circulating sclerostin levels in women and men. J Bone Miner Res, 2011.",
-      "verificada": false
-    },
-    {
-      "id": "ref_21",
-      "cita": "Lin C, et al. Sclerostin mediates bone response to mechanical unloading through antagonizing Wnt/β-catenin signaling. J Bone Miner Res, 2009.",
-      "verificada": false
-    },
-    {
-      "id": "ref_22",
-      "cita": "International Society for Clinical Densitometry. Official Positions (Adult).",
-      "verificada": false
-    },
-    {
-      "id": "ref_23",
-      "cita": "FRAX: Fracture Risk Assessment Tool. Universidad de Sheffield (Centro Colaborador de la OMS para Enfermedades Óseas Metabólicas).",
-      "verificada": false
-    },
-    {
-      "id": "ref_24",
-      "cita": "Ross AC, Taylor CL, Yaktine AL, Del Valle HB (eds.). Dietary Reference Intakes for Calcium and Vitamin D. Institute of Medicine, The National Academies Press, 2011.",
-      "verificada": false
-    },
-    {
-      "id": "ref_25",
-      "cita": "Ruggiero SL, et al. American Association of Oral and Maxillofacial Surgeons' Position Paper on Medication-Related Osteonecrosis of the Jaws: 2022 Update. J Oral Maxillofac Surg, 2022.",
-      "verificada": false
-    },
-    {
-      "id": "ref_26",
       "cita": "Araújo MG, Lindhe J. Dimensional ridge alterations following tooth extraction. An experimental study in the dog. J Clin Periodontol, 2005.",
       "verificada": false
     },
     {
-      "id": "ref_27",
-      "cita": "Tan WL, Wong TLT, Wong MCM, Lang NP. A systematic review of post-extractional alveolar hard and soft tissue dimensional changes in humans. Clin Oral Implants Res, 2012.",
+      "id": "ref_2",
+      "cita": "Baxter-Jones ADG, et al. Bone mineral accrual from 8 to 30 years of age: an estimation of peak bone mass. J Bone Miner Res, 2011.",
       "verificada": false
     },
     {
-      "id": "ref_28",
-      "cita": "Hansson S, Halldin A. Alveolar ridge resorption after tooth extraction: a consequence of a fundamental principle of bone physiology. J Dent Biomech, 2012.",
+      "id": "ref_3",
+      "cita": "Busse B, et al. Decrease in the osteocyte lacunar density accompanied by hypermineralized lacunar occlusion reveals failure and delay of remodeling in aged human bone. Aging Cell, 2010.",
       "verificada": false
     },
     {
-      "id": "ref_29",
+      "id": "ref_4",
       "cita": "Cawood JI, Howell RA. A classification of the edentulous jaws. Int J Oral Maxillofac Surg, 1988.",
       "verificada": false
     },
     {
-      "id": "ref_30",
+      "id": "ref_5",
+      "cita": "Fang F, Yang J, Wang J, Li T, Wang E, Zhang D, et al. The role and applications of extracellular vesicles in osteoporosis. Bone Res. 2024 Jan 23;12(1):4. doi: 10.1038/s41413-023-00313-5.",
+      "url": "https://doi.org/10.1038/s41413-023-00313-5",
+      "verificada": true
+    },
+    {
+      "id": "ref_6",
+      "cita": "Farr JN, Khosla S, et al. Targeting cellular senescence prevents age-related bone loss in mice. Nat Med, 2017.",
+      "verificada": false
+    },
+    {
+      "id": "ref_7",
+      "cita": "FRAX: Fracture Risk Assessment Tool. Universidad de Sheffield (Centro Colaborador de la OMS para Enfermedades Óseas Metabólicas).",
+      "verificada": false
+    },
+    {
+      "id": "ref_8",
+      "cita": "Greendale GA, et al. Bone mineral density loss in relation to the final menstrual period in a multiethnic cohort: results from the Study of Women's Health Across the Nation (SWAN). J Bone Miner Res, 2012.",
+      "verificada": false
+    },
+    {
+      "id": "ref_9",
+      "cita": "Hansson S, Halldin A. Alveolar ridge resorption after tooth extraction: a consequence of a fundamental principle of bone physiology. J Dent Biomech, 2012.",
+      "verificada": false
+    },
+    {
+      "id": "ref_10",
+      "cita": "International Society for Clinical Densitometry. Official Positions (Adult).",
+      "verificada": false
+    },
+    {
+      "id": "ref_11",
+      "cita": "Kim HN, Xiong J, MacLeod RS, Iyer S, Fujiwara Y, Cawley KM, et al. Osteocyte RANKL is required for cortical bone loss with age and is induced by senescence. JCI Insight. 2020;5(19):e138815.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7566701/",
+      "verificada": true
+    },
+    {
+      "id": "ref_12",
       "cita": "Krall EA, Dawson-Hughes B, et al. Tooth loss and skeletal bone density in healthy postmenopausal women. Osteoporos Int, 1994.",
+      "verificada": false
+    },
+    {
+      "id": "ref_13",
+      "cita": "Lin C, et al. Sclerostin mediates bone response to mechanical unloading through antagonizing Wnt/β-catenin signaling. J Bone Miner Res, 2009.",
+      "verificada": false
+    },
+    {
+      "id": "ref_14",
+      "cita": "Liu M, Liu Y, Yu J, Gong J, Zhao C, Liu Z. Molecular mechanisms and therapeutic implications of the sympathetic nervous system in bone-related disorders: a brain-bone axis perspective. Bone Res. 2025 Dec 2;13(1):98. doi: 10.1038/s41413-025-00494-1.",
+      "url": "https://doi.org/10.1038/s41413-025-00494-1",
+      "verificada": true
+    },
+    {
+      "id": "ref_15",
+      "cita": "Modder UI, et al. Relation of age, gender, and bone mass to circulating sclerostin levels in women and men. J Bone Miner Res, 2011.",
+      "verificada": false
+    },
+    {
+      "id": "ref_16",
+      "cita": "NIH Consensus Development Panel on Osteoporosis Prevention, Diagnosis, and Therapy. Osteoporosis prevention, diagnosis, and therapy. JAMA, 2001.",
+      "verificada": false
+    },
+    {
+      "id": "ref_17",
+      "cita": "Riggs BL, Khosla S, Melton LJ III. A unitary model for involutional osteoporosis: estrogen deficiency causes both type I and type II osteoporosis in postmenopausal women and contributes to bone loss in aging men. J Bone Miner Res, 1998.",
+      "verificada": false
+    },
+    {
+      "id": "ref_18",
+      "cita": "Riggs BL, Melton LJ III. Involutional osteoporosis. N Engl J Med, 1986.",
+      "verificada": false
+    },
+    {
+      "id": "ref_19",
+      "cita": "Ross AC, Taylor CL, Yaktine AL, Del Valle HB (eds.). Dietary Reference Intakes for Calcium and Vitamin D. Institute of Medicine, The National Academies Press, 2011.",
+      "verificada": false
+    },
+    {
+      "id": "ref_20",
+      "cita": "Ruggiero SL, et al. American Association of Oral and Maxillofacial Surgeons' Position Paper on Medication-Related Osteonecrosis of the Jaws: 2022 Update. J Oral Maxillofac Surg, 2022.",
+      "verificada": false
+    },
+    {
+      "id": "ref_21",
+      "cita": "Seeman E, Delmas PD. Bone quality: the material and structural basis of bone strength and fragility. N Engl J Med, 2006.",
+      "verificada": false
+    },
+    {
+      "id": "ref_22",
+      "cita": "Tan WL, Wong TLT, Wong MCM, Lang NP. A systematic review of post-extractional alveolar hard and soft tissue dimensional changes in humans. Clin Oral Implants Res, 2012.",
+      "verificada": false
+    },
+    {
+      "id": "ref_23",
+      "cita": "Wawrzyniak A, Balawender K. Structural and metabolic changes in bone. Animals (Basel). 2022 Jul 31;12(15):1946. doi: 10.3390/ani12151946.",
+      "url": "https://doi.org/10.3390/ani12151946",
+      "verificada": true
+    },
+    {
+      "id": "ref_24",
+      "cita": "Weaver CM, et al. The National Osteoporosis Foundation's position statement on peak bone mass development and lifestyle factors: a systematic review and implementation recommendations. Osteoporos Int, 2016.",
       "verificada": false
     }
   ],

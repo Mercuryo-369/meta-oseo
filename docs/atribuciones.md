@@ -103,3 +103,23 @@ GTK, Cairo ni otras bibliotecas del sistema (por eso no se usa WeasyPrint).
 | pillow | 12.3.0 | MIT-CMU (HPND) | Dependencia de reportlab |
 | charset-normalizer | 3.5.1 | MIT | Dependencia de reportlab |
 | pypdf | 6.19.0 | BSD-3-Clause | Solo pruebas (extraer el texto del PDF); grupo `dev` |
+
+## Pasajes de artículos en el corpus del mentor
+
+`services/api/app/data/bibliografia_mentor.json` (y, generado de él, `corpus.jsonl`) contiene el resumen y las
+conclusiones, **literales y sin modificar**, de cinco artículos de acceso abierto de la bibliografía de la docente
+(`docs/bibliografia.md`). Solo los lee el mentor, para fundamentar sus respuestas; no se muestran al estudiante.
+Cada pasaje lleva su cita completa y su DOI. Uso educativo y no comercial.
+
+| Clave | Artículo | Licencia |
+|---|---|---|
+| Ref d | Liu M, et al. Bone Res. 2025;13(1):98. doi: 10.1038/s41413-025-00494-1 | CC BY 4.0 |
+| Ref f | Emam AN. Discov Appl Sci. 2025;7:1114. doi: 10.1007/s42452-025-07780-x | CC BY-NC-ND 4.0 |
+| Ref h | Li R, et al. J Orthop Translat. 2025;50:129-43. doi: 10.1016/j.jot.2024.10.002 | CC BY-NC-ND 4.0 |
+| Ref z12 | Stewart S, et al. Bone Joint Res. 2020;9(1):1-14 (PMC7229304) | CC BY-NC-ND 4.0 |
+| Ref z6 | Florencio-Silva R, et al. Biomed Res Int. 2015;2015:421746 (PMC4515490) | CC BY |
+
+Ref m (Selvaraj et al., Differentiation 2024, Elsevier, «All rights reserved») vino con los demás PDF pero **no**
+entra al corpus. Las licencias NoDerivatives (ND) permiten reproducir el texto sin cambios: por eso los pasajes son
+literales; la línea «Temas» en español que los acompaña es un índice de búsqueda, no una traducción del artículo.
+
