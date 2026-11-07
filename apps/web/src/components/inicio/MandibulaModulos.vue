@@ -241,7 +241,9 @@ const verbo = computed(() => {
            cabiendo en la pantalla (observación de la usuaria, 2026-11-07). El botón dice solo el verbo. -->
       <p class="min-w-0 flex-1">
         <span class="text-primary text-sm font-bold">Módulo {{ elegido.m.numero }}</span>
-        <span class="block truncate font-semibold" :title="elegido.m.titulo">{{ elegido.m.titulo }}</span>
+        <span class="block truncate font-semibold" :title="elegido.m.titulo">{{
+          elegido.m.titulo
+        }}</span>
         <span class="text-muted-foreground block truncate text-sm">{{ elegido.avance }}</span>
       </p>
       <RouterLink
