@@ -1080,34 +1080,24 @@
             "id": "m1_1_hueso_largo",
             "tipo": "multicapa",
             "titulo": "Recorre un hueso largo",
-            "instrucciones": "Toca cada región del hueso largo para leer qué es y qué hace (con teclado, usa Tab para pasar de una región a otra y Enter para abrir su descripción; también puedes usar la lista de regiones junto a la imagen). Visita al menos las cinco regiones marcadas como obligatorias.",
+            "instrucciones": "Toca cada región del hueso largo para leer qué es y qué hace (con teclado, usa Tab para pasar de una región a otra y Enter para abrir su descripción; también puedes usar la lista de regiones junto a la imagen). Visita las seis regiones.",
             "obligatoria": true,
             "puntaje_max": 20,
             "retroalimentacion": {
-              "correcta": "Muy bien. Ya conoces las regiones de un hueso largo y sabes que no es una pieza maciza: tiene una cavidad medular y una arteria que lo nutre.",
+              "correcta": "Muy bien. Ya conoces las regiones de un hueso largo y sabes que no es una pieza maciza: tiene una cavidad medular y extremos distintos del cuerpo.",
               "incorrecta": "Todavía te faltan regiones por visitar. Revisa las regiones que no tienen la marca de visitada: cada una explica una parte distinta de la estructura del hueso."
             },
             "concepto": "Anatomía de un hueso largo",
             "config": {
-              "svg": "/images/m1/m1_hueso_largo_macro.svg",
-              "viewBox": "0 0 800 600",
-              "alt": "Corte longitudinal de un hueso largo con sus regiones: cartílago articular, epífisis, línea epifisaria, metáfisis, diáfisis, cavidad medular y arteria nutricia.",
+              "svg": "/images/m1/m1_hueso_largo_zonas.svg",
+              "viewBox": "0 0 800 1200",
+              "alt": "Fémur en corte longitudinal (figura de OpenStax College) con sus regiones: epífisis proximal y distal, metáfisis, diáfisis, cavidad medular, línea epifisaria y cartílago articular.",
               "modo": "explorar",
               "capas": [
                 {
-                  "id": "cartilago_articular",
-                  "etiqueta": "Cartílago articular",
-                  "descripcion": "Recubre las superficies articulares y facilita el movimiento, distribuyendo las cargas de contacto."
-                },
-                {
-                  "id": "epifisis",
-                  "etiqueta": "Epífisis",
-                  "descripcion": "Extremos articulares, constituidos principalmente por hueso trabecular rodeado de cortical."
-                },
-                {
-                  "id": "linea_epifisaria",
-                  "etiqueta": "Línea epifisaria",
-                  "descripcion": "Remanente de la placa de crecimiento que persiste como una banda de hueso compacto en la unión entre la epífisis y la diáfisis después del cierre del crecimiento longitudinal."
+                  "id": "diafisis",
+                  "etiqueta": "Diáfisis",
+                  "descripcion": "Cuerpo alargado del hueso, con predominio de tejido cortical y una cavidad medular central."
                 },
                 {
                   "id": "metafisis",
@@ -1115,9 +1105,9 @@
                   "descripcion": "Región de transición entre diáfisis y epífisis, asociada al crecimiento longitudinal durante el desarrollo."
                 },
                 {
-                  "id": "diafisis",
-                  "etiqueta": "Diáfisis",
-                  "descripcion": "Cuerpo alargado del hueso, con predominio de tejido cortical y una cavidad medular central."
+                  "id": "epifisis",
+                  "etiqueta": "Epífisis",
+                  "descripcion": "Extremos articulares, constituidos principalmente por hueso trabecular rodeado de cortical."
                 },
                 {
                   "id": "cavidad_medular",
@@ -1125,18 +1115,25 @@
                   "descripcion": "Espacio interno que contiene médula ósea."
                 },
                 {
-                  "id": "arteria_nutricia",
-                  "etiqueta": "Arteria nutricia",
-                  "descripcion": "Vaso principal del hueso. Entra por un foramen de la diáfisis y se ramifica en la médula. Irriga la médula y la parte interna de la cortical; los vasos del periostio irrigan la parte externa."
+                  "id": "linea_epifisaria",
+                  "etiqueta": "Línea epifisaria",
+                  "descripcion": "Remanente de la placa de crecimiento que persiste como una banda de hueso compacto en la unión entre la epífisis y la diáfisis después del cierre del crecimiento longitudinal."
+                },
+                {
+                  "id": "cartilago_articular",
+                  "etiqueta": "Cartílago articular",
+                  "descripcion": "Recubre las superficies articulares y facilita el movimiento, distribuyendo las cargas de contacto."
                 }
               ],
               "requeridas": [
-                "epifisis",
-                "metafisis",
                 "diafisis",
+                "metafisis",
+                "epifisis",
                 "cavidad_medular",
-                "arteria_nutricia"
-              ]
+                "linea_epifisaria",
+                "cartilago_articular"
+              ],
+              "fondo": "/images/m1/m1_2_imagen_03.webp"
             }
           }
         },

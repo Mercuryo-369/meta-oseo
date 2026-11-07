@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200">
+<!-- m1_hueso_largo_zonas: zonas tocables sobre la figura de la docente «Anatomía de un hueso largo» (OpenStax College,
+     2018; m1_2_imagen_03.webp, 800 x 1200), que va debajo como `fondo` de la actividad. Capas (partes que la docente
+     definió en 1.2): diafisis, metafisis, epifisis, cavidad_medular, linea_epifisaria, cartilago_articular. Las formas
+     son transparentes: solo delimitan cada región; la capa activa se resalta con el contorno que pone la actividad. -->
+<title>Anatomía de un hueso largo</title>
+<desc>Fémur en corte longitudinal con sus regiones: epífisis proximal y distal, metáfisis, diáfisis, cavidad medular, línea epifisaria y cartílago articular.</desc>
+<g id="epifisis">
+<path d="M282,152 L268,96 L298,42 L378,18 L470,14 L526,48 L538,108 L512,152 Z" fill="transparent"/>
+<path d="M252,1000 L230,1062 L224,1122 L262,1172 L332,1186 L410,1172 L446,1122 L440,1060 L426,1000 Z" fill="transparent"/>
+</g>
+<g id="metafisis">
+<path d="M282,152 L512,152 L422,228 L298,228 Z" fill="transparent"/>
+<path d="M300,884 L396,884 L426,1000 L252,1000 Z" fill="transparent"/>
+</g>
+<g id="diafisis">
+<path d="M298,228 L422,228 L400,420 L394,640 L396,884 L300,884 L284,700 L288,460 Z" fill="transparent"/>
+</g>
+<g id="cavidad_medular">
+<path d="M328,242 L366,242 L364,600 L356,858 L336,858 L324,600 Z" fill="transparent"/>
+</g>
+<g id="linea_epifisaria">
+<path d="M284,138 L424,138 L424,164 L284,164 Z" fill="transparent"/>
+</g>
+<g id="cartilago_articular">
+<ellipse cx="462" cy="68" rx="66" ry="52" fill="transparent"/>
+<ellipse cx="332" cy="1128" rx="92" ry="48" fill="transparent"/>
+</g>
+</svg>

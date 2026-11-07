@@ -251,6 +251,15 @@ const bloquesVisibles = computed(() =>
   (seccion.value?.bloques ?? []).filter((b) => visibleParaNivel(b, contexto.nivel)),
 );
 /**
+ * Dónde va el panel de un texto sobre fondo ilustrado: si el fondo es la ilustración de la sección (su entrada),
+ * donde la sección lo pida (`panel`: abajo, o a la derecha por defecto, como en las referencias de la docente);
+ * si es otro fondo (las definiciones del módulo 2), a la izquierda.
+ */
+function panelDeFondo(b: TipoBloqueTexto): 'izquierda' | 'derecha' | 'abajo' {
+  if (!b.fondo || b.fondo !== seccion.value?.fondo) return 'izquierda';
+  return seccion.value?.panel ?? 'derecha';
+}
+/**
  * Imágenes que la sección muestra como figura, con su texto alternativo: un texto cuyo `fondo` es una de ellas la
  * muestra entera y grande en vez de taparla con el panel.
  */
@@ -1404,6 +1413,7 @@ onBeforeUnmount(() => {
                               :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
                               :figura="Boolean(b.fondo && imagenesSeccion.has(b.fondo))"
                               :figura-alt="imagenesSeccion.get(b.fondo ?? '')"
+                              :panel="panelDeFondo(b)"
                             />
                             <BloqueTabla v-else :bloque="b" />
                           </template>
@@ -1435,6 +1445,7 @@ onBeforeUnmount(() => {
                           Boolean(fila.bloque.fondo && imagenesSeccion.has(fila.bloque.fondo))
                         "
                         :figura-alt="imagenesSeccion.get(fila.bloque.fondo ?? '')"
+                        :panel="panelDeFondo(fila.bloque)"
                       />
                       <BloqueCallout
                         v-else-if="fila.bloque.tipo === 'callout'"
