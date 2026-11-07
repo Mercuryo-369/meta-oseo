@@ -1,0 +1,27 @@
+{
+  "name": "@ova/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "API del OVA en Cloudflare Workers (D1): sirve la interfaz compilada y atiende /api/*.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "migrar:local": "wrangler d1 migrations apply ova --local",
+    "migrar:remoto": "wrangler d1 migrations apply ova --remote"
+  },
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "hono": "^4.6.0",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250101.0",
+    "@types/qrcode": "^1.5.6",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.147.0"
+  }
+}

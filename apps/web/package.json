@@ -13,8 +13,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "deploy:cf": "pnpm build:demo && wrangler deploy",
-    "preview:cf": "pnpm build:demo && wrangler dev",
     "build:demo": "vue-tsc --noEmit -p tsconfig.app.json && vite build --mode demo"
   },
   "dependencies": {
@@ -58,7 +56,6 @@
     "vite": "^8.3.0",
     "vitest": "^5.0.1",
     "vue-eslint-parser": "^10.4.1",
-    "vue-tsc": "^3.3.11",
-    "wrangler": "^4.147.0"
+    "vue-tsc": "^3.3.11"
   }
 }

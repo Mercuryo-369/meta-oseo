@@ -47,7 +47,7 @@ Compose, HTTPS, copias de seguridad): [docs/guia-instalacion.md](docs/guia-insta
 |---|---|
 | El docente que recibe la entrega | [docs/entrega.md](docs/entrega.md), luego [docs/guia-docente.md](docs/guia-docente.md) y [docs/revision-docente.md](docs/revision-docente.md) |
 | Estudiante | [docs/guia-estudiante.md](docs/guia-estudiante.md) |
-| Quien instala o despliega | [docs/guia-instalacion.md](docs/guia-instalacion.md) |
+| Quien instala o despliega | [docs/guia-despliegue-cloudflare.md](docs/guia-despliegue-cloudflare.md) (Cloudflare, el despliegue actual) y [docs/guia-instalacion.md](docs/guia-instalacion.md) (API de Python en local o con Docker) |
 | Quien mantiene el código | [docs/arquitectura.md](docs/arquitectura.md), [docs/api-contract.md](docs/api-contract.md), [PLAN.md](PLAN.md) y [TODO.md](TODO.md) |
 | Quien escribe o edita contenido | [docs/content-schema.md](docs/content-schema.md) y [docs/guion-por-modulo/README.md](docs/guion-por-modulo/README.md) |
 

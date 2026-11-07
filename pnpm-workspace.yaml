@@ -1,5 +1,6 @@
 packages:
   - "apps/*"
+  - "services/worker"
 
 # pnpm 11+ bloquea los scripts de instalación hasta que se decida por paquete.
 # vue-demi (dependencia transitiva de reka-ui) solo usa su postinstall para cambiar a la

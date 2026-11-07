@@ -12,6 +12,9 @@
     "build:web": "pnpm --filter @ova/web build",
     "lint:web": "pnpm --filter @ova/web lint",
     "typecheck:web": "pnpm --filter @ova/web typecheck",
-    "test:web": "pnpm --filter @ova/web test"
+    "test:web": "pnpm --filter @ova/web test",
+    "dev:worker": "pnpm --filter @ova/worker dev",
+    "typecheck:worker": "pnpm --filter @ova/worker typecheck",
+    "deploy": "pnpm --filter @ova/web build && pnpm --filter @ova/worker deploy"
   }
 }

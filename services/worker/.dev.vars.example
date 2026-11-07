@@ -1,0 +1,6 @@
+# Variables locales de `wrangler dev` (copiar a .dev.vars; ese archivo no se versiona).
+ENV=dev
+SECRET_KEY=clave-local-de-desarrollo-con-mas-de-32-caracteres
+PUBLIC_BASE_URL=http://localhost:8787
+# Mentor de IA (opcional): sin clave, /api/chat responde 503 ia_no_configurada.
+# ANTHROPIC_API_KEY=sk-ant-...

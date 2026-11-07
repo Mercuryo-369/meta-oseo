@@ -35,7 +35,7 @@ actividades interactivas obligatorias, mentor de IA, gamificación y certificado
 - `apps/web`: Vue 3, Vite, TypeScript, Pinia, Vue Router, Tailwind, shadcn-vue, `@tresjs/core`, `@tresjs/cientos`, GSAP, `@vueuse/motion`, `@formkit/drag-and-drop`. Chat por SSE propio con `fetch` (sin AI SDK).
 - `services/api`: Python 3.14 (el instalado en la máquina del equipo), FastAPI, SQLModel + Alembic, JWT con `PyJWT`, reportlab (certificado en PDF, Python puro y fuentes DejaVu), SDK `anthropic`, ChromaDB en dev / pgvector en prod. SQLite en dev / PostgreSQL 16 en prod. Gestión de dependencias con `uv`. Modelo `claude-opus-5`, thinking adaptativo, streaming.
 - Registro de usuario: nombre, apellido, tipo de identificación, número de identificación. Sin contraseña hasta F6-08. No añadir campos sin acordarlo.
-- No introducir Laravel, PHP ni un segundo backend. Todo lo de servidor va en `services/api`.
+- No introducir Laravel, PHP ni un segundo backend. Desde el 2026-11-07 el backend que se despliega es el Worker de `services/worker` (Cloudflare, D1); `services/api` (FastAPI) queda como referencia y generador de los datos derivados. Cualquier cambio de contrato se refleja en el Worker, el frontend y `docs/api-contract.md`.
 
 ## Comandos
 
@@ -82,6 +82,13 @@ uvx ruff check tools/guiones --config tools/guiones/ruff.toml && uvx ruff format
 # Ilustraciones realistas bajo las multicapa, con la GPU local (entorno y modelos en ~/ova-imagenes; ver tools/imagenes/README.md):
 ~/ova-imagenes/.venv/Scripts/python.exe tools/imagenes/imagenes.py generar NOMBRE --n 6        # candidatas + hoja de revisión
 ~/ova-imagenes/.venv/Scripts/python.exe tools/imagenes/imagenes.py integrar NOMBRE --semilla K # WebP, SVG de zonas y config.fondo
+
+# Cloudflare Workers (despliegue actual desde el 2026-11-07; ver docs/guia-despliegue-cloudflare.md). Un solo Worker en
+# services/worker sirve apps/web/dist y atiende /api/* con D1. Requiere `wrangler login` en la cuenta del usuario.
+pnpm typecheck:worker                                       # tsc del Worker
+pnpm dev:worker                                             # http://127.0.0.1:8787 (antes: pnpm build:web y migrar:local)
+pnpm --filter @ova/worker migrar:local                      # aplica migrations/ a la base D1 local
+pnpm deploy                                                 # build de la web + wrangler deploy (assets + API)
 
 # Docker (construido y probado en local el 2026-10-14; ver docs/guia-instalacion.md). Validar la configuración no exige el motor, pero sí
 # SECRET_KEY y POSTGRES_PASSWORD definidas en el .env:
