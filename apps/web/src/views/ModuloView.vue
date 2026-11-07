@@ -1315,10 +1315,12 @@ onBeforeUnmount(() => {
                 Parte {{ vista + 1 }} de {{ totalVistas }}: {{ nombresPartes[vista] }}
               </p>
 
-              <!-- La parte visible: cabe en el alto disponible; si algo no cabe, se desplaza solo este recuadro. -->
+              <!-- La parte visible: en escritorio cabe en el alto disponible y, si algo no cabe, se desplaza solo este
+                   recuadro. En el teléfono se desplaza la página: el recuadro no debe ser área de desplazamiento,
+                   porque con `overscroll-contain` Chrome Android atrapaba el gesto de un dedo (2026-11-06). -->
               <div
                 ref="carrusel"
-                class="vista-contenedor relative min-h-0 flex-1 overflow-x-clip overflow-y-auto overscroll-contain"
+                class="vista-contenedor relative min-h-0 flex-1 overflow-x-clip lg:overflow-y-auto lg:overscroll-contain"
                 data-testid="carrusel-seccion"
                 :data-vista="vista"
                 @keydown="alTeclaVistas"
