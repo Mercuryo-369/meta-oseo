@@ -159,6 +159,7 @@ const verbo = computed(() => {
         etiquetas-laterales
         :ancho-etiquetas="0.25"
         ayuda-oculta
+        viaje-visible
         class="lg:[&_.escena]:h-[calc(100dvh-10.5rem)]"
         @seleccionar="(id: string) => (seleccion = id)"
       >

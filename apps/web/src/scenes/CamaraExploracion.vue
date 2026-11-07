@@ -35,6 +35,8 @@ const props = defineProps<{
   orden: OrdenCamara | null;
   limites: LimitesZoom;
   reducirMovimiento: boolean;
+  /** Duración del viaje de la cámara a una vista o a un nodo, en ms (la portada del inicio lo alarga). */
+  duracionMs?: number;
   /** Puntos de interés a proyectar (coordenadas del modelo). */
   puntos: readonly { id: string; punto: Vec3; normal?: Vec3 }[];
   /** Centro del modelo: sirve para saber qué puntos miran a la cámara. */
@@ -113,8 +115,8 @@ function aplicarPendiente(cam: Camera, ctl: ControlesOrbita): void {
   const duracion = props.reducirMovimiento
     ? 0
     : orden.tipo === 'zoom'
-      ? DURACION_TRANSICION_MS / 2
-      : DURACION_TRANSICION_MS;
+      ? (props.duracionMs ?? DURACION_TRANSICION_MS) / 2
+      : (props.duracionMs ?? DURACION_TRANSICION_MS);
   transicion = crearTransicion(desde, hasta, performance.now(), duracion);
 }
 

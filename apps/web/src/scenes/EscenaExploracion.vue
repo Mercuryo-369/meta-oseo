@@ -77,6 +77,12 @@ const props = withDefaults(
     anchoEtiquetas?: number;
     /** La ayuda de uso queda solo para lectores de pantalla (la portada la da con su propio texto). */
     ayudaOculta?: boolean;
+    /**
+     * Viaje de la cámara más largo y visible, también con «movimiento reducido» del sistema: en la portada el
+     * giro hasta el módulo elegido es la pista de dónde está (pedido de la usuaria, 2026-11-06); es un único
+     * movimiento corto que inicia quien elige.
+     */
+    viajeVisible?: boolean;
   }>(),
   {
     visitados: () => [],
@@ -87,6 +93,7 @@ const props = withDefaults(
     sinControles: false,
     anchoEtiquetas: 0.22,
     ayudaOculta: false,
+    viajeVisible: false,
   },
 );
 
@@ -412,7 +419,8 @@ watch(
         <CamaraExploracion
           :orden="orden"
           :limites="limites"
-          :reducir-movimiento="reducirMovimiento"
+          :reducir-movimiento="reducirMovimiento && !viajeVisible"
+          :duracion-ms="viajeVisible ? 1400 : undefined"
           :puntos="puntosProyectables"
           :centro="centroModelo"
           :ancho="ancho"
