@@ -688,6 +688,38 @@ las tarifas de `claude-opus-5` según la documentación de Anthropic consultada 
 antes de usarlas para presupuestar). Es una estimación y aplica el mismo precio a todos los modelos
 registrados: la factura real la emite Anthropic.
 
+### Proveedor de IA del mentor (configurable desde el panel, 2026-11-07)
+
+El docente elige el proveedor del mentor sin tocar el servidor. La clave se guarda **cifrada** (AES-GCM
+con una clave derivada de `SECRET_KEY`) en la tabla `ajustes` (clave `mentor`) y nunca se devuelve. Si
+no hay configuración del panel, el mentor usa `ANTHROPIC_API_KEY` del servidor; sin ninguna de las dos,
+`503 ia_no_configurada`. Proveedores: `anthropic` (API de Mensajes), `openai` (`https://api.openai.com/v1`)
+y `openai_compatible` (cualquier API `/chat/completions` compatible: Groq, DeepSeek, Mistral, OpenRouter,
+el endpoint compatible de Gemini…; exige `base_url` https que termine en `/v1`). Con proveedores
+compatibles el quiz y la retroalimentación piden `response_format: json_schema` y, si el proveedor lo
+rechaza (400), repiten con `json_object` describiendo el esquema en el sistema. Las respuestas en
+streaming se traducen a los mismos eventos SSE del chat.
+
+`GET /api/teacher/mentor/config` →
+```json
+{ "proveedor": "anthropic", "base_url": null, "modelo": "claude-opus-5", "clave_configurada": true,
+  "clave_sufijo": "A1b2", "origen": "panel", "actualizado_en": "2026-11-07T22:40:00Z" }
+```
+`origen`: `panel` (guardada aquí), `entorno` (variable del servidor) o `ninguno`. `clave_sufijo` son los
+últimos 4 caracteres de la clave (o `null`).
+
+`PUT /api/teacher/mentor/config` con `{"proveedor", "base_url"?, "modelo", "api_key"?}` → `200` con la
+misma respuesta. `api_key` vacía o ausente conserva la guardada en el panel; si no hay ninguna →
+`422 clave_requerida`. `base_url` solo cuenta para `openai_compatible` (obligatoria, https). `modelo` de
+1 a 120 caracteres.
+
+`DELETE /api/teacher/mentor/config` → `200` con la configuración efectiva tras borrar la del panel.
+
+`POST /api/teacher/mentor/config/probar` (sin cuerpo) → una petición corta real al proveedor:
+`200 {"ok": true, "proveedor", "modelo", "respuesta", "milisegundos"}`; sin configuración
+`503 ia_no_configurada`; si el proveedor falla `502 ia_error` con `codigo_fallo` y `estado` en el `detail`.
+No consume cuotas del estudiante ni se registra en `usage_events`.
+
 `GET /api/teacher/export/progress.csv[?identificacion=completa]` → `200 text/csv; charset=utf-8` con
 `Content-Disposition: attachment; filename="progreso_ova_AAAA-MM-DD.csv"`. UTF-8 **con BOM** (Excel),
 fin de línea CRLF, respuesta en streaming. Una fila por estudiante y por módulo (siempre los 6).

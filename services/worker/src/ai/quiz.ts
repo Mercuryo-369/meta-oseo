@@ -17,12 +17,12 @@ import {
 import type { BM25Retriever } from '../rag/retriever';
 import {
   type BloqueTexto,
-  crearMensaje,
   type MensajeCompleto,
   type ParametrosMensaje,
   paramsMensaje,
   textoDelMensaje,
 } from './anthropic';
+import type { ClienteModelo } from './proveedor';
 import { CODIGO_IA_ERROR, clasificarFallo, FalloModelo } from './errores';
 import type { ContextoPedagogico } from './esquemas';
 import {
@@ -456,7 +456,7 @@ export const CODIGO_QUIZ_INVALIDO = 'quiz_invalido';
  * consumo de las llamadas que sí respondieron viaja en la excepción, para registrarlo igual.
  */
 export async function generarQuiz(
-  apiKey: string,
+  cliente: ClienteModelo,
   params: ParametrosMensaje,
   etiquetas: ReadonlySet<string>,
 ): Promise<QuizGenerado> {
@@ -466,7 +466,7 @@ export async function generarQuiz(
   for (let intento = 1; intento <= QUIZ_MAX_INTENTOS; intento++) {
     let mensaje: MensajeCompleto;
     try {
-      mensaje = await crearMensaje(apiKey, params);
+      mensaje = await cliente.crear(params);
     } catch (error) {
       const fallo = clasificarFallo(error);
       console.warn('Fallo al preparar el quiz', fallo.code);

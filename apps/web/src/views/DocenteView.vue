@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * Panel del docente (F6-03 / F4-05, parte de frontend): seguimiento de la cohorte con cinco
- * pestañas (Resumen, Estudiantes, Actividades, Mentor, Exportar).
+ * Panel del docente (F6-03 / F4-05, parte de frontend): seguimiento de la cohorte con seis
+ * pestañas (Resumen, Estudiantes, Actividades, Mentor, Exportar, Configuración).
  *
  * Permisos: el servidor es quien decide (403 `no_autorizado` a estudiantes), pero aquí un
  * estudiante ni siquiera monta los paneles, así que NO se dispara ninguna petición al panel:
@@ -14,6 +14,7 @@ import { Lock } from '@lucide/vue';
 import ActividadesPanel from '@/components/docente/ActividadesPanel.vue';
 import EstudiantesPanel from '@/components/docente/EstudiantesPanel.vue';
 import ExportarPanel from '@/components/docente/ExportarPanel.vue';
+import MentorConfigPanel from '@/components/docente/MentorConfigPanel.vue';
 import MentorUsoPanel from '@/components/docente/MentorUsoPanel.vue';
 import ResumenPanel from '@/components/docente/ResumenPanel.vue';
 import { useAuthStore } from '@/stores/auth';
@@ -30,6 +31,7 @@ const PESTANAS: readonly Pestana[] = [
   { id: 'actividades', etiqueta: 'Actividades', componente: ActividadesPanel },
   { id: 'mentor', etiqueta: 'Mentor', componente: MentorUsoPanel },
   { id: 'exportar', etiqueta: 'Exportar', componente: ExportarPanel },
+  { id: 'configuracion', etiqueta: 'Configuración', componente: MentorConfigPanel },
 ];
 
 const auth = useAuthStore();

@@ -9,7 +9,8 @@
  * ya informó algún uso.
  */
 import type { ParametrosMensaje } from './anthropic';
-import { ErrorCancelado, ErrorIncompleto, transmitirMensaje, type EventoAnthropic } from './anthropic';
+import { ErrorCancelado, ErrorIncompleto, type EventoAnthropic } from './anthropic';
+import type { ClienteModelo } from './proveedor';
 import {
   CODIGO_MAX_TOKENS,
   CODIGO_REFUSAL,
@@ -36,7 +37,8 @@ interface Snapshot {
 
 export interface ConversacionChat {
   db: D1Database;
-  apiKey: string;
+  /** Proveedor configurado (Anthropic o compatible con OpenAI). */
+  cliente: ClienteModelo;
   params: ParametrosMensaje;
   userId: number;
   /** Conversación en la que se guarda la respuesta (`null`: no se guarda ni se anuncia). */
@@ -85,7 +87,7 @@ export class ConversacionMentor {
 
   /** Lee el stream reenviando solo el texto (el pensamiento no se transmite) y devuelve el estado. */
   private async leerStream(emitir: Emisor, senal: AbortSignal): Promise<Snapshot> {
-    for await (const evento of transmitirMensaje(this.conversacion.apiKey, this.conversacion.params, senal)) {
+    for await (const evento of this.conversacion.cliente.transmitir(this.conversacion.params, senal)) {
       this.procesar(evento, emitir);
     }
     if (this.snapshot === null) throw new ErrorIncompleto('El stream terminó sin message_start');

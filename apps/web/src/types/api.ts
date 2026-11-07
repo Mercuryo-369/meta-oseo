@@ -377,3 +377,34 @@ export interface DocenteMentorUso {
   por_modelo: DocenteMentorModelo[];
   top_usuarios: DocenteMentorTopUsuario[];
 }
+
+/** Proveedor de IA del mentor (panel del docente, pestaña «Configuración»). */
+export type DocenteMentorProveedor = 'anthropic' | 'openai' | 'openai_compatible';
+
+export interface DocenteMentorConfig {
+  proveedor: DocenteMentorProveedor;
+  /** Solo para `openai_compatible`. */
+  base_url: string | null;
+  modelo: string;
+  clave_configurada: boolean;
+  /** Últimos 4 caracteres de la clave guardada, para reconocerla; nunca la clave entera. */
+  clave_sufijo: string | null;
+  origen: 'panel' | 'entorno' | 'ninguno';
+  actualizado_en: string | null;
+}
+
+export interface DocenteMentorConfigEntrada {
+  proveedor: DocenteMentorProveedor;
+  base_url: string | null;
+  modelo: string;
+  /** `null`: conservar la clave ya guardada. */
+  api_key: string | null;
+}
+
+export interface DocenteMentorPrueba {
+  ok: true;
+  proveedor: DocenteMentorProveedor;
+  modelo: string;
+  respuesta: string;
+  milisegundos: number;
+}

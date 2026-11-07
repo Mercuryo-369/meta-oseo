@@ -8,12 +8,12 @@
 import promptRetroCrudo from '../../../api/app/ai/prompts/retroalimentacion_v1.md';
 import {
   type BloqueTexto,
-  crearMensaje,
   type MensajeCompleto,
   type ParametrosMensaje,
   paramsMensaje,
   textoDelMensaje,
 } from './anthropic';
+import type { ClienteModelo } from './proveedor';
 import { CODIGO_IA_ERROR, clasificarFallo, FalloModelo } from './errores';
 import type { ContextoPedagogico } from './esquemas';
 import type { PreguntaAbierta } from '../servicios/preguntas_abiertas';
@@ -179,7 +179,7 @@ export const CODIGO_RETRO_INVALIDA = 'retroalimentacion_invalida';
 
 /** Pide la retroalimentación y la valida; reintenta una vez si lo devuelto no sirve. */
 export async function generarRetroalimentacion(
-  apiKey: string,
+  cliente: ClienteModelo,
   params: ParametrosMensaje,
 ): Promise<RetroalimentacionGenerada> {
   let uso: Uso = USO_CERO;
@@ -188,7 +188,7 @@ export async function generarRetroalimentacion(
   for (let intento = 1; intento <= RETRO_MAX_INTENTOS; intento++) {
     let mensaje: MensajeCompleto;
     try {
-      mensaje = await crearMensaje(apiKey, params);
+      mensaje = await cliente.crear(params);
     } catch (error) {
       const fallo = clasificarFallo(error);
       console.warn('Fallo al preparar la retroalimentación', fallo.code);

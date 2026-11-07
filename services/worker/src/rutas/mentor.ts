@@ -20,6 +20,7 @@ import { bloquesSistema, citasDe, etiquetar, renderDatos, type FragmentoEtiqueta
 import { CABECERAS_SSE, evento, PING, PING_INTERVALO_MS } from '../ai/sse';
 import { ConversacionMentor } from '../ai/mentor';
 import { type BloqueTexto, ErrorCancelado, paramsMensaje, type Turno } from '../ai/anthropic';
+import { clienteDe, resolverConfigMentor } from '../ai/proveedor';
 import { CuerpoChat, CuerpoFeedback, CuerpoQuiz, CuerpoRetroalimentacion, type ContextoPedagogico } from '../ai/esquemas';
 import { CODIGO_IA_ERROR, FalloModelo } from '../ai/errores';
 import {
@@ -185,7 +186,9 @@ rutasMentor.post('/chat', requiereUsuario, async (c) => {
   const cfg = c.get('config');
   const cuerpo = validar(CuerpoChat, await cuerpoJson(c.req.raw));
 
-  if (cfg.anthropicApiKey.trim() === '') throw iaNoConfigurada();
+  const proveedor = await resolverConfigMentor(c.env.DB, cfg);
+  if (!proveedor) throw iaNoConfigurada();
+  const cfgModelo = { ...cfg, anthropicModel: proveedor.modelo };
   await verificarCuotaDelChat(c, usuario.id);
   await limitar(c.env.LIMITE_CHAT, `${CLAVE_LIMITE_POR_MINUTO}${usuario.id}`);
 
@@ -214,14 +217,14 @@ rutasMentor.post('/chat', requiereUsuario, async (c) => {
   const resultados = RECUPERADOR_DEL_CURSO.buscar(busqueda);
   const material = etiquetar(resultados.map((r) => r.fragmento));
 
-  const params = paramsMensaje(cfg, {
+  const params = paramsMensaje(cfgModelo, {
     system: bloquesSistema(),
     messages: conDatosDelCurso(turnosDeHistorial(cuerpo.messages), contexto, material),
     maxTokens: cfg.mentorMaxTokens,
   });
   const conversacion = new ConversacionMentor({
     db: c.env.DB,
-    apiKey: cfg.anthropicApiKey,
+    cliente: clienteDe(proveedor),
     params,
     userId: usuario.id,
     sessionId: turno.sessionId,
@@ -295,7 +298,9 @@ rutasMentor.post('/mentor/quiz', requiereUsuario, async (c) => {
   const cfg = c.get('config');
   const cuerpo = validar(CuerpoQuiz, await cuerpoJson(c.req.raw));
 
-  if (cfg.anthropicApiKey.trim() === '') throw iaNoConfigurada();
+  const proveedor = await resolverConfigMentor(c.env.DB, cfg);
+  if (!proveedor) throw iaNoConfigurada();
+  const cfgModelo = { ...cfg, anthropicModel: proveedor.modelo };
   await verificarCuotaDelQuiz(c, usuario.id);
   await limitar(c.env.LIMITE_CHAT, `${CLAVE_LIMITE_POR_MINUTO}${usuario.id}`);
 
@@ -324,8 +329,8 @@ rutasMentor.post('/mentor/quiz', requiereUsuario, async (c) => {
   let generado: QuizGenerado;
   try {
     generado = await generarQuiz(
-      cfg.anthropicApiKey,
-      paramsQuiz(cfg, contexto, etiquetados, cuerpo.tema),
+      clienteDe(proveedor),
+      paramsQuiz(cfgModelo, contexto, etiquetados, cuerpo.tema),
       etiquetas,
     );
   } catch (error) {
@@ -355,7 +360,9 @@ rutasMentor.post('/mentor/retroalimentacion', requiereUsuario, async (c) => {
   const cfg = c.get('config');
   const cuerpo = validar(CuerpoRetroalimentacion, await cuerpoJson(c.req.raw));
 
-  if (cfg.anthropicApiKey.trim() === '') throw iaNoConfigurada();
+  const proveedor = await resolverConfigMentor(c.env.DB, cfg);
+  if (!proveedor) throw iaNoConfigurada();
+  const cfgModelo = { ...cfg, anthropicModel: proveedor.modelo };
   const pregunta = obtenerPregunta(cuerpo.pregunta_id);
   if (!pregunta) throw preguntaNoEncontrada();
   await verificarCuotaDelQuiz(c, usuario.id);
@@ -364,8 +371,8 @@ rutasMentor.post('/mentor/retroalimentacion', requiereUsuario, async (c) => {
   let generada: RetroalimentacionGenerada;
   try {
     generada = await generarRetroalimentacion(
-      cfg.anthropicApiKey,
-      paramsRetroalimentacion(cfg, pregunta, cuerpo.respuesta, cuerpo.contexto ?? null),
+      clienteDe(proveedor),
+      paramsRetroalimentacion(cfgModelo, pregunta, cuerpo.respuesta, cuerpo.contexto ?? null),
     );
   } catch (error) {
     if (error instanceof FalloModelo) {

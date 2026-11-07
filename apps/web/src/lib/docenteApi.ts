@@ -6,6 +6,9 @@
 import { apiFetch, apiFetchRaw, leerApiError } from '@/lib/api';
 import type {
   DocenteActividadesStats,
+  DocenteMentorConfig,
+  DocenteMentorConfigEntrada,
+  DocenteMentorPrueba,
   DocenteEstudianteDetalle,
   DocenteEstudiantesPagina,
   DocenteMentorUso,
@@ -100,4 +103,29 @@ export async function descargarProgresoCsv(
     blob,
     nombre: nombreDeDescarga(res.headers.get('Content-Disposition')) ?? `progreso_ova_${hoy}.csv`,
   };
+}
+
+/** Configuración del proveedor de IA del mentor (pestaña «Configuración»). */
+export function obtenerConfigMentorDocente(signal?: AbortSignal): Promise<DocenteMentorConfig> {
+  return apiFetch<DocenteMentorConfig>('/teacher/mentor/config', { signal });
+}
+
+export function guardarConfigMentorDocente(
+  entrada: DocenteMentorConfigEntrada,
+  signal?: AbortSignal,
+): Promise<DocenteMentorConfig> {
+  return apiFetch<DocenteMentorConfig>('/teacher/mentor/config', {
+    method: 'PUT',
+    body: entrada,
+    signal,
+  });
+}
+
+export function borrarConfigMentorDocente(signal?: AbortSignal): Promise<DocenteMentorConfig> {
+  return apiFetch<DocenteMentorConfig>('/teacher/mentor/config', { method: 'DELETE', signal });
+}
+
+/** Petición corta real al proveedor con la configuración guardada. */
+export function probarConfigMentorDocente(signal?: AbortSignal): Promise<DocenteMentorPrueba> {
+  return apiFetch<DocenteMentorPrueba>('/teacher/mentor/config/probar', { method: 'POST', signal });
 }
