@@ -71,13 +71,27 @@ const items = computed(() =>
 );
 const porId = computed(() => new Map(items.value.map((it) => [it.id, it])));
 
+/**
+ * Vista con la que la cámara se acerca a cada módulo al elegirlo (pedido de la usuaria, 2026-11-06: «si selecciono
+ * el 5, la mandíbula debe cambiar y mostrar la posición 5»): el lado derecho se ve desde la derecha, el izquierdo
+ * desde la izquierda y el cuerpo izquierdo de frente.
+ */
+const VISTAS_RECORRIDO: readonly NodoEscena['vista'][] = [
+  'lateral_derecha',
+  'oblicua',
+  'oblicua',
+  'frontal',
+  'lateral_izquierda',
+  'lateral_izquierda',
+];
 const nodos = computed<NodoEscena[]>(() =>
   items.value.map((it, i) => ({
     id: it.id,
     etiqueta: `Módulo ${it.m.numero}: ${it.m.titulo}`,
     ancla: ANCLAS_RECORRIDO[i],
-    vista: 'oblicua',
-    zoom: 1,
+    vista: VISTAS_RECORRIDO[i] ?? 'oblicua',
+    // Menos que el encuadre automático del punto: se ve la zona del hueso con su contexto.
+    zoom: 0.7,
   })),
 );
 const visitados = computed(() =>
@@ -92,6 +106,12 @@ watch(
   },
   { immediate: true },
 );
+/* Al elegir un módulo (tocando su punto, su tarjeta o la lista) la cámara se acerca a su posición en el hueso. La
+   selección inicial (el módulo que toca) no mueve la cámara: la portada abre con la mandíbula entera. */
+const ordenEnfoque = ref(0);
+watch(seleccion, (nueva, previa) => {
+  if (previa !== null && nueva !== previa) ordenEnfoque.value += 1;
+});
 const elegido = computed(() => porId.value.get(seleccion.value ?? '') ?? items.value[0]);
 const verbo = computed(() => {
   const e = elegido.value?.estado;
@@ -133,6 +153,7 @@ const verbo = computed(() => {
         :nodos="nodos"
         :visitados="visitados"
         :seleccion-id="seleccion"
+        :orden-enfoque="ordenEnfoque"
         vista-inicial="oblicua"
         sin-controles
         etiquetas-laterales
