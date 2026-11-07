@@ -107,7 +107,9 @@ function reintentar(): void {
         </span>
         <span class="min-w-0 truncate">
           <span class="font-semibold">{{ rotuloModulo }}</span
-          ><span v-if="modulo" class="text-muted-foreground"> · {{ modulo.titulo }}</span>
+          ><span v-if="modulo" class="text-muted-foreground hidden md:inline">
+            · {{ modulo.titulo }}</span
+          >
         </span>
       </p>
 
@@ -134,7 +136,7 @@ function reintentar(): void {
       </p>
       <p
         v-else-if="progreso.siguienteLogro"
-        class="flex min-w-0 items-center gap-1.5"
+        class="hidden min-w-0 items-center gap-1.5 md:flex"
         data-testid="hud-logro"
         :title="progreso.siguienteLogro.descripcion"
       >
@@ -152,7 +154,7 @@ function reintentar(): void {
         class="flex min-w-0 items-center gap-1.5"
         data-testid="hud-logros-completos"
       >
-        <PartyPopper class="text-success size-3.5 shrink-0" aria-hidden="true" />
+        <PartyPopper class="text-success size-3.5 shrink-0 max-md:hidden" aria-hidden="true" />
         <span class="text-success min-w-0 truncate font-medium">Completaste todos los logros</span>
       </p>
     </div>

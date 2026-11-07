@@ -41,6 +41,11 @@ const props = withDefaults(
 const slots = useSlots();
 
 const fallo = ref(false);
+/** Tocar la imagen (no solo el botón) la abre a pantalla completa: en el teléfono es lo natural. */
+function ampliarVecina(evento: Event): void {
+  const img = evento.currentTarget as HTMLElement;
+  img.parentElement?.querySelector<HTMLButtonElement>('[data-testid="ampliar-imagen"]')?.click();
+}
 const puntos = computed(() => props.bloque.puntos ?? []);
 const activo = ref<number | null>(null);
 const vistos = ref<Set<number>>(new Set());
@@ -176,9 +181,10 @@ const claseRecuadro = computed(() =>
               :width="pasoActual.ancho"
               :height="pasoActual.alto"
               decoding="async"
-              class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+              class="imagen-ajustada bg-card mx-auto block cursor-zoom-in rounded-lg border"
               style="--alto-max: calc(var(--alto-vista, 100dvh - 6.5rem) - 5.5rem)"
               @error="fallo = true"
+              @click="ampliarVecina"
             />
             <BotonAmpliar :src="pasoActual.src" :alt="pasoActual.alt" :pie="pasoActual.etiqueta" />
           </div>
@@ -246,8 +252,9 @@ const claseRecuadro = computed(() =>
                 :height="bloque.alto"
                 loading="lazy"
                 decoding="async"
-                class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+                class="imagen-ajustada bg-card mx-auto block cursor-zoom-in rounded-lg border"
                 @error="fallo = true"
+                @click="ampliarVecina"
               />
               <BotonAmpliar
                 :src="bloque.figura ?? bloque.src"
@@ -268,8 +275,9 @@ const claseRecuadro = computed(() =>
                 :height="bloque.pareja.alto"
                 loading="lazy"
                 decoding="async"
-                class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+                class="imagen-ajustada bg-card mx-auto block cursor-zoom-in rounded-lg border"
                 @error="fallo = true"
+                @click="ampliarVecina"
               />
               <BotonAmpliar
                 :src="bloque.pareja.src"
@@ -336,13 +344,14 @@ const claseRecuadro = computed(() =>
             :height="bloque.alto"
             loading="lazy"
             decoding="async"
-            class="imagen-ajustada bg-card mx-auto block rounded-lg border"
+            class="imagen-ajustada bg-card mx-auto block cursor-zoom-in rounded-lg border"
             :style="
               apilado
                 ? { '--alto-max': 'calc(var(--alto-vista, 100dvh - 6.5rem) - 15.5rem)' }
                 : undefined
             "
             @error="fallo = true"
+            @click="ampliarVecina"
           />
           <BotonAmpliar
             :src="bloque.figura ?? bloque.src"

@@ -24,6 +24,8 @@ const props = defineProps<{
   primero: boolean;
   /** Más baja, para la barra de cada sección (la portada usa la alta). */
   compacta?: boolean;
+  /** En el teléfono solo el número y el icono (todas las flechas caben en una fila); el título desde `md`. */
+  tituloSoloAncho?: boolean;
 }>();
 
 const icono = computed(() => iconoDeSeccion(props.titulo));
@@ -31,10 +33,10 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
 
 <template>
   <span
-    class="paso-flecha flex h-full w-full items-center gap-2.5 pr-6 transition-colors"
+    class="paso-flecha flex h-full w-full items-center gap-2 pr-6 transition-colors md:gap-2.5"
     :class="[
       compacta ? 'min-h-[3.25rem] py-1' : 'min-h-[4.5rem] py-2',
-      primero ? 'paso-flecha--primero pl-3' : 'pl-7',
+      primero ? 'paso-flecha--primero pl-3' : tituloSoloAncho ? 'pl-5 md:pl-7' : 'pl-7',
       actual
         ? 'bg-primary text-primary-foreground'
         : estado === 'bloqueada'
@@ -68,8 +70,12 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
         />
       </span>
       <span
-        class="mt-0.5 block text-[0.78rem]"
-        :class="[actual ? 'font-semibold' : '', compacta ? 'line-clamp-2' : 'line-clamp-3']"
+        class="mt-0.5 text-[0.78rem]"
+        :class="[
+          actual ? 'font-semibold' : '',
+          compacta ? 'line-clamp-2' : 'line-clamp-3',
+          tituloSoloAncho ? 'hidden md:block' : 'block',
+        ]"
       >
         {{ titulo }}
       </span>

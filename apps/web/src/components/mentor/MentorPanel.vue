@@ -260,7 +260,7 @@ const estiloHoja = computed(() => estiloDeLaHoja(esEscritorio.value, medidasTecl
     <SheetTrigger as-child>
       <Button
         size="icon-lg"
-        class="fixed z-40 rounded-full shadow-lg"
+        class="fixed z-40 rounded-full shadow-lg max-md:size-11"
         :tabindex="abierto ? -1 : undefined"
         style="
           right: max(1rem, var(--area-segura-derecha));

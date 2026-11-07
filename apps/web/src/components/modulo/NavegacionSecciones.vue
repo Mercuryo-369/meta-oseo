@@ -73,13 +73,6 @@ function activar(i: number): void {
   else emit('ir', i);
 }
 
-function alElegir(evento: Event): void {
-  const i = Number((evento.target as HTMLSelectElement).value);
-  if (Number.isInteger(i)) activar(i);
-  // El selector vuelve a la sección visible si la elegida está bloqueada.
-  (evento.target as HTMLSelectElement).value = String(props.indice);
-}
-
 /* ----- El paso actual siempre a la vista dentro de la fila ----- */
 
 const botones = ref<HTMLElement[]>([]);
@@ -108,15 +101,14 @@ watch(
   >
     <ol
       :class="encadenada ? 'md:flex-1' : ''"
-      class="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      class="flex md:snap-x md:snap-mandatory md:overflow-x-auto md:overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       data-testid="indice-secciones"
     >
       <li
         v-for="item in items"
         :key="item.id"
-        class="flex-1 snap-start"
-        :style="{ minWidth: encadenada ? '13rem' : '10rem' }"
-        :class="item.i === 0 ? '' : '-ml-2'"
+        class="min-w-0 flex-1 md:snap-start"
+        :class="[item.i === 0 ? '' : '-ml-2', encadenada ? 'md:min-w-[13rem]' : 'md:min-w-[10rem]']"
       >
         <button
           :ref="(el) => (botones[item.i] = el as HTMLElement)"
@@ -136,26 +128,10 @@ watch(
             :actual="item.actual"
             :primero="item.i === 0 && !encadenada"
             :compacta="compacta"
+            titulo-solo-ancho
           />
         </button>
       </li>
     </ol>
-
-    <!-- Móvil: salto directo a una sección -->
-    <div class="mt-3 md:hidden" data-testid="indicador-movil">
-      <label class="sr-only" for="ir-a-seccion">
-        Sección {{ indice + 1 }} de {{ secciones.length }}: ir a la sección
-      </label>
-      <select
-        id="ir-a-seccion"
-        class="border-input bg-card h-11 w-full rounded-md border px-3 text-base"
-        :value="String(indice)"
-        @change="alElegir"
-      >
-        <option v-for="item in items" :key="item.id" :value="String(item.i)">
-          {{ item.numero }}. {{ item.titulo }} ({{ item.etiqueta }})
-        </option>
-      </select>
-    </div>
   </nav>
 </template>

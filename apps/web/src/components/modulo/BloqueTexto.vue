@@ -24,6 +24,11 @@ withDefaults(
   }>(),
   { columnas: false, incrustado: false, figura: false, figuraAlt: '' },
 );
+/** Tocar la figura la abre a pantalla completa, igual que su botón de ampliar. */
+function ampliarVecina(evento: Event): void {
+  const img = evento.currentTarget as HTMLElement;
+  img.parentElement?.querySelector<HTMLButtonElement>('[data-testid="ampliar-imagen"]')?.click();
+}
 </script>
 
 <template>
@@ -40,7 +45,8 @@ withDefaults(
         :alt="figuraAlt"
         loading="lazy"
         decoding="async"
-        class="figura-apertura w-auto max-w-full rounded-xl border object-contain"
+        class="figura-apertura w-auto max-w-full cursor-zoom-in rounded-xl border object-contain"
+        @click="ampliarVecina"
       />
       <BotonAmpliar :src="bloque.fondo" :alt="figuraAlt" />
     </div>

@@ -1238,12 +1238,12 @@ onBeforeUnmount(() => {
 
             <p
               v-if="store.errorEnvio"
-              class="text-foreground bg-accent mt-4 flex items-start gap-2 rounded-md px-3 py-2 text-sm"
+              class="text-muted-foreground flex items-center gap-2 text-xs"
               role="status"
               data-testid="error-envio"
             >
-              <CircleAlert class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>{{ store.errorEnvio }}</span>
+              <CircleAlert class="size-3.5 shrink-0" aria-hidden="true" />
+              <span class="truncate">{{ store.errorEnvio }}</span>
             </p>
 
             <p
@@ -1513,12 +1513,12 @@ onBeforeUnmount(() => {
               <!-- Pie: parte anterior y siguiente; al final de la sección, la sección siguiente (o lo que falta). -->
               <nav
                 aria-label="Parte anterior y siguiente"
-                class="flex items-center justify-between gap-3 border-t pt-3 lg:pr-20"
+                class="flex flex-col-reverse items-stretch gap-2 border-t pt-3 md:flex-row md:items-center md:justify-between md:gap-3 lg:pr-20"
                 data-testid="pie-partes"
               >
                 <button
                   type="button"
-                  class="hover:bg-accent focus-visible:ring-ring flex min-h-11 max-w-[45%] items-center gap-2 rounded-full border px-4 text-left text-sm font-medium outline-none focus-visible:ring-2"
+                  class="hover:bg-accent focus-visible:ring-ring flex min-h-11 max-w-full items-center gap-2 self-start rounded-full px-3 text-left text-sm font-medium outline-none focus-visible:ring-2 md:max-w-[45%] md:self-auto md:border md:px-4"
                   data-testid="parte-anterior"
                   @click="anterior.ir()"
                 >
@@ -1535,7 +1535,7 @@ onBeforeUnmount(() => {
                 <button
                   v-if="siguiente"
                   type="button"
-                  class="focus-visible:ring-ring flex min-h-11 max-w-[45%] items-center gap-2 rounded-full px-5 text-left text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  class="focus-visible:ring-ring flex min-h-12 w-full items-center gap-2 rounded-full px-5 text-left text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:min-h-11 md:w-auto md:max-w-[45%]"
                   :class="
                     siguiente.cerrada
                       ? 'bg-muted text-foreground border border-dashed'
@@ -1546,7 +1546,7 @@ onBeforeUnmount(() => {
                   @click="siguiente.ir()"
                 >
                   <Lock v-if="siguiente.cerrada" class="size-4 shrink-0" aria-hidden="true" />
-                  <span class="truncate">
+                  <span class="min-w-0 flex-1 md:truncate">
                     {{ siguiente.cerrada ? 'Ir a la actividad pendiente' : siguiente.texto }}
                   </span>
                   <ChevronRight class="size-5 shrink-0" aria-hidden="true" />
