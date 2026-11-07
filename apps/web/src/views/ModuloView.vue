@@ -250,12 +250,17 @@ const idSeccionMostrada = computed(() => (mostrando.value ? (seccion.value?.id ?
 const bloquesVisibles = computed(() =>
   (seccion.value?.bloques ?? []).filter((b) => visibleParaNivel(b, contexto.nivel)),
 );
-/** Imágenes que la sección muestra como figura (para velar un fondo que es una de ellas). */
+/**
+ * Imágenes que la sección muestra como figura, con su texto alternativo: un texto cuyo `fondo` es una de ellas la
+ * muestra entera y grande en vez de taparla con el panel.
+ */
 const imagenesSeccion = computed(
   () =>
-    new Set(
-      bloquesVisibles.value.flatMap((b) =>
-        b.tipo === 'imagen' ? [b.src, ...(b.figura ? [b.figura] : [])] : [],
+    new Map(
+      bloquesVisibles.value.flatMap((b): [string, string][] =>
+        b.tipo === 'imagen'
+          ? [[b.src, b.alt], ...(b.figura ? [[b.figura, b.alt] as [string, string]] : [])]
+          : [],
       ),
     ),
 );
@@ -1388,7 +1393,8 @@ onBeforeUnmount(() => {
                               v-if="b.tipo === 'texto'"
                               :bloque="sinTituloRepetido(b)"
                               :columnas="!notasAlLado(fila) && b.markdown.length > 1200"
-                              :velado="Boolean(b.fondo && imagenesSeccion.has(b.fondo))"
+                              :figura="Boolean(b.fondo && imagenesSeccion.has(b.fondo))"
+                              :figura-alt="imagenesSeccion.get(b.fondo ?? '')"
                             />
                             <BloqueTabla v-else :bloque="b" />
                           </template>
@@ -1416,9 +1422,10 @@ onBeforeUnmount(() => {
                         v-else-if="fila.bloque.tipo === 'texto'"
                         :bloque="sinTituloRepetido(fila.bloque)"
                         :columnas="fila.bloque.markdown.length > 1200"
-                        :velado="
+                        :figura="
                           Boolean(fila.bloque.fondo && imagenesSeccion.has(fila.bloque.fondo))
                         "
+                        :figura-alt="imagenesSeccion.get(fila.bloque.fondo ?? '')"
                       />
                       <BloqueCallout
                         v-else-if="fila.bloque.tipo === 'callout'"

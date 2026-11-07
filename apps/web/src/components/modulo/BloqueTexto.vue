@@ -14,21 +14,51 @@ withDefaults(
     /** Dentro del recuadro junto a una imagen: sin columnas. */
     incrustado?: boolean;
     /**
-     * El fondo es una figura que la sección muestra completa más adelante (módulos 5 y 6 usan su primera imagen):
-     * se vela para que el panel no tape a medias sus rótulos y se lea como fondo (revisión del módulo 5, 2026-11-06).
+     * El fondo es una figura de la misma sección (el módulo 5 abre con su primera imagen): no va detrás del texto,
+     * donde el panel la tapa y pierde protagonismo, sino entera y grande, con el texto debajo (revisión del
+     * módulo 5, 2026-11-06). `figuraAlt` es el texto alternativo de esa figura.
      */
-    velado?: boolean;
+    figura?: boolean;
+    figuraAlt?: string;
   }>(),
-  { columnas: false, incrustado: false, velado: false },
+  { columnas: false, incrustado: false, figura: false, figuraAlt: '' },
 );
 </script>
 
 <template>
   <div
-    v-if="bloque.fondo"
+    v-if="bloque.fondo && figura"
+    :id="`bloque-${bloque.id}`"
+    class="flex flex-col gap-3"
+    data-testid="bloque-texto"
+    data-fondo="figura"
+  >
+    <img
+      :src="bloque.fondo"
+      :alt="figuraAlt"
+      loading="lazy"
+      decoding="async"
+      class="figura-apertura mx-auto w-auto max-w-full rounded-xl border object-contain"
+    />
+    <div
+      class="bg-card border-l-acento space-y-2 rounded-2xl border border-l-4 p-4 shadow-sm sm:px-5"
+    >
+      <h3 v-if="bloque.titulo" class="font-serif text-xl font-semibold">{{ bloque.titulo }}</h3>
+      <TextoRico
+        :texto="bloque.markdown"
+        class="text-justify text-base leading-relaxed hyphens-auto"
+        :class="
+          bloque.markdown.length > 500
+            ? 'lg:columns-2 lg:gap-10 [&_li]:break-inside-avoid [&_p]:break-inside-avoid'
+            : ''
+        "
+      />
+    </div>
+  </div>
+  <div
+    v-else-if="bloque.fondo"
     :id="`bloque-${bloque.id}`"
     class="relative isolate flex items-center overflow-hidden rounded-2xl border p-4 sm:p-8 lg:min-h-[var(--alto-vista,28rem)]"
-    :class="velado ? 'justify-center' : ''"
     data-testid="bloque-texto"
     data-fondo="true"
   >
@@ -39,8 +69,6 @@ withDefaults(
       loading="lazy"
       decoding="async"
       class="absolute inset-0 -z-10 size-full object-cover"
-      :class="velado ? 'scale-105 opacity-25 blur-[3px]' : ''"
-      :data-velado="velado ? 'true' : undefined"
     />
     <div
       class="cristal-portada border-l-acento max-w-3xl space-y-2 rounded-2xl border-l-4 p-5 sm:p-7"
@@ -65,3 +93,12 @@ withDefaults(
     />
   </div>
 </template>
+
+<style scoped>
+/* En escritorio la figura y su texto caben en la pantalla: la figura cede el alto que ocupa el panel de texto. */
+@media (min-width: 1024px) {
+  .figura-apertura {
+    max-height: calc(var(--alto-vista, 100dvh - 6.5rem) - 13rem);
+  }
+}
+</style>
