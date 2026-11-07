@@ -14,6 +14,9 @@ import { configuracion, type Env } from './core/entorno';
 import { ApiError } from './core/errores';
 import { ErrorValidacion } from './core/validar';
 import { rutasAuth } from './rutas/auth';
+import { rutasCertificado } from './rutas/certificado';
+import { rutasDocente } from './rutas/docente';
+import { rutasMentor } from './rutas/mentor';
 import { rutasProgreso } from './rutas/progreso';
 
 const app = new Hono<App>();
@@ -27,6 +30,9 @@ app.use('/api/*', async (c, next) => {
 app.get('/api/health', (c) => c.json({ status: 'ok', env: c.get('config').env, version: VERSION }));
 app.route('/api', rutasAuth);
 app.route('/api', rutasProgreso);
+app.route('/api', rutasCertificado);
+app.route('/api', rutasMentor);
+app.route('/api/teacher', rutasDocente);
 
 app.notFound((c) =>
   c.req.path.startsWith('/api/')

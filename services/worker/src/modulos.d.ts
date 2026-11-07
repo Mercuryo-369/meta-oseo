@@ -11,3 +11,7 @@ declare module '*.ttf' {
   const bytes: ArrayBuffer;
   export default bytes;
 }
+declare module '*.jpg' {
+  const bytes: ArrayBuffer;
+  export default bytes;
+}

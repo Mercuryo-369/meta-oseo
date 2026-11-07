@@ -26,7 +26,8 @@
   ],
   "rules": [
     { "type": "Text", "globs": ["**/*.jsonl", "**/*.md"], "fallthrough": true },
-    { "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }
+    { "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true },
+    { "type": "Data", "globs": ["**/*.jpg"], "fallthrough": true }
   ],
   "vars": {
     "ENV": "prod",

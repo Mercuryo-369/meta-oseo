@@ -70,26 +70,27 @@ const ActivityResultCreate = z.object({
 
 const FiltroModulo = z.object({ modulo: enteroOpcional.pipe(z.number().int().min(1).max(MODULE_COUNT).optional()) });
 
+// Middleware por ruta (no `use('*')`): un `use` dentro de un sub-app montado en /api alcanzaría a las rutas
+// públicas que se monten después (por ejemplo /api/verify).
 export const rutasProgreso = new Hono<App>();
-rutasProgreso.use('*', requiereUsuario);
 
-rutasProgreso.get('/progress', async (c) => c.json(await leerProgreso(c.env.DB, c.get('usuario').id)));
+rutasProgreso.get('/progress', requiereUsuario, async (c) => c.json(await leerProgreso(c.env.DB, c.get('usuario').id)));
 
-rutasProgreso.put('/progress/:modulo', async (c) => {
+rutasProgreso.put('/progress/:modulo', requiereUsuario, async (c) => {
   const { modulo } = validar(ModuloPath, c.req.param(), 'path');
   const body = validar(ProgressUpdate, await cuerpoJson(c.req.raw));
   return c.json(await actualizarProgreso(c.env.DB, c.get('usuario').id, modulo, body));
 });
 
-rutasProgreso.get('/activities/results', async (c) => {
+rutasProgreso.get('/activities/results', requiereUsuario, async (c) => {
   const { modulo } = validar(FiltroModulo, consulta(c.req.raw), 'query');
   return c.json({ resultados: await listarResultados(c.env.DB, c.get('usuario').id, modulo) });
 });
 
-rutasProgreso.post('/activities/:activity_id/result', async (c) => {
+rutasProgreso.post('/activities/:activity_id/result', requiereUsuario, async (c) => {
   const { activity_id } = validar(ActivityIdPath, c.req.param(), 'path');
   const body = validar(ActivityResultCreate, await cuerpoJson(c.req.raw));
   return c.json(await registrarResultado(c.env.DB, c.get('usuario').id, activity_id, body));
 });
 
-rutasProgreso.get('/achievements', async (c) => c.json({ logros: await listarLogros(c.env.DB, c.get('usuario').id) }));
+rutasProgreso.get('/achievements', requiereUsuario, async (c) => c.json({ logros: await listarLogros(c.env.DB, c.get('usuario').id) }));
