@@ -233,21 +233,23 @@ const verbo = computed(() => {
     <!-- Módulo elegido: su avance y el botón para entrar -->
     <div
       v-if="elegido"
-      class="bg-card/80 flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3 lg:col-start-1 lg:row-start-3"
+      class="bg-card/80 flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 lg:col-start-1 lg:row-start-3"
       aria-live="polite"
       data-testid="modulo-elegido"
     >
-      <p class="min-w-0">
+      <!-- Sin salto de línea del botón: el alto de la tarjeta no cambia al elegir otro módulo y la portada sigue
+           cabiendo en la pantalla (observación de la usuaria, 2026-11-07). El botón dice solo el verbo. -->
+      <p class="min-w-0 flex-1">
         <span class="text-primary text-sm font-bold">Módulo {{ elegido.m.numero }}</span>
-        <span class="block font-semibold">{{ elegido.m.titulo }}</span>
-        <span class="text-muted-foreground text-sm">{{ elegido.avance }}</span>
+        <span class="block truncate font-semibold" :title="elegido.m.titulo">{{ elegido.m.titulo }}</span>
+        <span class="text-muted-foreground block truncate text-sm">{{ elegido.avance }}</span>
       </p>
       <RouterLink
         :to="{ name: 'modulo', params: { n: elegido.m.numero } }"
-        class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
         data-testid="abrir-modulo-mandibula"
       >
-        {{ verbo }}: Módulo {{ elegido.m.numero }}
+        {{ verbo }}<span class="sr-only">: Módulo {{ elegido.m.numero }}</span>
         <ArrowRight class="size-5" aria-hidden="true" />
       </RouterLink>
     </div>
