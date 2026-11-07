@@ -142,12 +142,10 @@ watch(
     </ol>
 
     <!-- Móvil: salto directo a una sección -->
-    <div class="mt-3 space-y-2 md:hidden" data-testid="indicador-movil">
-      <p class="text-sm font-medium">
-        Sección {{ indice + 1 }} de {{ secciones.length }}
-        <span class="text-muted-foreground font-normal"> · {{ items[indice]?.titulo }} </span>
-      </p>
-      <label class="sr-only" for="ir-a-seccion">Ir a la sección</label>
+    <div class="mt-3 md:hidden" data-testid="indicador-movil">
+      <label class="sr-only" for="ir-a-seccion">
+        Sección {{ indice + 1 }} de {{ secciones.length }}: ir a la sección
+      </label>
       <select
         id="ir-a-seccion"
         class="border-input bg-card h-11 w-full rounded-md border px-3 text-base"

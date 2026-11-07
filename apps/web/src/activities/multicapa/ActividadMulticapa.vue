@@ -588,15 +588,10 @@ defineExpose({ activar, reiniciar });
     <header class="space-y-1 lg:col-start-1">
       <!-- En escritorio el título ya está en el encabezado de la parte («1.2.4 · Recorre un hueso largo»): queda solo
            para el lector de pantalla y así el dibujo gana alto. -->
-      <h3
-        :id="idTitulo"
-        ref="titulo"
-        tabindex="-1"
-        class="text-lg font-semibold outline-offset-4 lg:sr-only"
-      >
+      <h3 :id="idTitulo" ref="titulo" tabindex="-1" class="sr-only">
         {{ actividad.titulo }}
       </h3>
-      <p class="text-muted-foreground text-sm">
+      <p class="text-muted-foreground text-left text-sm">
         <TextoLinea :texto="actividad.instrucciones" />
       </p>
     </header>

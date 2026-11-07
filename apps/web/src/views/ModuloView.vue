@@ -1120,23 +1120,35 @@ onBeforeUnmount(() => {
                alto disponible; abajo el paso a la parte anterior o siguiente, que cruza de una sección a otra. -->
           <div v-else class="pantalla-seccion flex flex-col gap-3" data-testid="pantalla-seccion">
             <!-- Fila de la sección: a la izquierda los desplegables (objetivos y referencias), en el centro el
-                 indicador de partes «· · · 3.3.1 · · ·» y a la derecha el avance. En móvil el indicador va arriba. -->
+                 indicador de partes «· · · 3.3.1 · · ·» y a la derecha el avance. En el teléfono, dos filas: el
+                 indicador con el avance (corto) y debajo los desplegables, para dejar más alto al contenido. -->
             <div
               class="grid grid-cols-1 items-center gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
             >
-              <NavegacionPartes
-                class="flex justify-center md:order-2"
-                solo-partes
-                :numero-modulo="n"
-                :secciones="secciones"
-                :estados="estados"
-                :indice="indice"
-                :partes="seccionBloqueada ? [] : nombresPartes"
-                :subcapitulos="subcapitulos"
-                :parte="vista"
-                @ir-parte="irAVista"
-              />
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 whitespace-nowrap md:order-1">
+              <div class="flex items-center justify-between gap-2 md:contents">
+                <NavegacionPartes
+                  class="flex min-w-0 md:order-2 md:justify-center"
+                  solo-partes
+                  :numero-modulo="n"
+                  :secciones="secciones"
+                  :estados="estados"
+                  :indice="indice"
+                  :partes="seccionBloqueada ? [] : nombresPartes"
+                  :subcapitulos="subcapitulos"
+                  :parte="vista"
+                  @ir-parte="irAVista"
+                />
+                <span
+                  class="text-muted-foreground shrink-0 text-sm whitespace-nowrap tabular-nums md:order-3 md:justify-self-end md:text-right"
+                  data-testid="avance-obligatorias"
+                >
+                  {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal
+                  }}<span class="hidden md:inline"> obligatorias</span> · {{ puntajeObtenido }} pts
+                </span>
+              </div>
+              <div
+                class="relative flex flex-wrap items-center gap-x-4 gap-y-1 whitespace-nowrap md:order-1"
+              >
                 <!-- La barra del módulo con las secciones solo va en la portada (indicación de la usuaria,
                      2026-11-06): desde aquí se vuelve a ella. -->
                 <RouterLink
@@ -1148,14 +1160,16 @@ onBeforeUnmount(() => {
                   <ChevronLeft class="size-4" aria-hidden="true" />
                   Módulo {{ n }}
                 </RouterLink>
-                <details class="relative text-sm" data-testid="objetivos-desplegable">
+                <!-- En el teléfono el panel desplegado ocupa todo el ancho de la fila (se posiciona respecto a
+                     ella); en pantallas medianas, respecto al propio desplegable. -->
+                <details class="text-sm md:relative" data-testid="objetivos-desplegable">
                   <summary
                     class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
                   >
                     Objetivos
                   </summary>
                   <ul
-                    class="bg-card marker:text-primary absolute left-0 z-20 mt-2 w-[min(40rem,90vw)] list-disc whitespace-normal space-y-1 rounded-xl border p-4 pl-8 leading-relaxed shadow-lg"
+                    class="bg-card marker:text-primary absolute right-0 left-0 z-20 mt-2 list-disc space-y-1 rounded-xl border p-4 pl-8 leading-relaxed whitespace-normal shadow-lg md:right-auto md:w-[min(40rem,90vw)]"
                   >
                     <li v-for="objetivo in modulo.objetivos" :key="objetivo">
                       <TextoRico :texto="objetivo" modo="linea" />
@@ -1164,14 +1178,14 @@ onBeforeUnmount(() => {
                 </details>
                 <!-- Referencias del módulo (bibliografía de la docente, 2026-11-05): desplegable como los objetivos, para
                    no ocupar la pantalla de la sección. El glosario sigue oculto. -->
-                <details class="relative text-sm" data-testid="referencias-desplegable">
+                <details class="text-sm md:relative" data-testid="referencias-desplegable">
                   <summary
                     class="text-muted-foreground hover:text-foreground cursor-pointer select-none"
                   >
                     Referencias ({{ modulo.referencias.length + fuentesImagenes.length }})
                   </summary>
                   <div
-                    class="bg-card absolute left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] w-[min(48rem,90vw)] space-y-4 whitespace-normal overflow-y-auto overscroll-contain rounded-xl border p-4 leading-relaxed shadow-lg"
+                    class="bg-card absolute right-0 left-0 z-20 mt-2 max-h-[min(70dvh,36rem)] space-y-4 overflow-y-auto overscroll-contain rounded-xl border p-4 leading-relaxed whitespace-normal shadow-lg md:right-auto md:w-[min(48rem,90vw)]"
                   >
                     <ol class="marker:text-primary list-decimal space-y-3 pl-5">
                       <li v-for="r in modulo.referencias" :key="r.id" class="text-left">
@@ -1220,13 +1234,6 @@ onBeforeUnmount(() => {
                   </div>
                 </details>
               </div>
-              <span
-                class="text-muted-foreground text-sm whitespace-nowrap tabular-nums md:order-3 md:justify-self-end md:text-right"
-                data-testid="avance-obligatorias"
-              >
-                {{ avance.obligatoriasCompletadas }} de {{ avance.obligatoriasTotal }} obligatorias
-                · {{ puntajeObtenido }} pts
-              </span>
             </div>
 
             <p

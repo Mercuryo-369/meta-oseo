@@ -181,7 +181,7 @@ function estiloDeFila(posicion: number): Record<string, string> {
     <li
       v-for="(clave, posicion) in modelValue"
       :key="clave"
-      class="bg-card border-input text-card-foreground flex min-h-11 items-stretch gap-1 rounded-xl border select-none"
+      class="bg-card border-input text-card-foreground flex min-h-11 items-stretch gap-1 rounded-xl border text-left select-none"
       :class="[
         movimientoReducido ? '' : 'transition-transform duration-150',
         arrastre?.desde === posicion ? 'shadow-lg ring-2 ring-[var(--ring)]' : '',

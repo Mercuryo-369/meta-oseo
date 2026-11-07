@@ -169,7 +169,8 @@ const textoMejor = computed(() => {
 <template>
   <section class="grid gap-4" :aria-labelledby="idTitulo" data-testid="actividad-video-texto">
     <header class="grid gap-1">
-      <h3 :id="idTitulo" class="font-serif text-xl font-semibold">{{ actividad.titulo }}</h3>
+      <!-- El título ya es el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 :id="idTitulo" class="sr-only">{{ actividad.titulo }}</h3>
       <p class="text-muted-foreground">
         <TextoMarkdown :texto="actividad.instrucciones" />
       </p>

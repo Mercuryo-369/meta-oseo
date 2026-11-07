@@ -472,15 +472,16 @@ const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
 
 <template>
   <section
-    class="actividad-quiz bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6 lg:max-w-none"
+    class="actividad-quiz bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl lg:max-w-none lg:border lg:p-6"
     :aria-labelledby="idTitulo"
     :aria-busy="practica === 'cargando' ? 'true' : undefined"
     data-actividad="quiz"
     @click="alHacerClic"
   >
     <header class="flex flex-col gap-2">
-      <h3 :id="idTitulo" class="text-foreground text-xl font-semibold">{{ actividad.titulo }}</h3>
-      <p class="text-muted-foreground text-sm leading-relaxed">
+      <!-- El título ya es el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 :id="idTitulo" class="sr-only">{{ actividad.titulo }}</h3>
+      <p class="text-muted-foreground text-left text-sm leading-relaxed">
         <TextoLinea :texto="actividad.instrucciones" />
       </p>
     </header>

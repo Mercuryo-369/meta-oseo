@@ -391,7 +391,8 @@ defineExpose({ seleccionar, repetir, visitarDesdeLinea });
     :data-modo="modo"
   >
     <header class="grid gap-1">
-      <h3 :id="idTitulo" class="font-heading text-lg font-semibold">{{ actividad.titulo }}</h3>
+      <!-- El título ya es el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 :id="idTitulo" class="sr-only">{{ actividad.titulo }}</h3>
       <TextoMarkdown :texto="actividad.instrucciones" class="text-muted-foreground" />
       <p
         v-if="!jugando"

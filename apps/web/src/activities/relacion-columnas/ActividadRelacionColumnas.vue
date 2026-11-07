@@ -882,26 +882,21 @@ function dom(sufijo: string): string {
   gap: 0.875rem;
   color: var(--card-foreground);
 }
-/* En escritorio el título ya es el encabezado de la parte: queda para el lector de pantalla. */
-@media (min-width: 1024px) {
-  .titulo {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
+/* El título ya es el encabezado de la parte (también en el teléfono): queda para el lector de pantalla. */
 .titulo {
-  font-size: 1.125rem;
-  font-weight: 700;
-  outline-offset: 4px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .instrucciones,
 .ayuda,
 .progreso-texto {
   font-size: 0.9375rem;
+  /* Líneas cortas de instrucciones: a la izquierda, sin los huecos del justificado en el teléfono. */
+  text-align: left;
 }
 .ayuda,
 .progreso-texto,

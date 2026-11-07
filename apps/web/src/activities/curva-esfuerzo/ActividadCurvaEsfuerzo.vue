@@ -387,7 +387,8 @@ function moverAZona(z: ZonaCurva): void {
 <template>
   <section class="space-y-4" :aria-labelledby="`${uid}-titulo`" data-testid="actividad-curva">
     <header class="space-y-1">
-      <h3 :id="`${uid}-titulo`" class="font-serif text-xl font-semibold">{{ actividad.titulo }}</h3>
+      <!-- El título ya es el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 :id="`${uid}-titulo`" class="sr-only">{{ actividad.titulo }}</h3>
       <TextoRico
         :texto="actividad.instrucciones"
         modo="linea"

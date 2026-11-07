@@ -6,6 +6,7 @@
  * avisa con `bloqueada` para que la vista explique qué falta. En pantallas estrechas la fila se desplaza de lado.
  */
 import { computed, nextTick, ref, watch } from 'vue';
+import { useMediaQuery } from '@vueuse/core';
 import { Check, ChevronLeft, ChevronRight, Lock } from '@lucide/vue';
 import type { EstadoSeccion } from '@/content/scoring';
 import { textoPlanoDeMarkdown } from '@/content/markdown';
@@ -49,12 +50,14 @@ watch(
  * Puntos a la vista en el indicador compacto: todos si caben; si la sección tiene muchas partes, una ventana
  * centrada en la visible, con los puntos de los bordes más pequeños para indicar que hay más.
  */
-const MAX_PUNTOS = 15;
+const movil = useMediaQuery('(max-width: 767px)');
+const maxPuntos = computed(() => (movil.value ? 9 : 15));
 const ventana = computed(() => {
   const total = props.partes.length;
-  if (total <= MAX_PUNTOS) return { desde: 0, hasta: total };
-  const desde = Math.min(Math.max(props.parte - Math.floor(MAX_PUNTOS / 2), 0), total - MAX_PUNTOS);
-  return { desde, hasta: desde + MAX_PUNTOS };
+  const max = maxPuntos.value;
+  if (total <= max) return { desde: 0, hasta: total };
+  const desde = Math.min(Math.max(props.parte - Math.floor(max / 2), 0), total - max);
+  return { desde, hasta: desde + max };
 });
 const visibles = computed(() =>
   Array.from(
@@ -124,7 +127,7 @@ function alPulsarSeccion(i: number): void {
           <button
             v-else
             type="button"
-            class="group focus-visible:ring-ring grid h-8 w-4 place-items-center rounded-full outline-none focus-visible:ring-2"
+            class="group focus-visible:ring-ring grid h-8 w-3 place-items-center rounded-full outline-none focus-visible:ring-2 md:w-4"
             :aria-label="`${numero(indice)}.${j + 1}: ${partes[j]}`"
             :title="`${numero(indice)}.${j + 1} · ${partes[j]}`"
             :data-parte="j"

@@ -4,6 +4,7 @@
  * cristal sobre la ilustración (pedido de la docente: «usemos este fondo para poner la información de abajo»).
  */
 import type { BloqueTexto } from '@/content/schema';
+import BotonAmpliar from './BotonAmpliar.vue';
 import TextoRico from './TextoRico.vue';
 
 withDefaults(
@@ -33,13 +34,16 @@ withDefaults(
     data-testid="bloque-texto"
     data-fondo="figura"
   >
-    <img
-      :src="bloque.fondo"
-      :alt="figuraAlt"
-      loading="lazy"
-      decoding="async"
-      class="figura-apertura mx-auto w-auto max-w-full rounded-xl border object-contain"
-    />
+    <div class="relative mx-auto w-fit max-w-full">
+      <img
+        :src="bloque.fondo"
+        :alt="figuraAlt"
+        loading="lazy"
+        decoding="async"
+        class="figura-apertura w-auto max-w-full rounded-xl border object-contain"
+      />
+      <BotonAmpliar :src="bloque.fondo" :alt="figuraAlt" />
+    </div>
     <div
       class="bg-card border-l-acento space-y-2 rounded-2xl border border-l-4 p-4 shadow-sm sm:px-5"
     >

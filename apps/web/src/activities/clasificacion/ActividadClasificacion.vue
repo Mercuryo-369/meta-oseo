@@ -286,10 +286,10 @@ const textoFinal = computed(() =>
     data-testid="actividad-clasificacion"
   >
     <header class="space-y-1">
-      <!-- En escritorio el título ya está en el encabezado de la parte: queda para el lector de pantalla. -->
-      <h3 class="font-serif text-xl font-semibold lg:sr-only">{{ actividad.titulo }}</h3>
+      <!-- El título ya está en el encabezado de la parte (también en el teléfono): queda para el lector de pantalla. -->
+      <h3 class="sr-only">{{ actividad.titulo }}</h3>
       <!-- eslint-disable-next-line vue/no-v-html -- Markdown saneado (renderizarLinea, regla R10) -->
-      <p class="text-muted-foreground text-sm" v-html="linea(actividad.instrucciones)" />
+      <p class="text-muted-foreground text-left text-sm" v-html="linea(actividad.instrucciones)" />
       <p v-if="jugando" class="text-sm font-semibold tabular-nums">
         Colocados: {{ colocados.length }} de {{ total }}
         <span v-if="totalErrores > 0" class="text-muted-foreground font-normal">

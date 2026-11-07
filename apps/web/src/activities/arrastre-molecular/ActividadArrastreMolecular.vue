@@ -689,7 +689,7 @@ defineExpose({ repetir });
 
 <template>
   <section
-    class="actividad-arrastre bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl border p-4 sm:p-6 lg:max-w-none"
+    class="actividad-arrastre bg-card text-card-foreground border-border mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-4 rounded-2xl lg:max-w-none lg:border lg:p-6"
     :aria-labelledby="`${uid}-titulo`"
     data-actividad="arrastre-molecular"
     :data-modo="modo"
@@ -698,10 +698,9 @@ defineExpose({ repetir });
     @keydown.esc="alPulsarEscape"
   >
     <header class="flex flex-col gap-2">
-      <h3 :id="`${uid}-titulo`" class="text-foreground text-xl font-semibold">
-        {{ actividad.titulo }}
-      </h3>
-      <p class="text-muted-foreground text-sm leading-relaxed">
+      <!-- El título ya es el encabezado de la parte: queda para el lector de pantalla. -->
+      <h3 :id="`${uid}-titulo`" class="sr-only">{{ actividad.titulo }}</h3>
+      <p class="text-muted-foreground text-left text-sm leading-relaxed">
         <TextoLinea :texto="actividad.instrucciones" />
       </p>
       <p v-if="yaCompletada && jugando && !completada" class="text-muted-foreground text-sm">
