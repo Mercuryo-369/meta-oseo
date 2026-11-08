@@ -86,6 +86,14 @@ const movimientoReducido = computed(() => movimiento.value === 'reduce');
 /* ---- configuración derivada (solo lectura) ---- */
 
 const config = computed(() => props.actividad.config);
+/** Proporción del viewBox (ancho / alto); los dibujos verticales se dimensionan por el alto. */
+const proporcion = computed(() => {
+  const partes = config.value.viewBox.trim().split(/\s+/).map(Number);
+  const ancho = partes[2] ?? 0;
+  const alto = partes[3] ?? 0;
+  return ancho > 0 && alto > 0 ? ancho / alto : 1;
+});
+const esVertical = computed(() => proporcion.value < 1);
 const jugando = computed(() => props.modo !== 'revisar');
 const esIdentificar = computed(() => config.value.modo === 'identificar');
 const capas = computed(() => config.value.capas);
@@ -720,6 +728,7 @@ defineExpose({ activar, reiniciar });
       <!-- Dibujo -->
       <div
         class="lienzo border-input bg-card rounded-lg border p-2 lg:col-start-1 lg:row-span-2"
+        :class="{ 'lg:w-fit lg:max-w-full lg:justify-self-center': esVertical }"
         :aria-busy="estadoSvg === 'cargando'"
         data-testid="multicapa-lienzo"
       >
@@ -739,6 +748,8 @@ defineExpose({ activar, reiniciar });
             role="group"
             :aria-label="config.alt"
             class="anfitrion relative"
+            :class="{ vertical: esVertical }"
+            :style="{ '--proporcion': String(proporcion) }"
             data-testid="multicapa-svg"
             @click="alClicSvg"
             @pointerover="alPunteroSobre"
@@ -884,6 +895,24 @@ defineExpose({ activar, reiniciar });
   /* Alto de la parte visible menos la cabecera de la actividad (`--alto-vista`, lo mide ModuloView). */
   .anfitrion :deep(.multicapa-svg) {
     max-height: max(16rem, calc(var(--alto-vista, 100dvh) - 9.5rem));
+  }
+}
+/* Dibujo vertical (hueso largo de 1.2): el ancho sigue al alto y queda centrado, sin lienzo vacío a los lados;
+   la ilustración de fondo (`object-contain` sobre la misma caja) se alinea igual. */
+.anfitrion.vertical {
+  margin-inline: auto;
+  width: fit-content;
+  max-width: 100%;
+}
+.anfitrion.vertical :deep(.multicapa-svg) {
+  width: auto;
+  max-width: 100%;
+  height: min(30rem, calc((100vw - 3rem) / var(--proporcion, 1)));
+  aspect-ratio: var(--proporcion, 1);
+}
+@media (min-width: 1024px) {
+  .anfitrion.vertical :deep(.multicapa-svg) {
+    height: max(16rem, calc(var(--alto-vista, 100dvh) - 9.5rem));
   }
 }
 .anfitrion :deep(g[data-capa]) {

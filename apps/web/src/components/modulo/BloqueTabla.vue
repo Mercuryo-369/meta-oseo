@@ -11,7 +11,11 @@
 import type { BloqueTabla } from '@/content/schema';
 import TextoRico from './TextoRico.vue';
 
-defineProps<{ bloque: BloqueTabla }>();
+defineProps<{
+  bloque: BloqueTabla;
+  /** El título ya es el encabezado de la parte: queda para el lector de pantalla. */
+  tituloOculto?: boolean;
+}>();
 </script>
 
 <template>
@@ -21,7 +25,11 @@ defineProps<{ bloque: BloqueTabla }>();
     class="space-y-3"
     data-testid="bloque-tabla"
   >
-    <h3 :id="`titulo-${bloque.id}`" class="font-serif text-xl font-semibold">
+    <h3
+      :id="`titulo-${bloque.id}`"
+      class="font-serif text-xl font-semibold"
+      :class="{ 'sr-only': tituloOculto }"
+    >
       {{ bloque.titulo }}
     </h3>
 

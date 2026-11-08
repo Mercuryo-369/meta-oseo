@@ -1439,7 +1439,11 @@ onBeforeUnmount(() => {
                               :figura-alt="imagenesSeccion.get(b.fondo ?? '')"
                               :panel="panelDeFondo(b)"
                             />
-                            <BloqueTabla v-else :bloque="b" />
+                            <BloqueTabla
+                              v-else
+                              :bloque="b"
+                              :titulo-oculto="b.titulo === nombresPartes[vista]"
+                            />
                           </template>
                         </div>
                         <aside
@@ -1493,7 +1497,11 @@ onBeforeUnmount(() => {
                           </div>
                         </template>
                       </BloqueImagen>
-                      <BloqueTabla v-else-if="fila.bloque.tipo === 'tabla'" :bloque="fila.bloque" />
+                      <BloqueTabla
+                        v-else-if="fila.bloque.tipo === 'tabla'"
+                        :bloque="fila.bloque"
+                        :titulo-oculto="fila.bloque.titulo === nombresPartes[vista]"
+                      />
                       <BloqueEscenarios
                         v-else-if="fila.bloque.tipo === 'escenarios'"
                         :bloque="fila.bloque"
