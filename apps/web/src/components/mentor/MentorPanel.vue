@@ -29,7 +29,12 @@
 import { computed, defineAsyncComponent, nextTick, reactive, ref, watch } from 'vue';
 import { useEventListener, useMediaQuery } from '@vueuse/core';
 import { ClipboardCheck, MessageCircle, SquarePen, TriangleAlert } from '@lucide/vue';
-import { EVENTO_PREGUNTAR_AL_MENTOR, textoDelEvento, useExplicame } from '@/ai/explicame';
+import {
+  EVENTO_CERRAR_MENTOR,
+  EVENTO_PREGUNTAR_AL_MENTOR,
+  textoDelEvento,
+  useExplicame,
+} from '@/ai/explicame';
 import { useMentor } from '@/ai/useMentor';
 import { useQuiz } from '@/ai/useQuiz';
 import { Button } from '@/components/ui/button';
@@ -165,6 +170,9 @@ async function preguntarDesdeFuera(texto: string): Promise<void> {
 useEventListener(document, EVENTO_PREGUNTAR_AL_MENTOR, (evento: Event) => {
   const texto = textoDelEvento(evento);
   if (texto) void preguntarDesdeFuera(texto);
+});
+useEventListener(document, EVENTO_CERRAR_MENTOR, () => {
+  abierto.value = false;
 });
 
 // ---- Ponme a prueba (F4-03) ------------------------------------------------------------------

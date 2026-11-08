@@ -5,9 +5,10 @@
  * y el cierre de sesión. Se abre desde «Mi cuenta» (cabecera) o «Configuración» (portada). Estilo de la
  * portada del 2026-11-07.
  */
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { Award, ChevronRight, LogOut, Settings, Trophy, UserRound } from '@lucide/vue';
+import { cerrarMentor } from '@/ai/explicame';
 import { usePasosModulos } from '@/components/modulo/usePasosModulos';
 import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,10 @@ const progreso = useProgresoStore();
 const router = useRouter();
 const { completados } = usePasosModulos();
 const abierto = ref(false);
+// Al abrir el menú se cierra el mentor: si no, su panel queda encima de esta hoja sin poder usarse.
+watch(abierto, (valor) => {
+  if (valor) cerrarMentor();
+});
 
 const nombreCompleto = computed(() =>
   auth.usuario ? `${auth.usuario.nombre} ${auth.usuario.apellido}` : 'Tu cuenta',

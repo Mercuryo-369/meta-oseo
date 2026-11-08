@@ -30,6 +30,16 @@ export interface DetalleEventoPreguntar {
   texto: string;
 }
 
+/*
+ * Cierra el panel del mentor sin borrar la conversación. Lo usa una hoja modal que se abre encima
+ * («Mi cuenta»): el panel lateral no modal quedaba pintado sobre ella, pero la hoja modal bloquea los
+ * clics fuera de sí, así que no se podía usar ninguno de los dos (2026-11-08).
+ */
+export const EVENTO_CERRAR_MENTOR = 'ova:cerrar-mentor';
+export function cerrarMentor(): void {
+  document.dispatchEvent(new CustomEvent(EVENTO_CERRAR_MENTOR));
+}
+
 /** Pide al mentor (con el panel abierto) que responda `texto`. */
 export function preguntarAlMentor(texto: string): void {
   document.dispatchEvent(
