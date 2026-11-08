@@ -189,3 +189,20 @@ la parte a la que siguen.
 | 12 | 4.2 | Bingo | al final, por decisión de la docente | pendiente |
 | 13 | 4.2 | Evaluación (el documento repite la de la 4.1 por error) | esperando la evaluación correcta | pendiente |
 | 14 | 3.1 | Imagen #2 con botones en orden «que voy a señalar» | ya tiene seis botones en orden; ajustar cuando lleguen sus marcas | pendiente de sus marcas |
+
+### Documento «Últimos ajustes»: 2026-11-08
+
+**Cambios pedidos y estado:**
+
+| # | Referencia | Cambio pedido | Estado | Aplicado (fecha y versión) |
+|---|---|---|---|---|
+| 1 | 1.2.4 | Actividad abajo a la derecha, sin dividirla: una sola pantalla | hecho: el hueso largo ocupa todo el alto a la izquierda; la consigna, la ficha y las seis capas (en tres columnas) van a la derecha | 2026-11-08 |
+| 2 | 1.3.4 | Nota importante, «no olvides» o caso clínico abajo para rellenar el vacío | hecho: «No olvides» (papel de las proteínas no colágenas) y nota clínica (osteocalcina sérica como marcador de formación); **redacción propuesta, pendiente de su aprobación** | 2026-11-08 |
+| 3 | 1.3.5 y 1.3.6 | Unir el «Recuerda» de 1.3.6 con 1.3.5 y rellenar el espacio con un consejo o caso clínico | 1.3.5 ya llena la pantalla con el texto y la imagen, así que el «Recuerda» sigue en 1.3.6 y a su lado va un caso clínico de osteomalacia (osteoide sin mineralizar); **redacción propuesta, pendiente de su aprobación** | 2026-11-08 |
+| 4 | 1.4.15 | Nota importante o «Recuerda» en el espacio libre | hecho: nota clínica sobre el reborde antes de un implante, bajo el «Recuerda»; **redacción propuesta, pendiente de su aprobación** | 2026-11-08 |
+| 5 | 3.3.2 | Rellenar el espacio libre junto a la imagen | hecho: «Recuerda» bajo el texto, con los elementos de su imagen (enhancer, bucle de ADN, complejo mediador, factores generales, TSS) | 2026-11-08 |
+| 6 | Preguntas | «Guía del mentor» y «Guía» | la guía del docente explica cómo configurar el mentor desde el panel (pestaña «Configuración») y la guía del estudiante cómo usarlo | 2026-11-08 |
+
+Las notas nuevas no venían en su documento: se redactaron con datos ya presentes en el módulo o de consenso en los
+textos de referencia, y se pueden cambiar o retirar en el `content.json` del módulo.
+

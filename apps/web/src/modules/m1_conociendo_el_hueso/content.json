@@ -2001,6 +2001,20 @@
           "markdown": "Las proteínas no colágenas representan una fracción minoritaria de la matriz orgánica ósea; participan en la organización fibrilar, la adhesión celular y la regulación de la mineralización. Se pueden agrupar según su estructura y función:\n\n*1. Familia SIBLING (Small Integrin-Binding Ligand, N-linked Glycoprotein)*\n\n- **Osteopontina:** Glicofosfoproteína ácida con residuos fosforilados y motivo RGD, que media la adhesión celular mediante integrinas como αvβ3. Su carga negativa y estado de fosforilación le permiten modular el crecimiento y la organización del mineral.\n- **Sialoproteína ósea:** Glicoproteína con motivos RGD (arginina-glicina-ácido aspártico) y regiones ricas en glutamato; presenta afinidad por la hidroxiapatita y favorece la nucleación mineral en determinados contextos.\n- **DMP1 (Dentine Matrix Protein 1):** Proteína fosforilada implicada en la maduración de los osteocitos, la regulación del fosfato y la mineralización de la matriz.\n\n*2. Proteínas con residuos de ácido γ-carboxiglutámico (Gla)*\n\n- **Osteocalcina:** Proteína sintetizada principalmente por osteoblastos y también por osteocitos; su γ-carboxilación, dependiente de vitamina K, favorece su unión al calcio y a la hidroxiapatita, participando en las interacciones entre la matriz orgánica y la fase mineral.\n\n*3. Proteoglucanos pequeños ricos en leucina (SLRPs)*\n\n- **Decorina y biglicano:** Proteoglucanos asociados a fibrillas de colágeno, con cadenas de glucosaminoglucanos (GAG); regulan la fibrilogénesis, el diámetro fibrilar y las interacciones entre los componentes de la matriz."
         },
         {
+          "id": "c_recuerda_no_olvides_proteinas_no_colagenas",
+          "tipo": "callout",
+          "variante": "recuerda",
+          "titulo": "No olvides",
+          "markdown": "Aunque son una fracción minoritaria de la matriz orgánica, las proteínas no colágenas no son un relleno: organizan las fibrillas de colágeno, median la adhesión de las células a la matriz y regulan dónde y cuánto mineral se deposita."
+        },
+        {
+          "id": "c_clinico_osteocalcina_marcador",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "La osteocalcina en sangre",
+          "markdown": "Una parte de la osteocalcina sintetizada por los osteoblastos pasa a la circulación; por eso su concentración sérica se usa como marcador bioquímico de formación ósea."
+        },
+        {
           "id": "t_fase_inorganica",
           "tipo": "texto",
           "titulo": "Fase inorgánica",
@@ -2021,6 +2035,13 @@
           "variante": "recuerda",
           "markdown": "**Osteoide (matriz orgánica no mineralizada).** Matriz extracelular recién sintetizada y secretada por los osteoblastos, compuesta principalmente por colágeno tipo I y proteínas no colágenas, que constituye el sustrato orgánico sobre el cual se deposita el mineral óseo.\n\n**Matriz ósea mineralizada.** Matriz extracelular en la que la fase orgánica se encuentra asociada a cristales de apatita biológica, cuya integración con el colágeno y los demás componentes matriciales confiere al tejido su rigidez y resistencia mecánica.",
           "titulo": "Conceptos clave"
+        },
+        {
+          "id": "c_clinico_caso_osteomalacia",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "Mujer de 68 años con dolor óseo",
+          "markdown": "Una mujer de 68 años con déficit prolongado de vitamina D consulta por dolor óseo difuso y debilidad muscular. En la biopsia ósea se observan ribetes de osteoide más anchos de lo normal. **¿Qué está fallando?** Los osteoblastos siguen formando osteoide, pero sin calcio y fosfato suficientes la fase inorgánica no se deposita: la matriz queda poco mineralizada y el hueso pierde rigidez. Es una **osteomalacia**; en los niños, con el cartílago de crecimiento aún activo, el mismo trastorno produce raquitismo."
         },
         {
           "tipo": "actividad",
@@ -2628,6 +2649,13 @@
           "tipo": "callout",
           "variante": "recuerda",
           "markdown": "El hueso es un tejido vivo que se adapta a la carga. Lo que se usa se conserva; lo que deja de usarse tiende a perderse."
+        },
+        {
+          "id": "c_clinico_reborde_tras_extraccion",
+          "tipo": "callout",
+          "variante": "clinico",
+          "titulo": "Antes de un implante",
+          "markdown": "Por esa reabsorción, antes de colocar un implante tras una extracción se valoran el ancho y el alto del reborde disponible. Las técnicas de preservación alveolar pueden reducir la pérdida, pero no la evitan por completo."
         },
         {
           "tipo": "actividad",

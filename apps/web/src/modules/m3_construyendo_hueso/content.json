@@ -784,6 +784,12 @@
           "alto": 800
         },
         {
+          "id": "c_recuerda_enhancer_a_distancia",
+          "tipo": "callout",
+          "variante": "recuerda",
+          "markdown": "El enhancer puede estar a gran distancia del gen: un bucle de ADN y el complejo mediador lo acercan al promotor. Allí, los factores generales de transcripción posicionan a la ARN polimerasa II, que empieza a transcribir en el sitio de inicio (TSS, +1)."
+        },
+        {
           "id": "img_m3_3_i03",
           "tipo": "imagen",
           "src": "/images/m3/m3_3_imagen_03.webp",

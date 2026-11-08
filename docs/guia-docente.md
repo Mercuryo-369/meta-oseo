@@ -144,7 +144,7 @@ Recargar la página después del cambio. Para volver: `'{"nivel":"pregrado"}'`.
 ## 5. El panel del docente
 
 Se abre desde el enlace «Panel docente» de la cabecera (`/docente`). Solo el rol docente ve datos: un estudiante que
-escriba esa dirección ve «Acceso solo para docentes» y el servidor responde 403. Tiene cinco pestañas:
+escriba esa dirección ve «Acceso solo para docentes» y el servidor responde 403. Tiene seis pestañas:
 
 | Pestaña | Qué muestra |
 |---|---|
@@ -153,6 +153,7 @@ escriba esa dirección ve «Acceso solo para docentes» y el servidor responde 4
 | **Actividades** | Por actividad y por módulo: cuántos la completaron, intentos y puntaje promedio; resalta las más difíciles, con filtro por módulo |
 | **Mentor** | Consultas por día, tokens y **costo estimado** por día y modelo, y quiénes lo usan más |
 | **Exportar** | Descarga un archivo CSV (se abre en Excel) con una fila por estudiante y por módulo |
+| **Configuración** | El proveedor de IA del mentor: Anthropic, OpenAI u otro compatible con OpenAI, el modelo y la clave |
 
 Todos los gráficos tienen una tabla equivalente para lectores de pantalla.
 
@@ -170,6 +171,14 @@ empiezan por `=`, `+`, `-` o `@` se prefijan con una comilla para que Excel no l
 
 Antes de exportar la identificación completa conviene comprobar con la institución qué exige la normativa de
 protección de datos personales aplicable (decisión D19 de la lista de revisión).
+
+**Configurar el mentor (pestaña «Configuración»).** El mentor no responde hasta que tiene una clave de un proveedor
+de IA. En la pestaña se elige el proveedor (Anthropic, OpenAI u «Otro proveedor compatible con OpenAI», como Groq,
+DeepSeek, Mistral u OpenRouter, que pide además la URL base terminada en `/v1`), se escribe el modelo y se pega la
+clave. Al guardar, la clave queda cifrada en el servidor y no vuelve a mostrarse: solo se ven sus últimos caracteres.
+«Probar conexión» envía una consulta corta y muestra la respuesta y el tiempo; si falla, la clave, el modelo o la URL
+no son válidos. «Quitar del panel» borra la configuración guardada y el mentor vuelve a la clave del servidor, si la
+hay. El consumo lo cobra el proveedor a la cuenta dueña de la clave.
 
 **El costo del mentor es una estimación**, calculada con los precios configurados en el servidor
 (`PRECIO_ENTRADA_USD_POR_MTOK` y `PRECIO_SALIDA_USD_POR_MTOK`); la factura real la emite Anthropic. Se debe verificar

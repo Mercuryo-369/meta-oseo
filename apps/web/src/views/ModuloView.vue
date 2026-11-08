@@ -493,6 +493,16 @@ const LARGO_INTRODUCCION = 450;
 function pesoLecturaDe(f: Extract<FilaSeccion, { tipo: 'grupo' }>): number {
   return f.lectura.reduce((t, b) => t + pesoDeBloque(b), 0);
 }
+/*
+ * Alto aproximado de la lectura con las notas debajo: un texto largo (más de 1200 caracteres) se reparte en dos
+ * columnas y ocupa cerca de la mitad, así que deja sitio para recuadros debajo (1.3.4, ajustes del 2026-11-08).
+ */
+function pesoVisualLecturaDe(f: Extract<FilaSeccion, { tipo: 'grupo' }>): number {
+  return f.lectura.reduce(
+    (t, b) => t + (b.tipo === 'texto' && b.markdown.length > 1200 ? 0.6 : 1) * pesoDeBloque(b),
+    0,
+  );
+}
 function pesoNotasDe(f: Extract<FilaSeccion, { tipo: 'grupo' }>): number {
   return f.notas.reduce((t, b) => t + pesoDeBloque(b), 0);
 }
@@ -517,7 +527,7 @@ function unirNotasSueltas(filas: FilaSeccion[]): FilaSeccion[] {
     } else if (
       prev?.tipo === 'grupo' &&
       prev.lectura.length > 0 &&
-      pesoLecturaDe(prev) + pesoNotasDe(prev) + pesoNotasDe(f) <= CABIDA_LECTURA + 200
+      pesoVisualLecturaDe(prev) + pesoNotasDe(prev) + pesoNotasDe(f) <= CABIDA_LECTURA + 200
     ) {
       salida[salida.length - 1] = { ...prev, notas: [...prev.notas, ...f.notas] };
     } else {
@@ -1446,11 +1456,17 @@ onBeforeUnmount(() => {
                             />
                           </template>
                         </div>
+                        <!-- Tres o más recuadros debajo: en columnas, para que los cortos se apilen junto al largo
+                             en vez de abrir otra fila (1.4.15, ajustes del 2026-11-08). -->
                         <aside
                           v-if="fila.notas.length"
-                          class="grid min-w-0 items-start gap-4"
+                          class="min-w-0"
                           :class="
-                            !notasAlLado(fila) && fila.notas.length > 1 ? 'md:grid-cols-2' : ''
+                            notasAlLado(fila) || fila.notas.length === 1
+                              ? 'grid items-start gap-4'
+                              : fila.notas.length === 2
+                                ? 'grid items-start gap-4 md:grid-cols-2'
+                                : 'grid gap-4 md:block md:columns-2 md:gap-4 md:[&>*]:mb-4 md:[&>*]:break-inside-avoid'
                           "
                         >
                           <BloqueCallout v-for="c in fila.notas" :key="c.id" :bloque="c" />
