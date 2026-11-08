@@ -2,9 +2,11 @@
 /**
  * HUD persistente del shell (F1-11): puntaje total, módulo actual y siguiente logro.
  *
- *   móvil       píldora compacta de dos líneas: a la izquierda el puntaje; a la derecha, el
- *               módulo actual arriba y el siguiente logro abajo (con icono en vez de rótulo).
- *   escritorio  barra de una línea con los tres datos y sus rótulos visibles.
+ *   teléfono    solo el puntaje: el módulo ya lo dice la portada y no cabía junto a los botones
+ *               (se veía «Mód…» cortado, 2026-11-08).
+ *   sm a md     puntaje y módulo actual («Módulo 3»), con icono en vez de rótulo.
+ *   md          puntaje y «Módulo actual: Módulo 3 · título».
+ *   lg          además el siguiente logro.
  *
  * AppShell lo monta sin props dentro de la cabecera. Al montarse pide el progreso (el store
  * no duplica peticiones: comparte la que ya esté en curso y no repite si ya cargó).
@@ -75,7 +77,7 @@ function reintentar(): void {
     role="group"
     aria-label="Tu progreso"
     :aria-busy="cargando"
-    class="bg-card border-border flex min-h-11 w-full min-w-0 items-center gap-2.5 rounded-2xl border px-2 py-1 md:w-fit md:max-w-full md:rounded-full md:px-3"
+    class="bg-card border-border flex min-h-11 w-fit max-w-full min-w-0 items-center gap-2.5 rounded-full border px-2 py-1 max-sm:border-0 max-sm:bg-transparent max-sm:px-0 md:px-3"
     data-testid="hud"
   >
     <!-- Puntaje -->
@@ -97,7 +99,7 @@ function reintentar(): void {
     <div class="min-w-0 flex-1 text-xs leading-snug md:flex md:items-center md:gap-4 md:text-sm">
       <!-- Módulo actual -->
       <p
-        class="flex min-w-0 items-center gap-1.5"
+        class="flex min-w-0 items-center gap-1.5 max-sm:hidden"
         data-testid="hud-modulo"
         :title="modulo ? `${rotuloModulo}: ${modulo.titulo}` : undefined"
       >
@@ -119,7 +121,7 @@ function reintentar(): void {
       <!-- Siguiente logro, o el estado de carga / error -->
       <p
         v-if="cargando"
-        class="text-muted-foreground flex min-w-0 items-center gap-1.5"
+        class="text-muted-foreground flex min-w-0 items-center gap-1.5 max-sm:hidden"
         data-testid="hud-cargando"
       >
         <span class="truncate">Cargando tu progreso…</span>
@@ -152,7 +154,7 @@ function reintentar(): void {
       <!-- Con el catálogo vacío no hay nada que afirmar: no se dice que se obtuvieron todos. -->
       <p
         v-else-if="progreso.catalogoLogros.length > 0"
-        class="flex min-w-0 items-center gap-1.5"
+        class="hidden min-w-0 items-center gap-1.5 lg:flex"
         data-testid="hud-logros-completos"
       >
         <PartyPopper class="text-success size-3.5 shrink-0 max-md:hidden" aria-hidden="true" />
