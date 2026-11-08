@@ -44,11 +44,7 @@ onMounted(() => {
   <div
     class="w-full px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8 lg:pt-4 lg:pb-4"
   >
-    <section
-      aria-labelledby="titulo-inicio"
-      class="fondo-portada relative isolate overflow-hidden rounded-3xl border p-4 shadow-sm md:p-5"
-      data-testid="portada-inicio"
-    >
+    <section aria-labelledby="titulo-inicio" class="relative" data-testid="portada-inicio">
       <MandibulaModulos>
         <template #antes>
           <div class="space-y-3">

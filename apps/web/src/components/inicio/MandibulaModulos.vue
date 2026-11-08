@@ -16,7 +16,7 @@
  * pantallas estrechas todo va en columna.
  */
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { ArrowRight, CircleCheck, Lock } from '@lucide/vue';
 import { ANCLAS_PIEZAS_DERECHA } from '@/content/nodos3d';
 import type { AnclaNodo } from '@/content/nodos3d';
@@ -112,16 +112,24 @@ const ordenEnfoque = ref(0);
 watch(seleccion, (nueva, previa) => {
   if (previa !== null && nueva !== previa) ordenEnfoque.value += 1;
 });
-const elegido = computed(() => porId.value.get(seleccion.value ?? '') ?? items.value[0]);
-const verbo = computed(() => {
-  const e = elegido.value?.estado;
-  return e === 'completado' ? 'Repasar' : e === 'en_curso' ? 'Continuar' : 'Abrir';
-});
+const router = useRouter();
+/** Tocar el punto o la tarjeta de un módulo lo elige; tocar de nuevo el elegido lo abre (2026-11-07). */
+function alSeleccionar(id: string): void {
+  if (seleccion.value === id) {
+    const item = porId.value.get(id);
+    if (item) void router.push({ name: 'modulo', params: { n: item.m.numero } });
+    return;
+  }
+  seleccion.value = id;
+}
+function verboDe(estado: string | undefined): string {
+  return estado === 'completado' ? 'Repasar' : estado === 'en_curso' ? 'Continuar' : 'Abrir';
+}
 </script>
 
 <template>
   <div
-    class="flex flex-col gap-4 lg:grid lg:h-full lg:grid-cols-[minmax(20rem,25rem)_minmax(0,1fr)] lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-8"
+    class="flex flex-col gap-4 lg:grid lg:h-full lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)] lg:grid-rows-[auto_auto_1fr] lg:gap-x-8"
     data-testid="mandibula-modulos"
   >
     <div class="lg:col-start-1 lg:row-start-1">
@@ -136,7 +144,7 @@ const verbo = computed(() => {
       <span class="text-muted-foreground"> Elige un módulo para entrar.</span>
     </p>
 
-    <div class="relative lg:col-start-2 lg:row-span-4 lg:row-start-1">
+    <div class="relative lg:col-start-2 lg:row-span-3 lg:row-start-1">
       <EscenaExploracion
         modelo="mandibula"
         alt="Mandíbula humana en vista oblicua con los seis módulos del curso marcados en orden, del cóndilo derecho al izquierdo"
@@ -150,8 +158,9 @@ const verbo = computed(() => {
         :ancho-etiquetas="0.25"
         ayuda-oculta
         viaje-visible
-        class="lg:[&_.escena]:h-[calc(100dvh-10.5rem)]"
-        @seleccionar="(id: string) => (seleccion = id)"
+        sin-lineas
+        class="lg:[&_.escena]:h-[calc(100dvh-7.5rem)]"
+        @seleccionar="alSeleccionar"
       >
         <template #etiqueta="{ id, numero }">
           <span
@@ -166,6 +175,13 @@ const verbo = computed(() => {
               </span>
               <span class="flex items-center gap-1.5 text-[0.85rem] leading-snug font-bold">
                 <span class="min-w-0">{{ porId.get(id)?.m.titulo }}</span>
+                <span
+                  v-if="seleccion === id"
+                  class="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold text-[#9cc7f3]"
+                >
+                  {{ verboDe(porId.get(id)?.estado) }}
+                  <ArrowRight class="size-3" aria-hidden="true" />
+                </span>
                 <CircleCheck
                   v-if="porId.get(id)?.estado === 'completado'"
                   class="size-3.5 shrink-0 text-[#7ee2a8]"
@@ -184,14 +200,15 @@ const verbo = computed(() => {
     </div>
 
     <!-- La lista: visible en pantallas estrechas (la escena muestra solo números); en las anchas, solo para lectores de pantalla -->
+    <!-- La lista: en pantallas estrechas abre el módulo al tocarlo; en las anchas, para lectores de pantalla -->
     <ol class="grid gap-2 sm:grid-cols-2 lg:sr-only" aria-label="Módulos y tu avance">
       <li v-for="it in items" :key="it.id">
-        <button
-          type="button"
+        <RouterLink
+          :to="{ name: 'modulo', params: { n: it.m.numero } }"
           class="focus-visible:ring-ring flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left outline-none focus-visible:ring-2"
           :class="seleccion === it.id ? 'border-primary bg-primary/10' : 'bg-card hover:bg-accent'"
-          :aria-pressed="seleccion === it.id"
-          @click="seleccion = it.id"
+          :aria-current="seleccion === it.id ? 'true' : undefined"
+          :data-modulo="it.m.numero"
         >
           <span
             class="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold"
@@ -211,37 +228,11 @@ const verbo = computed(() => {
             <span class="block truncate text-sm font-semibold">{{ it.m.titulo }}</span>
             <span class="text-muted-foreground block text-xs">{{ it.avance }}</span>
           </span>
-        </button>
+        </RouterLink>
       </li>
     </ol>
 
-    <!-- Módulo elegido: su avance y el botón para entrar -->
-    <div
-      v-if="elegido"
-      class="bg-card/80 flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 lg:col-start-1 lg:row-start-3"
-      aria-live="polite"
-      data-testid="modulo-elegido"
-    >
-      <!-- Sin salto de línea del botón: el alto de la tarjeta no cambia al elegir otro módulo y la portada sigue
-           cabiendo en la pantalla (observación de la usuaria, 2026-11-07). El botón dice solo el verbo. -->
-      <p class="min-w-0 flex-1">
-        <span class="text-primary text-sm font-bold">Módulo {{ elegido.m.numero }}</span>
-        <span class="block truncate font-semibold" :title="elegido.m.titulo">{{
-          elegido.m.titulo
-        }}</span>
-        <span class="text-muted-foreground block truncate text-sm">{{ elegido.avance }}</span>
-      </p>
-      <RouterLink
-        :to="{ name: 'modulo', params: { n: elegido.m.numero } }"
-        class="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-        data-testid="abrir-modulo-mandibula"
-      >
-        {{ verbo }}<span class="sr-only">: Módulo {{ elegido.m.numero }}</span>
-        <ArrowRight class="size-5" aria-hidden="true" />
-      </RouterLink>
-    </div>
-
-    <div class="lg:col-start-1 lg:row-start-4">
+    <div class="lg:col-start-1 lg:row-start-3">
       <slot name="despues" />
     </div>
   </div>

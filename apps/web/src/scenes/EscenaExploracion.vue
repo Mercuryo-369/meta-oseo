@@ -77,6 +77,8 @@ const props = withDefaults(
     anchoEtiquetas?: number;
     /** La ayuda de uso queda solo para lectores de pantalla (la portada la da con su propio texto). */
     ayudaOculta?: boolean;
+    /** Etiquetas laterales sin líneas guía: solo el punto sobre el hueso (portada minimalista, 2026-11-07). */
+    sinLineas?: boolean;
     /**
      * Viaje de la cámara más largo y visible, también con «movimiento reducido» del sistema: en la portada el
      * giro hasta el módulo elegido es la pista de dónde está (pedido de la usuaria, 2026-11-06); es un único
@@ -94,6 +96,7 @@ const props = withDefaults(
     anchoEtiquetas: 0.22,
     ayudaOculta: false,
     viajeVisible: false,
+    sinLineas: false,
   },
 );
 
@@ -448,6 +451,7 @@ watch(
         >
           <g v-for="l in lineasEtiquetas" :key="l.id" :opacity="l.detras ? 0.35 : 0.85">
             <line
+              v-if="!sinLineas"
               :x1="l.x1"
               :y1="l.y1"
               :x2="l.x2"
