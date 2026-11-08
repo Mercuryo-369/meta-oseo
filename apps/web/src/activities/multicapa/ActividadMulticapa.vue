@@ -622,9 +622,11 @@ defineExpose({ activar, reiniciar });
       >
         <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
         <span>
-          Modo de repaso: lee las fichas
-          <template v-if="esIdentificar">y las respuestas correctas</template>. Esta vista no
-          puntúa.
+          {{
+            esIdentificar
+              ? 'Modo de repaso: lee las fichas y las respuestas correctas. Esta vista no puntúa.'
+              : 'Modo de repaso: lee las fichas. Esta vista no puntúa.'
+          }}
         </span>
       </p>
     </header>
