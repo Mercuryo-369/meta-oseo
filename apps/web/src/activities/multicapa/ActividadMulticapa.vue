@@ -617,7 +617,7 @@ defineExpose({ activar, reiniciar });
            de capas en la vista de docente (observación de la usuaria, 2026-11-08). -->
       <p
         v-if="!jugando"
-        class="bg-muted text-foreground mt-2 flex items-start gap-2 rounded-lg p-3 text-sm"
+        class="bg-muted text-foreground mt-2 flex items-start gap-2 rounded-lg p-3 text-sm lg:px-3 lg:py-1.5"
         data-testid="multicapa-aviso-revision"
       >
         <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
