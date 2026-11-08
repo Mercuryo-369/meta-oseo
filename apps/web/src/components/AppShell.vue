@@ -17,6 +17,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import { LayoutDashboard, LogOut } from '@lucide/vue';
 import HudPuntaje from '@/components/HudPuntaje.vue';
+import MenuCuenta from '@/components/MenuCuenta.vue';
 import SelectorTema from '@/components/SelectorTema.vue';
 import MentorPanel from '@/components/mentor/MentorPanel.vue';
 import { Button } from '@/components/ui/button';
@@ -101,6 +102,7 @@ async function salir(): Promise<void> {
           </RouterLink>
         </Button>
 
+        <MenuCuenta />
         <SelectorTema />
 
         <Button

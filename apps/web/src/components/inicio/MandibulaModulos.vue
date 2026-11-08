@@ -128,23 +128,13 @@ const verbo = computed(() => {
       <slot name="antes" />
     </div>
 
-    <!-- Avance global: el círculo de la referencia, junto al texto (no sobre el hueso) -->
-    <div class="flex items-center gap-4 lg:col-start-1 lg:row-start-2" data-testid="avance-global">
-      <div
-        class="grid size-20 shrink-0 place-items-center rounded-full bg-[#f0a37a]/90 text-center text-[#3a1d10] shadow-lg ring-4 ring-white/50"
-        aria-hidden="true"
+    <!-- Avance global en una línea (portada minimalista, 2026-11-07: sin el círculo) -->
+    <p class="text-sm lg:col-start-1 lg:row-start-2" data-testid="avance-global">
+      <span class="font-semibold"
+        >{{ completados }} de {{ MODULOS.length }} módulos completados.</span
       >
-        <p class="text-2xl leading-none font-extrabold">{{ completados }}/{{ MODULOS.length }}</p>
-      </div>
-      <p class="text-sm leading-snug">
-        <span class="font-semibold"
-          >{{ completados }} de {{ MODULOS.length }} módulos completados.</span
-        >
-        <span class="text-muted-foreground block">
-          Toca un módulo en la mandíbula para ver tu avance y entrar.
-        </span>
-      </p>
-    </div>
+      <span class="text-muted-foreground"> Elige un módulo para entrar.</span>
+    </p>
 
     <div class="relative lg:col-start-2 lg:row-span-4 lg:row-start-1">
       <EscenaExploracion
@@ -169,28 +159,23 @@ const verbo = computed(() => {
             class="flex min-w-0 flex-1 items-center gap-2"
             :style="estiloAcento(numero)"
           >
+            <!-- Tarjeta mínima (2026-11-07): número y título; el estado, solo como icono. -->
             <span class="min-w-0 flex-1">
               <span class="block text-[0.68rem] font-semibold tracking-wide uppercase opacity-75">
                 Módulo {{ numero }}
               </span>
-              <span class="block text-[0.85rem] leading-snug font-bold">
-                {{ porId.get(id)?.m.titulo }}
-              </span>
-              <span class="block text-[0.72rem] leading-snug font-medium opacity-80">
-                {{ porId.get(id)?.m.identidad.frase }}
-              </span>
-              <span
-                class="mt-0.5 inline-flex items-center gap-1 text-[0.7rem] font-semibold"
-                :class="
-                  porId.get(id)?.estado === 'completado'
-                    ? 'text-[#7ee2a8]'
-                    : porId.get(id)?.estado === 'bloqueado'
-                      ? 'opacity-70'
-                      : 'text-[#9cc7f3]'
-                "
-              >
-                <Lock v-if="porId.get(id)?.estado === 'bloqueado'" class="size-3" />
-                {{ porId.get(id)?.avance }}
+              <span class="flex items-center gap-1.5 text-[0.85rem] leading-snug font-bold">
+                <span class="min-w-0">{{ porId.get(id)?.m.titulo }}</span>
+                <CircleCheck
+                  v-if="porId.get(id)?.estado === 'completado'"
+                  class="size-3.5 shrink-0 text-[#7ee2a8]"
+                  :aria-label="porId.get(id)?.avance"
+                />
+                <Lock
+                  v-else-if="porId.get(id)?.estado === 'bloqueado'"
+                  class="size-3.5 shrink-0 opacity-70"
+                  :aria-label="porId.get(id)?.avance"
+                />
               </span>
             </span>
           </span>

@@ -13,8 +13,7 @@
  */
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
-import { Award, Eye, Trophy } from '@lucide/vue';
-import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
+import { Eye } from '@lucide/vue';
 import MandibulaModulos from '@/components/inicio/MandibulaModulos.vue';
 import IconoModulo from '@/components/modulo/IconoModulo.vue';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
@@ -28,7 +27,7 @@ const auth = useAuthStore();
 const progreso = useProgresoStore();
 const contexto = useContextoStore();
 const { esDocente } = useAccesoModulos();
-const { recorridoCompleto, continuar } = usePasosModulos();
+const { continuar } = usePasosModulos();
 
 const nombre = computed(() => auth.usuario?.nombre ?? '');
 
@@ -73,11 +72,6 @@ onMounted(() => {
                 </p>
               </div>
             </div>
-            <p class="text-justify leading-relaxed hyphens-auto">
-              Seis módulos te llevan <strong class="text-primary">de la célula al hueso</strong>:
-              cómo se forma, se mineraliza, se renueva y envejece, con la
-              <strong class="text-primary">mandíbula</strong> como ejemplo.
-            </p>
             <p
               v-if="esDocente"
               class="bg-accent text-accent-foreground flex items-start gap-2 rounded-md px-3 py-2 text-sm"
@@ -100,44 +94,6 @@ onMounted(() => {
                 Reintentar
               </Button>
             </p>
-          </div>
-        </template>
-
-        <template #despues>
-          <div class="space-y-4">
-            <SelectorNivel />
-
-            <section aria-labelledby="titulo-reconocimiento">
-              <h2 id="titulo-reconocimiento" class="text-lg font-semibold">Tu reconocimiento</h2>
-              <ul role="list" class="mt-2 grid grid-cols-2 gap-2">
-                <li class="flex">
-                  <RouterLink
-                    :to="{ name: 'logros' }"
-                    class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2.5 font-semibold transition-colors"
-                    title="Mira los que ya tienes y cuál es el siguiente."
-                    data-testid="enlace-logros"
-                  >
-                    <Trophy class="text-eosina size-5 shrink-0" aria-hidden="true" />
-                    Mis logros
-                  </RouterLink>
-                </li>
-                <li class="flex">
-                  <RouterLink
-                    :to="{ name: 'certificado' }"
-                    class="bg-card hover:border-primary focus-visible:border-primary flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2.5 font-semibold transition-colors"
-                    :title="
-                      recorridoCompleto
-                        ? 'Completaste los seis módulos: revisa si ya puedes obtenerlo.'
-                        : 'Se obtiene al completar los seis módulos con el puntaje mínimo.'
-                    "
-                    data-testid="enlace-certificado"
-                  >
-                    <Award class="text-eosina size-5 shrink-0" aria-hidden="true" />
-                    Mi certificado
-                  </RouterLink>
-                </li>
-              </ul>
-            </section>
           </div>
         </template>
       </MandibulaModulos>
