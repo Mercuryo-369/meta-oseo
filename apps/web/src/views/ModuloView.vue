@@ -723,16 +723,40 @@ function notasAlLado(f: Extract<FilaSeccion, { tipo: 'grupo' }>): boolean {
     pesoNotasDe(f) <= CABIDA_NOTAS
   );
 }
-/** Flechas del teclado sobre la barra de vistas. */
-function alTeclaVistas(e: KeyboardEvent): void {
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    irAVista(vista.value + 1);
-  } else if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    irAVista(vista.value - 1);
-  }
+/**
+ * Una flecha que no debe cambiar de parte: con modificadores, ya usada por otro manejador
+ * (`defaultPrevented`: listas, radios, relación de columnas), o pulsada mientras se escribe, dentro de
+ * una actividad, de un diálogo (el mentor, una imagen ampliada) o sobre la escena 3D.
+ */
+function teclaReservada(e: KeyboardEvent): boolean {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return true;
+  if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return true;
+  const objetivo = e.target instanceof Element ? e.target : null;
+  return Boolean(
+    objetivo?.closest(
+      'input, textarea, select, [contenteditable=""], [contenteditable="true"], [role="dialog"], dialog, [role="radiogroup"], [data-testid="bloque-actividad"], canvas',
+    ),
+  );
 }
+/** Flechas del teclado dentro del recuadro de la parte. */
+function alTeclaVistas(e: KeyboardEvent): void {
+  if (teclaReservada(e)) return;
+  e.preventDefault();
+  irAVista(vista.value + (e.key === 'ArrowRight' ? 1 : -1));
+}
+/**
+ * Las flechas también cambian de parte desde cualquier punto de la pantalla del módulo (pregunta de la
+ * usuaria, 2026-11-07: antes solo servían con el foco dentro del recuadro). Lo que ocurre dentro del
+ * recuadro ya lo atiende `alTeclaVistas`.
+ */
+function alTeclaGlobal(e: KeyboardEvent): void {
+  if (enPortada.value || !mostrando.value || teclaReservada(e)) return;
+  const objetivo = e.target instanceof Element ? e.target : null;
+  if (objetivo?.closest('[data-testid="carrusel-seccion"]')) return;
+  alTeclaVistas(e);
+}
+onMounted(() => document.addEventListener('keydown', alTeclaGlobal));
+onBeforeUnmount(() => document.removeEventListener('keydown', alTeclaGlobal));
 
 function sinFondo(t: TipoBloqueTexto): TipoBloqueTexto {
   const { fondo: _fondo, ...resto } = t;
