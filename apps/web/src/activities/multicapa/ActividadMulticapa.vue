@@ -593,7 +593,7 @@ defineExpose({ activar, reiniciar });
     :data-modo="config.modo"
     data-testid="actividad-multicapa"
   >
-    <header class="space-y-1 lg:col-start-1">
+    <header class="space-y-1 lg:col-start-1 lg:row-start-1">
       <!-- En escritorio el título ya está en el encabezado de la parte («1.2.4 · Recorre un hueso largo»): queda solo
            para el lector de pantalla y así el dibujo gana alto. -->
       <h3 :id="idTitulo" ref="titulo" tabindex="-1" class="sr-only">
@@ -729,7 +729,7 @@ defineExpose({ activar, reiniciar });
     <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,19rem)] lg:contents">
       <!-- Dibujo -->
       <div
-        class="lienzo border-input bg-card rounded-lg border p-2 lg:col-start-1 lg:row-span-2"
+        class="lienzo border-input bg-card rounded-lg border p-2 lg:col-start-1 lg:row-start-2 lg:row-span-2"
         :class="{ 'lg:w-fit lg:max-w-full lg:justify-self-center': esVertical }"
         :aria-busy="estadoSvg === 'cargando'"
         data-testid="multicapa-lienzo"
@@ -792,7 +792,9 @@ defineExpose({ activar, reiniciar });
         </div>
       </div>
 
-      <div class="min-w-0 space-y-4 lg:col-start-2 lg:space-y-3">
+      <!-- Fila 2 explícita: sin el panel de progreso (vista de docente) la colocación automática la subía a la fila 1
+           y el dibujo quedaba debajo (observación de la usuaria, 2026-11-08). -->
+      <div class="min-w-0 space-y-4 lg:col-start-2 lg:row-start-2 lg:space-y-3">
         <!-- Ficha -->
         <div
           class="border-input bg-card min-h-24 space-y-2 rounded-lg border p-3"
