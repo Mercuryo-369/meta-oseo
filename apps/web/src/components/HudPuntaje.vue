@@ -113,7 +113,8 @@ function reintentar(): void {
         </span>
       </p>
 
-      <span class="bg-border hidden h-4 w-px shrink-0 md:block" aria-hidden="true" />
+      <!-- El siguiente logro, desde `lg`: en tableta no cabe al lado del módulo y quedaba debajo de «Mi cuenta». -->
+      <span class="bg-border hidden h-4 w-px shrink-0 lg:block" aria-hidden="true" />
 
       <!-- Siguiente logro, o el estado de carga / error -->
       <p
@@ -136,7 +137,7 @@ function reintentar(): void {
       </p>
       <p
         v-else-if="progreso.siguienteLogro"
-        class="hidden min-w-0 items-center gap-1.5 md:flex"
+        class="hidden min-w-0 items-center gap-1.5 lg:flex"
         data-testid="hud-logro"
         :title="progreso.siguienteLogro.descripcion"
       >

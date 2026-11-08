@@ -131,9 +131,9 @@ const textoPanel = computed(() =>
       />
 
       <!-- Fila de flechas encadenadas: el título y, a continuación, los pasos -->
-      <div class="flex flex-col gap-2 p-3 md:flex-row md:items-stretch md:gap-0 md:p-4">
+      <div class="flex flex-col gap-2 p-3 md:p-4 xl:flex-row xl:items-stretch xl:gap-0">
         <div
-          class="flecha-titulo cristal-portada flex shrink-0 items-center gap-3 py-3 pr-9 pl-4 md:w-[22rem] lg:w-[26rem]"
+          class="flecha-titulo cristal-portada flex shrink-0 items-center gap-3 py-3 pr-9 pl-4 xl:w-[24rem] 2xl:w-[26rem]"
           data-testid="titulo-flecha"
         >
           <span class="text-primary hidden shrink-0 sm:block" aria-hidden="true">
@@ -156,7 +156,7 @@ const textoPanel = computed(() =>
         </div>
         <!-- La fila de pasos se solapa con la punta del título (igual que los pasos entre sí): el solape va en la
              fila y no en el primer paso, porque la fila recorta lo que sobresale y le cortaría la muesca. -->
-        <div v-if="slots.pasos" class="min-w-0 flex-1 md:-ml-2 md:flex">
+        <div v-if="slots.pasos" class="min-w-0 flex-1 xl:-ml-2 xl:flex">
           <slot name="pasos" />
         </div>
       </div>
@@ -310,11 +310,12 @@ const textoPanel = computed(() =>
 
 <style scoped>
 /* Primera flecha de la fila: sin muesca a la izquierda y con la punta a la derecha, del mismo tamaño que la de los
-   pasos (PasoFlecha.vue), para que encajen al solaparse. En móvil la fila se apila y la tarjeta es redondeada. */
+   pasos (PasoFlecha.vue), para que encajen al solaparse. Hasta `xl` (teléfono, tableta y portátil pequeño) la fila se apila: la tarjeta
+   es redondeada y los pasos ocupan todo el ancho, para que se vean todos (2026-11-08). */
 .flecha-titulo {
   border-radius: 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: 1280px) {
   .flecha-titulo {
     clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
     border-radius: 1rem 0 0 1rem;

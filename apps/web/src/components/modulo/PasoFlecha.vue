@@ -22,9 +22,11 @@ const props = defineProps<{
   actual: boolean;
   /** El primer paso no lleva muesca a la izquierda. */
   primero: boolean;
+  /** Primer paso de una fila encadenada: sin muesca mientras la fila va apilada (hasta `xl`) y con ella al lado del título. */
+  primeroHastaAncho?: boolean;
   /** Más baja, para la barra de cada sección (la portada usa la alta). */
   compacta?: boolean;
-  /** En el teléfono solo el número y el icono (todas las flechas caben en una fila); el título desde `md`. */
+  /** En el teléfono solo el número (todas las flechas caben en una fila); el icono desde `sm` y el título desde `md`. */
   tituloSoloAncho?: boolean;
 }>();
 
@@ -37,6 +39,7 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
     :class="[
       compacta ? 'min-h-[3.25rem] py-1' : 'min-h-[4.5rem] py-2',
       primero ? 'paso-flecha--primero pl-3' : tituloSoloAncho ? 'pl-5 md:pl-7' : 'pl-7',
+      primeroHastaAncho ? 'paso-flecha--primero-hasta-xl max-xl:pl-3' : '',
       actual
         ? 'bg-primary text-primary-foreground'
         : estado === 'bloqueada'
@@ -48,7 +51,7 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
     <component
       :is="icono"
       class="shrink-0"
-      :class="compacta ? 'size-5' : 'size-7'"
+      :class="[compacta ? 'size-5' : 'size-7', tituloSoloAncho ? 'max-sm:hidden' : '']"
       :stroke-width="1.5"
       aria-hidden="true"
     />
@@ -94,6 +97,12 @@ const icono = computed(() => iconoDeSeccion(props.titulo));
 /* Flecha: punta a la derecha y muesca a la izquierda, del mismo tamaño (encajan al solaparse). */
 .paso-flecha {
   clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%, 1rem 50%);
+}
+@media (max-width: 1279.98px) {
+  .paso-flecha--primero-hasta-xl {
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
 }
 .paso-flecha--primero {
   clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);

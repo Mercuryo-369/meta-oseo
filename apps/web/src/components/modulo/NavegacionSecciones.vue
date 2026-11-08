@@ -68,6 +68,8 @@ const items = computed(() =>
   }),
 );
 
+const actual = computed(() => items.value.find((item) => item.actual));
+
 function activar(i: number): void {
   if (props.estados[i] === 'bloqueada') emit('bloqueada', i);
   else emit('ir', i);
@@ -96,11 +98,11 @@ watch(
 <template>
   <nav
     aria-label="Secciones del módulo"
-    :class="encadenada ? 'md:flex md:min-w-0 md:flex-1 md:flex-col' : ''"
+    :class="encadenada ? 'xl:flex xl:min-w-0 xl:flex-1 xl:flex-col' : ''"
     data-testid="navegacion-secciones"
   >
     <ol
-      :class="encadenada ? 'md:flex-1' : ''"
+      :class="encadenada ? 'xl:flex-1' : ''"
       class="flex md:snap-x md:snap-mandatory md:overflow-x-auto md:overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       data-testid="indice-secciones"
     >
@@ -108,7 +110,10 @@ watch(
         v-for="item in items"
         :key="item.id"
         class="min-w-0 flex-1 md:snap-start"
-        :class="[item.i === 0 ? '' : '-ml-2', encadenada ? 'md:min-w-[13rem]' : 'md:min-w-[10rem]']"
+        :class="[
+          item.i === 0 ? '' : '-ml-2',
+          encadenada ? 'md:min-w-[10rem] xl:min-w-[11rem]' : 'md:min-w-[10rem]',
+        ]"
       >
         <button
           :ref="(el) => (botones[item.i] = el as HTMLElement)"
@@ -127,11 +132,21 @@ watch(
             :estado="item.marca"
             :actual="item.actual"
             :primero="item.i === 0 && !encadenada"
+            :primero-hasta-ancho="item.i === 0 && encadenada"
             :compacta="compacta"
             titulo-solo-ancho
           />
         </button>
       </li>
     </ol>
+    <!-- En el teléfono las flechas solo llevan el número: el título de la sección que se lee va debajo. -->
+    <p
+      v-if="actual"
+      class="text-foreground mt-2 px-1 text-sm leading-snug font-semibold md:hidden"
+      aria-hidden="true"
+      data-testid="titulo-paso-actual"
+    >
+      <span class="text-primary tabular-nums">{{ actual.numero }}</span> · {{ actual.titulo }}
+    </p>
   </nav>
 </template>
