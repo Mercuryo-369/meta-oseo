@@ -79,6 +79,8 @@ const props = withDefaults(
     ayudaOculta?: boolean;
     /** Etiquetas laterales sin líneas guía: solo el punto sobre el hueso (portada minimalista, 2026-11-07). */
     sinLineas?: boolean;
+    /** Estilo de las etiquetas laterales: oscuras (por defecto) o claras, como las tarjetas del diseño de la portada. */
+    estiloEtiquetas?: 'oscuro' | 'claro';
     /**
      * Viaje de la cámara más largo y visible, también con «movimiento reducido» del sistema: en la portada el
      * giro hasta el módulo elegido es la pista de dónde está (pedido de la usuaria, 2026-11-06); es un único
@@ -97,6 +99,7 @@ const props = withDefaults(
     ayudaOculta: false,
     viajeVisible: false,
     sinLineas: false,
+    estiloEtiquetas: 'oscuro',
   },
 );
 
@@ -383,6 +386,8 @@ watch(
   },
   { immediate: true },
 );
+/** Acciones de cámara para una barra de herramientas externa (portada del inicio). */
+defineExpose({ zoom, verTodo, elegirVista });
 </script>
 
 <template>
@@ -477,12 +482,19 @@ watch(
             type="button"
             tabindex="-1"
             aria-hidden="true"
-            class="pointer-events-auto absolute flex -translate-y-1/2 items-center gap-2 rounded-lg bg-[#1b2a41] py-1.5 text-left text-[0.8rem] leading-tight font-semibold text-white shadow-lg ring-1 ring-white/10 transition-colors outline-none hover:bg-[#24364f]"
+            class="pointer-events-auto absolute flex -translate-y-1/2 items-center gap-2 rounded-xl py-1.5 text-left text-[0.8rem] leading-tight font-semibold shadow-lg transition-colors outline-none"
             :class="[
+              estiloEtiquetas === 'claro'
+                ? 'bg-white/90 text-[#0f2a52] ring-1 ring-[#1f5a96]/15 backdrop-blur hover:bg-white'
+                : 'bg-[#1b2a41] text-white ring-1 ring-white/10 hover:bg-[#24364f]',
               e.lado === 'izq'
                 ? 'left-2 flex-row-reverse pr-1.5 pl-3 text-right'
                 : 'right-2 pr-3 pl-1.5',
-              e.seleccionado ? 'ring-2 ring-[#86b4e8]' : '',
+              e.seleccionado
+                ? estiloEtiquetas === 'claro'
+                  ? 'ring-2 ring-[#1f5a96]'
+                  : 'ring-2 ring-[#86b4e8]'
+                : '',
               e.posicion?.enPantalla && !e.posicion.detras ? '' : 'opacity-80',
             ]"
             :style="{
@@ -497,7 +509,13 @@ watch(
           >
             <span
               class="grid size-7 shrink-0 place-items-center rounded-full text-xs font-extrabold"
-              :class="e.visitado ? 'bg-success text-white' : 'bg-white text-[#1b2a41]'"
+              :class="
+                e.visitado
+                  ? 'bg-success text-white'
+                  : estiloEtiquetas === 'claro'
+                    ? 'bg-[#1f5a96] text-white'
+                    : 'bg-white text-[#1b2a41]'
+              "
             >
               <Check v-if="e.visitado" class="size-4" :stroke-width="3" />
               <template v-else>{{ e.numero }}</template>

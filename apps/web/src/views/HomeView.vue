@@ -1,21 +1,13 @@
 <script setup lang="ts">
 /**
- * Inicio de las rutas autenticadas. Arriba, el saludo y la mandíbula 3D con los seis módulos y el avance de
- * cada uno (`MandibulaModulos`): es el único sitio del inicio que los muestra (antes había además un recorrido
- * de pasos y una cuadrícula de tarjetas con la misma información; la usuaria pidió quitar lo duplicado).
- * Los módulos forman una secuencia (el briefing los ordena de la célula al envejecimiento),
- * por eso van numerados y en una lista ordenada. Cada tarjeta lleva la identidad de su módulo
- * (acento, ilustración de portada, rótulo) y dice su estado con icono Y texto, nunca solo con color:
- * bloqueado («Completa el módulo N para abrirlo»), en curso, completado o listo para empezar. Una
- * tarjeta bloqueada sigue siendo un enlace: lleva a la página del módulo, que explica el bloqueo.
- * El estado usa la misma regla que la página y el menú circular (`estadoDeTarjeta`). La sección
- * «Tu nivel» (`SelectorNivel`) es el único sitio donde se cambia Pregrado / Posgrado.
+ * Portada del estudiante (diseño del 2026-11-07): la barra lateral con el saludo, el progreso y la ruta
+ * de aprendizaje, y la mandíbula 3D con los seis módulos (`MandibulaModulos`). Aquí solo se añaden los
+ * avisos (vista de docente, error de carga) y el enlace «continuar» para lectores de pantalla.
  */
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { Eye } from '@lucide/vue';
 import MandibulaModulos from '@/components/inicio/MandibulaModulos.vue';
-import IconoModulo from '@/components/modulo/IconoModulo.vue';
 import { useAccesoModulos } from '@/components/modulo/useAccesoModulos';
 import { usePasosModulos } from '@/components/modulo/usePasosModulos';
 import { Button } from '@/components/ui/button';
@@ -38,59 +30,35 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- En pantallas anchas la portada cabe en una pantalla (revisión, 2026-10-29): a la izquierda el saludo, el avance,
-       el módulo elegido, el nivel y el reconocimiento; a la derecha la mandíbula con los seis módulos. El padding
-       inferior en móvil deja el final por encima del botón flotante del mentor. -->
+  <!-- El padding inferior en móvil deja el final por encima del botón flotante del mentor. -->
   <div
-    class="w-full px-4 pt-6 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-8 lg:pt-4 lg:pb-4"
+    class="w-full px-4 pt-4 pb-[max(7rem,calc(var(--area-segura-abajo)+6rem))] md:px-6 lg:pt-3 lg:pb-3"
   >
     <section aria-labelledby="titulo-inicio" class="relative" data-testid="portada-inicio">
-      <MandibulaModulos>
+      <MandibulaModulos :nombre="nombre">
         <template #antes>
-          <div class="space-y-3">
-            <div class="flex items-center gap-3">
-              <span
-                class="border-primary/30 text-primary hidden size-12 shrink-0 items-center justify-center rounded-xl border sm:flex"
-                aria-hidden="true"
-              >
-                <IconoModulo icono="hueso" class="size-8" />
-              </span>
-              <div class="min-w-0">
-                <p class="text-primary text-sm font-bold">Metabolismo óseo</p>
-                <h1
-                  id="titulo-inicio"
-                  class="text-2xl leading-tight font-semibold tracking-tight md:text-3xl"
-                >
-                  Hola, {{ nombre }}
-                </h1>
-                <p class="text-foreground/80 text-sm">
-                  Un viaje interactivo desde la célula hasta el hueso
-                </p>
-              </div>
-            </div>
-            <p
-              v-if="esDocente"
-              class="bg-accent text-accent-foreground flex items-start gap-2 rounded-md px-3 py-2 text-sm"
-              role="note"
-              data-testid="nota-docente"
-            >
-              <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <span>
-                <strong>Vista de docente.</strong> Puedes abrir los seis módulos completos. Mientras
-                revisas no se guarda avance, puntaje ni tiempo.
-              </span>
-            </p>
-            <p
-              v-if="progreso.error"
-              role="status"
-              class="bg-accent text-accent-foreground flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2 text-sm"
-            >
-              <span>{{ progreso.error }}</span>
-              <Button variant="outline" size="sm" @click="progreso.load({ force: true })">
-                Reintentar
-              </Button>
-            </p>
-          </div>
+          <p
+            v-if="esDocente"
+            class="flex items-start gap-2 rounded-2xl bg-white/10 p-3 text-xs text-white/85 ring-1 ring-white/15"
+            role="note"
+            data-testid="nota-docente"
+          >
+            <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <span>
+              <strong>Vista de docente.</strong> Puedes abrir los seis módulos completos. Mientras
+              revisas no se guarda avance, puntaje ni tiempo.
+            </span>
+          </p>
+          <p
+            v-if="progreso.error"
+            role="status"
+            class="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/10 p-3 text-xs text-white/85 ring-1 ring-white/15"
+          >
+            <span>{{ progreso.error }}</span>
+            <Button variant="outline" size="sm" @click="progreso.load({ force: true })">
+              Reintentar
+            </Button>
+          </p>
         </template>
       </MandibulaModulos>
       <RouterLink

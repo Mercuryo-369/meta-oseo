@@ -5,7 +5,7 @@
  * sigue a la vista en la cabecera.
  */
 import { ref } from 'vue';
-import { Award, Trophy, UserRound } from '@lucide/vue';
+import { Award, Settings, Trophy, UserRound } from '@lucide/vue';
 import SelectorNivel from '@/components/nivel/SelectorNivel.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/sheet';
 import { useAuthStore } from '@/stores/auth';
 
+/** `cuenta`: botón «Mi cuenta» de la cabecera; `configuracion`: botón «Configuración» de la portada. */
+withDefaults(defineProps<{ variante?: 'cuenta' | 'configuracion' }>(), { variante: 'cuenta' });
+
 const auth = useAuthStore();
 const abierto = ref(false);
 </script>
@@ -26,6 +29,17 @@ const abierto = ref(false);
   <Sheet v-model:open="abierto">
     <SheetTrigger as-child>
       <Button
+        v-if="variante === 'configuracion'"
+        variant="outline"
+        class="rounded-full"
+        title="Configuración: nivel, logros y certificado"
+        data-testid="menu-configuracion"
+      >
+        <Settings aria-hidden="true" />
+        Configuración
+      </Button>
+      <Button
+        v-else
         variant="ghost"
         class="shrink-0 px-2 sm:px-3"
         :title="
