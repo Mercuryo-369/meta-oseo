@@ -602,19 +602,21 @@ defineExpose({ activar, reiniciar });
       <p class="text-muted-foreground text-left text-sm">
         <TextoLinea :texto="actividad.instrucciones" />
       </p>
+      <!-- Dentro de la cabecera (misma celda de la rejilla): como fila aparte empujaba el dibujo debajo de la lista
+           de capas en la vista de docente (observación de la usuaria, 2026-11-08). -->
+      <p
+        v-if="!jugando"
+        class="bg-muted text-foreground mt-2 flex items-start gap-2 rounded-lg p-3 text-sm"
+        data-testid="multicapa-aviso-revision"
+      >
+        <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+        <span>
+          Modo de repaso: lee las fichas
+          <template v-if="esIdentificar">y las respuestas correctas</template>. Esta vista no
+          puntúa.
+        </span>
+      </p>
     </header>
-
-    <p
-      v-if="!jugando"
-      class="bg-muted text-foreground flex items-start gap-2 rounded-lg p-3 text-sm lg:col-span-2"
-      data-testid="multicapa-aviso-revision"
-    >
-      <Eye class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-      <span>
-        Modo de repaso: lee las fichas
-        <template v-if="esIdentificar">y las respuestas correctas</template>. Esta vista no puntúa.
-      </span>
-    </p>
 
     <p
       v-if="sinContenido"
